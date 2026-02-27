@@ -2271,6 +2271,12 @@ a {
     font-size: 14px;
 }
 
+.backup-tip {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
 .detail-title {
     display: flex;
     align-items: center;
@@ -2623,7 +2629,16 @@ iframe {
                 <button onclick="getLocation()">📍 GPS Koordinaten anzeigen</button>
             </div>
         </div>
+        <div class="home-tool-group">
+            <div class="home-subtitle">Backup</div>
+            <div class="home-tools-grid">
+                <button onclick="exportCommandViewBackup()">📤 Daten exportieren (Backup)</button>
+                <button onclick="triggerCommandViewBackupImport()">📥 Daten importieren (Backup)</button>
+            </div>
+            <div class="backup-tip">Tipp: Backup-Datei per AirDrop, iCloud Drive oder Mail auf iPhone/iPad übertragen.</div>
+        </div>
     </div>
+    <input id="commandViewBackupFileInput" class="hidden" type="file" accept=".json,application/json" onchange="handleCommandViewBackupImport(event)">
 
     <div class="card" onclick="openCategory('info')">📞 Informationen</div>
     <div class="home-section-title">Einsatzleiter-Taschenbuch</div>
@@ -3474,6 +3489,193 @@ function appStorageRemoveItem(baseKey){
         return;
     }
     localStorage.removeItem(getStorageKey(baseKey));
+}
+
+function getAllLocalStorageEntries(){
+    const entries = {};
+    for (let i = 0; i < localStorage.length; i += 1){
+        const key = localStorage.key(i);
+        if (!key) continue;
+        entries[key] = localStorage.getItem(key);
+    }
+    return entries;
+}
+
+function downloadTextFile(filename, textContent){
+    const blob = new Blob([textContent], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+function openIndexedDb(name){
+    return new Promise((resolve, reject)=>{
+        const request = indexedDB.open(name);
+        request.onerror = ()=>reject(request.error || new Error(`IndexedDB open failed: ${name}`));
+        request.onsuccess = ()=>resolve(request.result);
+    });
+}
+
+function readAllFromObjectStore(db, storeName){
+    return new Promise((resolve, reject)=>{
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+        const req = store.getAll();
+        req.onerror = ()=>reject(req.error || new Error(`IndexedDB read failed: ${storeName}`));
+        req.onsuccess = ()=>resolve(req.result || []);
+    });
+}
+
+async function exportIndexedDbSnapshot(){
+    if (typeof indexedDB === "undefined" || typeof indexedDB.databases !== "function"){
+        return {
+            supported: false,
+            databases: {},
+            note: "IndexedDB nicht verfügbar oder Enumeration nicht unterstützt."
+        };
+    }
+    const dbList = await indexedDB.databases();
+    const databases = {};
+    for (const info of dbList || []){
+        if (!info || !info.name) continue;
+        try {
+            const db = await openIndexedDb(info.name);
+            const stores = {};
+            for (const storeName of Array.from(db.objectStoreNames || [])){
+                stores[storeName] = await readAllFromObjectStore(db, storeName);
+            }
+            databases[info.name] = {
+                version: db.version || info.version || 1,
+                stores
+            };
+            db.close();
+        } catch (error){
+            databases[info.name] = { error: String(error && error.message ? error.message : error) };
+        }
+    }
+    return { supported: true, databases };
+}
+
+function getImportModeChoice(){
+    const raw = prompt(
+        "Import-Modus wählen:\n1 = Überschreiben (aktuelle Daten ersetzen)\n2 = Zusammenführen (wenn möglich)",
+        "1"
+    );
+    if (raw === null) return null;
+    const clean = String(raw).trim();
+    if (clean === "2") return "merge";
+    return "overwrite";
+}
+
+function restoreLocalStorageFromBackup(entries, mode){
+    const payload = entries && typeof entries === "object" ? entries : {};
+    if (mode === "overwrite"){
+        localStorage.clear();
+    }
+    Object.keys(payload).forEach((key)=>{
+        const value = payload[key];
+        if (value === null || value === undefined){
+            if (mode === "overwrite"){
+                localStorage.removeItem(key);
+            }
+            return;
+        }
+        localStorage.setItem(key, String(value));
+    });
+}
+
+function writeStoreRecords(db, storeName, records, overwrite){
+    return new Promise((resolve, reject)=>{
+        const tx = db.transaction(storeName, "readwrite");
+        tx.onerror = ()=>reject(tx.error || new Error(`IndexedDB write failed: ${storeName}`));
+        tx.oncomplete = ()=>resolve();
+        const store = tx.objectStore(storeName);
+        if (overwrite){
+            store.clear();
+        }
+        (Array.isArray(records) ? records : []).forEach((record)=>{
+            store.put(record);
+        });
+    });
+}
+
+async function importIndexedDbSnapshot(snapshot, mode){
+    if (!snapshot || !snapshot.supported || !snapshot.databases || typeof indexedDB === "undefined") return;
+    const dbNames = Object.keys(snapshot.databases);
+    for (const dbName of dbNames){
+        const dbSnapshot = snapshot.databases[dbName];
+        if (!dbSnapshot || dbSnapshot.error || !dbSnapshot.stores) continue;
+        try {
+            const db = await openIndexedDb(dbName);
+            const storeNames = Object.keys(dbSnapshot.stores);
+            for (const storeName of storeNames){
+                if (!db.objectStoreNames.contains(storeName)) continue;
+                await writeStoreRecords(db, storeName, dbSnapshot.stores[storeName], mode === "overwrite");
+            }
+            db.close();
+        } catch {
+            // IndexedDB-Import ist optional; Fehler hier blockieren den LocalStorage-Import nicht.
+        }
+    }
+}
+
+async function exportCommandViewBackup(){
+    try {
+        const backup = {
+            appName: "CommandView",
+            backupVersion: "1.0",
+            createdAt: new Date().toISOString(),
+            data: {
+                localStorage: getAllLocalStorageEntries(),
+                indexedDB: await exportIndexedDbSnapshot()
+            }
+        };
+        downloadTextFile("commandview-backup.json", JSON.stringify(backup, null, 2));
+    } catch (error){
+        alert(`Backup konnte nicht erstellt werden: ${String(error && error.message ? error.message : error)}`);
+    }
+}
+
+function triggerCommandViewBackupImport(){
+    const input = document.getElementById("commandViewBackupFileInput");
+    if (!input) return;
+    input.value = "";
+    input.click();
+}
+
+async function handleCommandViewBackupImport(event){
+    try {
+        const file = event && event.target && event.target.files ? event.target.files[0] : null;
+        if (!file) return;
+        const text = await file.text();
+        let parsed;
+        try {
+            parsed = JSON.parse(text);
+        } catch {
+            alert("Datei ist kein gültiges JSON.");
+            return;
+        }
+
+        if (!parsed || parsed.appName !== "CommandView" || !parsed.data){
+            alert("Datei ist kein gültiges CommandView-Backup.");
+            return;
+        }
+
+        const mode = getImportModeChoice();
+        if (!mode) return;
+
+        restoreLocalStorageFromBackup(parsed.data.localStorage || {}, mode);
+        await importIndexedDbSnapshot(parsed.data.indexedDB || null, mode);
+        alert("Import erfolgreich. Die App wird neu geladen.");
+        window.location.reload();
+    } catch (error){
+        alert(`Import fehlgeschlagen: ${String(error && error.message ? error.message : error)}`);
+    }
 }
 
 function getNowTimeValueWithSeconds(){
