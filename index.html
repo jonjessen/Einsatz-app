@@ -501,6 +501,21 @@ button:active {
     background: rgba(18, 52, 79, 0.04);
 }
 
+.danger-item.status-yes {
+    border-color: rgba(19, 124, 66, 0.45);
+    background: rgba(19, 124, 66, 0.14);
+}
+
+.danger-item.status-no {
+    border-color: rgba(188, 28, 30, 0.45);
+    background: rgba(188, 28, 30, 0.16);
+}
+
+.danger-item.status-unknown {
+    border-color: var(--border);
+    background: rgba(18, 52, 79, 0.04);
+}
+
 .danger-trigger {
     width: 100%;
     margin: 0;
@@ -986,6 +1001,18 @@ button:active {
     text-align: center;
     font-weight: 800;
     font-size: 20px;
+}
+
+.lage-direct-input {
+    width: 100%;
+    margin-top: 8px;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
 }
 
 .lage-status-grid {
@@ -3165,6 +3192,15 @@ iframe {
                         <div id="lagePersonnelValue" class="lage-counter-value">0</div>
                         <button onclick="changeLageCounter('personnel',1)">+</button>
                     </div>
+                    <input
+                        id="lagePersonnelInput"
+                        class="lage-direct-input"
+                        type="number"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="Anzahl direkt eingeben"
+                        oninput="setLageCounterValue('personnel', this.value)">
                 </div>
                 <div class="lage-tile">
                     <h4>⛑ Verletzte Einsatzkräfte</h4>
@@ -3853,9 +3889,10 @@ function renderDangerList(query = ""){
     filtered.forEach((item)=>{
         const isOpen = item.id === openId;
         const status = statusMap[item.id] || "";
+        const statusClass = status === "yes" ? "status-yes" : (status === "no" ? "status-no" : "status-unknown");
         const contentId = `danger_detail_${item.id}`;
         html += `
-        <div class="danger-item">
+        <div class="danger-item ${statusClass}">
             <button
                 class="danger-trigger"
                 onclick="toggleDangerItem('${item.id}')"
@@ -4478,6 +4515,10 @@ function renderLageDashboard(){
     setText("lagePersonnelValue", Number(state.counters.personnel) || 0);
     setText("lageInjuredCrewValue", Number(state.counters.injuredCrew) || 0);
     setText("lageCylindersValue", Number(state.counters.cylindersUsed) || 0);
+    const personnelInput = document.getElementById("lagePersonnelInput");
+    if (personnelInput && document.activeElement !== personnelInput){
+        personnelInput.value = String(Number(state.counters.personnel) || 0);
+    }
     const sectionsEl = document.getElementById("lageSectionsValue");
     if (sectionsEl) sectionsEl.textContent = String(sectionsValue);
 
@@ -4583,6 +4624,14 @@ function changeLageCounter(key, delta){
     patchLageState((state)=>{
         const current = Number(state.counters[key]) || 0;
         state.counters[key] = Math.max(0, current + delta);
+    });
+    renderLageDashboard();
+}
+
+function setLageCounterValue(key, value){
+    const parsed = Math.max(0, Number(value) || 0);
+    patchLageState((state)=>{
+        state.counters[key] = parsed;
     });
     renderLageDashboard();
 }
