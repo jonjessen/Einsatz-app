@@ -1,0 +1,392 @@
+{
+  "version": "1.3",
+  "region": "SH",
+  "vehicleTypes": [
+    {
+      "id": "lf_hlf_gruppe",
+      "displayName": "LF/HLF (Gruppe)",
+      "common": [],
+      "positions": [
+        {
+          "id": "gf_vr",
+          "displayName": "GF vorne rechts",
+          "typicalRoles": ["GF"],
+          "hint": "Typischer Führungsplatz (Sitzordnung je nach Fahrzeug abweichend).",
+          "quick": {
+            "brandTop": [
+              "Erkundung starten und Schwerpunkt festlegen.",
+              "AT mit klarem Erstauftrag einsetzen.",
+              "WT/ST für Wasser und Aufbau beauftragen.",
+              "Rückmeldungen eng takten.",
+              "Nachforderung bei Ausbreitungsgefahr sofort auslösen."
+            ],
+            "thTop": [
+              "Absperrung/Eigensicherung zuerst herstellen.",
+              "Technische Rettung priorisieren (Patientenzugang).",
+              "Geräteeinsatz abschnittsweise koordinieren.",
+              "RD/Polizei früh anbinden.",
+              "Rettungsfortschritt laufend nachsteuern."
+            ],
+            "merker": [
+              "Ein Auftrag pro Trupp, dann Rückmeldung.",
+              "Bei Unklarheit: stoppen, nachschärfen, weiter."
+            ]
+          }
+        },
+        {
+          "id": "ma_vl",
+          "displayName": "MA vorne links",
+          "typicalRoles": ["MA"],
+          "hint": "Typischer Fahrer-/Maschinistenplatz.",
+          "quick": {
+            "brandTop": [
+              "Fahrzeug absichern und Warnwirkung setzen.",
+              "Pumpe/Wasserversorgung sofort aufbauen.",
+              "Beleuchtung für Zugänge bereitstellen.",
+              "Materialfluss organisieren.",
+              "Störungen direkt melden."
+            ],
+            "thTop": [
+              "Einsatzstelle technisch absichern.",
+              "Aggregat/Beleuchtung nach Auftrag betreiben.",
+              "Geräte geordnet bereitstellen.",
+              "Hydraulik/Trennschleifer logistisch unterstützen.",
+              "Sicherheitsabstände der Gerätezone halten."
+            ],
+            "merker": ["MA hält Technik und Takt stabil."]
+          }
+        },
+        {
+          "id": "at_hinten",
+          "displayName": "AT hinten",
+          "typicalRoles": ["AT"],
+          "hint": "Häufig Angriffstrupp-Sitzbereich.",
+          "quick": {
+            "brandTop": [
+              "Auftrag wiederholen und Material greifen.",
+              "Erstzugang zügig herstellen.",
+              "Lageänderung sofort melden.",
+              "Nachforderung früh funken.",
+              "Nach Auftrag in Bereitstellung gehen."
+            ],
+            "thTop": [
+              "Sicheren Zugang zum Patienten schaffen.",
+              "Erstmaßnahmen am Schadensobjekt ausführen.",
+              "Arbeitsraum mit WT/ST abstimmen.",
+              "Fortschritt und Hindernisse melden.",
+              "Für Folgeauftrag bereit melden."
+            ],
+            "merker": ["Vorgehen im Trupp, keine Alleingänge."]
+          }
+        },
+        {
+          "id": "wt_hinten",
+          "displayName": "WT hinten",
+          "typicalRoles": ["WT"],
+          "hint": "Häufig Wassertrupp/Versorgung.",
+          "quick": {
+            "brandTop": [
+              "Wasserentnahme herstellen.",
+              "Leitung zur Pumpe/Verteiler sichern.",
+              "Leitungsweg störungsfrei halten.",
+              "Material nachführen.",
+              "Wasserstatus melden."
+            ],
+            "thTop": [
+              "Absicherung und Gerätebereitstellung unterstützen.",
+              "Material für Rettungsweg nachführen.",
+              "Arbeitsbereich beleuchten/sichern.",
+              "AT gezielt entlasten.",
+              "Engpass früh melden."
+            ],
+            "merker": ["Versorgung zuerst stabil, dann erweitern."]
+          }
+        },
+        {
+          "id": "st_hinten",
+          "displayName": "ST hinten",
+          "typicalRoles": ["ST"],
+          "hint": "Häufig Schlauchtrupp/Materialfluss.",
+          "quick": {
+            "brandTop": [
+              "Verteiler setzen und Leitung ordnen.",
+              "Schlauchtrassen ohne Stolperstellen legen.",
+              "Material in Abschnitt bringen.",
+              "AT/WT bei Bedarf unterstützen.",
+              "Abschnitt bereit melden."
+            ],
+            "thTop": [
+              "Geräte und Unterbaumaterial zuführen.",
+              "Sicherheitszone frei halten.",
+              "Absperrung/Verkehrsraum sichern.",
+              "Werkzeugwechsel vorbereiten.",
+              "Rettungsweg freihalten."
+            ],
+            "merker": ["Ordnung im Abschnitt spart Minuten."]
+          }
+        },
+        {
+          "id": "me_var",
+          "displayName": "ME / Melder",
+          "typicalRoles": ["ME"],
+          "hint": "Wenn in eurer Gliederung genutzt.",
+          "quick": {
+            "brandTop": [
+              "Meldungen unverändert weitergeben.",
+              "Lagezeiten notieren.",
+              "Material/Unterlagen nachführen.",
+              "Abschnittsgrenzen mit GF abstimmen.",
+              "Erledigte Aufträge rückmelden."
+            ],
+            "thTop": [
+              "Kommunikation zwischen GF und Rettungsabschnitt sichern.",
+              "Rettungsfortschritt dokumentieren.",
+              "Materialanforderungen sofort weitergeben.",
+              "Zugänge für RD freihalten.",
+              "Statusmeldungen bündeln."
+            ],
+            "merker": ["Korrektheit vor Geschwindigkeit bei Meldungen."]
+          }
+        }
+      ],
+      "roles": [
+        {
+          "roleId": "GF",
+          "displayName": "Gruppenführer (GF)",
+          "short": "GF",
+          "brand": [
+            "Erkundung und Einsatzschwerpunkt festlegen.",
+            "AT zur Menschenrettung/Brandbekämpfung beauftragen.",
+            "WT zur Wasserversorgung und ST zum Aufbau einsetzen.",
+            "Abschnittsziele setzen und Rückmeldung einfordern.",
+            "Nachforderung bei Ausbreitung/Personenlage auslösen.",
+            "Lagefortschritt an Einsatzleitung weitergeben."
+          ],
+          "th": [
+            "Gefahrenbereich absichern und Zugang strukturieren.",
+            "Technischen Rettungsschwerpunkt mit RD abstimmen.",
+            "AT für patientennahen Auftrag einsetzen.",
+            "WT/ST für Sicherung, Beleuchtung, Materialfluss einteilen.",
+            "Arbeitsphasen und Gerätewechsel steuern.",
+            "Rettungsfortschritt und Restgefahren laufend bewerten."
+          ],
+          "notes": "Bei TH zuerst sichere Arbeitszone, dann Rettungstempo steigern."
+        },
+        {
+          "roleId": "MA",
+          "displayName": "Maschinist (MA)",
+          "short": "MA",
+          "brand": [
+            "Fahrzeug sichern und Warnwirkung herstellen.",
+            "Pumpe und Wasserversorgung betriebsbereit machen.",
+            "Druckversorgung stabil halten.",
+            "Beleuchtung für Zugänge/Arbeitsbereiche aufbauen.",
+            "Material geordnet nachführen.",
+            "Störungen und Verzögerungen sofort melden."
+          ],
+          "th": [
+            "Einsatzstelle technisch absichern (Fahrzeug/Verkehr).",
+            "Strom/Beleuchtung/Aggregate nach Auftrag betreiben.",
+            "Rettungsgeräte geordnet bereitstellen.",
+            "Gerätewechsel logistisch unterstützen.",
+            "Arbeitsbereiche frei von Stolper-/Leitungschaos halten.",
+            "Sicherheitszone der Geräte im Blick halten."
+          ],
+          "notes": "MA ist die technische Taktgeber-Rolle."
+        },
+        {
+          "roleId": "AT",
+          "displayName": "Angriffstrupp (AT)",
+          "short": "AT",
+          "brand": [
+            "Auftrag wiederholen und Material passend aufnehmen.",
+            "Erstzugang herstellen und Auftrag durchführen.",
+            "Lageänderungen sofort rückmelden.",
+            "Nachforderung frühzeitig melden.",
+            "Auftrag abschließen und für Folgeauftrag bereitstellen.",
+            "Rückweg und Abschnittsgrenzen beachten."
+          ],
+          "th": [
+            "Patientenzugang und Erstmaßnahmen am Schadensobjekt durchführen.",
+            "Arbeitsraum mit WT/ST abstimmen und sichern.",
+            "Fortschritt/Hindernisse fortlaufend melden.",
+            "Gerätebedarf rechtzeitig nachfordern.",
+            "Nach Teilziel sofort Folgeauftrag vom GF einholen.",
+            "Patientenbereich geordnet an RD übergeben."
+          ],
+          "notes": "AT meldet kurz, aber regelmäßig."
+        },
+        {
+          "roleId": "WT",
+          "displayName": "Wassertrupp (WT)",
+          "short": "WT",
+          "brand": [
+            "Wasserentnahme vorbereiten und aufbauen.",
+            "Leitung zur Pumpe/Verteiler herstellen.",
+            "Leitungsweg knick- und störungsfrei halten.",
+            "Material für Angriffstrupp nachführen.",
+            "Wasserstatus/Probleme unmittelbar melden.",
+            "Bei Bedarf ST/AT unterstützen."
+          ],
+          "th": [
+            "Sicherungs- und Beleuchtungsmaßnahmen aufbauen.",
+            "Material und Geräte in den Rettungsabschnitt bringen.",
+            "AT bei Zugangs-/Sicherungsaufgaben unterstützen.",
+            "Arbeitszone frei und geordnet halten.",
+            "Engpässe bei Material sofort melden.",
+            "Nachrückende Kräfte einweisen, wenn beauftragt."
+          ],
+          "notes": "WT hält Versorgung und Unterstützung parallel stabil."
+        },
+        {
+          "roleId": "ST",
+          "displayName": "Schlauchtrupp (ST)",
+          "short": "ST",
+          "brand": [
+            "Verteiler setzen und Leitungsaufbau strukturieren.",
+            "Schlauchtrassen sicher und geordnet legen.",
+            "Material zügig in Einsatzabschnitte bringen.",
+            "AT/WT nach Auftrag unterstützen.",
+            "Engpass oder Verzögerung sofort melden.",
+            "Abschnitt bereit/aufgeräumt halten."
+          ],
+          "th": [
+            "Geräte- und Materialfluss für Rettungsabschnitt sichern.",
+            "Unterbaumaterial und Werkzeuge bereitstellen.",
+            "Arbeitsflächen/Wege absichern und freihalten.",
+            "Verkehrsraum/Absperrung unterstützen.",
+            "AT/WT bei Folgeaufgaben entlasten.",
+            "Abschnittsstatus laufend melden."
+          ],
+          "notes": "ST sorgt für störungsfreien Materialfluss."
+        },
+        {
+          "roleId": "ME",
+          "displayName": "Melder (ME)",
+          "short": "ME",
+          "brand": [
+            "Meldungen zwischen GF und Trupps unverändert übermitteln.",
+            "Lagezeiten und Auftragswechsel dokumentieren.",
+            "Material/Unterlagen nachführen.",
+            "Abschnittswege und Übergabepunkte koordinieren.",
+            "Erledigte Aufträge an GF rückmelden.",
+            "Nachforderungen priorisiert weitergeben."
+          ],
+          "th": [
+            "Kommunikationsweg GF-Rettungsabschnitt sichern.",
+            "Rettungsfortschritt/Teilziele dokumentieren.",
+            "Materialanforderungen sofort weitergeben.",
+            "Zugänge für RD und Kräfte freihalten.",
+            "Abschnittsänderungen an alle Beteiligten spiegeln.",
+            "Erledigung/Restaufgaben klar rückmelden."
+          ],
+          "notes": "ME hält die Führungsinformation stabil."
+        }
+      ]
+    },
+    {
+      "id": "lf_hlf_staffel",
+      "displayName": "LF/HLF (Staffel)",
+      "common": [],
+      "positions": [
+        {
+          "id": "gf_staffel",
+          "displayName": "Staffelführer vorne rechts",
+          "typicalRoles": ["GF"],
+          "hint": "Weniger Personal: Prioritäten noch strikter setzen.",
+          "quick": {
+            "brandTop": [
+              "Einen Schwerpunkt setzen.",
+              "AT klar priorisieren.",
+              "WT gezielt für Versorgung/Support einsetzen.",
+              "Früh nachfordern.",
+              "Rückmeldung eng halten."
+            ],
+            "thTop": [
+              "Sicherungszone zuerst aufbauen.",
+              "Rettungsschwerpunkt klar definieren.",
+              "AT/WT auf Teilziele verteilen.",
+              "RD-Schnittstelle fix halten.",
+              "Arbeitsfortschritt laufend nachsteuern."
+            ],
+            "merker": ["Staffel arbeitet in klaren Teilzielen."]
+          }
+        },
+        {
+          "id": "at_staffel",
+          "displayName": "AT Sitze hinten",
+          "typicalRoles": ["AT"],
+          "hint": "AT trägt oft den Hauptauftrag.",
+          "quick": {
+            "brandTop": ["Auftrag wiederholen.", "Erstzugang schaffen.", "Lage melden.", "Nachfordern.", "Bereit melden."],
+            "thTop": ["Patientenzugang schaffen.", "Teilziel melden.", "Gerätebedarf melden.", "Übergabe vorbereiten.", "Folgeauftrag holen."],
+            "merker": ["Kurze Rückmeldung nach jedem Teilziel."]
+          }
+        },
+        {
+          "id": "wt_staffel",
+          "displayName": "WT Sitze hinten",
+          "typicalRoles": ["WT", "ST"],
+          "hint": "WT deckt Versorgung und Unterstützung ab.",
+          "quick": {
+            "brandTop": ["Wasserweg sichern.", "Leitung stabil halten.", "Material bringen.", "Engpass melden.", "Status melden."],
+            "thTop": ["Absicherung unterstützen.", "Werkzeuge nachführen.", "Arbeitsweg frei halten.", "AT entlasten.", "Status melden."],
+            "merker": ["Versorgung zuerst, dann Zusatzaufgaben."]
+          }
+        }
+      ],
+      "roles": [
+        {"roleId": "GF", "displayName": "Staffelführer (GF)", "short": "GF", "brand": ["Lage priorisieren und Schwerpunkt setzen.", "AT Erstauftrag klar geben.", "WT für Versorgung/Support einsetzen.", "Rückmeldungen eng fordern.", "Frühzeitig nachfordern.", "Lage an EL spiegeln."], "th": ["Sicherungszone definieren.", "Rettungsziel mit RD abstimmen.", "AT patientennah einsetzen.", "WT/ST für Material/Absicherung steuern.", "Teilziele und Zeitfenster nachführen.", "Restgefahren laufend bewerten."], "notes": "Mit Staffel immer früh verstärken lassen."},
+        {"roleId": "MA", "displayName": "Maschinist (MA)", "short": "MA", "brand": ["Fahrzeug absichern.", "Wasserversorgung herstellen.", "Beleuchtung setzen.", "Material nachführen.", "Störung melden.", "Bereit halten."], "th": ["Technik/Beleuchtung sichern.", "Rettungsgeräte bereitstellen.", "Materialfluss ordnen.", "Sicherheitszone unterstützen.", "Gerätewechsel logistisch halten.", "Störung sofort melden."], "notes": "MA hält den Abschnitt arbeitsfähig."},
+        {"roleId": "AT", "displayName": "Angriffstrupp (AT)", "short": "AT", "brand": ["Auftrag klar übernehmen.", "Erstmaßnahme durchführen.", "Lageänderung melden.", "Nachforderung melden.", "Auftrag abschließen.", "Für Folgeauftrag bereit."], "th": ["Patientenzugang herstellen.", "Technische Erstmaßnahmen ausführen.", "Teilziele melden.", "Gerätebedarf melden.", "Sicheren Rettungsweg halten.", "Übergabe an RD vorbereiten."], "notes": "AT priorisiert wirksame Teilziele."},
+        {"roleId": "WT", "displayName": "Wassertrupp (WT)", "short": "WT", "brand": ["Wasserweg herstellen.", "Leitung sichern.", "Material bereitstellen.", "Engpass melden.", "AT unterstützen.", "Status melden."], "th": ["Absicherung/Beleuchtung stützen.", "Material für Rettung zuführen.", "Arbeitsbereich freihalten.", "AT unterstützen.", "Werkzeugwechsel vorbereiten.", "Status melden."], "notes": "WT ist Versorgungs- und Supportachse."},
+        {"roleId": "ST", "displayName": "Schlauchtrupp/Support (ST)", "short": "ST", "brand": ["Leitungs- und Materialfluss ordnen.", "Abschnitt aufgeräumt halten.", "AT/WT unterstützen.", "Engpass melden.", "Bereitmeldung geben.", "Folgeauftrag aufnehmen."], "th": ["Unterbaumaterial/Werkzeuge führen.", "Arbeitsweg und Sperrzone sichern.", "AT/WT unterstützen.", "Materialengpass melden.", "Abschnitt geordnet halten.", "Status rückmelden."], "notes": "ST wird in Staffel flexibel genutzt."}
+      ]
+    },
+    {
+      "id": "tsf_w",
+      "displayName": "TSF-W / Truppbesatzung",
+      "common": [],
+      "positions": [
+        {
+          "id": "tf_vr",
+          "displayName": "TF vorne rechts",
+          "typicalRoles": ["TF"],
+          "hint": "Truppführer führt mit kleiner Besatzung sehr fokussiert.",
+          "quick": {
+            "brandTop": ["Schwerpunkt festlegen.", "TM klar beauftragen.", "Nachforderung prüfen.", "Rückmeldung geben.", "Folgeauftrag planen."],
+            "thTop": ["Sicherungszone zuerst.", "Patientenzugang priorisieren.", "TM konkret einsetzen.", "Teilziele melden.", "RD früh anbinden."],
+            "merker": ["Klein anfangen, früh verstärken lassen."]
+          }
+        },
+        {
+          "id": "tm_hinten",
+          "displayName": "TM hinten",
+          "typicalRoles": ["TM"],
+          "hint": "Truppmann sichert Umsetzung und Material.",
+          "quick": {
+            "brandTop": ["Auftrag bestätigen.", "Material greifen.", "TF unterstützen.", "Status melden.", "Bereit melden."],
+            "thTop": ["Zugang/Arbeitsbereich vorbereiten.", "Werkzeuge einsetzen.", "TF entlasten.", "Hindernis melden.", "Teilziel melden."],
+            "merker": ["Immer im Auftrag des TF bleiben."]
+          }
+        },
+        {
+          "id": "ma_tsfw",
+          "displayName": "MA vorne links",
+          "typicalRoles": ["MA"],
+          "hint": "MA/Fahrer hält Technik und Absicherung.",
+          "quick": {
+            "brandTop": ["Fahrzeug sichern.", "Versorgung/Technik bereit.", "Beleuchtung setzen.", "Material nachführen.", "Status melden."],
+            "thTop": ["Sicherungszone aufbauen.", "Technik bereitstellen.", "Materialfluss unterstützen.", "Gerätebetrieb sichern.", "Störung melden."],
+            "merker": ["Absicherung und Technik laufen parallel."]
+          }
+        }
+      ],
+      "roles": [
+        {"roleId": "TF", "displayName": "Truppführer (TF)", "short": "TF", "brand": ["Lage priorisieren.", "TM klar beauftragen.", "Schwerpunktauftrag durchführen.", "Nachforderung früh melden.", "Teilziele rückmelden.", "Folgeauftrag vorbereiten."], "th": ["Sicherungszone definieren.", "Patientenzugang festlegen.", "TM zielgerichtet einsetzen.", "Technische Teilmaßnahmen steuern.", "RD-Schnittstelle halten.", "Fortschritt melden."], "notes": "TF hält bei wenig Personal die Prioritäten strikt."},
+        {"roleId": "TM", "displayName": "Truppmann (TM)", "short": "TM", "brand": ["Auftrag bestätigen.", "Material aufnehmen.", "TF beim Auftrag unterstützen.", "Lageänderung melden.", "Nachforderung weitergeben.", "Bereit für Folgeauftrag melden."], "th": ["Zugang/Arbeitsbereich vorbereiten.", "Werkzeuge einsetzen und wechseln.", "TF bei Teilzielen unterstützen.", "Hindernisse sofort melden.", "Sicherungsmaßnahmen einhalten.", "Teilzielabschluss melden."], "notes": "TM arbeitet eng am Auftrag des TF."},
+        {"roleId": "MA", "displayName": "Maschinist (MA)", "short": "MA", "brand": ["Fahrzeug/Verkehr absichern.", "Technik bereitstellen.", "Materialfluss unterstützen.", "Beleuchtung setzen.", "Störung melden.", "Bereit halten."], "th": ["Sicherungsmaßnahmen aufbauen.", "Technik/Aggregate betreiben.", "Geräte bereitstellen.", "Arbeitszonen freihalten.", "Materialengpass melden.", "Status an TF melden."], "notes": "MA sichert Arbeitsfähigkeit des Trupps."}
+      ]
+    }
+  ]
+}

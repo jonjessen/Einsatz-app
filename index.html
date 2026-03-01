@@ -601,6 +601,10 @@ body.training-mode {
     padding: 12px;
 }
 
+.fwdv-role-btn.pinned {
+    outline: 2px solid rgba(32, 117, 249, 0.35);
+}
+
 .fwdv-segments {
     display: flex;
     flex-wrap: wrap;
@@ -614,6 +618,17 @@ body.training-mode {
     padding: 8px 12px;
 }
 
+.trainer-info-box {
+    border: 2px solid #e0a100;
+    color: #2b1d00 !important;
+    background: linear-gradient(135deg, #ffe79a, #ffd36a) !important;
+    box-shadow: 0 8px 16px rgba(176, 120, 0, 0.18);
+}
+
+.trainer-info-box strong {
+    color: #5a3c00 !important;
+}
+
 .fwdv-segments button.active-yes {
     background: linear-gradient(135deg, var(--primary), var(--primary-strong));
 }
@@ -623,6 +638,14 @@ body.training-mode {
     border-radius: 12px;
     padding: 10px;
     background: rgba(18, 52, 79, 0.04);
+}
+
+.fwdv-quick-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .card {
@@ -696,7 +719,7 @@ button:active {
 .danger-btn {
     position: fixed;
     left: 16px;
-    bottom: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     z-index: 1190;
     width: auto;
     min-width: 152px;
@@ -706,6 +729,127 @@ button:active {
     font-size: 14px;
     background: linear-gradient(135deg, var(--primary), var(--primary-strong));
     box-shadow: 0 12px 25px rgba(141, 17, 28, 0.35);
+}
+
+.asu-quick-btn {
+    position: fixed;
+    left: 16px;
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    z-index: 1191;
+    width: auto;
+    min-width: 152px;
+    padding: 12px 16px;
+    margin: 0;
+    border-radius: 999px;
+    font-size: 14px;
+    background: linear-gradient(135deg, #1f5f92, #12344f);
+    box-shadow: 0 12px 25px rgba(18, 52, 79, 0.35);
+    display: none;
+}
+
+.asu-quick-btn.show {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.asu-quick-btn.alarm {
+    background: linear-gradient(135deg, #bc1c1e, #8d111c);
+    box-shadow: 0 12px 25px rgba(141, 17, 28, 0.45);
+    animation: asu-quick-pulse 1s ease-in-out infinite;
+}
+
+.asu-quick-badge {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+@keyframes asu-quick-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+.asu-global-banner {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(740px, calc(100% - 20px));
+    z-index: 3200;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: rgba(141, 17, 28, 0.94);
+    color: #fff;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.36);
+    backdrop-filter: blur(2px);
+}
+
+.asu-global-banner.show {
+    display: flex;
+}
+
+.asu-global-banner strong {
+    display: block;
+}
+
+.asu-global-banner button {
+    width: auto;
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+}
+
+.asu-global-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 3400;
+    pointer-events: none;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(188, 28, 30, 0.55);
+}
+
+.asu-global-flash.show {
+    display: flex;
+    animation: asu-global-flicker 0.24s steps(2, jump-none) 16;
+}
+
+.asu-global-flash-msg {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.74);
+    background: rgba(8, 16, 24, 0.82);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+
+@keyframes asu-global-flicker {
+    0% { opacity: 0; }
+    25% { opacity: 1; }
+    50% { opacity: 0.2; }
+    75% { opacity: 1; }
+    100% { opacity: 0.25; }
 }
 
 .danger-overlay {
@@ -3091,9 +3235,34 @@ iframe {
 
     .danger-btn {
         left: 12px;
-        bottom: 14px;
+        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
         min-width: 136px;
         padding: 11px 14px;
+    }
+
+    .asu-quick-btn {
+        left: 12px;
+        bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+        min-width: 136px;
+        padding: 11px 14px;
+    }
+
+    .asu-global-banner {
+        top: calc(8px + env(safe-area-inset-top, 0px));
+        width: calc(100% - 14px);
+        gap: 8px;
+        padding: 9px 10px;
+    }
+
+    .asu-global-banner button {
+        padding: 7px 9px;
+        font-size: 12px;
+    }
+
+    .asu-global-flash-msg {
+        width: calc(100% - 24px);
+        font-size: 16px;
+        padding: 10px 12px;
     }
 
     .danger-header h2 {
@@ -3213,6 +3382,7 @@ iframe {
     .fwdv-role-grid {
         grid-template-columns: 1fr;
     }
+
 }
 </style>
 </head>
@@ -3234,7 +3404,6 @@ iframe {
             <div class="home-subtitle">Führung</div>
             <div class="home-tools-grid">
                 <button onclick="openLageOverlay()">📊 Lageübersicht</button>
-                <button onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer (FwDV 3)</button>
                 <button onclick="openStructureOverlay()">🧭 Einsatzstruktur</button>
                 <button onclick="openEinsatzOverlay()">📋 Einsätze</button>
                 <button onclick="openNachforderungOverlay()">🚨 Nachforderung</button>
@@ -3278,9 +3447,8 @@ iframe {
     <div class="home-divider"></div>
     <div class="card" onclick="openCategory('brand')">🔥 Brand</div>
     <div class="card" onclick="openCategory('vu')">🔧 Technische Hilfeleistung</div>
-    <div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer (FwDV 3)</div>
+    <div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer</div>
     <div class="card" onclick="openCategory('drohne')">🚁 Drohne</div>
-    <div class="card" onclick="openCategory('grundlagen')">📚 Grundlagen</div>
 
     <div id="searchResults"></div>
 
@@ -4007,8 +4175,20 @@ iframe {
 </div>
 
 <div class="container hidden" id="category"></div>
+<button id="asuQuickBtn" class="asu-quick-btn" onclick="openAtemOverlay()" aria-label="Atemschutzüberwachung öffnen">🫁 ASÜ <span id="asuQuickBadge" class="asu-quick-badge">0</span></button>
 <button id="dangerBtn" class="danger-btn" onclick="openDangerOverlay()" aria-label="Gefahrenübersicht öffnen">⚠️ Gefahren</button>
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" aria-label="Nach oben">↑</button>
+<div id="asuGlobalBanner" class="asu-global-banner" role="status" aria-live="assertive" onclick="openAtemOverlay()">
+    <div>
+        <strong id="asuGlobalBannerTitle">Atemschutz Rückmeldung fällig</strong>
+        <div id="asuGlobalBannerText">ASÜ-Alarm aktiv.</div>
+    </div>
+    <button onclick="openAtemOverlay()">Zur Atemschutzüberwachung</button>
+</div>
+<div id="asuGlobalFlash" class="asu-global-flash" aria-hidden="true">
+    <div class="asu-global-flash-msg">RÜCKMELDUNG FÄLLIG - ATEMSCHUTZ</div>
+</div>
+<audio id="asuGlobalAlarmAudio" preload="auto" loop playsinline src="assets/sounds/asue_alarm.wav"></audio>
 <div id="asu2GlobalPopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='asu2GlobalPopup'){asuDismissPressurePrompt()}">
     <div class="asu2-popup">
         <h4 id="asu2PopupTitle">Atemschutz-Rückmeldung</h4>
@@ -8506,8 +8686,24 @@ let asu2RenderTicker = null;
 let asu2AlarmTicker = null;
 let asu2UndoTimer = null;
 let asu2AudioCtx = null;
-let asu2LastSignal = { level: "ok", ts: 0 };
 let asu2OverlayLastFocus = null;
+const ASU_GLOBAL_FLASH_MS = 5000;
+const ASU_ALARM_NOTIFICATION_TAG = "asue-global-alarm";
+const asuGlobalAlarmState = {
+    alarmActive: false,
+    alarmTriggeredAt: null,
+    flashingUntil: 0,
+    level: "ok",
+    activeTeamIds: [],
+    activeTeamNames: [],
+    unsilencedTeamIds: [],
+    incidentId: null,
+    audioLoopActive: false,
+    fallbackLoopId: null,
+    quickLongPressTimer: null,
+    quickLongPressTriggered: false,
+    backgroundNotifiedKey: ""
+};
 
 function asuNow(){
     return Date.now();
@@ -8927,6 +9123,7 @@ function asuApplyIncidentMutation(label, mutator){
     asuSetUndo(label, snapshot);
     asuScheduleSave();
     renderAtemTool();
+    asuRunAlarmManager();
 }
 
 function asuResetTeamAlarmSilence(team){
@@ -8954,6 +9151,7 @@ function asuCreateIncidentFromForm(){
     asuAddLog("INCIDENT_START", `Einsatz gestartet${name ? `: ${name}` : ""}.`);
     asuSaveStateImmediate();
     renderAtemTool();
+    asuRunAlarmManager();
 }
 
 function asuEndActiveIncident(){
@@ -8971,6 +9169,7 @@ function asuEndActiveIncident(){
     asuSetUndo("Einsatz beendet", snapshot);
     asuSaveStateImmediate();
     renderAtemTool();
+    asuRunAlarmManager();
 }
 
 function asuLoadArchiveIncident(id){
@@ -8984,6 +9183,7 @@ function asuLoadArchiveIncident(id){
     state.ui.showIncidentConfig = false;
     asuSaveStateImmediate();
     renderAtemTool();
+    asuRunAlarmManager();
 }
 
 function asuDeleteArchiveIncident(id){
@@ -8991,6 +9191,7 @@ function asuDeleteArchiveIncident(id){
     state.archive = state.archive.filter((item)=>item.id !== id);
     asuSaveStateImmediate();
     renderAtemTool();
+    asuUpdateGlobalAlarmUi();
 }
 
 function asuAddTeam(){
@@ -9281,6 +9482,27 @@ function asuCheckIn(teamId, options = {}){
     });
 }
 
+function asuResetTeamTimer(teamId){
+    const incident = asuGetActiveIncident();
+    const team = asuTeamById(teamId);
+    if (!incident || !team) return;
+    const settings = asuGetEffectiveSettings(incident);
+    asuApplyIncidentMutation(`${team.name}: Timer zurückgesetzt`, ()=>{
+        const now = Date.now();
+        if (team.status === ASU_STATUS.BEREIT){
+            team.status = ASU_STATUS.IM_EINSATZ;
+        }
+        if (!team.startedAt && (team.status === ASU_STATUS.IM_EINSATZ || team.status === ASU_STATUS.RUECKWEG)){
+            team.startedAt = now;
+        }
+        team.lastCheckInAt = now;
+        team.nextDueAt = now + settings.checkInIntervalSec * 1000;
+        team.lastPromptedDueAt = null;
+        asuResetTeamAlarmSilence(team);
+        asuAddLog("TIMER_RESET", `${team.name}: Rückmelde-Timer zurückgesetzt`, team.id);
+    });
+}
+
 function asuMarkMayday(teamId){
     asuSetTeamStatus(teamId, ASU_STATUS.NOTFALL);
 }
@@ -9291,6 +9513,7 @@ function asuAcknowledgeTeamAlarm(teamId){
     team.alarmSilenced = true;
     asuScheduleSave();
     renderAtemTool();
+    asuRunAlarmManager();
 }
 
 function asuAcknowledgeAllAlarms(){
@@ -9299,6 +9522,7 @@ function asuAcknowledgeAllAlarms(){
     incident.teams.forEach((team)=>{ team.alarmSilenced = true; });
     asuScheduleSave();
     renderAtemTool();
+    asuRunAlarmManager();
 }
 
 function asuEditTeamTimestamp(teamId, field, value){
@@ -9342,19 +9566,24 @@ function asuTopAlarm(incident){
     return top;
 }
 
-function asuAlarmSignal(level){
-    const state = asuEnsureState();
-    if (level === "ok") return;
-    const now = Date.now();
-    const spacing = level === "critical" ? 4000 : (level === "overdue" ? 8000 : 15000);
-    if (now - asu2LastSignal.ts < spacing && asu2LastSignal.level === level) return;
-    asu2LastSignal = { level, ts: now };
-    if (state.settings.alarmVibrate && navigator.vibrate){
-        if (level === "critical") navigator.vibrate([300, 130, 300]);
-        else if (level === "overdue") navigator.vibrate([200, 100, 200]);
-        else navigator.vibrate([120]);
+function asuAlarmSeverity(level){
+    if (level === "critical") return 3;
+    if (level === "overdue") return 2;
+    if (level === "due") return 1;
+    return 0;
+}
+
+function asuPrepareAudioSession(){
+    try {
+        if (navigator && navigator.audioSession && typeof navigator.audioSession === "object"){
+            navigator.audioSession.type = "playback";
+        }
+    } catch {
+        // Plattformabhängig nicht verfügbar.
     }
-    if (!state.settings.alarmSound) return;
+}
+
+function asuPlayFallbackAlarmBeep(level = "critical"){
     try {
         if (!asu2AudioCtx){
             asu2AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -9364,29 +9593,295 @@ function asuAlarmSignal(level){
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "square";
-        osc.frequency.value = level === "critical" ? 970 : (level === "overdue" ? 860 : 740);
+        osc.frequency.value = level === "critical" ? 980 : (level === "overdue" ? 870 : 760);
         gain.gain.value = 0.0001;
         osc.connect(gain);
         gain.connect(ctx.destination);
         const t = ctx.currentTime;
-        gain.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+        gain.gain.exponentialRampToValueAtTime(0.35, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
         osc.start(t);
-        osc.stop(t + 0.23);
+        osc.stop(t + 0.45);
     } catch {
         // Audio kann auf einigen Plattformen gesperrt sein.
     }
 }
 
+function asuStartFallbackAlarmLoop(){
+    if (asuGlobalAlarmState.fallbackLoopId) return;
+    asuGlobalAlarmState.fallbackLoopId = setInterval(()=>{
+        asuPlayFallbackAlarmBeep(asuGlobalAlarmState.level);
+    }, 700);
+    asuPlayFallbackAlarmBeep(asuGlobalAlarmState.level);
+}
+
+function asuStopFallbackAlarmLoop(){
+    if (!asuGlobalAlarmState.fallbackLoopId) return;
+    clearInterval(asuGlobalAlarmState.fallbackLoopId);
+    asuGlobalAlarmState.fallbackLoopId = null;
+}
+
+function asuStartGlobalAlarmAudio(){
+    const state = asuEnsureState();
+    if (!state.settings.alarmSound) return;
+    asuPrepareAudioSession();
+    const audio = document.getElementById("asuGlobalAlarmAudio");
+    if (!audio){
+        asuStartFallbackAlarmLoop();
+        return;
+    }
+    if (!audio.paused){
+        asuGlobalAlarmState.audioLoopActive = true;
+        return;
+    }
+    audio.volume = 1;
+    try {
+        const maybePromise = audio.play();
+        if (maybePromise && typeof maybePromise.then === "function"){
+            maybePromise.then(()=>{
+                asuGlobalAlarmState.audioLoopActive = true;
+                asuStopFallbackAlarmLoop();
+            }).catch(()=>{
+                asuStartFallbackAlarmLoop();
+            });
+        } else {
+            asuGlobalAlarmState.audioLoopActive = true;
+            asuStopFallbackAlarmLoop();
+        }
+    } catch {
+        asuStartFallbackAlarmLoop();
+    }
+}
+
+function asuStopGlobalAlarmAudio(){
+    const audio = document.getElementById("asuGlobalAlarmAudio");
+    if (audio){
+        try {
+            audio.pause();
+            audio.currentTime = 0;
+        } catch {
+            // ignore
+        }
+    }
+    asuGlobalAlarmState.audioLoopActive = false;
+    asuStopFallbackAlarmLoop();
+    if (navigator.vibrate){
+        try { navigator.vibrate(0); } catch { /* ignore */ }
+    }
+}
+
+function asuInitQuickButtonInteractions(){
+    const btn = document.getElementById("asuQuickBtn");
+    if (!btn || btn.dataset.bound === "1") return;
+    btn.dataset.bound = "1";
+    const startPress = ()=>{
+        clearTimeout(asuGlobalAlarmState.quickLongPressTimer);
+        asuGlobalAlarmState.quickLongPressTriggered = false;
+        asuGlobalAlarmState.quickLongPressTimer = setTimeout(()=>{
+            if (!asuGlobalAlarmState.alarmActive) return;
+            asuGlobalAlarmState.quickLongPressTriggered = true;
+            asuAcknowledgeAllAlarms();
+            showAtemHint("ASÜ-Alarm quittiert");
+        }, 650);
+    };
+    const endPress = ()=>{
+        clearTimeout(asuGlobalAlarmState.quickLongPressTimer);
+    };
+    btn.addEventListener("mousedown", startPress);
+    btn.addEventListener("touchstart", startPress, { passive: true });
+    btn.addEventListener("mouseup", endPress);
+    btn.addEventListener("mouseleave", endPress);
+    btn.addEventListener("touchend", endPress);
+    btn.addEventListener("touchcancel", endPress);
+    btn.addEventListener("click", (event)=>{
+        if (!asuGlobalAlarmState.quickLongPressTriggered) return;
+        event.preventDefault();
+        event.stopPropagation();
+        asuGlobalAlarmState.quickLongPressTriggered = false;
+    });
+}
+
+function asuGetGlobalAlarmSnapshot(incident, nowTs = Date.now()){
+    if (!incident){
+        return {
+            alarmActive: false,
+            level: "ok",
+            activeTeamIds: [],
+            activeTeamNames: [],
+            unsilencedTeamIds: [],
+            incidentId: null
+        };
+    }
+    let topLevel = "ok";
+    const activeTeamIds = [];
+    const activeTeamNames = [];
+    const unsilencedTeamIds = [];
+    incident.teams.forEach((team)=>{
+        const level = asuWarningLevel(team, incident, nowTs).level;
+        if (level === "ok") return;
+        activeTeamIds.push(team.id);
+        activeTeamNames.push(team.name || team.id || "Trupp");
+        if (asuAlarmSeverity(level) > asuAlarmSeverity(topLevel)){
+            topLevel = level;
+        }
+        if (!team.alarmSilenced){
+            unsilencedTeamIds.push(team.id);
+        }
+    });
+    return {
+        alarmActive: activeTeamIds.length > 0,
+        level: topLevel,
+        activeTeamIds,
+        activeTeamNames,
+        unsilencedTeamIds,
+        incidentId: incident.id || null
+    };
+}
+
+function asuNotifyBackgroundAlarm(snapshot){
+    if (!snapshot || !snapshot.alarmActive || !document.hidden) return;
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    const key = `${snapshot.incidentId || "no_incident"}|${snapshot.level}|${snapshot.activeTeamIds.join(",")}`;
+    if (asuGlobalAlarmState.backgroundNotifiedKey === key) return;
+    asuGlobalAlarmState.backgroundNotifiedKey = key;
+    const title = "Atemschutz Rückmeldung fällig";
+    const body = snapshot.activeTeamNames.length
+        ? `Betroffene Trupps: ${snapshot.activeTeamNames.slice(0, 3).join(", ")}${snapshot.activeTeamNames.length > 3 ? "..." : ""}`
+        : "Mindestens ein Trupp ist überfällig.";
+    if ("serviceWorker" in navigator && navigator.serviceWorker && typeof navigator.serviceWorker.getRegistration === "function"){
+        navigator.serviceWorker.getRegistration().then((registration)=>{
+            if (registration && typeof registration.showNotification === "function"){
+                registration.showNotification(title, {
+                    body,
+                    tag: ASU_ALARM_NOTIFICATION_TAG,
+                    renotify: true,
+                    requireInteraction: true,
+                    icon: "icon-192.png",
+                    badge: "icon-192.png"
+                });
+                return;
+            }
+            new Notification(title, {
+                body,
+                tag: ASU_ALARM_NOTIFICATION_TAG,
+                renotify: true,
+                requireInteraction: true,
+                icon: "icon-192.png"
+            });
+        }).catch(()=>{});
+        return;
+    }
+    new Notification(title, {
+        body,
+        tag: ASU_ALARM_NOTIFICATION_TAG,
+        renotify: true,
+        requireInteraction: true,
+        icon: "icon-192.png"
+    });
+}
+
+function asuUpdateGlobalAlarmUi(){
+    asuInitQuickButtonInteractions();
+    const state = asuEnsureState();
+    const incident = state.activeIncident;
+    const quickBtn = document.getElementById("asuQuickBtn");
+    const quickBadge = document.getElementById("asuQuickBadge");
+    const banner = document.getElementById("asuGlobalBanner");
+    const bannerTitle = document.getElementById("asuGlobalBannerTitle");
+    const bannerText = document.getElementById("asuGlobalBannerText");
+    const flash = document.getElementById("asuGlobalFlash");
+
+    const monitorActive = !!incident;
+    if (quickBtn){
+        quickBtn.classList.toggle("show", monitorActive);
+        quickBtn.classList.toggle("alarm", asuGlobalAlarmState.alarmActive);
+    }
+    if (quickBadge){
+        quickBadge.textContent = asuGlobalAlarmState.alarmActive
+            ? String(asuGlobalAlarmState.activeTeamIds.length || "!")
+            : "0";
+    }
+    if (banner){
+        banner.classList.toggle("show", asuGlobalAlarmState.alarmActive);
+    }
+    if (bannerTitle){
+        bannerTitle.textContent = asuGlobalAlarmState.alarmActive
+            ? "Atemschutz Rückmeldung fällig"
+            : "Atemschutz";
+    }
+    if (bannerText){
+        if (!asuGlobalAlarmState.alarmActive){
+            bannerText.textContent = "ASÜ-Überwachung aktiv.";
+        } else {
+            const names = asuGlobalAlarmState.activeTeamNames.slice(0, 3).join(", ");
+            bannerText.textContent = `${names || "Mindestens ein Trupp"} · ${asuGlobalAlarmState.level.toUpperCase()}`;
+        }
+    }
+    if (flash){
+        const showFlash = Date.now() < asuGlobalAlarmState.flashingUntil;
+        flash.classList.toggle("show", showFlash);
+    }
+}
+
+function asuApplyGlobalAlarmState(snapshot){
+    const state = asuEnsureState();
+    const previousActive = asuGlobalAlarmState.alarmActive;
+    asuGlobalAlarmState.alarmActive = !!snapshot.alarmActive;
+    asuGlobalAlarmState.level = snapshot.level || "ok";
+    asuGlobalAlarmState.activeTeamIds = snapshot.activeTeamIds || [];
+    asuGlobalAlarmState.activeTeamNames = snapshot.activeTeamNames || [];
+    asuGlobalAlarmState.unsilencedTeamIds = snapshot.unsilencedTeamIds || [];
+    asuGlobalAlarmState.incidentId = snapshot.incidentId || null;
+
+    if (snapshot.alarmActive){
+        if (!previousActive){
+            asuGlobalAlarmState.alarmTriggeredAt = Date.now();
+            asuGlobalAlarmState.flashingUntil = Date.now() + ASU_GLOBAL_FLASH_MS;
+            if (navigator.vibrate){
+                try {
+                    const pattern = snapshot.level === "critical" ? [350, 120, 350, 120, 350] : [220, 90, 220];
+                    navigator.vibrate(pattern);
+                } catch {
+                    // ignore
+                }
+            }
+        }
+        if (snapshot.unsilencedTeamIds.length > 0 && state.settings.alarmSound){
+            asuStartGlobalAlarmAudio();
+        } else {
+            asuStopGlobalAlarmAudio();
+        }
+        asuNotifyBackgroundAlarm(snapshot);
+    } else {
+        asuGlobalAlarmState.backgroundNotifiedKey = "";
+        asuGlobalAlarmState.alarmTriggeredAt = null;
+        asuGlobalAlarmState.flashingUntil = 0;
+        asuStopGlobalAlarmAudio();
+    }
+    asuUpdateGlobalAlarmUi();
+}
+
+const AtemschutzUeberwachungService = {
+    ensureState: asuEnsureState,
+    ensureAlarmTicker: asuEnsureAlarmTicker,
+    runAlarmManager: asuRunAlarmManager,
+    getAlarmState: ()=>asuDeepCopy(asuGlobalAlarmState),
+    open: openAtemOverlay
+};
+
 function asuRunAlarmManager(){
     const incident = asuGetActiveIncident();
-    if (!incident) return;
+    if (!incident){
+        asuApplyGlobalAlarmState(asuGetGlobalAlarmSnapshot(null));
+        return;
+    }
     const now = Date.now();
-    let topUnsilenced = "ok";
     const state = asuEnsureState();
     const promptActive = !!(state.ui && state.ui.pressurePrompt);
     incident.teams.forEach((team)=>{
-        const level = asuWarningLevel(team, incident, now).level;
+        const warning = asuWarningLevel(team, incident, now);
+        const level = warning.level;
+        team.truppAlarmActive = level !== "ok";
         const dueKey = team.nextDueAt || null;
         const isOperational = team.status === ASU_STATUS.IM_EINSATZ || team.status === ASU_STATUS.RUECKWEG;
         if (isOperational && (level === "due" || level === "overdue" || level === "critical") && dueKey && team.lastPromptedDueAt !== dueKey && !promptActive){
@@ -9394,12 +9889,8 @@ function asuRunAlarmManager(){
             asuScheduleSave();
             asuOpenPressurePrompt(team.id, "timer_due");
         }
-        if (team.alarmSilenced) return;
-        if (level === "critical") topUnsilenced = "critical";
-        else if (topUnsilenced !== "critical" && level === "overdue") topUnsilenced = "overdue";
-        else if (topUnsilenced === "ok" && level === "due") topUnsilenced = "due";
     });
-    asuAlarmSignal(topUnsilenced);
+    asuApplyGlobalAlarmState(asuGetGlobalAlarmSnapshot(incident, now));
 }
 
 function asuStartTickers(){
@@ -9430,6 +9921,7 @@ function asuEnsureAlarmTicker(){
             asuRunAlarmManager();
         }, 1000);
     }
+    asuRunAlarmManager();
 }
 
 function asuRenderArchive(state){
@@ -9484,8 +9976,16 @@ function asuRenderTeamCard(team, incident, selectedTeamId){
         : Math.max(0, Number(team.cycleElapsedSec || 0)) * 1000;
     const inPA = elapsedMs > 0 ? asuFormatDuration(elapsedMs) : "-";
     const nextDue = team.nextDueAt ? asuFormatDuration(Math.max(0, team.nextDueAt - now)) : "-";
+    const overdueSince = team.nextDueAt && team.nextDueAt < now ? asuFormatDuration(now - team.nextDueAt) : null;
+    const nextDueLabel = overdueSince ? `überfällig seit ${overdueSince}` : nextDue;
+    const sinceCheckIn = team.lastCheckInAt ? asuFormatDuration(Math.max(0, now - team.lastCheckInAt)) : "-";
     const pressure = team.currentPressure != null ? `${team.currentPressure} bar` : "-";
     const warnClass = warning.level === "critical" ? "warn-critical" : (warning.level === "overdue" ? "warn-overdue" : (warning.level === "due" ? "warn-due" : ""));
+    const statusText = warning.level === "critical"
+        ? "ALARM"
+        : (warning.level === "overdue" || warning.level === "due")
+            ? "FÄLLIG"
+            : "OK";
     const selected = selectedTeamId === team.id;
     const memberLine = `${team.members[0]?.name || "-"} / ${team.members[1]?.name || "-"}`;
     const pauseCount = team.pauseHistory.length;
@@ -9501,7 +10001,9 @@ function asuRenderTeamCard(team, incident, selectedTeamId){
         <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">${escapeHtml(memberLine)}</div>
         <div class="asu2-team-stats">
             <div class="asu2-stat"><div class="asu2-stat-label">Zeit unter PA</div><div class="asu2-stat-value">${inPA}</div></div>
-            <div class="asu2-stat"><div class="asu2-stat-label">Nächste Rückmeldung</div><div class="asu2-stat-value">${nextDue}</div></div>
+            <div class="asu2-stat"><div class="asu2-stat-label">Nächste Rückmeldung</div><div class="asu2-stat-value">${nextDueLabel}</div></div>
+            <div class="asu2-stat"><div class="asu2-stat-label">Seit letzter Rückmeldung</div><div class="asu2-stat-value">${sinceCheckIn}</div></div>
+            <div class="asu2-stat"><div class="asu2-stat-label">Status</div><div class="asu2-stat-value" style="font-size:14px;">${statusText}</div></div>
             <div class="asu2-stat"><div class="asu2-stat-label">Warnung</div><div class="asu2-stat-value" style="font-size:14px;">${escapeHtml(warning.label)}</div></div>
             <div class="asu2-stat"><div class="asu2-stat-label">Druck</div><div class="asu2-stat-value">${pressure}</div></div>
         </div>
@@ -9542,26 +10044,29 @@ function asuRenderTeamActionButtons(team){
     if (team.status === ASU_STATUS.BEREIT){
         push("Start unter PA", `asuSetTeamStatus('${id}','${ASU_STATUS.IM_EINSATZ}')`);
         push("Rückmeldung", `asuCheckIn('${id}')`);
+        push("Timer zurücksetzen", `asuResetTeamTimer('${id}')`);
         push("Notfall", `asuMarkMayday('${id}')`);
-        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        push("Alarm quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
         return buttons.join("");
     }
 
     if (team.status === ASU_STATUS.IM_EINSATZ){
         push("Rückmeldung", `asuCheckIn('${id}')`);
+        push("Timer zurücksetzen", `asuResetTeamTimer('${id}')`);
         push("Rückweg", `asuSetTeamStatus('${id}','${ASU_STATUS.RUECKWEG}')`);
         push("Draußen", `asuSetTeamStatus('${id}','${ASU_STATUS.DRAUSSEN}')`);
         push("Notfall", `asuMarkMayday('${id}')`);
-        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        push("Alarm quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
         return buttons.join("");
     }
 
     if (team.status === ASU_STATUS.RUECKWEG){
         push("Rückmeldung", `asuCheckIn('${id}')`);
+        push("Timer zurücksetzen", `asuResetTeamTimer('${id}')`);
         push("Wieder vor", `asuSetTeamStatus('${id}','${ASU_STATUS.IM_EINSATZ}')`);
         push("Draußen", `asuSetTeamStatus('${id}','${ASU_STATUS.DRAUSSEN}')`);
         push("Notfall", `asuMarkMayday('${id}')`);
-        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        push("Alarm quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
         return buttons.join("");
     }
 
@@ -9570,22 +10075,23 @@ function asuRenderTeamActionButtons(team){
         push("Start unter PA", `asuSetTeamStatus('${id}','${ASU_STATUS.IM_EINSATZ}')`);
         push("Ablage + Pause starten", `asuStartTeamPause('${id}')`);
         push("Pause beendet / Neustart", `asuRestartTeamAfterPause('${id}')`);
-        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        push("Alarm quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
         return buttons.join("");
     }
 
     if (team.status === ASU_STATUS.PAUSE){
         push("Pause beendet / Neustart", `asuRestartTeamAfterPause('${id}')`);
         push("Bereit", `asuSetTeamStatus('${id}','${ASU_STATUS.BEREIT}')`);
-        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        push("Alarm quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
         return buttons.join("");
     }
 
     // NOTFALL
     push("Rückmeldung", `asuCheckIn('${id}')`);
+    push("Timer zurücksetzen", `asuResetTeamTimer('${id}')`);
     push("Rückweg", `asuSetTeamStatus('${id}','${ASU_STATUS.RUECKWEG}')`);
     push("Draußen", `asuSetTeamStatus('${id}','${ASU_STATUS.DRAUSSEN}')`);
-    push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+    push("Alarm quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
     return buttons.join("");
 }
 
@@ -9719,7 +10225,7 @@ function asuRenderActiveIncident(state){
             <div>Start: ${new Date(incident.startedAt || now).toLocaleString("de-DE")}</div>
             <div>Aktive Trupps: ${activeCount}</div>
             <div class="asu2-actions">
-                <button onclick="asuAcknowledgeAllAlarms()">Alle quittieren</button>
+                <button onclick="asuAcknowledgeAllAlarms()">Alle Alarm quittieren</button>
                 <button onclick="asuAddTeam()">Trupp hinzufügen</button>
                 <button onclick="asuExportIncidentPdf()">Protokoll PDF</button>
                 <button onclick="asuExportIncidentText()">Protokoll TXT</button>
@@ -9782,9 +10288,11 @@ function renderAtemTool(){
         : "";
     if (!state.activeIncident){
         body.innerHTML = `${asuRenderCreateIncident(state)}${undoHtml}`;
+        asuUpdateGlobalAlarmUi();
         return;
     }
     body.innerHTML = `${asuRenderActiveIncident(state)}${undoHtml}`;
+    asuUpdateGlobalAlarmUi();
 }
 
 function openAtemOverlay(){
@@ -9841,8 +10349,12 @@ function trapFocusInAtemOverlay(event){
 }
 
 document.addEventListener("visibilitychange", ()=>{
-    if (!document.hidden && isAtemOverlayOpen()){
-        renderAtemTool();
+    if (!document.hidden){
+        asuEnsureAlarmTicker();
+        asuUpdateGlobalAlarmUi();
+        if (isAtemOverlayOpen()){
+            renderAtemTool();
+        }
     }
 });
 
@@ -9866,12 +10378,18 @@ function runAtemschutzV2Tests(){
     const t = { ...baseTeam, alarmSilenced: false, status: ASU_STATUS.IM_EINSATZ, nextDueAt: Date.now() + 5000 };
     asuResetTeamAlarmSilence(t);
     console.assert(t.alarmSilenced === false, "ASU test: ack reset");
+    const incident = { id: "i1", teams: [{ id: "a", name: "Trupp A", status: ASU_STATUS.IM_EINSATZ, nextDueAt: 2000, alarmSilenced: false }] };
+    const snap = asuGetGlobalAlarmSnapshot(incident, 2000);
+    console.assert(snap.alarmActive === true, "ASU test: global alarm active");
+    console.assert(snap.activeTeamIds.length === 1, "ASU test: one active team");
+    const noSnap = asuGetGlobalAlarmSnapshot(null, 2000);
+    console.assert(noSnap.alarmActive === false, "ASU test: no incident no alarm");
 }
 
 runAtemschutzV2Tests();
-// ASU2 ist deaktiviert; bestehendes Atemschutz-Modul (Sessions/Trupps) bleibt aktiv.
-// asuEnsureState();
-// asuEnsureAlarmTicker();
+AtemschutzUeberwachungService.ensureState();
+AtemschutzUeberwachungService.ensureAlarmTicker();
+asuUpdateGlobalAlarmUi();
 
 let funkcheckState = null;
 let funkcheckSaveTimer = null;
@@ -12789,6 +13307,357 @@ function renderEinsatzKraefteTool(){
     root.innerHTML = renderEinsatzKraefteSelection(state);
 }
 
+const FWDV3_TRAINER_STORAGE_KEY = "fwdv3_trainer_state_v1";
+let fwdv3RolesDataCache = null;
+const FWDV3_FALLBACK_DATA = {
+    version: "1.0",
+    region: "SH",
+    vehicleTypes: [
+        {
+            id: "lf_hlf_gruppe",
+            displayName: "LF/HLF (Gruppe)",
+            common: [
+                "Eigenschutz vor Auftrag: Verkehr, Strom, Einsturz, Rauch, Wetter.",
+                "Funkdisziplin: kurz, klar, mit Rückmeldungen.",
+                "Truppweise arbeiten, Sicht-/Sprechkontakt halten.",
+                "Auftrag klären, Änderungen sofort melden.",
+                "Sammelpunkt/Bereitstellungsraum beachten."
+            ],
+            positions: [
+                { id: "gf_vr", displayName: "GF vorne rechts", typicalRoles: ["GF"], hint: "Typischer Führungsplatz im Fahrzeug.", quick: { sofortTop: ["Lage erfassen und Auftrag priorisieren.", "Befehl klar geben, Rückmeldung verlangen.", "Absicherung sofort mitdenken.", "Nachforderungen früh prüfen.", "Lagefortschritt an EL melden."], funkTop: ["Lage: ... Auftrag: ...", "AT/WT/ST Rückmeldung.", "Nachforderung: ..."], safetyTop: ["Gefahrenbereich markieren.", "Verkehrsraum absichern.", "Abstand zu Strom/Instabilität."], merker: ["Kurz führen, klar führen."] } },
+                { id: "ma_vl", displayName: "MA vorne links", typicalRoles: ["MA"], hint: "Typischer Fahrer-/Maschinistenplatz.", quick: { sofortTop: ["Fahrzeug sichern, Warnwirkung herstellen.", "Technik/Pumpe bereit machen.", "Wasserversorgung aufbauen.", "Material geordnet nachführen.", "Störungen direkt melden."], funkTop: ["Wasser steht.", "Störung: ...", "Beleuchtung steht."], safetyTop: ["Verkehrsraum beachten.", "Abgase/Strom im Blick.", "Schlauchwege freihalten."], merker: ["Technikstatus aktiv funken."] } },
+                { id: "at_hinten", displayName: "AT hinten", typicalRoles: ["AT"], hint: "Häufig Angriffstrupp-Sitzreihe.", quick: { sofortTop: ["Auftrag aufnehmen, wiederholen.", "Material passend aufnehmen.", "Truppweise vorgehen.", "Zwischenstände kurz melden.", "Nach Abschluss bereit melden."], funkTop: ["AT Auftrag übernommen.", "AT Rückmeldung: ...", "AT Nachforderung: ..."], safetyTop: ["Rückweg merken.", "Gefahren sofort melden.", "Kontakt im Trupp halten."], merker: ["Erst Auftrag klar, dann Tempo."] } },
+                { id: "wt_hinten", displayName: "WT hinten", typicalRoles: ["WT"], hint: "Häufig Wassertrupp/Versorgung.", quick: { sofortTop: ["Entnahmestelle nach Befehl aufbauen.", "Leitung zur Pumpe/Verteiler herstellen.", "Material nachführen.", "Leitungsweg kontrollieren.", "Status Wasser melden."], funkTop: ["WT Wasser im Aufbau.", "WT Wasser steht.", "WT Problem: ..."], safetyTop: ["Hydrantensicherung.", "Schlauchtrassen sichern.", "Verkehrsraum beachten."], merker: ["Versorgung stabil halten."] } },
+                { id: "st_hinten", displayName: "ST hinten", typicalRoles: ["ST"], hint: "Häufig Schlauchtrupp/Materialfluss.", quick: { sofortTop: ["Verteiler/Leitungsweg aufbauen.", "Material schnell zum Abschnitt.", "Stolperstellen minimieren.", "AT/WT gezielt unterstützen.", "Engpass früh melden."], funkTop: ["ST Verteiler gesetzt.", "ST Abschnitt bereit.", "ST Engpass: ..."], safetyTop: ["Laufwege frei halten.", "Sichtbarkeit verbessern.", "Verkehrsraum sichern."], merker: ["Ordnung schafft Tempo."] } },
+                { id: "melder", displayName: "ME / Melder", typicalRoles: ["ME"], hint: "Falls in eurer Gliederung genutzt.", quick: { sofortTop: ["Meldungen exakt weitergeben.", "Zeiten/Notizen unterstützen.", "Unterlagen/Material nachführen.", "Absperrung/Ordnung unterstützen.", "Erledigung rückmelden."], funkTop: ["Meldung an GF: ...", "Auftrag erledigt.", "Rückfrage: bitte präzisieren."], safetyTop: ["Sichere Wege wählen.", "Verkehrsraum meiden/absichern.", "Lageüberblick halten."], merker: ["Nicht interpretieren, korrekt übermitteln."] } }
+            ],
+            roles: []
+        }
+    ]
+};
+FWDV3_FALLBACK_DATA.vehicleTypes[0].roles = [
+    { roleId: "GF", displayName: "Gruppenführer (GF)", short: "GF", sofort: ["Lage erfassen und Prioritäten setzen.", "Auftrag und Sicherung festlegen.", "Befehl geben, Rückmeldung einfordern.", "Nachforderungen früh erkennen."], ablauf: ["Eigensicherung/Absicherung veranlassen.", "Lage erkunden (Gefahren, Menschen, Zugang).", "Priorität festlegen (Menschenrettung/Eigensicherung).", "Befehl nach Schema geben.", "AT/WT/ST einteilen.", "Rückmeldungen aktiv einfordern.", "Nachforderungen prüfen (RD/Pol/Sondermittel).", "Sicherheit im Abschnitt überwachen.", "Kurz dokumentieren (Zeiten/Lageänderung).", "Lage an EL weitergeben."], funkWorte: ["Lage: ... / Auftrag: ...", "AT/WT/ST Rückmeldung.", "Nachforderung: ..."], safety: ["Verkehrsraum absichern.", "Gefahrenbereich markieren.", "Abstand zu Strom/Instabilität.", "Belastung der Trupps im Blick halten."], extra: ["Befehlsschema: Wer? Was? Wo? Wie? Womit? Rückmeldung!"], notes: "Kurz und eindeutig führen." },
+    { roleId: "MA", displayName: "Maschinist (MA)", short: "MA", sofort: ["Fahrzeug sichern, Warnwirkung herstellen.", "Technik/Pumpe nach Auftrag bereit.", "Wasserversorgung unterstützen.", "Material nachführen."], ablauf: ["Fahrzeug sicher aufstellen/absichern.", "Technik/Pumpe vorbereiten.", "Entnahmestelle unterstützen.", "Versorgung/Druck stabil halten.", "Beleuchtung/Strom nach Auftrag.", "Störungen sofort rückmelden.", "Materialreserve geordnet bereithalten."], funkWorte: ["Wasser steht.", "Störung: ...", "Beleuchtung bereit."], safety: ["Verkehrsraum beachten.", "Abgase/Strom im Blick.", "Schlauchtrassen sichern.", "Fluchtwege freihalten."], extra: ["Status aktiv melden, nicht nur auf Nachfrage."], notes: "MA ist Technik-Drehscheibe." },
+    { roleId: "AT", displayName: "Angriffstrupp (AT)", short: "AT", sofort: ["Auftrag aufnehmen/wiederholen.", "Material passend aufnehmen.", "Truppweise vorgehen.", "Rückmeldung geben."], ablauf: ["Auftrag klären (Ziel/Zugang/Absicherung).", "Material aufnehmen.", "Vorgehen im Trupp abstimmen.", "Sicherheitsmaßnahmen einhalten.", "Lageänderungen sofort melden.", "Nachforderung früh melden.", "Auftrag abschließen und bereit melden."], funkWorte: ["AT Auftrag übernommen.", "AT Rückmeldung: ...", "AT Nachforderung: ..."], safety: ["Rückweg merken.", "Gefahren früh melden.", "Kontakt im Trupp halten.", "Absperrungen beachten."], extra: ["Zwischenziele kurz funken."], notes: "Tempo mit klarer Rückmeldung." },
+    { roleId: "WT", displayName: "Wassertrupp (WT)", short: "WT", sofort: ["Versorgung nach Befehl aufbauen.", "Entnahmestelle vorbereiten.", "Leitungsweg sichern.", "Status Wasser melden."], ablauf: ["Auftrag Entnahme/Versorgung klären.", "Hydrant/Quelle vorbereiten.", "Leitung zur Pumpe/Verteiler aufbauen.", "Material nachführen.", "Leitungsweg auf Knicke/Stolperstellen prüfen.", "Status oder Problem rückmelden."], funkWorte: ["WT Wasser im Aufbau.", "WT Wasser steht.", "WT Problem: ..."], safety: ["Hydrantensicherung.", "Schlauchtrassen sichern.", "Verkehrsraum beachten.", "Laufwege frei halten."], extra: ["Engpass früh melden."], notes: "Stabile Versorgung ist Schlüssel." },
+    { roleId: "ST", displayName: "Schlauchtrupp (ST)", short: "ST", sofort: ["Verteiler/Leitungsweg herstellen.", "Material zügig nachführen.", "Stolperstellen vermeiden.", "Abschnitt bereit melden."], ablauf: ["Auftrag aufnehmen.", "Material in Abschnitt bringen.", "Leitungsführung ordnen.", "AT/WT unterstützen.", "Engpass melden.", "Abschnitt aufgeräumt halten."], funkWorte: ["ST Verteiler gesetzt.", "ST Leitung liegt.", "ST Engpass: ..."], safety: ["Schlauchtrassen sichern.", "Verkehrsraum beachten.", "Sichtbarkeit/Beleuchtung sicherstellen.", "Laufwege freihalten."], extra: ["Material logisch ablegen."], notes: "Ordnung reduziert Zeitverlust." },
+    { roleId: "ME", displayName: "Melder (ME)", short: "ME", sofort: ["Meldungen exakt weitergeben.", "Zeiten/Notizen unterstützen.", "Unterlagen/Material bringen.", "Erledigung rückmelden."], ablauf: ["Meldungen aufnehmen.", "Meldungen korrekt weitergeben.", "Notizen/Zeiten unterstützen.", "Material/Unterlagen nachführen.", "Absperrung/Ordnung unterstützen.", "Auftragserledigung melden."], funkWorte: ["Meldung an GF: ...", "Auftrag erledigt.", "Rückfrage: Auftrag bitte konkretisieren."], safety: ["Sichere Wege wählen.", "Verkehrsraum meiden/absichern.", "Lageüberblick behalten.", "Nicht in Gefahrenbereich binden lassen."], extra: [], notes: "Meldungen ohne Interpretation weitergeben." }
+];
+
+function createDefaultFwdv3TrainerState(){
+    return {
+        vehicleTypeId: "lf_hlf_gruppe",
+        selectedRoleId: "",
+        selectedPositionId: "",
+        activeTab: "brand",
+        favoriteRoleId: "",
+        lastUsedRoleId: "",
+        searchRole: "",
+        quickMode: false,
+        einsatzmodus: false,
+        checks: {},
+        notes: {},
+        updatedAt: new Date().toISOString()
+    };
+}
+
+function normalizeFwdv3TrainerState(raw){
+    const base = createDefaultFwdv3TrainerState();
+    const next = { ...base, ...(raw || {}) };
+    if (!["brand", "th"].includes(next.activeTab)) next.activeTab = "brand";
+    next.checks = typeof next.checks === "object" && next.checks ? next.checks : {};
+    next.notes = typeof next.notes === "object" && next.notes ? next.notes : {};
+    return next;
+}
+
+function getFwdv3TrainerState(){
+    try {
+        const raw = appStorageGetItem(FWDV3_TRAINER_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        return normalizeFwdv3TrainerState(parsed);
+    } catch {
+        return createDefaultFwdv3TrainerState();
+    }
+}
+
+function saveFwdv3TrainerState(state){
+    const next = normalizeFwdv3TrainerState(state);
+    next.updatedAt = new Date().toISOString();
+    appStorageSetItem(FWDV3_TRAINER_STORAGE_KEY, JSON.stringify(next));
+}
+
+function patchFwdv3TrainerState(mutator){
+    const state = getFwdv3TrainerState();
+    mutator(state);
+    saveFwdv3TrainerState(state);
+    return state;
+}
+
+function normalizeFwdv3Role(role){
+    if (!role || typeof role !== "object") return null;
+    const mappedBrand = Array.isArray(role.brand) ? role.brand : (Array.isArray(role.sofort) ? role.sofort : (Array.isArray(role.ablauf) ? role.ablauf : []));
+    const mappedTh = Array.isArray(role.th) ? role.th : (Array.isArray(role.extra) ? role.extra : (Array.isArray(role.safety) ? role.safety : []));
+    return {
+        roleId: role.roleId || "",
+        displayName: role.displayName || role.roleId || "Rolle",
+        short: role.short || role.roleId || "",
+        brand: mappedBrand,
+        th: mappedTh,
+        notes: typeof role.notes === "string" ? role.notes : ""
+    };
+}
+
+function normalizeFwdv3Position(position){
+    if (!position || typeof position !== "object") return null;
+    const quick = position.quick || {};
+    return {
+        id: position.id || "",
+        displayName: position.displayName || position.id || "Position",
+        typicalRoles: Array.isArray(position.typicalRoles) ? position.typicalRoles : [],
+        hint: typeof position.hint === "string" ? position.hint : "",
+        quick: {
+            brandTop: Array.isArray(quick.brandTop) ? quick.brandTop : (Array.isArray(quick.sofortTop) ? quick.sofortTop : []),
+            thTop: Array.isArray(quick.thTop) ? quick.thTop : (Array.isArray(quick.safetyTop) ? quick.safetyTop : []),
+            merker: Array.isArray(quick.merker) ? quick.merker : []
+        }
+    };
+}
+
+function normalizeFwdv3DataSet(input){
+    const vehicleTypes = Array.isArray(input?.vehicleTypes) ? input.vehicleTypes.map((vehicle)=>({
+        id: vehicle.id || "lf_hlf_gruppe",
+        displayName: vehicle.displayName || "LF/HLF",
+        common: Array.isArray(vehicle.common) ? vehicle.common : [],
+        roles: (Array.isArray(vehicle.roles) ? vehicle.roles : []).map(normalizeFwdv3Role).filter(Boolean),
+        positions: (Array.isArray(vehicle.positions) ? vehicle.positions : []).map(normalizeFwdv3Position).filter(Boolean)
+    })) : [];
+    return { version: input?.version || "1.0", region: input?.region || "SH", vehicleTypes };
+}
+
+async function ensureFwdv3RolesData(){
+    if (fwdv3RolesDataCache) return fwdv3RolesDataCache;
+    try {
+        const res = await fetch("fwdv3_roles_sh.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("data file missing");
+        const parsed = await res.json();
+        if (!parsed || !Array.isArray(parsed.vehicleTypes)) throw new Error("invalid data");
+        fwdv3RolesDataCache = normalizeFwdv3DataSet(parsed);
+        return fwdv3RolesDataCache;
+    } catch {
+        fwdv3RolesDataCache = normalizeFwdv3DataSet(FWDV3_FALLBACK_DATA);
+        return fwdv3RolesDataCache;
+    }
+}
+
+function getFwdv3ChecklistKey(vehicleTypeId, roleId, scope, idx){
+    return `${vehicleTypeId}:${roleId}:${scope}:${idx}`;
+}
+
+function getPositionById(vehicle, id){
+    if (!vehicle || !Array.isArray(vehicle.positions)) return null;
+    return vehicle.positions.find((p)=>p.id === id) || null;
+}
+
+function setFwdv3VehicleType(vehicleTypeId){
+    patchFwdv3TrainerState((s)=>{
+        s.vehicleTypeId = vehicleTypeId || "lf_hlf_gruppe";
+        s.selectedRoleId = "";
+        s.selectedPositionId = "";
+        s.quickMode = false;
+    });
+    renderFwdv3Trainer();
+}
+
+function setFwdv3RoleSearch(value){
+    patchFwdv3TrainerState((s)=>{ s.searchRole = value || ""; });
+    renderFwdv3Trainer();
+}
+
+function setFwdv3Position(positionId){
+    patchFwdv3TrainerState((s)=>{
+        s.selectedPositionId = positionId || "";
+        s.quickMode = false;
+    });
+    renderFwdv3Trainer();
+}
+
+function openFwdv3QuickHelp(){
+    patchFwdv3TrainerState((s)=>{ s.quickMode = true; });
+    renderFwdv3Trainer();
+}
+
+function closeFwdv3QuickHelp(){
+    patchFwdv3TrainerState((s)=>{ s.quickMode = false; });
+    renderFwdv3Trainer();
+}
+
+function openFwdv3Role(roleId){
+    patchFwdv3TrainerState((s)=>{
+        s.selectedRoleId = roleId || "";
+        s.activeTab = "brand";
+        s.lastUsedRoleId = roleId || "";
+        s.quickMode = false;
+    });
+    renderFwdv3Trainer();
+}
+
+function backToFwdv3RoleSelection(){
+    patchFwdv3TrainerState((s)=>{
+        s.selectedRoleId = "";
+        s.quickMode = false;
+    });
+    renderFwdv3Trainer();
+}
+
+function setFwdv3ActiveTab(tab){
+    patchFwdv3TrainerState((s)=>{ s.activeTab = tab || "brand"; });
+    renderFwdv3Trainer();
+}
+
+function toggleFwdv3Favorite(roleId){
+    patchFwdv3TrainerState((s)=>{ s.favoriteRoleId = s.favoriteRoleId === roleId ? "" : roleId; });
+    renderFwdv3Trainer();
+}
+
+function toggleFwdv3Einsatzmodus(checked){
+    patchFwdv3TrainerState((s)=>{ s.einsatzmodus = !!checked; });
+    renderFwdv3Trainer();
+}
+
+function setFwdv3ChecklistChecked(vehicleTypeId, roleId, idx, checked){
+    const state = getFwdv3TrainerState();
+    const scope = state.activeTab || "brand";
+    patchFwdv3TrainerState((s)=>{
+        s.checks[getFwdv3ChecklistKey(vehicleTypeId, roleId, scope, idx)] = !!checked;
+    });
+}
+
+function getFwdv3ChecklistChecked(state, vehicleTypeId, roleId, idx){
+    const scope = state.activeTab || "brand";
+    return !!state.checks[getFwdv3ChecklistKey(vehicleTypeId, roleId, scope, idx)];
+}
+
+function resetFwdv3Checklist(vehicleTypeId, roleId, count, scope){
+    if (!confirm("Checkliste wirklich zurücksetzen?")) return;
+    patchFwdv3TrainerState((s)=>{
+        for (let i = 0; i < count; i += 1){
+            delete s.checks[getFwdv3ChecklistKey(vehicleTypeId, roleId, scope, i)];
+        }
+    });
+    renderFwdv3Trainer();
+}
+
+function setFwdv3Note(vehicleTypeId, roleId, value){
+    patchFwdv3TrainerState((s)=>{
+        s.notes[`${vehicleTypeId}:${roleId}`] = String(value || "").slice(0, 500);
+    });
+}
+
+function getFwdv3Note(state, vehicleTypeId, roleId){
+    return state.notes[`${vehicleTypeId}:${roleId}`] || "";
+}
+
+function renderFwdv3QuickHelp(position){
+    const quick = position?.quick || {};
+    return `
+      <button onclick="closeFwdv3QuickHelp()">⬅ Zurück</button>
+      <div class="atem-panel">
+        <h2>${escapeHtml(position.displayName)} – Einsatz-Schnellhilfe</h2>
+        ${position.hint ? `<div class="psu-meta">${escapeHtml(position.hint)}</div>` : ""}
+        <div class="section-title">Brand – wichtigste Aufgaben</div>
+        <ul class="detail-list">${(quick.brandTop || []).slice(0, 5).map((item)=>`<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        <div class="section-title">TH – wichtigste Aufgaben</div>
+        <ul class="detail-list">${(quick.thTop || []).slice(0, 6).map((item)=>`<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        <div class="section-title">Merker</div>
+        <ul class="detail-list">${(quick.merker || []).slice(0, 2).map((item)=>`<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      </div>
+    `;
+}
+
+function renderFwdv3RoleSelection(state, vehicle){
+    const roles = (vehicle.roles || []).slice().sort((a, b)=>(
+        (a.displayName || "").localeCompare(b.displayName || "", "de")
+    ));
+    return `
+      <div class="fwdv-top" style="margin:8px 0 10px;">
+        <div>
+            <label>Fahrzeugtyp</label>
+            <select onchange="setFwdv3VehicleType(this.value)">
+                ${(fwdv3RolesDataCache.vehicleTypes || []).map((vt)=>`<option value="${escapeHtml(vt.id)}" ${vt.id === state.vehicleTypeId ? "selected" : ""}>${escapeHtml(vt.displayName)}</option>`).join("")}
+            </select>
+        </div>
+      </div>
+      <div class="fwdv-role-grid" style="margin-top:0;">
+        ${roles.map((role)=>`<button class="fwdv-role-btn" onclick="openFwdv3Role('${role.roleId}')">${escapeHtml(role.displayName)}</button>`).join("")}
+      </div>
+      <div class="links-box trainer-info-box" style="margin-top:10px;">
+        <strong>Info:</strong> Grundlagen-Trainer + Einsatz-Schnellhilfe (FwDV 3) als Unterstützung im Einsatz.
+      </div>
+    `;
+}
+
+function renderFwdv3RoleDetail(state, vehicle, role){
+    const tab = state.activeTab || "brand";
+    const note = getFwdv3Note(state, vehicle.id, role.roleId);
+    const list = tab === "th" ? (role.th || []) : (role.brand || []);
+    const body = `
+          ${list.map((item, idx)=>{
+            const checked = getFwdv3ChecklistChecked(state, vehicle.id, role.roleId, idx);
+            return `<label class="checklist-item">
+                <input type="checkbox" ${checked ? "checked" : ""} onchange="setFwdv3ChecklistChecked('${vehicle.id}','${role.roleId}',${idx}, this.checked)">
+                <span>${escapeHtml(item)}</span>
+            </label>`;
+          }).join("")}
+          <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="resetFwdv3Checklist('${vehicle.id}','${role.roleId}', ${list.length}, '${tab}')">Checkliste zurücksetzen</button>
+          </div>`;
+    return `
+      <button onclick="backToFwdv3RoleSelection()">⬅ Zurück</button>
+      <div class="atem-panel ${state.einsatzmodus ? "fwdv-einsatz" : ""}">
+        <div class="detail-title">
+            <h2>${escapeHtml(role.displayName)} – Aufgaben</h2>
+            <button class="favorite-star" onclick="toggleFwdv3Favorite('${role.roleId}')">${state.favoriteRoleId === role.roleId ? "⭐" : "☆"}</button>
+        </div>
+        <div class="fwdv-segments">
+            <button class="${tab === "brand" ? "active-yes" : ""}" onclick="setFwdv3ActiveTab('brand')">Brand</button>
+            <button class="${tab === "th" ? "active-yes" : ""}" onclick="setFwdv3ActiveTab('th')">TH</button>
+        </div>
+        ${body}
+        ${role.notes ? `<div class="links-box"><strong>Hinweis:</strong> ${escapeHtml(role.notes)}</div>` : ""}
+        <div class="section-title">Notiz</div>
+        <textarea maxlength="500" placeholder="Kurze Notiz (optional)" oninput="setFwdv3Note('${vehicle.id}','${role.roleId}', this.value)">${escapeHtml(note)}</textarea>
+      </div>
+    `;
+}
+
+async function renderFwdv3Trainer(){
+    const root = document.getElementById("fwdv3TrainerRoot");
+    if (!root) return;
+    root.innerHTML = `<div class="lage-empty">Lade Inhalte...</div>`;
+    const dataSet = await ensureFwdv3RolesData();
+    const state = getFwdv3TrainerState();
+    const vehicle = (dataSet.vehicleTypes || []).find((item)=>item.id === state.vehicleTypeId) || (dataSet.vehicleTypes || [])[0];
+    if (!vehicle){
+        root.innerHTML = `<div class="lage-empty">Keine Inhalte verfügbar.</div>`;
+        return;
+    }
+    const selectedPosition = getPositionById(vehicle, state.selectedPositionId);
+    if (state.quickMode && selectedPosition){
+        patchFwdv3TrainerState((s)=>{ s.quickMode = false; });
+    }
+    if (!state.selectedRoleId){
+        root.innerHTML = renderFwdv3RoleSelection(state, vehicle);
+        return;
+    }
+    const role = (vehicle.roles || []).find((item)=>item.roleId === state.selectedRoleId);
+    if (!role){
+        patchFwdv3TrainerState((s)=>{ s.selectedRoleId = ""; });
+        root.innerHTML = renderFwdv3RoleSelection(getFwdv3TrainerState(), vehicle);
+        return;
+    }
+    root.innerHTML = renderFwdv3RoleDetail(state, vehicle, role);
+}
+
 const data = {
     info: [
         {
@@ -14506,6 +15375,12 @@ const data = {
         `
     }],
 
+    trainer:[{
+        name:"Grundlagen-Trainer",
+        fwdv3Trainer:true,
+        content:`<div id="fwdv3TrainerRoot"></div>`
+    }],
+
     grundlagen:[{
         name:"Grundlagen Einsatz",
         checklist:["Szene sichern","Gefahrenlage prüfen","Rettungskette aktivieren","Dokumentation beginnen"]
@@ -14709,8 +15584,9 @@ function showDetail(index){
     const einsatz = data[currentCategory][index];
     const fav = isFavorite(currentCategory, index);
     const hasCustomBlocks = !!(einsatz.taktischeMuster || einsatz.fuehrungsunterstuetzung || einsatz.entscheidungMatrix);
+    const backTarget = (einsatz.einsatzKraefteTool || einsatz.fwdv3Trainer) ? "goHome()" : `showCategory('${currentCategory}')`;
 
-    let content = `<button onclick="showCategory('${currentCategory}')">⬅ Zurück</button>
+    let content = `<button onclick="${backTarget}">⬅ Zurück</button>
                    <div class="card">
                        <div class="detail-title">
                            <h2>${einsatz.name}</h2>
@@ -14810,6 +15686,9 @@ function showDetail(index){
     if (einsatz.einsatzKraefteTool){
         renderEinsatzKraefteTool();
     }
+    if (einsatz.fwdv3Trainer){
+        renderFwdv3Trainer();
+    }
 }
 
 function resetCurrentChecklist(){
@@ -14887,6 +15766,10 @@ function searchEinsatz(text){
     const kraefteNeedle = "kraefte kräfte funkrufnamen funkrufname fahrzeuge fahrzeug einsatzkraefte einsatzkräfte";
     if (text.length > 0 && kraefteNeedle.includes(text)){
         result += `<div class="card" onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</div>`;
+    }
+    const trainerNeedle = "grundlagen-trainer grundlagentrainer fwdv3 fwdv 3 sitzplatz rolle gruppenführer gruppenfuehrer maschinist angriffstrupp wassertrupp schlauchtrupp melder";
+    if (text.length > 0 && trainerNeedle.includes(text)){
+        result += `<div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer</div>`;
     }
     matches.forEach((item)=>{
         const star = item.fav ? "⭐ " : "";
