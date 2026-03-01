@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#bc1c1e">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>CommandView</title>
 
 <style>
@@ -52,6 +52,11 @@ body {
         radial-gradient(circle at 95% 0%, rgba(201, 33, 45, 0.15), transparent 40%),
         linear-gradient(180deg, var(--bg-soft), var(--bg));
     line-height: 1.5;
+    touch-action: manipulation;
+}
+
+html {
+    touch-action: manipulation;
 }
 
 header {
@@ -318,6 +323,308 @@ body.training-mode {
     box-shadow: 0 0 0 3px rgba(201, 33, 45, 0.2);
 }
 
+.phonebook-wrap {
+    margin-top: 8px;
+}
+
+.phonebook-search {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 11px 12px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--card);
+    margin-bottom: 10px;
+}
+
+.phonebook-search:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(201, 33, 45, 0.18);
+}
+
+.phonebook-list {
+    display: grid;
+    gap: 8px;
+}
+
+.phonebook-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    background: rgba(18, 52, 79, 0.04);
+}
+
+.phonebook-head {
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+
+.phonebook-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.phonebook-call {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.phonebook-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.phonebook-fav-btn,
+.phonebook-del-btn {
+    width: auto;
+    margin: 0;
+    padding: 7px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    box-shadow: none;
+}
+
+.phonebook-add-wrap {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    background: rgba(18, 52, 79, 0.04);
+    margin-bottom: 10px;
+}
+
+.phonebook-add-wrap summary {
+    cursor: pointer;
+    font-weight: 800;
+    color: var(--secondary);
+    list-style: none;
+}
+
+.phonebook-add-wrap summary::-webkit-details-marker {
+    display: none;
+}
+
+.phonebook-add-wrap summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.12s ease;
+}
+
+.phonebook-add-wrap[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.phonebook-add-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.phonebook-add-grid .full {
+    grid-column: 1 / -1;
+}
+
+.phonebook-add-grid input {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 10px 11px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--card);
+}
+
+.pk-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 2px;
+}
+
+.pk-subtitle {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--secondary);
+    margin-bottom: 8px;
+}
+
+.pk-hint {
+    border: 1px solid rgba(188, 28, 30, 0.35);
+    background: rgba(188, 28, 30, 0.1);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.pk-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.pk-full {
+    grid-column: 1 / -1;
+}
+
+.pk-grid input,
+.pk-grid textarea {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 10px 11px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--card);
+}
+
+.pk-grid textarea {
+    min-height: 72px;
+    resize: vertical;
+}
+
+.pk-measure-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(18, 52, 79, 0.04);
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.pk-measure-item label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.pk-photo-preview {
+    margin-top: 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    max-width: 280px;
+    width: 100%;
+}
+
+.ek-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.ek-row > * {
+    flex: 1;
+    min-width: 140px;
+}
+
+.ek-group {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(18, 52, 79, 0.04);
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.ek-group-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    background: rgba(18, 52, 79, 0.08);
+}
+
+.ek-item {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 10px;
+    border-top: 1px solid var(--border);
+}
+
+.ek-item.selected {
+    background: rgba(19, 124, 66, 0.12);
+}
+
+.ek-item-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.ek-chip {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.fwdv-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.fwdv-top > * {
+    flex: 1 1 180px;
+}
+
+.fwdv-role-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.fwdv-role-btn {
+    width: 100%;
+    margin: 0;
+    text-align: left;
+    padding: 12px;
+}
+
+.fwdv-segments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.fwdv-segments button {
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+}
+
+.fwdv-segments button.active-yes {
+    background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+}
+
+.fwdv-common-box {
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    background: rgba(18, 52, 79, 0.04);
+}
+
 .card {
     margin-bottom: 14px;
     padding: 17px;
@@ -355,6 +662,7 @@ button {
     box-shadow: 0 10px 20px rgba(18, 52, 79, 0.28);
     cursor: pointer;
     transition: filter 0.16s ease, transform 0.16s ease;
+    touch-action: manipulation;
 }
 
 button:hover {
@@ -502,13 +810,13 @@ button:active {
 }
 
 .danger-item.status-yes {
-    border-color: rgba(19, 124, 66, 0.45);
-    background: rgba(19, 124, 66, 0.14);
+    border-color: rgba(188, 28, 30, 0.45);
+    background: rgba(188, 28, 30, 0.16);
 }
 
 .danger-item.status-no {
-    border-color: rgba(188, 28, 30, 0.45);
-    background: rgba(188, 28, 30, 0.16);
+    border-color: rgba(19, 124, 66, 0.45);
+    background: rgba(19, 124, 66, 0.14);
 }
 
 .danger-item.status-unknown {
@@ -1346,22 +1654,33 @@ button:active {
 }
 
 .funk-check-row {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 8px;
 }
 
 .funk-check-row label {
     margin: 0;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 10px;
+    min-height: 42px;
+    padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid var(--border);
-    background: rgba(18, 52, 79, 0.06);
+    background: #fff;
     color: var(--text);
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.funk-check-row input[type="checkbox"]{
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--primary);
 }
 
 .funk-validation {
@@ -1816,6 +2135,304 @@ button:active {
     margin: 0;
     padding: 6px 10px;
     box-shadow: none;
+}
+
+.asu2-clock {
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 1px;
+}
+
+.asu2-top {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.asu2-top-box {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(18, 52, 79, 0.06);
+    padding: 12px;
+}
+
+.asu2-alert {
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.asu2-alert.ok {
+    background: rgba(19, 124, 66, 0.14);
+    color: #0b7a40;
+}
+
+.asu2-alert.due {
+    background: rgba(225, 145, 35, 0.2);
+    color: #8f570b;
+}
+
+.asu2-alert.overdue,
+.asu2-alert.critical {
+    background: rgba(188, 28, 30, 0.2);
+    color: #8d111c;
+}
+
+.asu2-incident-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.asu2-incident-grid .full {
+    grid-column: 1 / -1;
+}
+
+.asu2-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.asu2-actions button {
+    width: auto;
+    margin: 0;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.asu2-team-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.asu2-team-card {
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    background: var(--card);
+    padding: 12px;
+}
+
+.asu2-team-card.warn-due {
+    border-color: rgba(225, 145, 35, 0.7);
+    background: rgba(225, 145, 35, 0.1);
+}
+
+.asu2-team-card.warn-overdue {
+    border-color: rgba(188, 28, 30, 0.8);
+    background: rgba(188, 28, 30, 0.14);
+}
+
+.asu2-team-card.warn-critical {
+    border-color: rgba(188, 28, 30, 0.95);
+    background: rgba(188, 28, 30, 0.2);
+    animation: asu2-blink 1s step-start infinite;
+}
+
+@keyframes asu2-blink {
+    50% {
+        box-shadow: inset 0 0 0 999px rgba(188, 28, 30, 0.09);
+    }
+}
+
+.asu2-team-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.asu2-team-name {
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.asu2-badge {
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    border: 1px solid var(--border);
+    background: rgba(18, 52, 79, 0.1);
+}
+
+.asu2-badge.status-notfall {
+    background: rgba(188, 28, 30, 0.22);
+    color: #8d111c;
+    border-color: rgba(188, 28, 30, 0.5);
+}
+
+.asu2-team-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.asu2-stat {
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 8px;
+    background: rgba(18, 52, 79, 0.05);
+}
+
+.asu2-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+}
+
+.asu2-stat-value {
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.asu2-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+}
+
+.asu2-quick-actions button {
+    margin: 0;
+    padding: 11px 8px;
+    font-size: 13px;
+    box-shadow: none;
+}
+
+.asu2-pressure-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 6px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.asu2-pressure-row button {
+    width: auto;
+    margin: 0;
+    padding: 10px 12px;
+    box-shadow: none;
+}
+
+.asu2-pressure-row input {
+    width: 100%;
+}
+
+.asu2-detail {
+    margin-top: 8px;
+    border-top: 1px dashed var(--border);
+    padding-top: 8px;
+}
+
+.asu2-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.asu2-log {
+    margin-top: 10px;
+}
+
+.asu2-undo {
+    position: sticky;
+    bottom: 8px;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(18, 52, 79, 0.95);
+    color: #fff;
+    padding: 9px 11px;
+    margin-top: 10px;
+}
+
+.asu2-undo button {
+    width: auto;
+    margin: 0;
+    padding: 7px 10px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+}
+
+.asu2-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+    background: rgba(8, 16, 24, 0.7);
+}
+
+.asu2-popup-overlay.show {
+    display: flex;
+}
+
+.asu2-popup {
+    width: min(440px, 100%);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 12px;
+    box-shadow: 0 24px 45px rgba(7, 18, 30, 0.38);
+}
+
+.asu2-popup h4 {
+    margin: 0 0 6px;
+}
+
+.asu2-popup p {
+    margin: 0 0 8px;
+    color: var(--text-muted);
+}
+
+.asu2-popup input {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.asu2-popup-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.asu2-popup-actions button {
+    width: auto;
+    margin: 0;
+    padding: 10px 12px;
+}
+
+@media (max-width: 840px) {
+    .asu2-top {
+        grid-template-columns: 1fr;
+    }
+
+    .asu2-incident-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .asu2-team-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .einsatz-overlay {
@@ -2584,6 +3201,18 @@ iframe {
         flex: 1 1 100%;
         width: 100%;
     }
+
+    .ek-item {
+        grid-template-columns: 1fr;
+    }
+
+    .ek-row > * {
+        min-width: 100%;
+    }
+
+    .fwdv-role-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 </head>
@@ -2605,6 +3234,7 @@ iframe {
             <div class="home-subtitle">Führung</div>
             <div class="home-tools-grid">
                 <button onclick="openLageOverlay()">📊 Lageübersicht</button>
+                <button onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer (FwDV 3)</button>
                 <button onclick="openStructureOverlay()">🧭 Einsatzstruktur</button>
                 <button onclick="openEinsatzOverlay()">📋 Einsätze</button>
                 <button onclick="openNachforderungOverlay()">🚨 Nachforderung</button>
@@ -2614,6 +3244,7 @@ iframe {
             <div class="home-subtitle">Kommunikation</div>
             <div class="home-tools-grid">
                 <button onclick="openFunkOverlay()">📡 Funkmeldungen</button>
+                <button onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</button>
                 <button onclick="openFunkcheckOverlay()">📶 Funk-Check</button>
                 <button onclick="openPresseOverlay()">📰 Presse</button>
                 <button onclick="openSocialOverlay()">📝 Social-Media Beitrag</button>
@@ -2647,6 +3278,7 @@ iframe {
     <div class="home-divider"></div>
     <div class="card" onclick="openCategory('brand')">🔥 Brand</div>
     <div class="card" onclick="openCategory('vu')">🔧 Technische Hilfeleistung</div>
+    <div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer (FwDV 3)</div>
     <div class="card" onclick="openCategory('drohne')">🚁 Drohne</div>
     <div class="card" onclick="openCategory('grundlagen')">📚 Grundlagen</div>
 
@@ -3093,12 +3725,12 @@ iframe {
                     <div id="funkField_massnahmen" class="funk-col-full">
                         <label>Maßnahmen laufen</label>
                         <div class="funk-check-row">
-                            <label><input type="checkbox" id="funkM_erkundung" onchange="toggleFunkMeasure('Erkundung', this.checked)">Erkundung</label>
-                            <label><input type="checkbox" id="funkM_menschenrettung" onchange="toggleFunkMeasure('Menschenrettung', this.checked)">Menschenrettung</label>
-                            <label><input type="checkbox" id="funkM_brand" onchange="toggleFunkMeasure('Brandbekämpfung', this.checked)">Brandbekämpfung</label>
-                            <label><input type="checkbox" id="funkM_th" onchange="toggleFunkMeasure('TH', this.checked)">TH</label>
-                            <label><input type="checkbox" id="funkM_absicherung" onchange="toggleFunkMeasure('Absicherung', this.checked)">Absicherung</label>
-                            <label><input type="checkbox" id="funkM_wasser" onchange="toggleFunkMeasure('Wasserentnahme', this.checked)">Wasserentnahme</label>
+                            <label><input type="checkbox" id="funkM_erkundung" onchange="toggleFunkMeasure('Erkundung', this.checked)"><span>Erkundung</span></label>
+                            <label><input type="checkbox" id="funkM_menschenrettung" onchange="toggleFunkMeasure('Menschenrettung', this.checked)"><span>Menschenrettung</span></label>
+                            <label><input type="checkbox" id="funkM_brand" onchange="toggleFunkMeasure('Brandbekämpfung', this.checked)"><span>Brandbekämpfung</span></label>
+                            <label><input type="checkbox" id="funkM_th" onchange="toggleFunkMeasure('TH', this.checked)"><span>TH</span></label>
+                            <label><input type="checkbox" id="funkM_absicherung" onchange="toggleFunkMeasure('Absicherung', this.checked)"><span>Absicherung</span></label>
+                            <label><input type="checkbox" id="funkM_wasser" onchange="toggleFunkMeasure('Wasserentnahme', this.checked)"><span>Wasserentnahme</span></label>
                         </div>
                     </div>
                 </div>
@@ -3377,6 +4009,19 @@ iframe {
 <div class="container hidden" id="category"></div>
 <button id="dangerBtn" class="danger-btn" onclick="openDangerOverlay()" aria-label="Gefahrenübersicht öffnen">⚠️ Gefahren</button>
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" aria-label="Nach oben">↑</button>
+<div id="asu2GlobalPopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='asu2GlobalPopup'){asuDismissPressurePrompt()}">
+    <div class="asu2-popup">
+        <h4 id="asu2PopupTitle">Atemschutz-Rückmeldung</h4>
+        <p id="asu2PopupText">Bitte aktuellen Druck eintragen.</p>
+        <input id="asu2PopupPressure" type="number" min="0" inputmode="numeric" placeholder="Druck in bar">
+        <div class="asu2-popup-actions">
+            <button onclick="asuConfirmPressurePrompt()">Rückmeldung speichern</button>
+            <button onclick="asuDismissPressurePrompt()">Später</button>
+            <button onclick="asuJumpToAtemFromPopup()">Zur Atemschutzüberwachung</button>
+            <button onclick="asuPopupSetMayday()">Notfall</button>
+        </div>
+    </div>
+</div>
 
 <div
     id="dangerOverlay"
@@ -3434,7 +4079,11 @@ const SCOPED_STORAGE_BASE_KEYS = new Set([
     "einsatz_archiv_v1",
     "psu_contacts_v1",
     "psu_reminders_v1",
-    "psu_state_v1"
+    "psu_state_v1",
+    "pol_kripo_abfragebogen_v1",
+    "pol_kripo_abfragebogen_archiv_v1",
+    "einsatz_kraefte_funkrufnamen_v1",
+    "fwdv3_trainer_state_v1"
 ]);
 let trainingModeActive = localStorage.getItem(APP_MODE_STORAGE_KEY) === "uebung";
 const LOG_DEDUPE_HARD_MS = 60000;
@@ -3442,6 +4091,30 @@ const LOG_DEDUPE_SOFT_MS = 10000;
 const LOG_RATE_LIMIT_PER_MIN = 30;
 let autoLogDedupeCache = {};
 let autoLogRateState = { minuteKey: "", count: 0, throttled: false };
+let lastTouchEndTs = 0;
+
+// Verhindert nerviges Doppel-Tap-Zoomen auf iPhone in Nicht-Formbereichen.
+document.addEventListener("touchend", (event)=>{
+    const now = Date.now();
+    const delta = now - lastTouchEndTs;
+    lastTouchEndTs = now;
+    if (delta < 300){
+        const target = event.target;
+        const tag = String(target && target.tagName ? target.tagName : "").toUpperCase();
+        const isFormControl = tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (target && target.isContentEditable);
+        if (!isFormControl && event.cancelable){
+            event.preventDefault();
+        }
+    }
+}, { passive: false });
+
+document.addEventListener("dblclick", (event)=>{
+    if (event.cancelable) event.preventDefault();
+}, { passive: false });
+
+document.addEventListener("gesturestart", (event)=>{
+    if (event.cancelable) event.preventDefault();
+}, { passive: false });
 
 function isTrainingMode(){
     return !!trainingModeActive;
@@ -6861,6 +7534,17 @@ function escapeHtml(value){
         .replace(/'/g, "&#39;");
 }
 
+function createDefaultAtemWerte(){
+    return {
+        anfang: { time: "", druck: "300" },
+        einsatzziel: { time: "", druck: "" },
+        einDrittel: { time: "", druck: "" },
+        zweiDrittel: { time: "", druck: "" },
+        rueckweg: { time: "", druck: "" },
+        ende: { time: "", druck: "" }
+    };
+}
+
 function createDefaultTrupp(id, name){
     return {
         id,
@@ -6883,14 +7567,10 @@ function createDefaultTrupp(id, name){
             letztePosition: "",
             sicherheitstruppAusgeloest: false
         },
-        werte: {
-            anfang: { time: "", druck: "" },
-            einsatzziel: { time: "", druck: "" },
-            einDrittel: { time: "", druck: "" },
-            zweiDrittel: { time: "", druck: "" },
-            rueckweg: { time: "", druck: "" },
-            ende: { time: "", druck: "" }
-        }
+        werte: createDefaultAtemWerte(),
+        einsatzZyklen: [],
+        zyklusIndex: 1,
+        pauseHistory: []
     };
 }
 
@@ -6934,7 +7614,7 @@ function normalizeAtemSession(session){
         global: { ...fallback.global, ...(s.global || {}) },
         trupps: (Array.isArray(s.trupps) && s.trupps.length ? s.trupps : fallback.trupps).map((trupp, idx)=>{
             const tFallback = createDefaultTrupp(`t${idx + 1}`, `Trupp ${idx + 1}`);
-            return {
+            const normalized = {
                 ...tFallback,
                 ...(trupp || {}),
                 traeger: {
@@ -6945,8 +7625,14 @@ function normalizeAtemSession(session){
                 werte: {
                     ...tFallback.werte,
                     ...((trupp && trupp.werte) || {})
-                }
+                },
+                einsatzZyklen: Array.isArray(trupp && trupp.einsatzZyklen) ? trupp.einsatzZyklen : [],
+                zyklusIndex: Math.max(1, Number((trupp && trupp.zyklusIndex) || 1)),
+                pauseHistory: Array.isArray(trupp && trupp.pauseHistory) ? trupp.pauseHistory : []
             };
+            normalized.werte.anfang = normalized.werte.anfang || { time: "", druck: "" };
+            normalized.werte.anfang.druck = "300";
+            return normalized;
         }),
         protokoll: Array.isArray(s.protokoll) ? s.protokoll : []
     };
@@ -7211,10 +7897,18 @@ function setAtemZeitManuell(truppId, wertKey, value){
     scheduleAtemschutzSave();
 }
 
+function sanitizeDigits(value){
+    return String(value ?? "").replace(/\D+/g, "");
+}
+
 function setAtemDruck(truppId, wertKey, value){
     const trupp = getAtemTrupp(truppId);
     if (!trupp || !trupp.werte[wertKey]) return;
-    trupp.werte[wertKey].druck = value || "";
+    if (wertKey === "anfang"){
+        trupp.werte[wertKey].druck = "300";
+    } else {
+        trupp.werte[wertKey].druck = sanitizeDigits(value || "");
+    }
     touchAtemSession(getActiveAtemSession());
     scheduleAtemschutzSave();
 }
@@ -7248,6 +7942,131 @@ function addAtemNotiz(truppId){
     renderAtemTool();
 }
 
+function sanitizeAtemFilePart(value){
+    return String(value || "")
+        .trim()
+        .replace(/\s+/g, "_")
+        .replace(/[^a-zA-Z0-9_\-\.]/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "");
+}
+
+function downloadAtemFile(filename, content, mime = "text/plain;charset=utf-8"){
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+}
+
+function getAtemExportFileBase(session){
+    const datum = sanitizeAtemFilePart(session && session.kopf && session.kopf.datum ? session.kopf.datum : "datum");
+    const start = sanitizeAtemFilePart((session && session.kopf && session.kopf.uhrzeitStart ? session.kopf.uhrzeitStart : "start").replace(":", "-"));
+    const ort = sanitizeAtemFilePart(session && session.kopf && session.kopf.einsatzort ? session.kopf.einsatzort : "einsatzort");
+    return `ASU_${datum || "datum"}_${start || "start"}_${ort || "einsatzort"}`;
+}
+
+function exportAtemProtocol(){
+    const session = getActiveAtemSession();
+    if (!session) return;
+    const text = buildAtemExportText(session);
+    const fileBase = getAtemExportFileBase(session);
+    downloadAtemFile(`${fileBase}.txt`, text, "text/plain;charset=utf-8");
+    showAtemHint("Export gestartet");
+}
+
+function exportAtemProtocolJson(){
+    const session = getActiveAtemSession();
+    if (!session) return;
+    const fileBase = getAtemExportFileBase(session);
+    downloadAtemFile(`${fileBase}.json`, JSON.stringify(session, null, 2), "application/json;charset=utf-8");
+    showAtemHint("JSON-Export gestartet");
+}
+
+function neuAusrustenTrupp(truppId){
+    return neuAusrustenTruppMitOptionen(truppId, { startNow: false, askPauseMinutes: false });
+}
+
+function startNeuerZyklusNachPause(truppId){
+    return neuAusrustenTruppMitOptionen(truppId, { startNow: true, askPauseMinutes: true });
+}
+
+function neuAusrustenTruppMitOptionen(truppId, options = {}){
+    const trupp = getAtemTrupp(truppId);
+    const session = getActiveAtemSession();
+    if (!trupp || !session) return;
+    const ok = confirm("Trupp wirklich neu ausrüsten? Aktuelle Zeit-/Druck-Werte werden archiviert und Felder zurückgesetzt.");
+    if (!ok) return;
+
+    const clone = (value)=>{
+        try {
+            return JSON.parse(JSON.stringify(value));
+        } catch {
+            return value;
+        }
+    };
+    const fromCycle = Math.max(1, Number(trupp.zyklusIndex) || 1);
+    const toCycle = fromCycle + 1;
+    let pauseMinutes = null;
+    if (options.askPauseMinutes){
+        const rawPause = prompt("Pause in Minuten (optional):", "");
+        if (rawPause !== null && String(rawPause).trim() !== ""){
+            const parsedPause = Number(String(rawPause).replace(",", "."));
+            if (Number.isFinite(parsedPause) && parsedPause >= 0){
+                pauseMinutes = parsedPause;
+            }
+        }
+    }
+    const snapshot = {
+        at: new Date().toISOString(),
+        zyklus: fromCycle,
+        werte: clone(trupp.werte || createDefaultAtemWerte()),
+        kurzpruefungOk: !!trupp.kurzpruefungOk,
+        status: clone(trupp.status || {}),
+        traeger: clone(trupp.traeger || {}),
+        pauseMinutes
+    };
+
+    if (!Array.isArray(trupp.einsatzZyklen)) trupp.einsatzZyklen = [];
+    trupp.einsatzZyklen.push(snapshot);
+    if (!Array.isArray(trupp.pauseHistory)) trupp.pauseHistory = [];
+    trupp.pauseHistory.push({
+        at: new Date().toISOString(),
+        fromCycle,
+        toCycle,
+        pauseMinutes
+    });
+    trupp.zyklusIndex = toCycle;
+    trupp.werte = createDefaultAtemWerte();
+    trupp.kurzpruefungOk = false;
+    trupp.status.notfall = false;
+    trupp.status.notfallArt = "";
+    trupp.status.notfallArtCustom = "";
+    trupp.status.letztePosition = "";
+    trupp.status.sicherheitstruppAusgeloest = false;
+    // Funkkontakt wird auf OK gesetzt, da nach Neu-Ausrüsten ein neuer, sauberer Zyklus startet.
+    trupp.status.funkkontaktOk = true;
+    if (options.startNow){
+        trupp.werte.anfang.time = getNowTimeHHMM();
+        trupp.werte.anfang.druck = "300";
+    }
+
+    addAtemLog(
+        truppId,
+        "NEU_AUSRUESTEN",
+        `Trupp neu ausgerüstet (Zyklus ${fromCycle} → ${toCycle})${pauseMinutes != null ? `, Pause ${pauseMinutes} min` : ""}${options.startNow ? ", Neustart erfolgt" : ""}`,
+        "300"
+    );
+    touchAtemSession(session);
+    scheduleAtemschutzSave();
+    renderAtemTool();
+    showAtemHint(options.startNow ? "Neuer Zyklus gestartet" : "Trupp neu ausgerüstet");
+}
+
 function buildAtemExportText(session){
     if (!session) return "";
     const lines = [];
@@ -7274,10 +8093,26 @@ function buildAtemExportText(session){
         lines.push(`Funkkontakt OK: ${trupp.status.funkkontaktOk ? "Ja" : "Nein"}`);
         lines.push(`Notfall: ${trupp.status.notfall ? "Ja" : "Nein"} ${trupp.status.notfallArt ? `(${trupp.status.notfallArt}${trupp.status.notfallArtCustom ? `: ${trupp.status.notfallArtCustom}` : ""})` : ""}`);
         lines.push(`Letzte Position: ${trupp.status.letztePosition || "-"}`);
+        if (Array.isArray(trupp.pauseHistory) && trupp.pauseHistory.length){
+            lines.push("Pausen / Neustarts:");
+            trupp.pauseHistory.forEach((pauseEntry, idx)=>{
+                lines.push(`  ${idx + 1}. ${pauseEntry.at || "-"} | Zyklus ${pauseEntry.fromCycle || "-"} → ${pauseEntry.toCycle || "-"}${pauseEntry.pauseMinutes != null ? ` | Pause ${pauseEntry.pauseMinutes} min` : ""}`);
+            });
+        }
         ATEM_WERTE_KEYS.forEach((row)=>{
             const w = trupp.werte[row.key] || {};
             lines.push(`${row.label}: Zeit ${w.time || "-"}, Druck ${w.druck || "-"}`);
         });
+        if (Array.isArray(trupp.einsatzZyklen) && trupp.einsatzZyklen.length){
+            lines.push("Historie / Zyklen:");
+            trupp.einsatzZyklen.forEach((snapshot, idx)=>{
+                lines.push(`  Snapshot ${idx + 1}: ${snapshot.at || "-"} | Zyklus ${snapshot.zyklus || "-"}`);
+                ATEM_WERTE_KEYS.forEach((row)=>{
+                    const w = (snapshot.werte && snapshot.werte[row.key]) || {};
+                    lines.push(`    ${row.label}: Zeit ${w.time || "-"}, Druck ${w.druck || "-"}`);
+                });
+            });
+        }
         lines.push("");
     });
 
@@ -7318,10 +8153,17 @@ function renderAtemSessionList(state){
 function renderAtemTrupp(trupp){
     const done = !!(trupp.werte && trupp.werte.ende && trupp.werte.ende.time);
     const knownFunktion = ["Angriffstrupp", "Sicherheitstrupp", "Erkundung"].includes(trupp.funktion) ? trupp.funktion : "__custom__";
+    const zyklus = Math.max(1, Number(trupp.zyklusIndex) || 1);
+    const pauseCount = Array.isArray(trupp.pauseHistory) ? trupp.pauseHistory.length : 0;
+    const lastPause = pauseCount ? trupp.pauseHistory[pauseCount - 1] : null;
     let html = `<div class="atem-trupp">
         <div class="atem-trupp-title">
-            <h4>${escapeHtml(trupp.name)}</h4>
+            <h4>${escapeHtml(trupp.name)} · Zyklus ${zyklus}</h4>
             <div class="atem-badge ${done ? "atem-badge-done" : "atem-badge-open"}">${done ? "beendet" : "aktiv"}</div>
+        </div>
+        <div class="lage-empty" style="margin-bottom:8px;">Pausen: ${pauseCount}${lastPause ? ` · Letzte Pause ${escapeHtml(lastPause.pauseMinutes != null ? `${lastPause.pauseMinutes} min` : "ohne Angabe")}` : ""}</div>
+        <div class="atem-row-actions" style="margin-bottom:8px;">
+            <button onclick="startNeuerZyklusNachPause('${trupp.id}')">Pause beendet: Neuer Zyklus starten</button>
         </div>
         <div class="atem-grid">
             <div>
@@ -7371,6 +8213,7 @@ function renderAtemTrupp(trupp){
             <button class="${trupp.status.funkkontaktOk ? "active-yes" : "active-no"}" onclick="toggleAtemFunkkontakt('${trupp.id}')">Funkkontakt ${trupp.status.funkkontaktOk ? "OK" : "gestört"}</button>
             <button onclick="triggerAtemNotfall('${trupp.id}')">NOTFALL / MAYDAY</button>
             <button onclick="resetAtemNotfall('${trupp.id}')">NOTFALL zurücksetzen</button>
+            <button onclick="neuAusrustenTrupp('${trupp.id}')">Neu ausrüsten</button>
         </div>`;
 
     if (trupp.status.notfall){
@@ -7411,7 +8254,14 @@ function renderAtemTrupp(trupp){
                 </div>
                 <div>
                     <label>Druck</label>
-                    <input type="number" min="0" value="${escapeHtml(value.druck || "")}" onchange="setAtemDruck('${trupp.id}','${row.key}',this.value)">
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        min="0"
+                        value="${escapeHtml(row.key === "anfang" ? "300" : (value.druck || ""))}"
+                        ${row.key === "anfang" ? "readonly" : ""}
+                        onchange="setAtemDruck('${trupp.id}','${row.key}',this.value)">
                 </div>
                 <div class="atem-row-actions">
                     <button onclick="setAtemZeitJetzt('${trupp.id}','${row.key}','${row.key.toUpperCase()}')">Zeit jetzt</button>
@@ -7431,12 +8281,25 @@ function renderAtemTrupp(trupp){
                 <button onclick="addAtemNotiz('${trupp.id}')">Notiz hinzufügen</button>
             </div>
         </div>
-    </div>`;
+    `;
+
+    if (Array.isArray(trupp.einsatzZyklen) && trupp.einsatzZyklen.length){
+        const lastThree = trupp.einsatzZyklen.slice(-3).reverse();
+        html += `<details style="margin-top:8px;"><summary>Historie (letzte ${lastThree.length})</summary><div class="atem-log-list" style="margin-top:8px;">`;
+        lastThree.forEach((snapshot)=>{
+            const endDruck = snapshot && snapshot.werte && snapshot.werte.ende ? snapshot.werte.ende.druck : "";
+            const rueckwegDruck = snapshot && snapshot.werte && snapshot.werte.rueckweg ? snapshot.werte.rueckweg.druck : "";
+            html += `<div class="atem-log-item"><strong>${escapeHtml(snapshot.at || "-")}</strong> · Zyklus ${escapeHtml(snapshot.zyklus || "-")}<br>Ende-Druck: ${escapeHtml(endDruck || "-")} · Rückweg-Druck: ${escapeHtml(rueckwegDruck || "-")}</div>`;
+        });
+        html += `</div></details>`;
+    }
+
+    html += `</div>`;
 
     return html;
 }
 
-function renderAtemTool(){
+function renderAtemToolASU2(){
     const body = document.getElementById("atemBody");
     if (!body) return;
     const state = ensureAtemschutzState();
@@ -7471,6 +8334,8 @@ function renderAtemTool(){
                 <button onclick="manualSaveAtemSession()">Session speichern</button>
                 <button onclick="endAtemSession()">Session beenden</button>
                 <button onclick="copyAtemSummary()">Kopieren</button>
+                <button onclick="exportAtemProtocol()">Export</button>
+                <button onclick="exportAtemProtocolJson()">Export JSON</button>
             </div>
         </div>
     </div>
@@ -7557,7 +8422,7 @@ function renderAtemTool(){
     body.innerHTML = html;
 }
 
-function openAtemOverlay(){
+function openAtemOverlayASU2(){
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
     lastAtemFocus = document.activeElement;
@@ -7567,7 +8432,7 @@ function openAtemOverlay(){
     renderAtemTool();
 }
 
-function closeAtemOverlay(){
+function closeAtemOverlayASU2(){
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
@@ -7578,19 +8443,19 @@ function closeAtemOverlay(){
     }
 }
 
-function handleAtemOverlayBackdrop(event){
+function handleAtemOverlayBackdropASU2(event){
     if (event.target && event.target.id === "atemOverlay"){
         closeAtemOverlay();
     }
 }
 
-function isAtemOverlayOpen(){
+function isAtemOverlayOpenASU2(){
     const overlay = document.getElementById("atemOverlay");
     return !!overlay && overlay.classList.contains("show");
 }
 
-function trapFocusInAtemOverlay(event){
-    if (event.key !== "Tab" || !isAtemOverlayOpen()) return;
+function trapFocusInAtemOverlayASU2(event){
+    if (event.key !== "Tab" || !isAtemOverlayOpenASU2()) return;
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
     const focusable = overlay.querySelectorAll(
@@ -7616,6 +8481,1397 @@ document.addEventListener("keydown", (event)=>{
     }
     trapFocusInAtemOverlay(event);
 });
+
+const ASU_V2_SCHEMA = 2;
+const ASU_STATUS = {
+    BEREIT: "bereit",
+    IM_EINSATZ: "im_einsatz",
+    RUECKWEG: "rueckweg",
+    DRAUSSEN: "draussen",
+    PAUSE: "pause",
+    NOTFALL: "notfall"
+};
+const ASU_DEFAULT_SETTINGS = {
+    checkInIntervalSec: 10 * 60,
+    overdueThresholdSec: 60,
+    criticalThresholdSec: 180,
+    maxInteriorSec: 30 * 60,
+    alarmSound: true,
+    alarmVibrate: true,
+    showSeconds: false
+};
+let asu2State = null;
+let asu2SaveTimer = null;
+let asu2RenderTicker = null;
+let asu2AlarmTicker = null;
+let asu2UndoTimer = null;
+let asu2AudioCtx = null;
+let asu2LastSignal = { level: "ok", ts: 0 };
+let asu2OverlayLastFocus = null;
+
+function asuNow(){
+    return Date.now();
+}
+
+function asuUid(prefix){
+    return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function asuDeepCopy(value){
+    return JSON.parse(JSON.stringify(value));
+}
+
+function asuDateInputValue(ts){
+    const d = new Date(ts || Date.now());
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+}
+
+function asuTimeInputValue(ts){
+    const d = new Date(ts || Date.now());
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${hh}:${mm}`;
+}
+
+function asuDateTimeLocal(ts){
+    if (!ts) return "";
+    const d = new Date(ts);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${y}-${m}-${day}T${hh}:${mm}`;
+}
+
+function asuParseDateTime(dateValue, timeValue){
+    if (!dateValue) return Date.now();
+    const time = timeValue || getNowTimeHHMM();
+    const parsed = new Date(`${dateValue}T${time}:00`).getTime();
+    return Number.isFinite(parsed) ? parsed : Date.now();
+}
+
+function asuFormatClock(ts, withSeconds){
+    const opts = withSeconds
+        ? { hour: "2-digit", minute: "2-digit", second: "2-digit" }
+        : { hour: "2-digit", minute: "2-digit" };
+    return new Date(ts).toLocaleTimeString("de-DE", opts);
+}
+
+function asuFormatDuration(ms){
+    const totalSec = Math.max(0, Math.floor(ms / 1000));
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    if (h > 0){
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function asuCreateTeam(idx = 1){
+    return {
+        id: asuUid("team"),
+        name: `Trupp ${idx}`,
+        members: [
+            { role: "Truppführer", name: "" },
+            { role: "Truppmann", name: "" }
+        ],
+        status: ASU_STATUS.BEREIT,
+        startedAt: null,
+        lastCheckInAt: null,
+        nextDueAt: null,
+        pressureStart: null,
+        currentPressure: null,
+        note: "",
+        channel: "",
+        maxInteriorSecOverride: null,
+        alarmSilenced: false,
+        history: [],
+        lastPromptedDueAt: null,
+        cycleIndex: 1,
+        cycleHistory: [],
+        pauseHistory: [],
+        pauseStartedAt: null,
+        cycleElapsedSec: 0
+    };
+}
+
+function asuCreateIncident(){
+    const now = Date.now();
+    return {
+        id: asuUid("incident"),
+        name: "",
+        number: "",
+        location: "",
+        startedAt: now,
+        endedAt: null,
+        teams: [asuCreateTeam(1), asuCreateTeam(2)],
+        logs: []
+    };
+}
+
+function asuDefaultState(){
+    return {
+        schemaVersion: ASU_V2_SCHEMA,
+        settings: { ...ASU_DEFAULT_SETTINGS },
+        activeIncident: null,
+        archive: [],
+        ui: {
+            selectedTeamId: null,
+            importMode: "overwrite",
+            undo: null,
+            showIncidentConfig: false,
+            pressurePrompt: null
+        }
+    };
+}
+
+function asuStatusLabel(status){
+    if (status === ASU_STATUS.IM_EINSATZ) return "Im Einsatz";
+    if (status === ASU_STATUS.RUECKWEG) return "Rückweg";
+    if (status === ASU_STATUS.DRAUSSEN) return "Draußen";
+    if (status === ASU_STATUS.PAUSE) return "Pause";
+    if (status === ASU_STATUS.NOTFALL) return "Notfall";
+    return "Bereit";
+}
+
+function asuGetEffectiveSettings(incident){
+    const state = asuEnsureState();
+    return {
+        ...state.settings,
+        ...((incident && incident.settingsOverride) || {})
+    };
+}
+
+function asuWarningLevel(team, incident, nowTs){
+    const now = Number(nowTs) || Date.now();
+    const settings = asuGetEffectiveSettings(incident);
+    if (!team) return { level: "ok", dueInMs: null, overdueMs: 0, label: "-" };
+    if (team.status === ASU_STATUS.NOTFALL){
+        return { level: "critical", dueInMs: -1, overdueMs: settings.criticalThresholdSec * 1000, label: "NOTFALL" };
+    }
+    if (team.status === ASU_STATUS.BEREIT || team.status === ASU_STATUS.DRAUSSEN || team.status === ASU_STATUS.PAUSE){
+        return { level: "ok", dueInMs: null, overdueMs: 0, label: "keine Überwachung aktiv" };
+    }
+    let maxTimeLevel = "ok";
+    let maxTimeLabel = "";
+    if (team.startedAt){
+        const maxSec = Number(team.maxInteriorSecOverride) > 0 ? Number(team.maxInteriorSecOverride) : Number(settings.maxInteriorSec);
+        if (maxSec > 0){
+            const elapsed = now - Number(team.startedAt);
+            const overBy = elapsed - maxSec * 1000;
+            if (overBy >= settings.criticalThresholdSec * 1000){
+                maxTimeLevel = "critical";
+                maxTimeLabel = `max. Innenzeit kritisch überschritten (${asuFormatDuration(overBy)})`;
+            } else if (overBy >= 0){
+                maxTimeLevel = "overdue";
+                maxTimeLabel = `max. Innenzeit überschritten (${asuFormatDuration(overBy)})`;
+            }
+        }
+    }
+    if (!team.nextDueAt){
+        return maxTimeLevel === "ok"
+            ? { level: "ok", dueInMs: null, overdueMs: 0, label: "keine Rückmeldung geplant" }
+            : { level: maxTimeLevel, dueInMs: null, overdueMs: 0, label: maxTimeLabel };
+    }
+    const diff = team.nextDueAt - now;
+    const chooseHigher = (baseLevel, baseLabel, baseDue, baseOverdue)=>{
+        const severity = { ok: 0, due: 1, overdue: 2, critical: 3 };
+        if (severity[maxTimeLevel] > severity[baseLevel]){
+            return { level: maxTimeLevel, dueInMs: baseDue, overdueMs: baseOverdue, label: maxTimeLabel };
+        }
+        return { level: baseLevel, dueInMs: baseDue, overdueMs: baseOverdue, label: baseLabel };
+    };
+    if (diff >= 0){
+        return chooseHigher("ok", `fällig in ${asuFormatDuration(diff)}`, diff, 0);
+    }
+    const overdueMs = Math.abs(diff);
+    if (overdueMs >= settings.criticalThresholdSec * 1000){
+        return chooseHigher("critical", `kritisch seit ${asuFormatDuration(overdueMs)}`, diff, overdueMs);
+    }
+    if (overdueMs >= settings.overdueThresholdSec * 1000){
+        return chooseHigher("overdue", `überfällig seit ${asuFormatDuration(overdueMs)}`, diff, overdueMs);
+    }
+    return chooseHigher("due", "Rückmeldung fällig", diff, overdueMs);
+}
+
+function asuTeamSortWeight(team, incident, nowTs){
+    const level = asuWarningLevel(team, incident, nowTs).level;
+    if (team.status === ASU_STATUS.NOTFALL || level === "critical") return 0;
+    if (level === "overdue") return 1;
+    if (level === "due") return 2;
+    if (team.status === ASU_STATUS.IM_EINSATZ) return 3;
+    if (team.status === ASU_STATUS.RUECKWEG) return 4;
+    if (team.status === ASU_STATUS.PAUSE) return 5;
+    if (team.status === ASU_STATUS.BEREIT) return 5;
+    return 6;
+}
+
+function asuLegacyTimeToTs(value, fallbackTs){
+    if (!value) return null;
+    const parts = String(value).split(":");
+    if (parts.length < 2) return null;
+    const base = new Date(fallbackTs || Date.now());
+    base.setSeconds(0, 0);
+    base.setHours(Number(parts[0]) || 0, Number(parts[1]) || 0, 0, 0);
+    return base.getTime();
+}
+
+function asuMigrateLegacyState(parsed){
+    if (!parsed || parsed.schemaVersion === ASU_V2_SCHEMA) return parsed;
+    if (!Array.isArray(parsed.sessions)){
+        return asuDefaultState();
+    }
+    const session = parsed.sessions.find((x)=>x && x.id === parsed.activeId) || parsed.sessions[0];
+    if (!session){
+        return asuDefaultState();
+    }
+    const startedAt = asuParseDateTime(formatIsoToDateInput(session.kopf?.datum || ""), session.kopf?.uhrzeitStart || "");
+    const incident = {
+        id: asuUid("incident"),
+        name: session.kopf?.einsatzleiter ? `Einsatz ${session.kopf.einsatzleiter}` : "",
+        location: session.kopf?.einsatzort || "",
+        startedAt,
+        endedAt: null,
+        teams: [],
+        logs: []
+    };
+    (session.trupps || []).forEach((trupp, idx)=>{
+        const startTs = asuLegacyTimeToTs(trupp?.werte?.anfang?.time, startedAt);
+        const endTs = asuLegacyTimeToTs(trupp?.werte?.ende?.time, startedAt);
+        const legacyNotfall = !!(trupp && trupp.status && trupp.status.notfall);
+        const status = legacyNotfall
+            ? ASU_STATUS.NOTFALL
+            : (endTs ? ASU_STATUS.DRAUSSEN : (startTs ? ASU_STATUS.IM_EINSATZ : ASU_STATUS.BEREIT));
+        const team = {
+            id: trupp?.id || asuUid("team"),
+            name: trupp?.name || `Trupp ${idx + 1}`,
+            members: [
+                { role: "Truppführer", name: trupp?.traeger?.tf?.name || "" },
+                { role: "Truppmann", name: trupp?.traeger?.tm?.name || "" }
+            ],
+            status,
+            startedAt: startTs,
+            lastCheckInAt: startTs,
+            nextDueAt: startTs ? startTs + ASU_DEFAULT_SETTINGS.checkInIntervalSec * 1000 : null,
+            pressureStart: trupp?.werte?.anfang?.druck ? Number(trupp.werte.anfang.druck) : null,
+            currentPressure: trupp?.werte?.rueckweg?.druck ? Number(trupp.werte.rueckweg.druck) : null,
+            note: trupp?.auftrag || "",
+            channel: trupp?.funk || "",
+            maxInteriorSecOverride: null,
+            alarmSilenced: false,
+            history: [],
+            cycleIndex: 1,
+            cycleHistory: [],
+            pauseHistory: [],
+            pauseStartedAt: null,
+            cycleElapsedSec: 0
+        };
+        incident.teams.push(team);
+    });
+    (session.protokoll || []).forEach((entry)=>{
+        incident.logs.push({
+            id: asuUid("log"),
+            ts: Date.parse(entry.time || "") || Date.now(),
+            teamId: entry.truppId || "",
+            type: entry.type || "INFO",
+            message: entry.note || "",
+            data: entry.druck != null ? { pressure: entry.druck } : null
+        });
+    });
+    return {
+        schemaVersion: ASU_V2_SCHEMA,
+        settings: { ...ASU_DEFAULT_SETTINGS },
+        activeIncident: incident,
+        archive: [],
+        ui: { selectedTeamId: incident.teams[0]?.id || null, importMode: "overwrite", undo: null, showIncidentConfig: false }
+    };
+}
+
+function asuLoadState(){
+    try {
+        const raw = appStorageGetItem(ATEMSCHUTZ_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : asuDefaultState();
+        const migrated = asuMigrateLegacyState(parsed);
+        return {
+            ...asuDefaultState(),
+            ...migrated,
+            settings: { ...ASU_DEFAULT_SETTINGS, ...((migrated && migrated.settings) || {}) },
+            archive: Array.isArray(migrated.archive) ? migrated.archive : [],
+            ui: { ...asuDefaultState().ui, ...((migrated && migrated.ui) || {}) }
+        };
+    } catch {
+        return asuDefaultState();
+    }
+}
+
+function asuSaveStateImmediate(){
+    if (!asu2State) return;
+    appStorageSetItem(ATEMSCHUTZ_STORAGE_KEY, JSON.stringify(asu2State));
+}
+
+function asuScheduleSave(){
+    clearTimeout(asu2SaveTimer);
+    asu2SaveTimer = setTimeout(()=>asuSaveStateImmediate(), 120);
+}
+
+function asuEnsureState(){
+    if (!asu2State){
+        asu2State = asuLoadState();
+    }
+    return asu2State;
+}
+
+function getAtemschutzState(){
+    if (typeof ensureAtemschutzState === "function"){
+        try {
+            return JSON.parse(JSON.stringify(ensureAtemschutzState()));
+        } catch {
+            return ensureAtemschutzState();
+        }
+    }
+    return asuDeepCopy(asuEnsureState());
+}
+
+function asuGetActiveIncident(){
+    return asuEnsureState().activeIncident || null;
+}
+
+function asuTeamById(teamId){
+    const incident = asuGetActiveIncident();
+    if (!incident) return null;
+    const team = incident.teams.find((t)=>t.id === teamId) || null;
+    if (team) asuEnsureTeamCycleFields(team);
+    return team;
+}
+
+function asuEnsureTeamCycleFields(team){
+    if (!team) return;
+    team.cycleIndex = Math.max(1, Number(team.cycleIndex) || 1);
+    if (!Array.isArray(team.cycleHistory)) team.cycleHistory = [];
+    if (!Array.isArray(team.pauseHistory)) team.pauseHistory = [];
+    if (!Number.isFinite(Number(team.pauseStartedAt))) team.pauseStartedAt = null;
+    if (!Number.isFinite(Number(team.cycleElapsedSec))) team.cycleElapsedSec = 0;
+}
+
+function asuFreezeTeamInPaTime(team, nowTs){
+    if (!team) return;
+    const now = Number(nowTs) || Date.now();
+    if (team.startedAt){
+        const elapsedNowSec = Math.max(0, Math.round((now - team.startedAt) / 1000));
+        team.cycleElapsedSec = Math.max(0, Number(team.cycleElapsedSec || 0)) + elapsedNowSec;
+        team.startedAt = null;
+    }
+}
+
+function asuAddLog(type, message, teamId = "", data = null, level = "info"){
+    const incident = asuGetActiveIncident();
+    if (!incident) return;
+    incident.logs.unshift({
+        id: asuUid("log"),
+        ts: Date.now(),
+        teamId: teamId || "",
+        type: type || "INFO",
+        message: message || "",
+        level,
+        data: data || null
+    });
+    incident.logs = incident.logs.slice(0, 600);
+    incident.updatedAt = new Date().toISOString();
+    asuScheduleSave();
+    if (typeof logEvent === "function"){
+        logEvent({
+            category: "ATEMSCHUTZ",
+            level: level || "info",
+            source: "auto",
+            message: message || type || "Atemschutz-Update",
+            dedupeKey: `${type}_${teamId}_${Math.floor(Date.now() / 1000)}`
+        });
+    }
+}
+
+function asuSetUndo(label, restoreSnapshot){
+    const state = asuEnsureState();
+    clearTimeout(asu2UndoTimer);
+    state.ui.undo = {
+        label: label || "Änderung",
+        snapshot: restoreSnapshot,
+        expiresAt: Date.now() + 5000
+    };
+    asu2UndoTimer = setTimeout(()=>{
+        state.ui.undo = null;
+        if (isAtemOverlayOpen()) renderAtemTool();
+    }, 5000);
+}
+
+function asuUndoLastAction(){
+    const state = asuEnsureState();
+    if (!state.ui.undo || !state.ui.undo.snapshot) return;
+    state.activeIncident = asuDeepCopy(state.ui.undo.snapshot);
+    state.ui.undo = null;
+    clearTimeout(asu2UndoTimer);
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuApplyIncidentMutation(label, mutator){
+    const incident = asuGetActiveIncident();
+    if (!incident) return;
+    const snapshot = asuDeepCopy(incident);
+    mutator(incident);
+    incident.updatedAt = new Date().toISOString();
+    asuSetUndo(label, snapshot);
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuResetTeamAlarmSilence(team){
+    if (!team) return;
+    team.alarmSilenced = false;
+}
+
+function asuCreateIncidentFromForm(){
+    const name = (document.getElementById("asu2IncidentName")?.value || "").trim();
+    const numberRaw = (document.getElementById("asu2IncidentNumber")?.value || "").trim();
+    const number = numberRaw.replace(/\D+/g, "");
+    const location = (document.getElementById("asu2IncidentLocation")?.value || "").trim();
+    const date = document.getElementById("asu2IncidentDate")?.value || asuDateInputValue(Date.now());
+    const time = document.getElementById("asu2IncidentTime")?.value || asuTimeInputValue(Date.now());
+    const incident = asuCreateIncident();
+    incident.name = name;
+    incident.number = number;
+    incident.location = location;
+    incident.startedAt = asuParseDateTime(date, time);
+    incident.updatedAt = new Date().toISOString();
+    const state = asuEnsureState();
+    state.activeIncident = incident;
+    state.ui.selectedTeamId = incident.teams[0]?.id || null;
+    state.ui.showIncidentConfig = false;
+    asuAddLog("INCIDENT_START", `Einsatz gestartet${name ? `: ${name}` : ""}.`);
+    asuSaveStateImmediate();
+    renderAtemTool();
+}
+
+function asuEndActiveIncident(){
+    const state = asuEnsureState();
+    const incident = state.activeIncident;
+    if (!incident) return;
+    const snapshot = asuDeepCopy(incident);
+    incident.endedAt = Date.now();
+    incident.updatedAt = new Date().toISOString();
+    incident.logs.unshift({ id: asuUid("log"), ts: Date.now(), teamId: "", type: "INCIDENT_END", message: "Einsatz beendet", level: "info" });
+    state.archive.unshift(asuDeepCopy(incident));
+    state.archive = state.archive.slice(0, 120);
+    state.activeIncident = null;
+    state.ui.selectedTeamId = null;
+    asuSetUndo("Einsatz beendet", snapshot);
+    asuSaveStateImmediate();
+    renderAtemTool();
+}
+
+function asuLoadArchiveIncident(id){
+    const state = asuEnsureState();
+    const match = state.archive.find((item)=>item.id === id);
+    if (!match) return;
+    state.activeIncident = asuDeepCopy(match);
+    state.activeIncident.endedAt = null;
+    state.activeIncident.updatedAt = new Date().toISOString();
+    state.ui.selectedTeamId = state.activeIncident.teams[0]?.id || null;
+    state.ui.showIncidentConfig = false;
+    asuSaveStateImmediate();
+    renderAtemTool();
+}
+
+function asuDeleteArchiveIncident(id){
+    const state = asuEnsureState();
+    state.archive = state.archive.filter((item)=>item.id !== id);
+    asuSaveStateImmediate();
+    renderAtemTool();
+}
+
+function asuAddTeam(){
+    asuApplyIncidentMutation("Trupp hinzugefügt", (incident)=>{
+        incident.teams.push(asuCreateTeam((incident.teams || []).length + 1));
+    });
+}
+
+function asuUpdateIncidentField(field, value){
+    const incident = asuGetActiveIncident();
+    if (!incident) return;
+    if (field === "number"){
+        incident[field] = String(value || "").replace(/\D+/g, "");
+        incident.updatedAt = new Date().toISOString();
+        asuScheduleSave();
+        return;
+    }
+    incident[field] = value || "";
+    incident.updatedAt = new Date().toISOString();
+    asuScheduleSave();
+}
+
+function asuUpdateSetting(field, value){
+    const state = asuEnsureState();
+    if (!(field in state.settings)) return;
+    if (typeof state.settings[field] === "boolean"){
+        state.settings[field] = !!value;
+    } else {
+        const parsed = Number(value);
+        if (Number.isFinite(parsed)){
+            state.settings[field] = Math.max(0, parsed);
+        }
+    }
+    asuSaveStateImmediate();
+    renderAtemTool();
+}
+
+function asuUpdateTeamField(teamId, field, value){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    team[field] = value || "";
+    asuScheduleSave();
+}
+
+function asuUpdateTeamMember(teamId, idx, value){
+    const team = asuTeamById(teamId);
+    if (!team || !team.members[idx]) return;
+    team.members[idx].name = value || "";
+    asuScheduleSave();
+}
+
+function asuAdjustPressure(teamId, delta){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    const current = Number(team.currentPressure || team.pressureStart || 0) || 0;
+    team.currentPressure = Math.max(0, current + delta);
+    asuAddLog("PRESSURE", `${team.name}: Druck ${team.currentPressure} bar`, team.id, { pressure: team.currentPressure });
+    asuResetTeamAlarmSilence(team);
+    renderAtemTool();
+}
+
+function asuSetPressure(teamId, value){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    const parsed = Number(value);
+    team.currentPressure = Number.isFinite(parsed) ? Math.max(0, parsed) : null;
+    asuScheduleSave();
+}
+
+function asuSetTeamStatus(teamId, nextStatus){
+    const incident = asuGetActiveIncident();
+    const team = asuTeamById(teamId);
+    if (!incident || !team) return;
+    asuApplyIncidentMutation(`${team.name}: Status geändert`, ()=>{
+        const now = Date.now();
+        const settings = asuGetEffectiveSettings(incident);
+        if (nextStatus === ASU_STATUS.IM_EINSATZ){
+            const prevStatus = team.status;
+            team.status = ASU_STATUS.IM_EINSATZ;
+            if (!team.startedAt) team.startedAt = now;
+            if (prevStatus !== ASU_STATUS.IM_EINSATZ && prevStatus !== ASU_STATUS.RUECKWEG){
+                team.cycleElapsedSec = 0;
+            }
+            if (!Number.isFinite(Number(team.cycleElapsedSec))) team.cycleElapsedSec = 0;
+            team.lastCheckInAt = now;
+            team.nextDueAt = now + settings.checkInIntervalSec * 1000;
+            team.pressureStart = 300;
+            team.currentPressure = 300;
+            team.lastPromptedDueAt = null;
+            team.pauseStartedAt = null;
+            asuResetTeamAlarmSilence(team);
+            asuAddLog("START_PA", `${team.name}: Start unter PA`, team.id);
+            return;
+        }
+        if (nextStatus === ASU_STATUS.RUECKWEG){
+            team.status = ASU_STATUS.RUECKWEG;
+            team.lastCheckInAt = now;
+            team.nextDueAt = now + settings.checkInIntervalSec * 1000;
+            team.lastPromptedDueAt = null;
+            team.pauseStartedAt = null;
+            asuResetTeamAlarmSilence(team);
+            asuAddLog("RUECKWEG", `${team.name}: Rückweg`, team.id);
+            return;
+        }
+        if (nextStatus === ASU_STATUS.DRAUSSEN){
+            team.status = ASU_STATUS.DRAUSSEN;
+            asuFreezeTeamInPaTime(team, now);
+            team.nextDueAt = null;
+            team.alarmSilenced = true;
+            team.lastPromptedDueAt = null;
+            team.pauseStartedAt = null;
+            asuAddLog("DRAUSSEN", `${team.name}: Draußen`, team.id);
+            return;
+        }
+        if (nextStatus === ASU_STATUS.PAUSE){
+            team.status = ASU_STATUS.PAUSE;
+            asuFreezeTeamInPaTime(team, now);
+            team.pauseStartedAt = now;
+            team.nextDueAt = null;
+            team.alarmSilenced = true;
+            team.lastPromptedDueAt = null;
+            asuAddLog("PAUSE_START", `${team.name}: Pause gestartet`, team.id);
+            return;
+        }
+        if (nextStatus === ASU_STATUS.NOTFALL){
+            team.status = ASU_STATUS.NOTFALL;
+            team.alarmSilenced = false;
+            team.pauseStartedAt = null;
+            asuAddLog("NOTFALL", `${team.name}: NOTFALL / MAYDAY`, team.id, null, "critical");
+            return;
+        }
+        team.status = ASU_STATUS.BEREIT;
+        asuFreezeTeamInPaTime(team, now);
+        team.nextDueAt = null;
+        team.alarmSilenced = false;
+        team.pauseStartedAt = null;
+        asuAddLog("BEREIT", `${team.name}: Bereit`, team.id);
+    });
+}
+
+function asuStartTeamPause(teamId){
+    const incident = asuGetActiveIncident();
+    const team = asuTeamById(teamId);
+    if (!incident || !team) return;
+    if (team.status !== ASU_STATUS.DRAUSSEN) return;
+    asuSetTeamStatus(teamId, ASU_STATUS.PAUSE);
+}
+
+function asuRestartTeamAfterPause(teamId){
+    const incident = asuGetActiveIncident();
+    const team = asuTeamById(teamId);
+    if (!incident || !team) return;
+    const confirmed = confirm("Trupp nach Pause neu ausrüsten und neuen Zyklus starten?");
+    if (!confirmed) return;
+    let pauseMinutes = null;
+    if (team.pauseStartedAt){
+        pauseMinutes = Math.max(0, Math.round((Date.now() - team.pauseStartedAt) / 60000));
+    } else {
+        const rawPause = prompt("Pausendauer in Minuten (optional):", "");
+        if (rawPause !== null && String(rawPause).trim() !== ""){
+            const parsed = Number(String(rawPause).replace(",", "."));
+            if (Number.isFinite(parsed) && parsed >= 0){
+                pauseMinutes = parsed;
+            }
+        }
+    }
+    asuApplyIncidentMutation(`${team.name}: Neu ausgerüstet`, ()=>{
+        const now = Date.now();
+        const settings = asuGetEffectiveSettings(incident);
+        asuEnsureTeamCycleFields(team);
+        const fromCycle = team.cycleIndex;
+        const toCycle = fromCycle + 1;
+        team.cycleHistory.push({
+            at: new Date(now).toISOString(),
+            cycle: fromCycle,
+            startedAt: team.startedAt || null,
+            cycleElapsedSec: team.cycleElapsedSec || 0,
+            lastCheckInAt: team.lastCheckInAt || null,
+            nextDueAt: team.nextDueAt || null,
+            pressureStart: team.pressureStart ?? null,
+            currentPressure: team.currentPressure ?? null,
+            status: team.status || ASU_STATUS.BEREIT
+        });
+        team.pauseHistory.push({
+            at: new Date(now).toISOString(),
+            fromCycle,
+            toCycle,
+            pauseMinutes
+        });
+        team.cycleIndex = toCycle;
+        team.status = ASU_STATUS.IM_EINSATZ;
+        team.startedAt = now;
+        team.cycleElapsedSec = 0;
+        team.lastCheckInAt = now;
+        team.nextDueAt = now + settings.checkInIntervalSec * 1000;
+        team.pressureStart = 300;
+        team.currentPressure = 300;
+        team.lastPromptedDueAt = null;
+        team.pauseStartedAt = null;
+        team.alarmSilenced = false;
+        asuResetTeamAlarmSilence(team);
+        asuAddLog(
+            "CYCLE_RESTART",
+            `${team.name}: Neu ausgerüstet, Zyklus ${fromCycle} -> ${toCycle}${pauseMinutes != null ? `, Pause ${pauseMinutes} min` : ""}`,
+            team.id,
+            { cycleFrom: fromCycle, cycleTo: toCycle, pauseMinutes, pressure: 300 }
+        );
+    });
+}
+
+function asuOpenPressurePrompt(teamId, reason = "checkin"){
+    const state = asuEnsureState();
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    state.ui.pressurePrompt = {
+        teamId,
+        reason,
+        openedAt: Date.now(),
+        dueAt: team.nextDueAt || null
+    };
+    renderAtemTool();
+    const popup = document.getElementById("asu2GlobalPopup");
+    const title = document.getElementById("asu2PopupTitle");
+    const text = document.getElementById("asu2PopupText");
+    const input = document.getElementById("asu2PopupPressure");
+    if (!popup || !title || !text || !input) return;
+    popup.classList.add("show");
+    title.textContent = reason === "timer_due" ? "Rückmeldung fällig" : "Rückmeldung";
+    text.textContent = `${team.name}: Bitte aktuellen Druck eintragen.`;
+    input.value = team.currentPressure != null ? String(team.currentPressure) : "";
+    setTimeout(()=>input.focus(), 30);
+}
+
+function asuDismissPressurePrompt(){
+    const state = asuEnsureState();
+    state.ui.pressurePrompt = null;
+    const popup = document.getElementById("asu2GlobalPopup");
+    if (popup) popup.classList.remove("show");
+}
+
+function asuJumpToAtemFromPopup(){
+    asuDismissPressurePrompt();
+    if (!isAtemOverlayOpen()) openAtemOverlay();
+}
+
+function asuPopupSetMayday(){
+    const state = asuEnsureState();
+    const promptState = state.ui.pressurePrompt;
+    if (!promptState || !promptState.teamId) return;
+    asuDismissPressurePrompt();
+    asuMarkMayday(promptState.teamId);
+}
+
+function asuConfirmPressurePrompt(){
+    const state = asuEnsureState();
+    const promptState = state.ui.pressurePrompt;
+    if (!promptState || !promptState.teamId) return;
+    const pressureInput = document.getElementById("asu2PopupPressure");
+    const pressureValue = pressureInput ? pressureInput.value : "";
+    asuDismissPressurePrompt();
+    asuCheckIn(promptState.teamId, { skipPrompt: true, pressure: pressureValue, reason: promptState.reason });
+}
+
+function asuCheckIn(teamId, options = {}){
+    const incident = asuGetActiveIncident();
+    const team = asuTeamById(teamId);
+    if (!incident || !team) return;
+    if (!options.skipPrompt){
+        asuOpenPressurePrompt(teamId, "checkin");
+        return;
+    }
+    const settings = asuGetEffectiveSettings(incident);
+    asuApplyIncidentMutation(`${team.name}: Rückmeldung`, ()=>{
+        const now = Date.now();
+        const pressure = Number(options.pressure);
+        if (Number.isFinite(pressure)){
+            team.currentPressure = Math.max(0, pressure);
+            if (team.pressureStart == null) team.pressureStart = team.currentPressure;
+        }
+        team.lastCheckInAt = now;
+        team.nextDueAt = now + settings.checkInIntervalSec * 1000;
+        team.lastPromptedDueAt = null;
+        if (team.status === ASU_STATUS.BEREIT) team.status = ASU_STATUS.IM_EINSATZ;
+        team.history.unshift(now);
+        team.history = team.history.slice(0, 20);
+        asuResetTeamAlarmSilence(team);
+        asuAddLog("CHECKIN", `${team.name}: Rückmeldung erhalten${Number.isFinite(pressure) ? `, Druck ${Math.max(0, pressure)} bar` : ""}`, team.id);
+    });
+}
+
+function asuMarkMayday(teamId){
+    asuSetTeamStatus(teamId, ASU_STATUS.NOTFALL);
+}
+
+function asuAcknowledgeTeamAlarm(teamId){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    team.alarmSilenced = true;
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuAcknowledgeAllAlarms(){
+    const incident = asuGetActiveIncident();
+    if (!incident) return;
+    incident.teams.forEach((team)=>{ team.alarmSilenced = true; });
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuEditTeamTimestamp(teamId, field, value){
+    const incident = asuGetActiveIncident();
+    const team = asuTeamById(teamId);
+    if (!incident || !team) return;
+    const parsed = value ? new Date(value).getTime() : null;
+    if (value && !Number.isFinite(parsed)) return;
+    team[field] = parsed;
+    const settings = asuGetEffectiveSettings(incident);
+    if (field === "lastCheckInAt" && parsed){
+        team.nextDueAt = parsed + settings.checkInIntervalSec * 1000;
+        asuResetTeamAlarmSilence(team);
+    }
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuSelectTeam(teamId){
+    const state = asuEnsureState();
+    state.ui.selectedTeamId = state.ui.selectedTeamId === teamId ? null : teamId;
+    renderAtemTool();
+}
+
+function asuToggleIncidentConfig(){
+    const state = asuEnsureState();
+    state.ui.showIncidentConfig = !state.ui.showIncidentConfig;
+    renderAtemTool();
+}
+
+function asuTopAlarm(incident){
+    if (!incident) return "ok";
+    const now = Date.now();
+    let top = "ok";
+    incident.teams.forEach((team)=>{
+        const level = asuWarningLevel(team, incident, now).level;
+        if (level === "critical") top = "critical";
+        else if (top !== "critical" && level === "overdue") top = "overdue";
+        else if (top === "ok" && level === "due") top = "due";
+    });
+    return top;
+}
+
+function asuAlarmSignal(level){
+    const state = asuEnsureState();
+    if (level === "ok") return;
+    const now = Date.now();
+    const spacing = level === "critical" ? 4000 : (level === "overdue" ? 8000 : 15000);
+    if (now - asu2LastSignal.ts < spacing && asu2LastSignal.level === level) return;
+    asu2LastSignal = { level, ts: now };
+    if (state.settings.alarmVibrate && navigator.vibrate){
+        if (level === "critical") navigator.vibrate([300, 130, 300]);
+        else if (level === "overdue") navigator.vibrate([200, 100, 200]);
+        else navigator.vibrate([120]);
+    }
+    if (!state.settings.alarmSound) return;
+    try {
+        if (!asu2AudioCtx){
+            asu2AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const ctx = asu2AudioCtx;
+        if (ctx.state === "suspended") ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "square";
+        osc.frequency.value = level === "critical" ? 970 : (level === "overdue" ? 860 : 740);
+        gain.gain.value = 0.0001;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        const t = ctx.currentTime;
+        gain.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+        osc.start(t);
+        osc.stop(t + 0.23);
+    } catch {
+        // Audio kann auf einigen Plattformen gesperrt sein.
+    }
+}
+
+function asuRunAlarmManager(){
+    const incident = asuGetActiveIncident();
+    if (!incident) return;
+    const now = Date.now();
+    let topUnsilenced = "ok";
+    const state = asuEnsureState();
+    const promptActive = !!(state.ui && state.ui.pressurePrompt);
+    incident.teams.forEach((team)=>{
+        const level = asuWarningLevel(team, incident, now).level;
+        const dueKey = team.nextDueAt || null;
+        const isOperational = team.status === ASU_STATUS.IM_EINSATZ || team.status === ASU_STATUS.RUECKWEG;
+        if (isOperational && (level === "due" || level === "overdue" || level === "critical") && dueKey && team.lastPromptedDueAt !== dueKey && !promptActive){
+            team.lastPromptedDueAt = dueKey;
+            asuScheduleSave();
+            asuOpenPressurePrompt(team.id, "timer_due");
+        }
+        if (team.alarmSilenced) return;
+        if (level === "critical") topUnsilenced = "critical";
+        else if (topUnsilenced !== "critical" && level === "overdue") topUnsilenced = "overdue";
+        else if (topUnsilenced === "ok" && level === "due") topUnsilenced = "due";
+    });
+    asuAlarmSignal(topUnsilenced);
+}
+
+function asuStartTickers(){
+    if (!asu2RenderTicker){
+        asu2RenderTicker = setInterval(()=>{
+            if (isAtemOverlayOpen() && !asuHasFocusedInput()){
+                renderAtemTool();
+            }
+        }, 1000);
+    }
+    if (!asu2AlarmTicker){
+        asu2AlarmTicker = setInterval(()=>{
+            asuRunAlarmManager();
+        }, 1000);
+    }
+}
+
+function asuStopTickers(){
+    if (asu2RenderTicker){
+        clearInterval(asu2RenderTicker);
+        asu2RenderTicker = null;
+    }
+}
+
+function asuEnsureAlarmTicker(){
+    if (!asu2AlarmTicker){
+        asu2AlarmTicker = setInterval(()=>{
+            asuRunAlarmManager();
+        }, 1000);
+    }
+}
+
+function asuRenderArchive(state){
+    const archive = Array.isArray(state.archive) ? state.archive : [];
+    if (!archive.length){
+        return `<div class="lage-empty">Noch keine Einsätze im Archiv.</div>`;
+    }
+    let html = `<div class="atem-panel"><strong>Archiv</strong><div class="atem-log-list">`;
+    archive.slice(0, 30).forEach((item)=>{
+        const started = item.startedAt ? new Date(item.startedAt).toLocaleString("de-DE") : "-";
+        const ended = item.endedAt ? new Date(item.endedAt).toLocaleString("de-DE") : "-";
+        html += `<div class="atem-log-item"><strong>${escapeHtml(item.name || "Einsatz")}</strong><br>${escapeHtml(item.location || "-")}<br>Start: ${started} · Ende: ${ended}<div class="asu2-actions"><button onclick="asuLoadArchiveIncident('${item.id}')">Als aktiven Einsatz laden</button><button onclick="asuDeleteArchiveIncident('${item.id}')">Löschen</button></div></div>`;
+    });
+    html += `</div></div>`;
+    return html;
+}
+
+function asuRenderCreateIncident(state){
+    const now = Date.now();
+    return `
+    <div class="atem-panel">
+        <strong>Neuer Einsatz</strong>
+        <div class="asu2-incident-grid" style="margin-top:8px;">
+            <div><label>Einsatzname (optional)</label><input id="asu2IncidentName" type="text" placeholder="z. B. Zimmerbrand Schule"></div>
+            <div><label>Einsatznummer (optional)</label><input id="asu2IncidentNumber" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="nur Zahlen"></div>
+            <div><label>Ort</label><input id="asu2IncidentLocation" type="text" placeholder="optional"></div>
+            <div><label>Start</label><input id="asu2IncidentDate" type="date" value="${asuDateInputValue(now)}"><input style="margin-top:6px;" id="asu2IncidentTime" type="time" value="${asuTimeInputValue(now)}"></div>
+            <div class="full asu2-actions"><button onclick="asuCreateIncidentFromForm()">Einsatz starten</button></div>
+        </div>
+    </div>
+    <div class="atem-panel">
+        <strong>Standardkonfiguration</strong>
+        <div class="asu2-incident-grid" style="margin-top:8px;">
+            <div><label>Rückmeldeintervall (min)</label><input type="number" min="1" value="${Math.round(state.settings.checkInIntervalSec / 60)}" onchange="asuUpdateSetting('checkInIntervalSec', Number(this.value) * 60)"></div>
+            <div><label>Überfällig ab (sek)</label><input type="number" min="1" value="${state.settings.overdueThresholdSec}" onchange="asuUpdateSetting('overdueThresholdSec', this.value)"></div>
+            <div><label>Kritisch ab (sek)</label><input type="number" min="1" value="${state.settings.criticalThresholdSec}" onchange="asuUpdateSetting('criticalThresholdSec', this.value)"></div>
+            <div><label>Max. Innenzeit (min)</label><input type="number" min="1" value="${Math.round(state.settings.maxInteriorSec / 60)}" onchange="asuUpdateSetting('maxInteriorSec', Number(this.value) * 60)"></div>
+            <div><label><input type="checkbox" ${state.settings.alarmSound ? "checked" : ""} onchange="asuUpdateSetting('alarmSound', this.checked)"> Ton</label></div>
+            <div><label><input type="checkbox" ${state.settings.alarmVibrate ? "checked" : ""} onchange="asuUpdateSetting('alarmVibrate', this.checked)"> Vibration</label></div>
+            <div><label><input type="checkbox" ${state.settings.showSeconds ? "checked" : ""} onchange="asuUpdateSetting('showSeconds', this.checked)"> Sekunden anzeigen</label></div>
+        </div>
+    </div>
+    ${asuRenderArchive(state)}`;
+}
+
+function asuRenderTeamCard(team, incident, selectedTeamId){
+    asuEnsureTeamCycleFields(team);
+    const now = Date.now();
+    const warning = asuWarningLevel(team, incident, now);
+    const elapsedMs = team.startedAt
+        ? (Math.max(0, Number(team.cycleElapsedSec || 0)) * 1000) + Math.max(0, now - team.startedAt)
+        : Math.max(0, Number(team.cycleElapsedSec || 0)) * 1000;
+    const inPA = elapsedMs > 0 ? asuFormatDuration(elapsedMs) : "-";
+    const nextDue = team.nextDueAt ? asuFormatDuration(Math.max(0, team.nextDueAt - now)) : "-";
+    const pressure = team.currentPressure != null ? `${team.currentPressure} bar` : "-";
+    const warnClass = warning.level === "critical" ? "warn-critical" : (warning.level === "overdue" ? "warn-overdue" : (warning.level === "due" ? "warn-due" : ""));
+    const selected = selectedTeamId === team.id;
+    const memberLine = `${team.members[0]?.name || "-"} / ${team.members[1]?.name || "-"}`;
+    const pauseCount = team.pauseHistory.length;
+    const lastPause = pauseCount ? team.pauseHistory[pauseCount - 1] : null;
+    const lastPauseLabel = lastPause ? (lastPause.pauseMinutes != null ? `${lastPause.pauseMinutes} min` : "ohne Zeit") : "-";
+    const pauseRunningLabel = team.pauseStartedAt ? ` · Pause läuft ${asuFormatDuration(now - team.pauseStartedAt)}` : "";
+    let html = `<div class="asu2-team-card ${warnClass}">
+        <div class="asu2-team-head">
+            <div class="asu2-team-name">${escapeHtml(team.name)}</div>
+            <div class="asu2-badge ${team.status === ASU_STATUS.NOTFALL ? "status-notfall" : ""}">${asuStatusLabel(team.status)}</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Zyklus ${team.cycleIndex} · Pausen ${pauseCount}${pauseCount ? ` · Letzte ${escapeHtml(lastPauseLabel)}` : ""}${pauseRunningLabel}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">${escapeHtml(memberLine)}</div>
+        <div class="asu2-team-stats">
+            <div class="asu2-stat"><div class="asu2-stat-label">Zeit unter PA</div><div class="asu2-stat-value">${inPA}</div></div>
+            <div class="asu2-stat"><div class="asu2-stat-label">Nächste Rückmeldung</div><div class="asu2-stat-value">${nextDue}</div></div>
+            <div class="asu2-stat"><div class="asu2-stat-label">Warnung</div><div class="asu2-stat-value" style="font-size:14px;">${escapeHtml(warning.label)}</div></div>
+            <div class="asu2-stat"><div class="asu2-stat-label">Druck</div><div class="asu2-stat-value">${pressure}</div></div>
+        </div>
+        <div class="asu2-quick-actions">${asuRenderTeamActionButtons(team)}</div>
+        <div class="asu2-pressure-row">
+            <button onclick="asuAdjustPressure('${team.id}', -10)">-10</button>
+            <input type="number" min="0" value="${team.currentPressure != null ? escapeHtml(team.currentPressure) : ""}" placeholder="bar" onchange="asuSetPressure('${team.id}', this.value)">
+            <button onclick="asuAdjustPressure('${team.id}', 10)">+10</button>
+            <button onclick="asuSelectTeam('${team.id}')">${selected ? "Detail zu" : "Detail"}</button>
+        </div>`;
+
+    if (selected){
+        html += `<div class="asu2-detail">
+            <div class="asu2-detail-grid">
+                <div><label>Truppname</label><input type="text" value="${escapeHtml(team.name)}" oninput="asuUpdateTeamField('${team.id}','name',this.value)"></div>
+                <div><label>Funkkanal</label><input type="text" value="${escapeHtml(team.channel || "")}" oninput="asuUpdateTeamField('${team.id}','channel',this.value)"></div>
+                <div><label>Truppführer</label><input type="text" value="${escapeHtml(team.members[0]?.name || "")}" oninput="asuUpdateTeamMember('${team.id}',0,this.value)"></div>
+                <div><label>Truppmann</label><input type="text" value="${escapeHtml(team.members[1]?.name || "")}" oninput="asuUpdateTeamMember('${team.id}',1,this.value)"></div>
+                <div><label>Startzeit unter PA</label><input type="datetime-local" value="${asuDateTimeLocal(team.startedAt)}" onchange="asuEditTeamTimestamp('${team.id}','startedAt',this.value)"></div>
+                <div><label>Letzte Rückmeldung</label><input type="datetime-local" value="${asuDateTimeLocal(team.lastCheckInAt)}" onchange="asuEditTeamTimestamp('${team.id}','lastCheckInAt',this.value)"></div>
+                <div><label>Max. Innenzeit Trupp (min, optional)</label><input type="number" min="1" value="${team.maxInteriorSecOverride ? Math.round(team.maxInteriorSecOverride / 60) : ""}" placeholder="Global" onchange="asuUpdateTeamField('${team.id}','maxInteriorSecOverride', this.value ? Number(this.value) * 60 : null)"></div>
+                <div class="full"><label>Bemerkung</label><input type="text" value="${escapeHtml(team.note || "")}" oninput="asuUpdateTeamField('${team.id}','note',this.value)"></div>
+            </div>
+            <div class="asu2-log"><strong>Rückmeldungsverlauf</strong><div class="atem-log-list">${(team.history || []).length ? team.history.map((ts)=>`<div class="atem-log-item">${new Date(ts).toLocaleString("de-DE")}</div>`).join("") : `<div class="lage-empty">Keine Rückmeldungen.</div>`}</div></div>
+        </div>`;
+    }
+
+    html += `</div>`;
+    return html;
+}
+
+function asuRenderTeamActionButtons(team){
+    asuEnsureTeamCycleFields(team);
+    const id = team.id;
+    const buttons = [];
+    const push = (label, onclick)=>buttons.push(`<button onclick="${onclick}">${label}</button>`);
+
+    if (team.status === ASU_STATUS.BEREIT){
+        push("Start unter PA", `asuSetTeamStatus('${id}','${ASU_STATUS.IM_EINSATZ}')`);
+        push("Rückmeldung", `asuCheckIn('${id}')`);
+        push("Notfall", `asuMarkMayday('${id}')`);
+        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        return buttons.join("");
+    }
+
+    if (team.status === ASU_STATUS.IM_EINSATZ){
+        push("Rückmeldung", `asuCheckIn('${id}')`);
+        push("Rückweg", `asuSetTeamStatus('${id}','${ASU_STATUS.RUECKWEG}')`);
+        push("Draußen", `asuSetTeamStatus('${id}','${ASU_STATUS.DRAUSSEN}')`);
+        push("Notfall", `asuMarkMayday('${id}')`);
+        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        return buttons.join("");
+    }
+
+    if (team.status === ASU_STATUS.RUECKWEG){
+        push("Rückmeldung", `asuCheckIn('${id}')`);
+        push("Wieder vor", `asuSetTeamStatus('${id}','${ASU_STATUS.IM_EINSATZ}')`);
+        push("Draußen", `asuSetTeamStatus('${id}','${ASU_STATUS.DRAUSSEN}')`);
+        push("Notfall", `asuMarkMayday('${id}')`);
+        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        return buttons.join("");
+    }
+
+    if (team.status === ASU_STATUS.DRAUSSEN){
+        push("Bereit", `asuSetTeamStatus('${id}','${ASU_STATUS.BEREIT}')`);
+        push("Start unter PA", `asuSetTeamStatus('${id}','${ASU_STATUS.IM_EINSATZ}')`);
+        push("Ablage + Pause starten", `asuStartTeamPause('${id}')`);
+        push("Pause beendet / Neustart", `asuRestartTeamAfterPause('${id}')`);
+        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        return buttons.join("");
+    }
+
+    if (team.status === ASU_STATUS.PAUSE){
+        push("Pause beendet / Neustart", `asuRestartTeamAfterPause('${id}')`);
+        push("Bereit", `asuSetTeamStatus('${id}','${ASU_STATUS.BEREIT}')`);
+        push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+        return buttons.join("");
+    }
+
+    // NOTFALL
+    push("Rückmeldung", `asuCheckIn('${id}')`);
+    push("Rückweg", `asuSetTeamStatus('${id}','${ASU_STATUS.RUECKWEG}')`);
+    push("Draußen", `asuSetTeamStatus('${id}','${ASU_STATUS.DRAUSSEN}')`);
+    push("Quittieren", `asuAcknowledgeTeamAlarm('${id}')`);
+    return buttons.join("");
+}
+
+function asuGetExportFileBase(incident){
+    const d = new Date(incident && incident.startedAt ? incident.startedAt : Date.now());
+    const datum = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const zeit = `${String(d.getHours()).padStart(2, "0")}-${String(d.getMinutes()).padStart(2, "0")}`;
+    const ort = sanitizeAtemFilePart(incident && incident.location ? incident.location : "einsatzort");
+    const nr = sanitizeAtemFilePart(incident && incident.number ? incident.number : "ohne_nummer");
+    return `ASU2_${datum}_${zeit}_${nr}_${ort}`;
+}
+
+function asuBuildProtocolText(incident){
+    if (!incident) return "";
+    const lines = [];
+    lines.push("Atemschutzueberwachung - Protokoll");
+    lines.push(`Einsatzname: ${incident.name || "-"}`);
+    lines.push(`Einsatznummer: ${incident.number || "-"}`);
+    lines.push(`Ort: ${incident.location || "-"}`);
+    lines.push(`Start: ${incident.startedAt ? new Date(incident.startedAt).toLocaleString("de-DE") : "-"}`);
+    lines.push(`Ende: ${incident.endedAt ? new Date(incident.endedAt).toLocaleString("de-DE") : "-"}`);
+    lines.push("");
+    lines.push("Trupps");
+    (incident.teams || []).forEach((team, idx)=>{
+        lines.push(``);
+        lines.push(`${idx + 1}. ${team.name || "-"}`);
+        lines.push(`Status: ${asuStatusLabel(team.status || ASU_STATUS.BEREIT)}`);
+        lines.push(`Truppfuehrer: ${(team.members && team.members[0] && team.members[0].name) || "-"}`);
+        lines.push(`Truppmann: ${(team.members && team.members[1] && team.members[1].name) || "-"}`);
+        lines.push(`Funkkanal: ${team.channel || "-"}`);
+        lines.push(`Bemerkung: ${team.note || "-"}`);
+        lines.push(`Zyklus: ${team.cycleIndex || 1}`);
+        lines.push(`Start unter PA: ${team.startedAt ? new Date(team.startedAt).toLocaleString("de-DE") : "-"}`);
+        lines.push(`Letzte Rueckmeldung: ${team.lastCheckInAt ? new Date(team.lastCheckInAt).toLocaleString("de-DE") : "-"}`);
+        lines.push(`Naechste faellig: ${team.nextDueAt ? new Date(team.nextDueAt).toLocaleString("de-DE") : "-"}`);
+        lines.push(`Druck Start: ${team.pressureStart != null ? team.pressureStart : "-"}`);
+        lines.push(`Druck Aktuell: ${team.currentPressure != null ? team.currentPressure : "-"}`);
+        lines.push(`Zeit unter PA (Zyklus): ${asuFormatDuration(Math.max(0, Number(team.cycleElapsedSec || 0)) * 1000)}`);
+        if (Array.isArray(team.pauseHistory) && team.pauseHistory.length){
+            lines.push("Pausen:");
+            team.pauseHistory.forEach((p, pIdx)=>{
+                lines.push(`  ${pIdx + 1}. ${p.at ? new Date(p.at).toLocaleString("de-DE") : "-"} | Zyklus ${p.fromCycle || "-"} -> ${p.toCycle || "-"}${p.pauseMinutes != null ? ` | ${p.pauseMinutes} min` : ""}`);
+            });
+        }
+        if (Array.isArray(team.cycleHistory) && team.cycleHistory.length){
+            lines.push("Zyklus-Historie:");
+            team.cycleHistory.forEach((c, cIdx)=>{
+                lines.push(`  ${cIdx + 1}. ${c.at ? new Date(c.at).toLocaleString("de-DE") : "-"} | Zyklus ${c.cycle || "-"} | Status ${asuStatusLabel(c.status || ASU_STATUS.BEREIT)} | Druck ${c.currentPressure != null ? c.currentPressure : "-"} | Zeit ${asuFormatDuration(Math.max(0, Number(c.cycleElapsedSec || 0)) * 1000)}`);
+            });
+        }
+        if (Array.isArray(team.history) && team.history.length){
+            lines.push("Rueckmeldungen:");
+            team.history.forEach((ts, hIdx)=>{
+                lines.push(`  ${hIdx + 1}. ${new Date(ts).toLocaleString("de-DE")}`);
+            });
+        }
+    });
+    lines.push("");
+    lines.push("Ereignis-Log");
+    (incident.logs || []).forEach((entry, idx)=>{
+        const stamp = entry && entry.ts ? new Date(entry.ts).toLocaleString("de-DE") : "-";
+        const pressure = entry && entry.data && entry.data.pressure != null ? ` | Druck ${entry.data.pressure}` : "";
+        lines.push(`${idx + 1}. ${stamp} | ${entry.teamId || "-"} | ${entry.type || "-"} | ${entry.message || "-"}${pressure}`);
+    });
+    return lines.join("\n");
+}
+
+function asuExportIncidentText(){
+    const incident = asuGetActiveIncident();
+    if (!incident){
+        showAtemHint("Kein aktiver Einsatz");
+        return;
+    }
+    const text = asuBuildProtocolText(incident);
+    const base = asuGetExportFileBase(incident);
+    downloadAtemFile(`${base}.txt`, text, "text/plain;charset=utf-8");
+    showAtemHint("TXT-Export gestartet");
+}
+
+function asuExportIncidentPdf(){
+    const incident = asuGetActiveIncident();
+    if (!incident){
+        showAtemHint("Kein aktiver Einsatz");
+        return;
+    }
+    const text = asuBuildProtocolText(incident);
+    const base = asuGetExportFileBase(incident);
+    const printWindow = window.open("", "_blank");
+    if (!printWindow){
+        showAtemHint("Popup blockiert");
+        return;
+    }
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(base)}.pdf</title>
+    <style>
+    @page { size: A4; margin: 14mm; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:#111; }
+    h1 { font-size: 18px; margin: 0 0 10px; }
+    .meta { font-size: 12px; color:#444; margin-bottom: 12px; }
+    pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.35; }
+    </style></head><body>
+    <h1>Atemschutz-Protokoll</h1>
+    <div class="meta">Datei: ${escapeHtml(base)}.pdf</div>
+    <pre>${escapeHtml(text)}</pre>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script>
+    </body></html>`;
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+    showAtemHint("PDF-Dialog geöffnet");
+}
+
+function asuRenderActiveIncident(state){
+    const incident = state.activeIncident;
+    if (!incident) return "";
+    const now = Date.now();
+    const topAlarm = asuTopAlarm(incident);
+    const sortedTeams = incident.teams.slice();
+    const clock = asuFormatClock(now, state.settings.showSeconds);
+    const activeCount = incident.teams.filter((t)=>t.status === ASU_STATUS.IM_EINSATZ || t.status === ASU_STATUS.RUECKWEG || t.status === ASU_STATUS.NOTFALL).length;
+    const alarmText = topAlarm === "critical" ? "Kritischer Alarm aktiv" : (topAlarm === "overdue" ? "Überfällige Rückmeldung" : (topAlarm === "due" ? "Rückmeldung fällig" : "Alles im Soll"));
+    let html = `
+    <div class="asu2-top">
+        <div class="asu2-top-box">
+            <div class="asu2-clock">${clock}</div>
+            <div style="margin-top:6px;font-size:13px;color:var(--text-muted);">Epoch-basierte Zeitberechnung, drift-sicher bei App-Wechsel.</div>
+            <div class="asu2-alert ${topAlarm === "ok" ? "ok" : topAlarm}">${alarmText}</div>
+        </div>
+        <div class="asu2-top-box">
+            <div><strong>${escapeHtml(incident.name || "Einsatz ohne Namen")}</strong>${incident.number ? ` <span class="asu2-badge">#${escapeHtml(incident.number)}</span>` : ""}</div>
+            <div>${escapeHtml(incident.location || "Ort nicht gesetzt")}</div>
+            <div>Start: ${new Date(incident.startedAt || now).toLocaleString("de-DE")}</div>
+            <div>Aktive Trupps: ${activeCount}</div>
+            <div class="asu2-actions">
+                <button onclick="asuAcknowledgeAllAlarms()">Alle quittieren</button>
+                <button onclick="asuAddTeam()">Trupp hinzufügen</button>
+                <button onclick="asuExportIncidentPdf()">Protokoll PDF</button>
+                <button onclick="asuExportIncidentText()">Protokoll TXT</button>
+                <button onclick="asuToggleIncidentConfig()">${state.ui.showIncidentConfig ? "Konfiguration ausblenden" : "Konfiguration anzeigen"}</button>
+                <button onclick="asuEndActiveIncident()">Einsatz beenden</button>
+            </div>
+        </div>
+    </div>
+    ${state.ui.showIncidentConfig ? `<div class="atem-panel">
+        <strong>Einsatz & Warnkonfiguration</strong>
+        <div class="asu2-incident-grid" style="margin-top:8px;">
+            <div><label>Einsatzname</label><input type="text" value="${escapeHtml(incident.name || "")}" oninput="asuUpdateIncidentField('name', this.value)"></div>
+            <div><label>Einsatznummer</label><input type="text" inputmode="numeric" pattern="[0-9]*" value="${escapeHtml(incident.number || "")}" oninput="asuUpdateIncidentField('number', this.value)"></div>
+            <div><label>Ort</label><input type="text" value="${escapeHtml(incident.location || "")}" oninput="asuUpdateIncidentField('location', this.value)"></div>
+            <div><label>Rückmeldeintervall (min)</label><input type="number" min="1" value="${Math.round(state.settings.checkInIntervalSec / 60)}" onchange="asuUpdateSetting('checkInIntervalSec', Number(this.value) * 60)"></div>
+            <div><label>Überfällig ab (sek)</label><input type="number" min="1" value="${state.settings.overdueThresholdSec}" onchange="asuUpdateSetting('overdueThresholdSec', this.value)"></div>
+            <div><label>Kritisch ab (sek)</label><input type="number" min="1" value="${state.settings.criticalThresholdSec}" onchange="asuUpdateSetting('criticalThresholdSec', this.value)"></div>
+            <div><label>Max. Innenzeit (min)</label><input type="number" min="1" value="${Math.round(state.settings.maxInteriorSec / 60)}" onchange="asuUpdateSetting('maxInteriorSec', Number(this.value) * 60)"></div>
+        </div>
+    </div>` : ""}
+    <div class="asu2-team-grid">`;
+    sortedTeams.forEach((team)=>{
+        html += asuRenderTeamCard(team, incident, state.ui.selectedTeamId);
+    });
+    html += `</div><div class="atem-panel"><strong>Ereignis-Log</strong><div class="atem-log-list">`;
+    const logs = incident.logs || [];
+    if (!logs.length){
+        html += `<div class="lage-empty">Noch keine Ereignisse.</div>`;
+    } else {
+        logs.slice(0, 120).forEach((entry)=>{
+            const stamp = new Date(entry.ts).toLocaleString("de-DE");
+            html += `<div class="atem-log-item"><strong>${stamp}</strong> · ${escapeHtml(entry.teamId || "-")} · ${escapeHtml(entry.type || "-")}<br>${escapeHtml(entry.message || "-")}</div>`;
+        });
+    }
+    html += `</div></div>`;
+    return html;
+}
+
+function asuHasFocusedInput(){
+    const popup = document.getElementById("asu2GlobalPopup");
+    if (popup && popup.classList.contains("show")){
+        const active = document.activeElement;
+        if (active && popup.contains(active)) return true;
+    }
+    if (!isAtemOverlayOpen()) return false;
+    const overlay = document.getElementById("atemOverlay");
+    const el = document.activeElement;
+    if (!overlay || !el || !overlay.contains(el)) return false;
+    if (el.isContentEditable) return true;
+    const tag = String(el.tagName || "").toUpperCase();
+    return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+}
+
+function renderAtemTool(){
+    const body = document.getElementById("atemBody");
+    if (!body) return;
+    const state = asuEnsureState();
+    const undoHtml = state.ui.undo
+        ? `<div class="asu2-undo"><span>${escapeHtml(state.ui.undo.label)} rückgängig machen?</span><button onclick="asuUndoLastAction()">Undo</button></div>`
+        : "";
+    if (!state.activeIncident){
+        body.innerHTML = `${asuRenderCreateIncident(state)}${undoHtml}`;
+        return;
+    }
+    body.innerHTML = `${asuRenderActiveIncident(state)}${undoHtml}`;
+}
+
+function openAtemOverlay(){
+    const overlay = document.getElementById("atemOverlay");
+    if (!overlay) return;
+    asu2OverlayLastFocus = document.activeElement;
+    asuEnsureState();
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    asuStartTickers();
+    renderAtemTool();
+}
+
+function closeAtemOverlay(){
+    const overlay = document.getElementById("atemOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    if (!keepLocked){
+        asuStopTickers();
+    }
+    if (asu2OverlayLastFocus && typeof asu2OverlayLastFocus.focus === "function"){
+        asu2OverlayLastFocus.focus();
+    }
+}
+
+function handleAtemOverlayBackdrop(event){
+    if (event.target && event.target.id === "atemOverlay"){
+        closeAtemOverlay();
+    }
+}
+
+function isAtemOverlayOpen(){
+    const overlay = document.getElementById("atemOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function trapFocusInAtemOverlay(event){
+    if (event.key !== "Tab" || !isAtemOverlayOpen()) return;
+    const overlay = document.getElementById("atemOverlay");
+    if (!overlay) return;
+    const focusable = overlay.querySelectorAll("button, [href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])");
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first){
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && document.activeElement === last){
+        event.preventDefault();
+        first.focus();
+    }
+}
+
+document.addEventListener("visibilitychange", ()=>{
+    if (!document.hidden && isAtemOverlayOpen()){
+        renderAtemTool();
+    }
+});
+
+function runAtemschutzV2Tests(){
+    if (window.__asu2TestsRan) return;
+    window.__asu2TestsRan = true;
+    const testIncident = { settingsOverride: null };
+    const baseTeam = { status: ASU_STATUS.IM_EINSATZ, nextDueAt: 2000, alarmSilenced: false };
+    const fakeSettingsState = asuEnsureState();
+    fakeSettingsState.settings.checkInIntervalSec = 600;
+    fakeSettingsState.settings.overdueThresholdSec = 60;
+    fakeSettingsState.settings.criticalThresholdSec = 180;
+    let r = asuWarningLevel(baseTeam, testIncident, 1000);
+    console.assert(r.level === "ok", "ASU test: expected ok");
+    r = asuWarningLevel(baseTeam, testIncident, 2000);
+    console.assert(r.level === "due", "ASU test: expected due");
+    r = asuWarningLevel(baseTeam, testIncident, 2000 + 70 * 1000);
+    console.assert(r.level === "overdue", "ASU test: expected overdue");
+    r = asuWarningLevel(baseTeam, testIncident, 2000 + 190 * 1000);
+    console.assert(r.level === "critical", "ASU test: expected critical");
+    const t = { ...baseTeam, alarmSilenced: false, status: ASU_STATUS.IM_EINSATZ, nextDueAt: Date.now() + 5000 };
+    asuResetTeamAlarmSilence(t);
+    console.assert(t.alarmSilenced === false, "ASU test: ack reset");
+}
+
+runAtemschutzV2Tests();
+// ASU2 ist deaktiviert; bestehendes Atemschutz-Modul (Sessions/Trupps) bleibt aktiv.
+// asuEnsureState();
+// asuEnsureAlarmTicker();
 
 let funkcheckState = null;
 let funkcheckSaveTimer = null;
@@ -9567,46 +11823,999 @@ document.addEventListener("keydown", (event)=>{
     trapFocusInNachforderungOverlay(event);
 });
 
+const IMPORTANT_PHONE_CONTACTS = [
+    { section: "Basis", title: "Zweckverband Ostholstein (Notfaelle)", person: "", phone: "04561 399-400" },
+    { section: "Basis", title: "TUIS Zentrale BASF Ludwigshafen", person: "", phone: "0621 60 43333" },
+    { section: "Basis", title: "Tierklinik Neustaedter Bucht", person: "", phone: "04561 521080" },
+    { section: "Basis", title: "Polizeizentralstation Timmendorfer Strand", person: "Zentrale", phone: "04503 40810" },
+    { section: "Basis", title: "Gift-Notrufzentrale", person: "", phone: "0551 19240" },
+    { section: "Basis", title: "SH Netz AG (Stoerung)", person: "", phone: "04106 6489090" },
+    { section: "Basis", title: "Westnetz GmbH (Stromstoerung)", person: "", phone: "0800 4112244" },
+    { section: "Basis", title: "Leitstelle Sued", person: "", phone: "04531 88 05 83" },
+    { section: "Basis", title: "DLRG Hauptwache Tdf+SBZ", person: "", phone: "04503 356820" },
+    { section: "Basis", title: "DLRG-Heim", person: "", phone: "04503 1784" },
+    { section: "Basis", title: "Wehrfuehrer", person: "Nils Baeumer", phone: "+49 172 5935311" },
+    { section: "Basis", title: "Schluesseldienst", person: "Dirk Scharbau", phone: "+49 163 4184506" },
+
+    { section: "KatS Stab", title: "Buergermeister", person: "Herr Partheil-Boehnke", phone: "0152-37791655" },
+    { section: "KatS Stab", title: "1. st. Buergermeister", person: "Herr Struempell", phone: "04503-7797977" },
+    { section: "KatS Stab", title: "2. st. Buergermeister", person: "Herr Boeden", phone: "0172-4483108" },
+    { section: "KatS Stab", title: "3. st. Buergermeister", person: "Herr Karthaeuser", phone: "04503-881049" },
+    { section: "KatS Stab", title: "FB-Leiter FB 1", person: "Herr Sontopski", phone: "0171-8183246" },
+    { section: "KatS Stab", title: "FB-Leiter FB 2", person: "Herr Soltmann", phone: "0172-3810137" },
+    { section: "KatS Stab", title: "FB-Leiter FB 3", person: "Herr Partheil-Boehnke", phone: "0152-37791655" },
+    { section: "KatS Stab", title: "FD-Leiterin FD 3,62", person: "Frau Muus", phone: "0173-8011747" },
+    { section: "KatS Stab", title: "FD-Leiterin FD 2.30", person: "Frau Heide", phone: "0172-3711054" },
+    { section: "KatS Stab", title: "Bauhofleiter", person: "Herr Post", phone: "0172-4086179" },
+    { section: "KatS Stab", title: "Elektriker", person: "Herr Knoop", phone: "0162-2166727" },
+    { section: "KatS Stab", title: "Elektriker", person: "Herr Hoppner", phone: "0162-2166724" },
+    { section: "KatS Stab", title: "Fachingenieur Tiefbau", person: "Herr Hasselberg", phone: "0173-33601230" },
+    { section: "KatS Stab", title: "Geschaeftsfuehrer TSNT", person: "Herr Nitz", phone: "0173-3950451" },
+    { section: "KatS Stab", title: "Polizei Tdf. Sto.", person: "Zentrale", phone: "04503-40810" },
+    { section: "KatS Stab", title: "Dienststellenleiter", person: "Herr Nellies", phone: "04503-408110" },
+    { section: "KatS Stab", title: "Notfallnummer Polizeistation Timmendorfer Strand", person: "", phone: "0172-9204767" },
+    { section: "KatS Stab", title: "GWF Tdf. Strand", person: "Herr T. Scharbau", phone: "0170-2174923" },
+    { section: "KatS Stab", title: "Stellv. GWF Tdf. Strand", person: "Herr Schoenfeld", phone: "0171-4629356" },
+    { section: "KatS Stab", title: "OWF Gross Timmendorf", person: "Herr Strunk", phone: "0160-99809808" },
+    { section: "KatS Stab", title: "OWF Hemmelsdorf", person: "Herr Miersen", phone: "0176-32443278" },
+    { section: "KatS Stab", title: "OWF Niendorf", person: "Herr Post", phone: "0160-97706461" },
+    { section: "KatS Stab", title: "OWF Tdf. Strand", person: "Herr Jessen", phone: "04503-19215" },
+    { section: "KatS Stab", title: "Malteser", person: "Fr. Frick", phone: "0151-18975494" },
+
+    { section: "Behoerden", title: "THW Luebeck", person: "", phone: "0451-4082277" },
+    { section: "Behoerden", title: "Kreis OH", person: "Herr Kuberski", phone: "04521-788225" },
+    { section: "Behoerden", title: "Rettungsdienst Holstein AoeR", person: "Herr Kraft", phone: "04561 71995-00" },
+    { section: "Behoerden", title: "Rettungsdienst Holstein AoeR", person: "Herr Haemmer", phone: "04561 71995-13" },
+    { section: "Behoerden", title: "Katastrophenschutz Kreis OH", person: "Herr Kasch", phone: "04521-788-229" },
+    { section: "Behoerden", title: "Katastrophenschutz Kreis OH", person: "Herr Schemmer", phone: "04521-788-224" },
+
+    { section: "Betreiber Deich", title: "Hafeninfo", person: "Frau Muus", phone: "0173-8011747" },
+    { section: "Betreiber Deich", title: "Haus des Kurgastes", person: "Diensthandy", phone: "0152-0584340" },
+    { section: "Betreiber Deich", title: "Feuerwehr Niendorf", person: "Herr Duehring", phone: "0174-1533088" },
+    { section: "Betreiber Deich", title: "Yachtclub Niendorf", person: "Herr Schwardt", phone: "040-5255267" },
+    { section: "Betreiber Deich", title: "Kluver", person: "Herr Ebeling", phone: "04503-6880" },
+    { section: "Betreiber Deich", title: "Hafenamt", person: "Frau Dahl", phone: "0171-4410008" },
+    { section: "Betreiber Deich", title: "Bootsbauer", person: "Herr Schuette", phone: "04503-86886" },
+    { section: "Betreiber Deich", title: "Reeder Voss (Zollhaus)", person: "", phone: "0170-4008224" },
+    { section: "Betreiber Deich", title: "Evers Werft", person: "Herr Hake-Evers", phone: "04503-331217" },
+    { section: "Betreiber Deich", title: "Baederschiffe", person: "Frau Beils", phone: "0171-7776386" }
+];
+const IMPORTANT_PHONEBOOK_STORAGE_KEY = "important_phonebook_v1";
+
+function normalizePhoneForSearch(value){
+    return String(value || "").replace(/[^\d+]/g, "");
+}
+
+function toTelHref(value){
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    if (raw.startsWith("+")){
+        return `tel:+${raw.slice(1).replace(/\D/g, "")}`;
+    }
+    return `tel:${raw.replace(/\D/g, "")}`;
+}
+
+function getImportantPhoneId(entry){
+    if (entry && entry.id) return entry.id;
+    const base = `${entry.section || ""}|${entry.title || ""}|${entry.person || ""}|${entry.phone || ""}`;
+    let hash = 0;
+    for (let i = 0; i < base.length; i += 1){
+        hash = (hash * 31 + base.charCodeAt(i)) >>> 0;
+    }
+    return `pb_${hash.toString(36)}`;
+}
+
+function getImportantPhonebookState(){
+    try {
+        const raw = appStorageGetItem(IMPORTANT_PHONEBOOK_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return {
+            favorites: parsed && parsed.favorites && typeof parsed.favorites === "object" ? parsed.favorites : {},
+            custom: Array.isArray(parsed && parsed.custom) ? parsed.custom : []
+        };
+    } catch {
+        return { favorites: {}, custom: [] };
+    }
+}
+
+function saveImportantPhonebookState(state){
+    appStorageSetItem(IMPORTANT_PHONEBOOK_STORAGE_KEY, JSON.stringify({
+        favorites: state.favorites || {},
+        custom: Array.isArray(state.custom) ? state.custom : []
+    }));
+}
+
+function getImportantPhonebookEntries(){
+    const state = getImportantPhonebookState();
+    const base = IMPORTANT_PHONE_CONTACTS.map((item)=>({ ...item, id: getImportantPhoneId(item), source: "base" }));
+    const custom = state.custom.map((item)=>({ ...item, id: item.id || getImportantPhoneId(item), source: "custom" }));
+    return base.concat(custom);
+}
+
+function toggleImportantPhoneFavorite(id){
+    const state = getImportantPhonebookState();
+    state.favorites[id] = !state.favorites[id];
+    if (!state.favorites[id]) delete state.favorites[id];
+    saveImportantPhonebookState(state);
+    const q = document.getElementById("importantPhoneSearch")?.value || "";
+    renderImportantPhonebook(q);
+}
+
+function addImportantPhoneContact(){
+    const section = (document.getElementById("importantPhoneNewSection")?.value || "").trim() || "Eigene";
+    const title = (document.getElementById("importantPhoneNewTitle")?.value || "").trim();
+    const person = (document.getElementById("importantPhoneNewPerson")?.value || "").trim();
+    const phone = (document.getElementById("importantPhoneNewPhone")?.value || "").trim();
+    if (!title || !phone){
+        alert("Bitte mindestens Bezeichnung und Telefonnummer eingeben.");
+        return;
+    }
+    const state = getImportantPhonebookState();
+    const entry = {
+        id: `pb_custom_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+        section,
+        title,
+        person,
+        phone
+    };
+    state.custom.unshift(entry);
+    saveImportantPhonebookState(state);
+    const ids = [
+        "importantPhoneNewSection",
+        "importantPhoneNewTitle",
+        "importantPhoneNewPerson",
+        "importantPhoneNewPhone"
+    ];
+    ids.forEach((id)=>{
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+    });
+    const q = document.getElementById("importantPhoneSearch")?.value || "";
+    renderImportantPhonebook(q);
+}
+
+function deleteImportantPhoneContact(id){
+    const state = getImportantPhonebookState();
+    const before = state.custom.length;
+    state.custom = state.custom.filter((item)=>item.id !== id);
+    if (state.custom.length === before) return;
+    if (state.favorites && state.favorites[id]) delete state.favorites[id];
+    saveImportantPhonebookState(state);
+    const q = document.getElementById("importantPhoneSearch")?.value || "";
+    renderImportantPhonebook(q);
+}
+
+function renderImportantPhonebook(query = ""){
+    const list = document.getElementById("importantPhoneList");
+    if (!list) return;
+    const state = getImportantPhonebookState();
+    const q = (query || "").trim().toLowerCase();
+    const qDigits = normalizePhoneForSearch(query);
+    const entries = getImportantPhonebookEntries();
+    const filtered = entries.filter((entry)=>{
+        const blob = `${entry.section} ${entry.title} ${entry.person || ""} ${entry.phone}`.toLowerCase();
+        if (!q) return true;
+        if (blob.includes(q)) return true;
+        return qDigits && normalizePhoneForSearch(entry.phone).includes(qDigits);
+    });
+    if (!filtered.length){
+        list.innerHTML = `<div class="lage-empty">Keine Treffer.</div>`;
+        return;
+    }
+
+    let html = "";
+    const favEntries = filtered.filter((entry)=>!!state.favorites[entry.id]);
+    const nonFavEntries = filtered.filter((entry)=>!state.favorites[entry.id]);
+
+    if (favEntries.length){
+        html += `<div class="section-title">⭐ Priorisiert</div>`;
+        favEntries.forEach((entry)=>{
+            html += `<div class="phonebook-item">
+                <div class="phonebook-head">${entry.title}</div>
+                <div class="phonebook-meta">${entry.person || "-"} · ${entry.section || "-"}</div>
+                <a class="phonebook-call" href="${toTelHref(entry.phone)}">☎️ ${entry.phone}</a>
+                <div class="phonebook-actions">
+                    <button class="phonebook-fav-btn" onclick="toggleImportantPhoneFavorite('${entry.id}')">⭐ Favorit</button>
+                    ${entry.source === "custom" ? `<button class="phonebook-del-btn" onclick="deleteImportantPhoneContact('${entry.id}')">🗑 Löschen</button>` : ""}
+                </div>
+            </div>`;
+        });
+    }
+
+    let currentSection = "";
+    nonFavEntries.forEach((entry)=>{
+        if (entry.section !== currentSection){
+            currentSection = entry.section;
+            html += `<div class="section-title">${currentSection}</div>`;
+        }
+        html += `<div class="phonebook-item">
+            <div class="phonebook-head">${entry.title}</div>
+            <div class="phonebook-meta">${entry.person || "-"}</div>
+            <a class="phonebook-call" href="${toTelHref(entry.phone)}">☎️ ${entry.phone}</a>
+            <div class="phonebook-actions">
+                <button class="phonebook-fav-btn" onclick="toggleImportantPhoneFavorite('${entry.id}')">☆ Favorit</button>
+                ${entry.source === "custom" ? `<button class="phonebook-del-btn" onclick="deleteImportantPhoneContact('${entry.id}')">🗑 Löschen</button>` : ""}
+            </div>
+        </div>`;
+    });
+    list.innerHTML = html;
+}
+
+function filterImportantPhonebook(value){
+    renderImportantPhonebook(value || "");
+}
+
+const POL_KRIPO_STORAGE_KEY = "pol_kripo_abfragebogen_v1";
+const POL_KRIPO_ARCHIVE_STORAGE_KEY = "pol_kripo_abfragebogen_archiv_v1";
+const POL_KRIPO_MASSNAHMEN = [
+    { key: "krankenhaeuser", label: "Wurden alle umliegenden Krankenhäuser abtelefoniert?" },
+    { key: "bahnhoefe", label: "Abfahren umliegender Bahnhöfe / ZOB / Bushaltestellen ??" },
+    { key: "raeumlichkeiten", label: "Wurden die häuslichen Räumlichkeiten umfangreich abgesucht?" },
+    { key: "taxi", label: "Kontaktaufnahme örtl. Taxi-Unternehmen" },
+    { key: "hunde", label: "Mantrailer / Flächenhunde alarmieren ?" },
+    { key: "handortung", label: "Wurde eine Handortung durchgeführt ?" }
+];
+
+function createDefaultPolKripoState(){
+    const massnahmen = {};
+    POL_KRIPO_MASSNAHMEN.forEach((item)=>{
+        massnahmen[item.key] = { checked: false, note: "" };
+    });
+    return {
+        id: `pk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        datum: "",
+        uhrzeit: "",
+        name: "",
+        vorname: "",
+        gebDatum: "",
+        anschrift: "",
+        vorherigeAnschrift: "",
+        augenfarbe: "",
+        haarfarbe: "",
+        besMerkmale: "",
+        groesse: "",
+        beliebteOrte: "",
+        massnahmen,
+        letzterKontaktOrt: "",
+        letzterKontaktUhrzeit: "",
+        fotoDataUrl: "",
+        fotoName: ""
+    };
+}
+
+function normalizePolKripoState(raw){
+    const base = createDefaultPolKripoState();
+    const data = raw || {};
+    const normalized = {
+        ...base,
+        ...data,
+        massnahmen: { ...base.massnahmen, ...(data.massnahmen || {}) }
+    };
+    POL_KRIPO_MASSNAHMEN.forEach((item)=>{
+        const row = normalized.massnahmen[item.key] || {};
+        normalized.massnahmen[item.key] = {
+            checked: !!row.checked,
+            note: row.note || ""
+        };
+    });
+    return normalized;
+}
+
+function getPolKripoState(){
+    try {
+        const raw = appStorageGetItem(POL_KRIPO_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        return normalizePolKripoState(parsed);
+    } catch {
+        return createDefaultPolKripoState();
+    }
+}
+
+function savePolKripoState(state){
+    const next = normalizePolKripoState(state);
+    next.updatedAt = new Date().toISOString();
+    appStorageSetItem(POL_KRIPO_STORAGE_KEY, JSON.stringify(next));
+}
+
+function getPolKripoArchive(){
+    try {
+        const raw = appStorageGetItem(POL_KRIPO_ARCHIVE_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed.map((item)=>normalizePolKripoState(item)) : [];
+    } catch {
+        return [];
+    }
+}
+
+function savePolKripoArchive(list){
+    appStorageSetItem(POL_KRIPO_ARCHIVE_STORAGE_KEY, JSON.stringify(Array.isArray(list) ? list : []));
+}
+
+function patchPolKripoState(mutator){
+    const state = getPolKripoState();
+    mutator(state);
+    savePolKripoState(state);
+    return state;
+}
+
+function formatDateDeFromIsoDate(value){
+    if (!value) return "-";
+    const parts = String(value).split("-");
+    if (parts.length !== 3) return value;
+    return `${parts[2]}.${parts[1]}.${parts[0]}`;
+}
+
+function getPolKripoMeasuresDoneCount(state){
+    return POL_KRIPO_MASSNAHMEN.filter((item)=>state.massnahmen[item.key] && state.massnahmen[item.key].checked).length;
+}
+
+function canExportPolKripoPdf(state){
+    return !!(state && state.datum && state.uhrzeit);
+}
+
+function setPolKripoField(field, value, rerender){
+    patchPolKripoState((state)=>{
+        state[field] = value || "";
+    });
+    if (rerender){
+        renderPolKripoForm();
+    }
+}
+
+function setPolKripoMassnahmeChecked(key, checked){
+    patchPolKripoState((state)=>{
+        if (!state.massnahmen[key]) state.massnahmen[key] = { checked: false, note: "" };
+        state.massnahmen[key].checked = !!checked;
+    });
+    renderPolKripoForm();
+}
+
+function setPolKripoMassnahmeNote(key, value){
+    patchPolKripoState((state)=>{
+        if (!state.massnahmen[key]) state.massnahmen[key] = { checked: false, note: "" };
+        state.massnahmen[key].note = value || "";
+    });
+}
+
+function triggerPolKripoPhotoUpload(){
+    const input = document.getElementById("polKripoFotoInput");
+    if (!input) return;
+    input.value = "";
+    input.click();
+}
+
+function handlePolKripoPhotoUpload(event){
+    const file = event && event.target && event.target.files ? event.target.files[0] : null;
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+        patchPolKripoState((state)=>{
+            state.fotoDataUrl = String(reader.result || "");
+            state.fotoName = file.name || "";
+        });
+        renderPolKripoForm();
+    };
+    reader.readAsDataURL(file);
+}
+
+function removePolKripoPhoto(){
+    patchPolKripoState((state)=>{
+        state.fotoDataUrl = "";
+        state.fotoName = "";
+    });
+    renderPolKripoForm();
+}
+
+function resetPolKripoForm(){
+    if (!confirm("Abfragebogen wirklich zurücksetzen?")) return;
+    savePolKripoState(createDefaultPolKripoState());
+    renderPolKripoForm();
+}
+
+function archivePolKripoCurrent(){
+    const state = getPolKripoState();
+    if (!state.datum || !state.uhrzeit){
+        alert("Für das Archiv bitte mindestens Datum und Uhrzeit setzen.");
+        return;
+    }
+    const archive = getPolKripoArchive();
+    const entry = normalizePolKripoState({
+        ...state,
+        id: `pk_arch_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
+        archivedAt: new Date().toISOString()
+    });
+    archive.unshift(entry);
+    savePolKripoArchive(archive.slice(0, 200));
+    renderPolKripoForm();
+}
+
+function loadPolKripoArchiveEntry(id){
+    const archive = getPolKripoArchive();
+    const entry = archive.find((item)=>item.id === id);
+    if (!entry) return;
+    savePolKripoState({
+        ...entry,
+        id: `pk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`
+    });
+    renderPolKripoForm();
+}
+
+function deletePolKripoArchiveEntry(id){
+    if (!confirm("Archiv-Eintrag wirklich löschen?")) return;
+    const archive = getPolKripoArchive().filter((item)=>item.id !== id);
+    savePolKripoArchive(archive);
+    renderPolKripoForm();
+}
+
+function buildPolKripoPdfFilename(state){
+    const datePart = state && state.datum ? state.datum : new Date().toISOString().slice(0, 10);
+    const timePart = (state && state.uhrzeit ? state.uhrzeit : "00:00").replace(":", "");
+    return `Abfragebogen_POL_Kripo_Personensuche_${datePart}_${timePart}.pdf`;
+}
+
+function exportPolKripoPdf(){
+    const state = getPolKripoState();
+    if (!canExportPolKripoPdf(state)){
+        alert("Bitte Datum und Uhrzeit setzen, bevor du das PDF exportierst.");
+        return;
+    }
+    const filename = buildPolKripoPdfFilename(state);
+    const measureRows = POL_KRIPO_MASSNAHMEN.map((item)=>{
+        const row = state.massnahmen[item.key] || { checked: false, note: "" };
+        return `<tr>
+            <td style="padding:6px 8px;border:1px solid #bbb;width:44px;text-align:center;">${row.checked ? "☑" : "☐"}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.label)}${row.note ? `<br><small>Notiz: ${escapeHtml(row.note)}</small>` : ""}</td>
+        </tr>`;
+    }).join("");
+    const photoHtml = state.fotoDataUrl
+        ? `<div style="margin-top:8px;"><img src="${state.fotoDataUrl}" alt="Aktuelles Foto" style="max-width:100%;max-height:360px;border:1px solid #bbb;border-radius:8px;"></div>`
+        : `<div style="margin-top:8px;color:#555;">Kein Foto hinterlegt.</div>`;
+
+    const w = window.open("", "_blank");
+    if (!w){
+        alert("Popup blockiert. Bitte Popup-Freigabe aktivieren.");
+        return;
+    }
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(filename)}</title>
+    <style>
+    @page { size: A4; margin: 12mm; }
+    body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
+    .header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .logo { width:90px; height:auto; object-fit:contain; }
+    h1 { margin:0; font-size:22px; }
+    h2 { margin:3px 0 10px; font-size:16px; font-weight:700; }
+    .warn { border:1px solid #b11; color:#8d111c; font-weight:700; padding:6px 8px; border-radius:6px; margin:8px 0 10px; }
+    table { width:100%; border-collapse:collapse; margin-top:8px; }
+    th, td { border:1px solid #bbb; padding:6px 8px; vertical-align:top; }
+    .section { margin-top:10px; page-break-inside: avoid; }
+    .footer { margin-top:12px; font-size:11px; color:#555; }
+    </style></head><body>
+    <div class="header">
+      <div>
+        <h1>Abfragebogen an die POL / Kripo</h1>
+        <h2>-Personensucheinsätze-</h2>
+      </div>
+      <img class="logo" src="logo.png" alt="Logo">
+    </div>
+    <div class="warn">Aktuelles Foto !!!</div>
+
+    <div class="section">
+      <table>
+        <tr><th>Datum</th><td>${escapeHtml(formatDateDeFromIsoDate(state.datum))}</td><th>Uhrzeit</th><td>${escapeHtml(state.uhrzeit || "-")}</td></tr>
+        <tr><th>Name</th><td>${escapeHtml(state.name || "-")}</td><th>Vorname</th><td>${escapeHtml(state.vorname || "-")}</td></tr>
+        <tr><th>Geb.Datum</th><td>${escapeHtml(formatDateDeFromIsoDate(state.gebDatum))}</td><th>Größe</th><td>${escapeHtml(state.groesse || "-")}</td></tr>
+        <tr><th>Anschrift</th><td colspan="3">${escapeHtml(state.anschrift || "-")}</td></tr>
+        <tr><th>vorherige Anschrift</th><td colspan="3">${escapeHtml(state.vorherigeAnschrift || "-")}</td></tr>
+        <tr><th>Augenfarbe</th><td>${escapeHtml(state.augenfarbe || "-")}</td><th>Haarfarbe</th><td>${escapeHtml(state.haarfarbe || "-")}</td></tr>
+        <tr><th>Bes. Merkmale</th><td colspan="3">${escapeHtml(state.besMerkmale || "-")}</td></tr>
+        <tr><th>Beliebte Orte</th><td colspan="3">${escapeHtml(state.beliebteOrte || "-")}</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <strong>Maßnahmen / Abfragen</strong>
+      <table><tbody>${measureRows}</tbody></table>
+      <div style="margin-top:6px;font-weight:700;color:#8d111c;">Kein Einsatz ohne Hunde !!!</div>
+    </div>
+
+    <div class="section">
+      <table>
+        <tr><th>Wo war der letzte Kontakt mit der Person?</th><td>${escapeHtml(state.letzterKontaktOrt || "-")}</td></tr>
+        <tr><th>Uhrzeit</th><td>${escapeHtml(state.letzterKontaktUhrzeit || "-")}</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <strong>Aktuelles Foto</strong>
+      ${photoHtml}
+    </div>
+
+    <div class="footer">Export: ${new Date().toLocaleString("de-DE")} | CommandView</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script>
+    </body></html>`;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+}
+
+function renderPolKripoForm(){
+    const container = document.getElementById("polKripoFormRoot");
+    if (!container) return;
+    const state = getPolKripoState();
+    const archive = getPolKripoArchive();
+    const done = getPolKripoMeasuresDoneCount(state);
+    const canExport = canExportPolKripoPdf(state);
+    const rows = POL_KRIPO_MASSNAHMEN.map((item)=>{
+        const row = state.massnahmen[item.key] || { checked: false, note: "" };
+        return `<div class="pk-measure-item">
+            <label>
+                <input type="checkbox" ${row.checked ? "checked" : ""} onchange="setPolKripoMassnahmeChecked('${item.key}', this.checked)">
+                <span>${item.label}</span>
+            </label>
+            <textarea placeholder="Notiz (optional)" oninput="setPolKripoMassnahmeNote('${item.key}', this.value)">${escapeHtml(row.note || "")}</textarea>
+        </div>`;
+    }).join("");
+    const archiveHtml = archive.length
+        ? archive.slice(0, 30).map((item)=>{
+            const labelDate = formatDateDeFromIsoDate(item.datum || "");
+            const labelTime = item.uhrzeit || "--:--";
+            const labelName = [item.vorname, item.name].filter(Boolean).join(" ").trim() || "Unbekannte Person";
+            const archived = item.archivedAt ? new Date(item.archivedAt).toLocaleString("de-DE") : "-";
+            return `<div class="phonebook-item">
+                <div class="phonebook-head">${escapeHtml(labelDate)} ${escapeHtml(labelTime)} · ${escapeHtml(labelName)}</div>
+                <div class="phonebook-meta">Archiviert: ${escapeHtml(archived)}</div>
+                <div class="phonebook-actions">
+                    <button class="phonebook-fav-btn" onclick="loadPolKripoArchiveEntry('${item.id}')">Laden</button>
+                    <button class="phonebook-del-btn" onclick="deletePolKripoArchiveEntry('${item.id}')">🗑 Löschen</button>
+                </div>
+            </div>`;
+        }).join("")
+        : `<div class="lage-empty">Noch keine Personensucheinsätze im Archiv.</div>`;
+
+    container.innerHTML = `
+      <div class="pk-title">Abfragebogen an die POL / Kripo</div>
+      <div class="pk-subtitle">-Personensucheinsätze-</div>
+      <div class="pk-hint">Aktuelles Foto !!!</div>
+
+      <div class="atem-panel">
+        <strong>A) Einsatz-/Personendaten</strong>
+        <div class="pk-grid" style="margin-top:8px;">
+          <div><label>Datum*</label><input type="date" value="${escapeHtml(state.datum)}" onchange="setPolKripoField('datum', this.value, true)"></div>
+          <div><label>Uhrzeit*</label><input type="time" value="${escapeHtml(state.uhrzeit)}" onchange="setPolKripoField('uhrzeit', this.value, true)"></div>
+          <div><label>Name</label><input type="text" value="${escapeHtml(state.name)}" oninput="setPolKripoField('name', this.value)"></div>
+          <div><label>Vorname</label><input type="text" value="${escapeHtml(state.vorname)}" oninput="setPolKripoField('vorname', this.value)"></div>
+          <div><label>Geb.Datum</label><input type="date" value="${escapeHtml(state.gebDatum)}" onchange="setPolKripoField('gebDatum', this.value)"></div>
+          <div><label>Größe</label><input type="text" value="${escapeHtml(state.groesse)}" oninput="setPolKripoField('groesse', this.value)"></div>
+          <div class="pk-full"><label>Anschrift</label><input type="text" value="${escapeHtml(state.anschrift)}" oninput="setPolKripoField('anschrift', this.value)"></div>
+          <div class="pk-full"><label>vorherige Anschrift</label><input type="text" value="${escapeHtml(state.vorherigeAnschrift)}" oninput="setPolKripoField('vorherigeAnschrift', this.value)"></div>
+          <div><label>Augenfarbe</label><input type="text" value="${escapeHtml(state.augenfarbe)}" oninput="setPolKripoField('augenfarbe', this.value)"></div>
+          <div><label>Haarfarbe</label><input type="text" value="${escapeHtml(state.haarfarbe)}" oninput="setPolKripoField('haarfarbe', this.value)"></div>
+          <div class="pk-full"><label>Bes. Merkmale</label><textarea oninput="setPolKripoField('besMerkmale', this.value)">${escapeHtml(state.besMerkmale)}</textarea></div>
+          <div class="pk-full"><label>Beliebte Orte</label><textarea oninput="setPolKripoField('beliebteOrte', this.value)">${escapeHtml(state.beliebteOrte)}</textarea></div>
+        </div>
+        <div class="psu-meta" style="margin-top:8px;">Format: Datum ${escapeHtml(formatDateDeFromIsoDate(state.datum))} · Uhrzeit ${escapeHtml(state.uhrzeit || "-")}</div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>B) Maßnahmen / Abfragen</strong>
+        <div class="psu-meta" style="margin:6px 0 8px;">Fortschritt: ${done} von 6 Maßnahmen erledigt</div>
+        ${rows}
+        <div class="pk-hint" style="margin-top:6px;">Kein Einsatz ohne Hunde !!!</div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>C) Letzter Kontakt</strong>
+        <div class="pk-grid" style="margin-top:8px;">
+          <div class="pk-full"><label>Wo war der letzte Kontakt mit der Person?</label><input type="text" value="${escapeHtml(state.letzterKontaktOrt)}" oninput="setPolKripoField('letzterKontaktOrt', this.value)"></div>
+          <div><label>Uhrzeit</label><input type="time" value="${escapeHtml(state.letzterKontaktUhrzeit)}" onchange="setPolKripoField('letzterKontaktUhrzeit', this.value)"></div>
+        </div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>D) Foto</strong>
+        <div class="atem-row-actions" style="margin-top:8px;">
+          <button onclick="triggerPolKripoPhotoUpload()">Aktuelles Foto hinzufügen</button>
+          <button onclick="removePolKripoPhoto()" ${state.fotoDataUrl ? "" : "disabled"}>Foto entfernen</button>
+        </div>
+        <input id="polKripoFotoInput" type="file" accept="image/*" capture="environment" onchange="handlePolKripoPhotoUpload(event)" style="display:none;">
+        ${state.fotoDataUrl ? `<img class="pk-photo-preview" src="${state.fotoDataUrl}" alt="Foto Vorschau">` : `<div class="psu-meta" style="margin-top:8px;">Kein Foto ausgewählt.</div>`}
+      </div>
+
+      <div class="atem-row-actions">
+        <button onclick="exportPolKripoPdf()" ${canExport ? "" : "disabled"}>PDF exportieren</button>
+        <button onclick="archivePolKripoCurrent()">In Archiv speichern</button>
+        <button onclick="resetPolKripoForm()">Zurücksetzen</button>
+      </div>
+
+      <div class="atem-panel">
+        <strong>Archiv Personensucheinsätze</strong>
+        <div class="phonebook-list" style="margin-top:8px;">${archiveHtml}</div>
+      </div>
+    `;
+}
+
+const EINSATZ_KRAEFTE_STORAGE_KEY = "einsatz_kraefte_funkrufnamen_v1";
+const EINSATZ_STATUS_OPTIONS = ["Alarmiert", "Ausgerückt", "Eingetroffen", "Frei"];
+const FUNKRUFNAMEN_FAHRZEUGE = [
+    { id: "ts_hlf", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/48/02", hinweis: "" },
+    { id: "ts_elw", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "Fl. OH 89/11/01", hinweis: "" },
+    { id: "ts_mtw", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "Fl. OH 89/19/01", hinweis: "" },
+    { id: "tdf_dlk", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "DLK 23/12", fahrzeugtyp: "DLK", funkrufname: "Fl. OH 89/32/01", hinweis: "" },
+    { id: "ni_hlf", gemeinde: "Niendorf", organisation: "FF Niendorf/Ostsee", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/48/03", hinweis: "" },
+    { id: "ni_lf", gemeinde: "Niendorf", organisation: "FF Niendorf/Ostsee", fahrzeugBezeichnung: "LF 10", fahrzeugtyp: "LF", funkrufname: "Fl. OH 89/43/01", hinweis: "" },
+    { id: "ni_mtw", gemeinde: "Niendorf", organisation: "FF Niendorf/Ostsee", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "Fl. OH 89/19/02", hinweis: "" },
+    { id: "sb_hlf", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/48/01", hinweis: "" },
+    { id: "sb_lf", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "LF 20 KatS", fahrzeugtyp: "LF", funkrufname: "Fl. OH 89/44/01", hinweis: "KatS" },
+    { id: "sb_elw", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "Fl. OH 89/11/02", hinweis: "" },
+    { id: "hf_hlf", gemeinde: "Haffkrug", organisation: "FF Haffkrug", fahrzeugBezeichnung: "HLF 10", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/47/01", hinweis: "" },
+    { id: "hf_tlf", gemeinde: "Haffkrug", organisation: "FF Haffkrug", fahrzeugBezeichnung: "TLF 3000", fahrzeugtyp: "TLF", funkrufname: "Fl. OH 89/24/01", hinweis: "" },
+    { id: "po_lf", gemeinde: "Pönitz", organisation: "FF Pönitz", fahrzeugBezeichnung: "LF 10", fahrzeugtyp: "LF", funkrufname: "Fl. OH 89/42/01", hinweis: "" },
+    { id: "po_mtw", gemeinde: "Pönitz", organisation: "FF Pönitz", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "Fl. OH 89/19/03", hinweis: "" },
+    { id: "gt_hlf", gemeinde: "Groß Timmendorf", organisation: "FF Groß Timmendorf", fahrzeugBezeichnung: "HLF 10", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/46/01", hinweis: "" },
+    { id: "gt_mlf", gemeinde: "Groß Timmendorf", organisation: "FF Groß Timmendorf", fahrzeugBezeichnung: "MLF", fahrzeugtyp: "MLF", funkrufname: "Fl. OH 89/40/01", hinweis: "" },
+    { id: "rk_elw", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "Fl. OH 88/11/01", hinweis: "" },
+    { id: "rk_hlf", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 88/48/01", hinweis: "" },
+    { id: "rk_rw", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "RW", fahrzeugtyp: "RW", funkrufname: "Fl. OH 88/52/01", hinweis: "" },
+    { id: "ls_tel", gemeinde: "Kreis Ostholstein", organisation: "TEL Kreis OH", fahrzeugBezeichnung: "TEL-Führung", fahrzeugtyp: "TEL", funkrufname: "Fl. OH 80/11/01", hinweis: "TEL" },
+    { id: "drk_drohne", gemeinde: "Kreis Ostholstein", organisation: "DRK OH Drohnengruppe", fahrzeugBezeichnung: "Drohneneinheit", fahrzeugtyp: "Drohne", funkrufname: "DRK Drohne 1", hinweis: "" }
+];
+
+function getEinsatzKraefteTodayIso(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function getEinsatzKraefteNowTime(){
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function createDefaultEinsatzKraefteState(){
+    return {
+        einsatz: {
+            name: "",
+            nummer: "",
+            datum: getEinsatzKraefteTodayIso(),
+            uhrzeit: getEinsatzKraefteNowTime()
+        },
+        selected: {},
+        ui: {
+            view: "selection",
+            search: "",
+            groupBy: "gemeinde",
+            expanded: {},
+            generatorGemeinde: "",
+            generatorType: ""
+        },
+        updatedAt: new Date().toISOString()
+    };
+}
+
+function normalizeEinsatzKraefteState(raw){
+    const base = createDefaultEinsatzKraefteState();
+    const next = { ...base, ...(raw || {}) };
+    next.einsatz = { ...base.einsatz, ...((raw && raw.einsatz) || {}) };
+    next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
+    next.selected = typeof next.selected === "object" && next.selected ? next.selected : {};
+    return next;
+}
+
+function getEinsatzKraefteState(){
+    try {
+        const raw = appStorageGetItem(EINSATZ_KRAEFTE_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        return normalizeEinsatzKraefteState(parsed);
+    } catch {
+        return createDefaultEinsatzKraefteState();
+    }
+}
+
+function saveEinsatzKraefteState(state){
+    const next = normalizeEinsatzKraefteState(state);
+    next.updatedAt = new Date().toISOString();
+    appStorageSetItem(EINSATZ_KRAEFTE_STORAGE_KEY, JSON.stringify(next));
+}
+
+function patchEinsatzKraefteState(mutator){
+    const state = getEinsatzKraefteState();
+    mutator(state);
+    saveEinsatzKraefteState(state);
+    return state;
+}
+
+function setEinsatzKraefteView(view){
+    patchEinsatzKraefteState((s)=>{ s.ui.view = view === "overview" ? "overview" : "selection"; });
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteHeaderField(field, value, rerender){
+    patchEinsatzKraefteState((s)=>{ s.einsatz[field] = value || ""; });
+    if (rerender) renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteSearch(value){
+    patchEinsatzKraefteState((s)=>{ s.ui.search = value || ""; });
+    renderEinsatzKraefteTool();
+}
+
+function toggleEinsatzKraefteExpanded(groupKey){
+    patchEinsatzKraefteState((s)=>{
+        s.ui.expanded[groupKey] = !s.ui.expanded[groupKey];
+    });
+    renderEinsatzKraefteTool();
+}
+
+function toggleEinsatzKraefteSelected(id, checked){
+    patchEinsatzKraefteState((s)=>{
+        if (!s.selected[id]) s.selected[id] = { selected: false, status: "Alarmiert" };
+        s.selected[id].selected = !!checked;
+        if (checked && !s.selected[id].status) s.selected[id].status = "Alarmiert";
+    });
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteStatus(id, status){
+    patchEinsatzKraefteState((s)=>{
+        if (!s.selected[id]) s.selected[id] = { selected: true, status: "Alarmiert" };
+        s.selected[id].status = status || "Alarmiert";
+    });
+}
+
+function clearEinsatzKraefteSelection(){
+    if (!confirm("Alle ausgewählten Fahrzeuge wirklich abwählen?")) return;
+    patchEinsatzKraefteState((s)=>{ s.selected = {}; });
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteGroupBy(value){
+    patchEinsatzKraefteState((s)=>{ s.ui.groupBy = value === "typ" ? "typ" : "gemeinde"; });
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteGeneratorGemeinde(value){
+    patchEinsatzKraefteState((s)=>{ s.ui.generatorGemeinde = value || ""; });
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteGeneratorType(value){
+    patchEinsatzKraefteState((s)=>{ s.ui.generatorType = value || ""; });
+    renderEinsatzKraefteTool();
+}
+
+function getSortedFunkrufData(){
+    return FUNKRUFNAMEN_FAHRZEUGE.slice().sort((a, b)=>{
+        const g = (a.organisation || a.gemeinde || "").localeCompare((b.organisation || b.gemeinde || ""), "de");
+        if (g) return g;
+        const t = (a.fahrzeugBezeichnung || "").localeCompare((b.fahrzeugBezeichnung || ""), "de");
+        if (t) return t;
+        return (a.funkrufname || "").localeCompare((b.funkrufname || ""), "de");
+    });
+}
+
+function getEinsatzKraefteFilteredData(search){
+    const list = getSortedFunkrufData();
+    const q = (search || "").trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((item)=>{
+        const blob = `${item.gemeinde} ${item.organisation} ${item.fahrzeugBezeichnung} ${item.fahrzeugtyp} ${item.funkrufname} ${item.hinweis || ""}`.toLowerCase();
+        return blob.includes(q);
+    });
+}
+
+function getEinsatzKraefteSelectedCount(state){
+    return Object.values(state.selected || {}).filter((row)=>row && row.selected).length;
+}
+
+function copyFunkrufname(value){
+    copyTextToClipboard(value || "").then(()=>{});
+}
+
+function buildEinsatzKraefteExportText(state){
+    const einsatz = state.einsatz || {};
+    const selectedIds = Object.keys(state.selected || {}).filter((id)=>state.selected[id] && state.selected[id].selected);
+    const selected = getSortedFunkrufData().filter((item)=>selectedIds.includes(item.id));
+    const lines = [];
+    lines.push("Einsatzübersicht Kräfte/Funkrufnamen");
+    lines.push(`Einsatz: ${einsatz.name || "-"}`);
+    lines.push(`Einsatznummer: ${einsatz.nummer || "-"}`);
+    lines.push(`Datum: ${formatDateDeFromIsoDate(einsatz.datum || "")}`);
+    lines.push(`Uhrzeit: ${einsatz.uhrzeit || "-"}`);
+    lines.push("");
+    if (!selected.length){
+        lines.push("Keine Fahrzeuge ausgewählt.");
+        return lines.join("\n");
+    }
+    selected.forEach((item)=>{
+        const row = state.selected[item.id] || {};
+        lines.push(`${item.organisation || item.gemeinde} - ${item.fahrzeugBezeichnung} - ${item.funkrufname} - ${row.status || "Alarmiert"}${item.hinweis ? ` (${item.hinweis})` : ""}`);
+    });
+    return lines.join("\n");
+}
+
+function shareEinsatzKraefteSelection(){
+    const state = getEinsatzKraefteState();
+    const text = buildEinsatzKraefteExportText(state);
+    if (navigator.share){
+        navigator.share({ title: "Einsatzkräfte", text }).catch(()=>{});
+        return;
+    }
+    copyTextToClipboard(text).then(()=>{});
+}
+
+function exportEinsatzKraeftePdf(){
+    const state = getEinsatzKraefteState();
+    const text = buildEinsatzKraefteExportText(state);
+    const datePart = (state.einsatz && state.einsatz.datum) ? state.einsatz.datum : getEinsatzKraefteTodayIso();
+    const timePart = ((state.einsatz && state.einsatz.uhrzeit) ? state.einsatz.uhrzeit : getEinsatzKraefteNowTime()).replace(":", "");
+    const file = `Einsatz_Kraefte_Funkrufnamen_${datePart}_${timePart}.pdf`;
+    const w = window.open("", "_blank");
+    if (!w) return;
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
+    <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}</style>
+    </head><body><div class="head"><h1>Einsatzübersicht Kräfte/Funkrufnamen</h1><img class="logo" src="logo.png" alt="Logo"></div><pre>${escapeHtml(text)}</pre>
+    <div style="margin-top:8px;font-size:11px;color:#555;">Export: ${new Date().toLocaleString("de-DE")} | CommandView</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+}
+
+function renderEinsatzKraefteSelection(state){
+    const search = state.ui.search || "";
+    const filtered = getEinsatzKraefteFilteredData(search);
+    const groups = {};
+    filtered.forEach((item)=>{
+        const key = item.organisation || item.gemeinde || "Sonstige";
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(item);
+    });
+    const groupHtml = Object.keys(groups).sort((a, b)=>a.localeCompare(b, "de")).map((groupKey)=>{
+        const expanded = search ? true : !!state.ui.expanded[groupKey];
+        const rows = groups[groupKey].map((item)=>{
+            return `<div class="ek-item">
+                <div>
+                    <div><strong>${escapeHtml(item.fahrzeugBezeichnung)}</strong> <span class="ek-item-meta">(${escapeHtml(item.fahrzeugtyp)})</span></div>
+                    <div class="ek-item-meta">${escapeHtml(item.organisation || item.gemeinde)}${item.hinweis ? ` · ${escapeHtml(item.hinweis)}` : ""}</div>
+                </div>
+                <div><span class="ek-chip">${escapeHtml(item.funkrufname)}</span></div>
+                <div>
+                    <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
+                </div>
+            </div>`;
+        }).join("");
+        return `<div class="ek-group">
+            <div class="ek-group-head" onclick="toggleEinsatzKraefteExpanded('${groupKey.replace(/'/g, "\\'")}')">
+                <span>${escapeHtml(groupKey)}</span><span>${groups[groupKey].length}</span>
+            </div>
+            ${expanded ? rows : ""}
+        </div>`;
+    }).join("");
+
+    const gemeinden = Array.from(new Set(FUNKRUFNAMEN_FAHRZEUGE.map((i)=>i.organisation || i.gemeinde))).sort((a, b)=>a.localeCompare(b, "de"));
+    const genMatches = FUNKRUFNAMEN_FAHRZEUGE.filter((item)=>{
+        const okG = !state.ui.generatorGemeinde || (item.organisation || item.gemeinde) === state.ui.generatorGemeinde;
+        const q = (state.ui.generatorType || "").trim().toLowerCase();
+        const okT = !q || `${item.fahrzeugBezeichnung} ${item.fahrzeugtyp}`.toLowerCase().includes(q);
+        return okG && okT;
+    }).slice(0, 20);
+
+    return `
+      <div class="atem-panel">
+        <strong>Funkrufnamen & Fahrzeuge</strong>
+        <div class="psu-meta" style="margin-top:8px;">Schnelles Nachschlagen und Kopieren von Funkrufnamen im Einsatz.</div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>Smart Search</strong>
+        <input type="text" value="${escapeHtml(search)}" placeholder="Gemeinde, Fahrzeugtyp oder Funkrufname suchen..." oninput="setEinsatzKraefteSearch(this.value)" style="margin-top:8px;">
+        <div class="psu-meta" style="margin-top:6px;">Treffer: ${filtered.length}</div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>Fahrzeugübersicht nach Gemeinde</strong>
+        <div style="margin-top:8px;">${groupHtml || `<div class="lage-empty">Keine Ergebnisse.</div>`}</div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>Funkrufname finden</strong>
+        <div class="ek-row" style="margin-top:8px;">
+            <div><label>Gemeinde/Feuerwehr</label>
+                <select onchange="setEinsatzKraefteGeneratorGemeinde(this.value)">
+                    <option value="">Alle</option>
+                    ${gemeinden.map((g)=>`<option value="${escapeHtml(g)}" ${state.ui.generatorGemeinde === g ? "selected" : ""}>${escapeHtml(g)}</option>`).join("")}
+                </select>
+            </div>
+            <div><label>Fahrzeugtyp/-name</label><input type="text" value="${escapeHtml(state.ui.generatorType || "")}" placeholder="z. B. HLF, MTW, ELW" oninput="setEinsatzKraefteGeneratorType(this.value)"></div>
+        </div>
+        <div class="phonebook-list" style="margin-top:8px;">
+            ${genMatches.length ? genMatches.map((item)=>`<div class="phonebook-item">
+                <div class="phonebook-head">${escapeHtml(item.fahrzeugBezeichnung)} · ${escapeHtml(item.funkrufname)}</div>
+                <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)}</div>
+                <div class="phonebook-actions">
+                    <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
+                </div>
+            </div>`).join("") : `<div class="lage-empty">Keine Ergebnisse.</div>`}
+        </div>
+      </div>
+    `;
+}
+
+function renderEinsatzKraefteOverview(state){
+    const selectedIds = Object.keys(state.selected || {}).filter((id)=>state.selected[id] && state.selected[id].selected);
+    const selected = getSortedFunkrufData().filter((item)=>selectedIds.includes(item.id));
+    const groupByTyp = state.ui.groupBy === "typ";
+    const groups = {};
+    selected.forEach((item)=>{
+        const key = groupByTyp ? item.fahrzeugtyp : (item.organisation || item.gemeinde);
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(item);
+    });
+    const groupHtml = Object.keys(groups).sort((a, b)=>a.localeCompare(b, "de")).map((key)=>{
+        const rows = groups[key].map((item)=>{
+            const s = state.selected[item.id] || {};
+            return `<div class="phonebook-item">
+                <div class="phonebook-head">${escapeHtml(item.fahrzeugBezeichnung)} · ${escapeHtml(item.funkrufname)}</div>
+                <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)} · Status: ${escapeHtml(s.status || "Alarmiert")}${item.hinweis ? ` · ${escapeHtml(item.hinweis)}` : ""}</div>
+            </div>`;
+        }).join("");
+        return `<div class="section-title">${escapeHtml(key)}</div>${rows}`;
+    }).join("");
+
+    return `
+      <div class="atem-panel">
+        <strong>Einsatzübersicht – Kräfte</strong>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="setEinsatzKraefteView('selection')">⬅ Zur Auswahl</button>
+            <button onclick="setEinsatzKraefteGroupBy('gemeinde')" ${!groupByTyp ? "disabled" : ""}>Gruppierung: Gemeinde</button>
+            <button onclick="setEinsatzKraefteGroupBy('typ')" ${groupByTyp ? "disabled" : ""}>Gruppierung: Typ</button>
+        </div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="clearEinsatzKraefteSelection()">Alles abwählen</button>
+            <button onclick="shareEinsatzKraefteSelection()">Auswahl teilen</button>
+            <button onclick="exportEinsatzKraeftePdf()">PDF exportieren</button>
+        </div>
+        <div class="psu-meta" style="margin-top:8px;">${escapeHtml(state.einsatz.name || "Einsatz")} · ${escapeHtml(formatDateDeFromIsoDate(state.einsatz.datum || ""))} ${escapeHtml(state.einsatz.uhrzeit || "")} · Ausgewählt: ${selected.length}</div>
+      </div>
+      <div class="atem-panel">${groupHtml || `<div class="lage-empty">Keine Fahrzeuge ausgewählt.</div>`}</div>
+    `;
+}
+
+function renderEinsatzKraefteTool(){
+    const root = document.getElementById("einsatzKraefteRoot");
+    if (!root) return;
+    const state = getEinsatzKraefteState();
+    root.innerHTML = renderEinsatzKraefteSelection(state);
+}
+
 const data = {
     info: [
         {
             name:"Wichtige Telefonnummern",
+            phonebook: true,
             content:`
-            <strong>Zweckverband Ostholstein (Notfälle)</strong><br>
-            ☎️ <a href="tel:04561399400">04561 399-400</a><br><br>
-
-            <strong>TUIS Zentrale BASF Ludwigshafen</strong><br>
-            ☎️ <a href="tel:06216043333">0621 60 43333</a><br><br>
-
-            <strong>Tierklinik Neustädter Bucht GmbH &amp; Co. KG</strong><br>
-            ☎️ <a href="tel:04561521080">04561 521080</a><br><br>
-
-            <strong>Polizeizentralstation Timmendorfer Strand</strong><br>
-            ☎️ <a href="tel:0450340810">04503 40810</a><br><br>
-
-            <strong>Gift-Notrufzentrale</strong><br>
-            ☎️ <a href="tel:055119240">0551 19240</a><br><br>
-
-            <strong>Schleswig-Holstein Netz AG (Störungs- und Servicenummer)</strong><br>
-            ☎️ <a href="tel:041066489090">04106 6489090</a><br><br>
-
-            <strong>Westnetz GmbH (Stromstörung)</strong><br>
-            ☎️ <a href="tel:08004112244">0800 4112244</a><br><br>
-
-            <strong>Leitstelle Süd</strong><br>
-            ☎️ <a href="tel:04531880583">04531 88 05 83</a><br><br>
-
-            <strong>DLRG Hauptwache Tdf+SBZ </strong><br>
-            ☎️ <a href="tel:04503356820">04503 356820</a><br><br>
-
-            <strong>DLRG-Heim</strong><br>
-            ☎️ <a href="tel:045031784">04503 1784</a><br><br>
-
-            <strong>Wehrführer - Nils Bäumer</strong><br>
-            ☎️ <a href="tel:01725935311">+49 172 5935311</a><br><br>
-
-            <strong>Schlüsseldienst - Dirk Scharbau</strong><br>
-            ☎️ <a href="tel:01634184506">+49 163 4184506</a><br><br>
+            <div class="phonebook-wrap">
+                <details class="phonebook-add-wrap">
+                    <summary>➕ Neu hinzufügen</summary>
+                    <div class="phonebook-add-grid">
+                        <input id="importantPhoneNewSection" type="text" placeholder="Bereich (z. B. KatS Stab)">
+                        <input id="importantPhoneNewTitle" type="text" placeholder="Bezeichnung/Funktion*">
+                        <input id="importantPhoneNewPerson" type="text" placeholder="Name (optional)">
+                        <input id="importantPhoneNewPhone" type="text" placeholder="Telefonnummer*">
+                        <div class="full">
+                            <button onclick="addImportantPhoneContact()">➕ Neu hinzufügen</button>
+                        </div>
+                    </div>
+                </details>
+                <input
+                    id="importantPhoneSearch"
+                    type="text"
+                    class="phonebook-search"
+                    placeholder="🔎 Name, Funktion oder Nummer suchen..."
+                    oninput="filterImportantPhonebook(this.value)">
+                <div id="importantPhoneList" class="phonebook-list"></div>
+            </div>
             `
         },
         {
@@ -11254,6 +14463,18 @@ const data = {
         }
     },
     {
+        name:"Abfragebogen POL/Kripo",
+        subtitle:"Personensucheinsatz",
+        polKripoForm:true,
+        content:`
+        <div class="links-box">
+            <strong>Personensucheinsatz</strong><br>
+            Formular für strukturierte Abfrage mit PDF-Export für POL/Kripo.
+        </div>
+        <div id="polKripoFormRoot"></div>
+        `
+    },
+    {
         name:"Drohne einsetzen?",
         entscheidungMatrix:{
             title:"Drohne einsetzen?",
@@ -11271,6 +14492,18 @@ const data = {
                 "Zeitkritische Sofortrettung"
             ]
         }
+    }],
+
+    kraefte:[{
+        name:"Kräfte/Funkrufnamen",
+        einsatzKraefteTool:true,
+        content:`
+        <div class="links-box">
+            <strong>Funkrufnamen & Fahrzeuge – Einsatz-Auswahl</strong><br>
+            Suche, Auswahl, Status und Export für den laufenden Einsatz.
+        </div>
+        <div id="einsatzKraefteRoot"></div>
+        `
     }],
 
     grundlagen:[{
@@ -11568,6 +14801,15 @@ function showDetail(index){
     content += footerHtml();
 
     document.getElementById("category").innerHTML = content;
+    if (einsatz.phonebook){
+        renderImportantPhonebook("");
+    }
+    if (einsatz.polKripoForm){
+        renderPolKripoForm();
+    }
+    if (einsatz.einsatzKraefteTool){
+        renderEinsatzKraefteTool();
+    }
 }
 
 function resetCurrentChecklist(){
@@ -11641,6 +14883,10 @@ function searchEinsatz(text){
     const presseNeedle = "presse presse-modus statement medien sperrvermerk freigabe krisen kommunikation";
     if (text.length > 0 && presseNeedle.includes(text)){
         result += `<div class="card" onclick="openPresseOverlay()">📰 Presse</div>`;
+    }
+    const kraefteNeedle = "kraefte kräfte funkrufnamen funkrufname fahrzeuge fahrzeug einsatzkraefte einsatzkräfte";
+    if (text.length > 0 && kraefteNeedle.includes(text)){
+        result += `<div class="card" onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</div>`;
     }
     matches.forEach((item)=>{
         const star = item.fav ? "⭐ " : "";
