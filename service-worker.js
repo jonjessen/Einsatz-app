@@ -1,4 +1,4 @@
-const CACHE_NAME = "commandview-v2";
+const CACHE_NAME = "feuerwehr-app-v1";
 
 const urlsToCache = [
   "index.html",

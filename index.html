@@ -829,7 +829,7 @@ button:active {
 
 .asu-global-flash.show {
     display: flex;
-    animation: asu-global-flicker 0.24s steps(2, jump-none) 16;
+    animation: asu-global-flicker 0.42s steps(2, jump-none) infinite;
 }
 
 .asu-global-flash-msg {
@@ -2513,7 +2513,7 @@ button:active {
 .asu2-popup-overlay {
     position: fixed;
     inset: 0;
-    z-index: 3000;
+    z-index: 3600;
     display: none;
     align-items: center;
     justify-content: center;
@@ -4183,7 +4183,8 @@ iframe {
         <strong id="asuGlobalBannerTitle">Atemschutz Rückmeldung fällig</strong>
         <div id="asuGlobalBannerText">ASÜ-Alarm aktiv.</div>
     </div>
-    <button onclick="openAtemOverlay()">Zur Atemschutzüberwachung</button>
+    <button onclick="event.stopPropagation(); asuToggleAlarmSoundPause()" id="asuSoundPauseBtn">Ton pausieren</button>
+    <button onclick="event.stopPropagation(); openAtemOverlay()">Zur Atemschutzüberwachung</button>
 </div>
 <div id="asuGlobalFlash" class="asu-global-flash" aria-hidden="true">
     <div class="asu-global-flash-msg">RÜCKMELDUNG FÄLLIG - ATEMSCHUTZ</div>
@@ -8697,8 +8698,11 @@ const asuGlobalAlarmState = {
     activeTeamIds: [],
     activeTeamNames: [],
     unsilencedTeamIds: [],
+    soundPausedByUser: false,
     incidentId: null,
     audioLoopActive: false,
+    audioPrimed: false,
+    primeAttempted: false,
     fallbackLoopId: null,
     quickLongPressTimer: null,
     quickLongPressTriggered: false,
@@ -9583,6 +9587,35 @@ function asuPrepareAudioSession(){
     }
 }
 
+function asuPrimeAlarmAudio(){
+    const audio = document.getElementById("asuGlobalAlarmAudio");
+    if (!audio) return;
+    if (asuGlobalAlarmState.audioPrimed || asuGlobalAlarmState.primeAttempted) return;
+    asuGlobalAlarmState.primeAttempted = true;
+    asuPrepareAudioSession();
+    audio.loop = true;
+    audio.volume = 1;
+    audio.muted = true;
+    try {
+        const maybePromise = audio.play();
+        if (maybePromise && typeof maybePromise.then === "function"){
+            maybePromise.then(()=>{
+                asuGlobalAlarmState.audioPrimed = true;
+                asuGlobalAlarmState.primeAttempted = false;
+            }).catch(()=>{
+                asuGlobalAlarmState.audioPrimed = false;
+                asuGlobalAlarmState.primeAttempted = false;
+            });
+            return;
+        }
+        asuGlobalAlarmState.audioPrimed = true;
+        asuGlobalAlarmState.primeAttempted = false;
+    } catch {
+        asuGlobalAlarmState.audioPrimed = false;
+        asuGlobalAlarmState.primeAttempted = false;
+    }
+}
+
 function asuPlayFallbackAlarmBeep(level = "critical"){
     try {
         if (!asu2AudioCtx){
@@ -9625,21 +9658,42 @@ function asuStartGlobalAlarmAudio(){
     const state = asuEnsureState();
     if (!state.settings.alarmSound) return;
     asuPrepareAudioSession();
+    asuPrimeAlarmAudio();
     const audio = document.getElementById("asuGlobalAlarmAudio");
     if (!audio){
         asuStartFallbackAlarmLoop();
         return;
     }
+    if (asuGlobalAlarmState.audioPrimed){
+        try {
+            if (audio.paused){
+                const p = audio.play();
+                if (p && typeof p.then === "function"){
+                    p.catch(()=>{});
+                }
+            }
+            audio.currentTime = 0;
+            audio.muted = false;
+            asuGlobalAlarmState.audioLoopActive = true;
+            asuStopFallbackAlarmLoop();
+            return;
+        } catch {
+            // Falls Priming doch nicht greift, unten normal versuchen.
+        }
+    }
     if (!audio.paused){
+        audio.muted = false;
         asuGlobalAlarmState.audioLoopActive = true;
         return;
     }
+    audio.muted = false;
     audio.volume = 1;
     try {
         const maybePromise = audio.play();
         if (maybePromise && typeof maybePromise.then === "function"){
             maybePromise.then(()=>{
                 asuGlobalAlarmState.audioLoopActive = true;
+                asuGlobalAlarmState.audioPrimed = true;
                 asuStopFallbackAlarmLoop();
             }).catch(()=>{
                 asuStartFallbackAlarmLoop();
@@ -9657,8 +9711,12 @@ function asuStopGlobalAlarmAudio(){
     const audio = document.getElementById("asuGlobalAlarmAudio");
     if (audio){
         try {
-            audio.pause();
-            audio.currentTime = 0;
+            if (asuGlobalAlarmState.audioPrimed){
+                audio.muted = true;
+            } else {
+                audio.pause();
+                audio.currentTime = 0;
+            }
         } catch {
             // ignore
         }
@@ -9667,6 +9725,52 @@ function asuStopGlobalAlarmAudio(){
     asuStopFallbackAlarmLoop();
     if (navigator.vibrate){
         try { navigator.vibrate(0); } catch { /* ignore */ }
+    }
+}
+
+function asuGetTopPriorityAlarmTeamId(){
+    const incident = asuGetActiveIncident();
+    if (!incident) return null;
+    const now = Date.now();
+    let best = null;
+    let bestWeight = 999;
+    incident.teams.forEach((team)=>{
+        const warning = asuWarningLevel(team, incident, now);
+        if (warning.level === "ok") return;
+        const weight = asuTeamSortWeight(team, incident, now);
+        if (!best || weight < bestWeight){
+            best = team;
+            bestWeight = weight;
+        }
+    });
+    return best ? best.id : null;
+}
+
+function asuPauseAlarmSoundByUser(){
+    asuGlobalAlarmState.soundPausedByUser = true;
+    asuStopGlobalAlarmAudio();
+    const teamId = asuGetTopPriorityAlarmTeamId();
+    if (teamId){
+        asuOpenPressurePrompt(teamId, "timer_due");
+    }
+    asuUpdateGlobalAlarmUi();
+}
+
+function asuResumeAlarmSoundByUser(){
+    asuGlobalAlarmState.soundPausedByUser = false;
+    if (asuGlobalAlarmState.alarmActive && asuGlobalAlarmState.unsilencedTeamIds.length > 0){
+        asuStartGlobalAlarmAudio();
+    }
+    asuUpdateGlobalAlarmUi();
+}
+
+function asuToggleAlarmSoundPause(){
+    if (asuGlobalAlarmState.soundPausedByUser){
+        asuResumeAlarmSoundByUser();
+        showAtemHint("ASÜ-Ton fortgesetzt");
+    } else {
+        asuPauseAlarmSoundByUser();
+        showAtemHint("ASÜ-Ton pausiert");
     }
 }
 
@@ -9699,6 +9803,17 @@ function asuInitQuickButtonInteractions(){
         event.stopPropagation();
         asuGlobalAlarmState.quickLongPressTriggered = false;
     });
+}
+
+function asuInitAudioUnlockHooks(){
+    if (window.__asuAudioUnlockHooksBound) return;
+    window.__asuAudioUnlockHooksBound = true;
+    const unlock = ()=>{
+        asuPrimeAlarmAudio();
+    };
+    window.addEventListener("pointerdown", unlock, { passive: true });
+    window.addEventListener("touchstart", unlock, { passive: true });
+    window.addEventListener("keydown", unlock);
 }
 
 function asuGetGlobalAlarmSnapshot(incident, nowTs = Date.now()){
@@ -9789,6 +9904,7 @@ function asuUpdateGlobalAlarmUi(){
     const banner = document.getElementById("asuGlobalBanner");
     const bannerTitle = document.getElementById("asuGlobalBannerTitle");
     const bannerText = document.getElementById("asuGlobalBannerText");
+    const soundPauseBtn = document.getElementById("asuSoundPauseBtn");
     const flash = document.getElementById("asuGlobalFlash");
 
     const monitorActive = !!incident;
@@ -9804,6 +9920,9 @@ function asuUpdateGlobalAlarmUi(){
     if (banner){
         banner.classList.toggle("show", asuGlobalAlarmState.alarmActive);
     }
+    if (soundPauseBtn){
+        soundPauseBtn.textContent = asuGlobalAlarmState.soundPausedByUser ? "Ton fortsetzen" : "Ton pausieren";
+    }
     if (bannerTitle){
         bannerTitle.textContent = asuGlobalAlarmState.alarmActive
             ? "Atemschutz Rückmeldung fällig"
@@ -9818,7 +9937,7 @@ function asuUpdateGlobalAlarmUi(){
         }
     }
     if (flash){
-        const showFlash = Date.now() < asuGlobalAlarmState.flashingUntil;
+        const showFlash = asuGlobalAlarmState.alarmActive || Date.now() < asuGlobalAlarmState.flashingUntil;
         flash.classList.toggle("show", showFlash);
     }
 }
@@ -9837,7 +9956,7 @@ function asuApplyGlobalAlarmState(snapshot){
         if (!previousActive){
             asuGlobalAlarmState.alarmTriggeredAt = Date.now();
             asuGlobalAlarmState.flashingUntil = Date.now() + ASU_GLOBAL_FLASH_MS;
-            if (navigator.vibrate){
+            if (state.settings.alarmVibrate && navigator.vibrate){
                 try {
                     const pattern = snapshot.level === "critical" ? [350, 120, 350, 120, 350] : [220, 90, 220];
                     navigator.vibrate(pattern);
@@ -9846,7 +9965,7 @@ function asuApplyGlobalAlarmState(snapshot){
                 }
             }
         }
-        if (snapshot.unsilencedTeamIds.length > 0 && state.settings.alarmSound){
+        if (snapshot.unsilencedTeamIds.length > 0 && state.settings.alarmSound && !asuGlobalAlarmState.soundPausedByUser){
             asuStartGlobalAlarmAudio();
         } else {
             asuStopGlobalAlarmAudio();
@@ -9856,6 +9975,7 @@ function asuApplyGlobalAlarmState(snapshot){
         asuGlobalAlarmState.backgroundNotifiedKey = "";
         asuGlobalAlarmState.alarmTriggeredAt = null;
         asuGlobalAlarmState.flashingUntil = 0;
+        asuGlobalAlarmState.soundPausedByUser = false;
         asuStopGlobalAlarmAudio();
     }
     asuUpdateGlobalAlarmUi();
@@ -10188,11 +10308,13 @@ function asuExportIncidentPdf(){
     <style>
     @page { size: A4; margin: 14mm; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:#111; }
-    h1 { font-size: 18px; margin: 0 0 10px; }
+    .head { display:flex; align-items:center; gap:12px; margin:0 0 10px; }
+    .head img { width:56px; height:56px; object-fit:contain; }
+    h1 { font-size: 18px; margin: 0; }
     .meta { font-size: 12px; color:#444; margin-bottom: 12px; }
     pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.35; }
     </style></head><body>
-    <h1>Atemschutz-Protokoll</h1>
+    <div class="head"><img src="logo.png" alt="Logo"><h1>Atemschutz-Protokoll</h1></div>
     <div class="meta">Datei: ${escapeHtml(base)}.pdf</div>
     <pre>${escapeHtml(text)}</pre>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script>
@@ -10350,6 +10472,7 @@ function trapFocusInAtemOverlay(event){
 
 document.addEventListener("visibilitychange", ()=>{
     if (!document.hidden){
+        asuPrimeAlarmAudio();
         asuEnsureAlarmTicker();
         asuUpdateGlobalAlarmUi();
         if (isAtemOverlayOpen()){
@@ -10388,6 +10511,8 @@ function runAtemschutzV2Tests(){
 
 runAtemschutzV2Tests();
 AtemschutzUeberwachungService.ensureState();
+asuInitAudioUnlockHooks();
+asuPrimeAlarmAudio();
 AtemschutzUeberwachungService.ensureAlarmTicker();
 asuUpdateGlobalAlarmUi();
 
