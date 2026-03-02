@@ -1,4 +1,4 @@
-const CACHE_NAME = "ff360-app-v3";
+const CACHE_NAME = "ff360-app-v7";
 
 const urlsToCache = [
   "index.html",
@@ -7,7 +7,8 @@ const urlsToCache = [
   "icon-512.png",
   "logoapp.png",
   "logoff.png",
-  "asue_alarm.wav"
+  "asue_alarm.wav",
+  "asu_confirm.wav"
 ];
 
 self.addEventListener("install", event => {
@@ -15,6 +16,20 @@ self.addEventListener("install", event => {
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
   );
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    )
+  );
+  self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {

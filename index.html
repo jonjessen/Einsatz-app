@@ -3568,7 +3568,7 @@ iframe {
             <div class="home-tools-grid">
                 <button onclick="openFunkOverlay()">📡 Funk</button>
                 <button onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</button>
-                <button onclick="openPresseOverlay()">📰 Presse</button>
+                <button onclick="openPresseOverlay()">📰 Pressezentrale</button>
                 <button onclick="openSocialOverlay()">📝 Social-Media Beitrag</button>
             </div>
         </div>
@@ -3576,7 +3576,7 @@ iframe {
             <div class="home-subtitle">Spezial</div>
             <div class="home-tools-grid">
                 <button onclick="openAtemOverlay()">🫁 Atemschutzüberwachung</button>
-                <button id="homePsuBtn" onclick="openPsuOverlay()">🧠 PSU <span id="psuReminderBadge" class="psu-reminder-badge hidden">0</span></button>
+                <button id="homePsuBtn" onclick="openPsuOverlay()">🧠 Nachsorge <span id="psuReminderBadge" class="psu-reminder-badge hidden">0</span></button>
                 <button onclick="openGefahrgutOverlay()">☣️ Gefahrgut Schnellhilfe</button>
                 <button onclick="openEvakOverlay()">🏃 Evakuierungshelfer</button>
                 <button onclick="getLocation()">📍 GPS Koordinaten anzeigen</button>
@@ -3646,6 +3646,7 @@ iframe {
                 <div class="atem-row-actions" style="margin-top:8px;">
                     <button id="settingsDarkModeBtn" onclick="toggleDarkModeFromSettings()">Dark Mode umschalten</button>
                     <button id="settingsTrainingModeBtn" onclick="toggleTrainingModeFromSettings()">Übungsmodus umschalten</button>
+                    <button onclick="reloadAppPage()">Seite neu laden</button>
                 </div>
             </div>
             <div class="social-actions">
@@ -3680,8 +3681,8 @@ iframe {
     onclick="handlePsuOverlayBackdrop(event)">
     <div class="social-modal">
         <div class="social-header">
-            <h2 id="psuTitle">Psychosoziale Unterstützung (PSU)</h2>
-            <button class="social-close" onclick="closePsuOverlay()" aria-label="PSU schließen">✕</button>
+            <h2 id="psuTitle">Psychosoziale Nachsorge</h2>
+            <button class="social-close" onclick="closePsuOverlay()" aria-label="Nachsorge schließen">✕</button>
         </div>
         <div class="social-body" id="psuBody"></div>
     </div>
@@ -3843,8 +3844,8 @@ iframe {
     onclick="handlePresseOverlayBackdrop(event)">
     <div class="social-modal">
         <div class="social-header">
-            <h2 id="presseTitle">Presse</h2>
-            <button class="social-close" onclick="closePresseOverlay()" aria-label="Presse schließen">✕</button>
+            <h2 id="presseTitle">Pressezentrale</h2>
+            <button class="social-close" onclick="closePresseOverlay()" aria-label="Pressezentrale schließen">✕</button>
         </div>
         <div class="social-body" id="presseBody"></div>
     </div>
@@ -4089,6 +4090,15 @@ iframe {
                 </div>
             </div>
 
+            <div class="lage-section">
+                <h4>Bilderdokumentation</h4>
+                <div class="lage-row">
+                    <button onclick="triggerLagePhotoUpload()">📷 Bild hinzufügen</button>
+                </div>
+                <input id="lagePhotoInput" class="lage-photo-input" type="file" accept="image/*" capture="environment" onchange="handleLagePhotoUpload(event)">
+                <div id="lagePhotoList" class="lage-photo-list"></div>
+            </div>
+
             <div class="lage-grid">
                 <div class="lage-tile">
                     <h4>👥 Gerettete Personen</h4>
@@ -4290,27 +4300,17 @@ iframe {
                     <input id="lageLogTime" type="time">
                     <input id="lageLogText" type="text" placeholder="Ereignistext...">
                     <button onclick="addLageLogEvent()">➕ Ereignis hinzufügen</button>
-                    <button onclick="openPsuOverlay()">🧠 PSU</button>
                 </div>
                 <div id="lageLogList" class="lage-list"></div>
-            </div>
-
-            <div class="lage-section">
-                <h4>Bilderdokumentation</h4>
-                <div class="lage-row">
-                    <button onclick="triggerLagePhotoUpload()">📷 Bild hinzufügen</button>
-                </div>
-                <input id="lagePhotoInput" class="lage-photo-input" type="file" accept="image/*" capture="environment" onchange="handleLagePhotoUpload(event)">
-                <div id="lagePhotoList" class="lage-photo-list"></div>
             </div>
 
             <div class="lage-actions">
                 <button onclick="copyLageSummary()">📋 Lage kopieren</button>
                 <button onclick="editLageSummary()">📝 Lagemeldung bearbeiten</button>
-                <button onclick="copyLageLogExport()">Log exportieren</button>
                 <button onclick="exportLagePdf()">📄 Lage-PDF</button>
                 <button onclick="archiveCurrentIncident()">🗂 Einsatz archivieren</button>
                 <button onclick="resetLageDashboard()">Reset Lage</button>
+                <button onclick="copyLageLogExport()">Log exportieren</button>
                 <button onclick="closeLageOverlay()">Schließen</button>
             </div>
         </div>
@@ -4333,6 +4333,7 @@ iframe {
     <div class="asu-global-flash-msg">RÜCKMELDUNG FÄLLIG - ATEMSCHUTZ</div>
 </div>
 <audio id="asuGlobalAlarmAudio" preload="auto" loop playsinline src="asue_alarm.wav"></audio>
+<audio id="asuConfirmAudio" preload="auto" playsinline src="asu_confirm.wav"></audio>
 <div id="asu2GlobalPopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='asu2GlobalPopup'){asuDismissPressurePrompt()}">
     <div class="asu2-popup">
         <h4 id="asu2PopupTitle">Atemschutz-Rückmeldung</h4>
@@ -4835,6 +4836,10 @@ function toggleDarkModeFromSettings(){
 function toggleTrainingModeFromSettings(){
     toggleTrainingMode();
     renderSettingsOverlay();
+}
+
+function reloadAppPage(){
+    window.location.reload();
 }
 
 function openSettingsOverlay(){
@@ -9822,6 +9827,7 @@ function asuSetTeamStatus(teamId, nextStatus){
             team.lastPromptedDueAt = null;
             team.pauseStartedAt = null;
             asuResetTeamAlarmSilence(team);
+            asuPlayStartConfirmTone();
             asuAddLog("START_PA", `${team.name}: Start unter PA`, team.id);
             return;
         }
@@ -10128,6 +10134,13 @@ function asuPrimeAlarmAudio(){
     if (asuGlobalAlarmState.audioPrimed || asuGlobalAlarmState.primeAttempted) return;
     asuGlobalAlarmState.primeAttempted = true;
     asuPrepareAudioSession();
+    const currentSrc = String(audio.getAttribute("src") || "");
+    if (!currentSrc || !currentSrc.includes("asue_alarm.wav")){
+        audio.setAttribute("src", "asue_alarm.wav");
+    }
+    if (typeof audio.load === "function"){
+        try { audio.load(); } catch { /* ignore */ }
+    }
     audio.loop = true;
     audio.volume = 1;
     audio.muted = true;
@@ -10135,6 +10148,10 @@ function asuPrimeAlarmAudio(){
         const maybePromise = audio.play();
         if (maybePromise && typeof maybePromise.then === "function"){
             maybePromise.then(()=>{
+                // Priming nur zum Freischalten: sofort stoppen und zurücksetzen.
+                audio.pause();
+                audio.currentTime = 0;
+                audio.muted = false;
                 asuGlobalAlarmState.audioPrimed = true;
                 asuGlobalAlarmState.primeAttempted = false;
             }).catch(()=>{
@@ -10143,6 +10160,9 @@ function asuPrimeAlarmAudio(){
             });
             return;
         }
+        audio.pause();
+        audio.currentTime = 0;
+        audio.muted = false;
         asuGlobalAlarmState.audioPrimed = true;
         asuGlobalAlarmState.primeAttempted = false;
     } catch {
@@ -10199,30 +10219,10 @@ function asuStartGlobalAlarmAudio(){
         asuStartFallbackAlarmLoop();
         return;
     }
-    if (asuGlobalAlarmState.audioPrimed){
-        try {
-            if (audio.paused){
-                const p = audio.play();
-                if (p && typeof p.then === "function"){
-                    p.catch(()=>{});
-                }
-            }
-            audio.currentTime = 0;
-            audio.muted = false;
-            asuGlobalAlarmState.audioLoopActive = true;
-            asuStopFallbackAlarmLoop();
-            return;
-        } catch {
-            // Falls Priming doch nicht greift, unten normal versuchen.
-        }
-    }
-    if (!audio.paused){
-        audio.muted = false;
-        asuGlobalAlarmState.audioLoopActive = true;
-        return;
-    }
     audio.muted = false;
     audio.volume = 1;
+    audio.loop = true;
+    try { audio.currentTime = 0; } catch { /* ignore */ }
     try {
         const maybePromise = audio.play();
         if (maybePromise && typeof maybePromise.then === "function"){
@@ -10246,12 +10246,9 @@ function asuStopGlobalAlarmAudio(){
     const audio = document.getElementById("asuGlobalAlarmAudio");
     if (audio){
         try {
-            if (asuGlobalAlarmState.audioPrimed){
-                audio.muted = true;
-            } else {
-                audio.pause();
-                audio.currentTime = 0;
-            }
+            audio.pause();
+            audio.currentTime = 0;
+            audio.muted = false;
         } catch {
             // ignore
         }
@@ -10260,6 +10257,20 @@ function asuStopGlobalAlarmAudio(){
     asuStopFallbackAlarmLoop();
     if (navigator.vibrate){
         try { navigator.vibrate(0); } catch { /* ignore */ }
+    }
+}
+
+function asuPlayStartConfirmTone(){
+    const audio = document.getElementById("asuConfirmAudio");
+    if (!audio) return;
+    try {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = 1;
+        const p = audio.play();
+        if (p && typeof p.catch === "function") p.catch(()=>{});
+    } catch {
+        // Kein künstlicher Fallback-Ton mehr.
     }
 }
 
@@ -12387,7 +12398,7 @@ function setPresseActive(moduleKey){
 
 function getPresseModuleLabel(key){
     const hit = PRESSE_MODULES.find((m)=>m.key === key);
-    return hit ? hit.label : "Presse";
+    return hit ? hit.label : "Pressezentrale";
 }
 
 function renderPresseModuleCards(keys){
@@ -12476,12 +12487,6 @@ function renderPresseTool(){
     let content = `<div id="presseHint" class="social-hint hidden"></div>`;
 
     if (s.active === "home"){
-        content += `
-        <div class="atem-panel">
-            <strong>Pressezentrale</strong>
-            <div style="margin-top:6px;color:var(--text-muted);">Alle Funktionen sind thematisch gruppiert. Wähle den passenden Arbeitsbereich.</div>
-        </div>
-        `;
         PRESSE_GROUPS.forEach((group)=>{
             content += `
             <div class="atem-panel">
@@ -16347,7 +16352,7 @@ function searchEinsatz(text){
     }
     const presseNeedle = "presse presse-modus statement medien sperrvermerk freigabe krisen kommunikation";
     if (text.length > 0 && presseNeedle.includes(text)){
-        result += `<div class="card" onclick="openPresseOverlay()">📰 Presse</div>`;
+        result += `<div class="card" onclick="openPresseOverlay()">📰 Pressezentrale</div>`;
     }
     const kraefteNeedle = "kraefte kräfte funkrufnamen funkrufname fahrzeuge fahrzeug einsatzkraefte einsatzkräfte";
     if (text.length > 0 && kraefteNeedle.includes(text)){
