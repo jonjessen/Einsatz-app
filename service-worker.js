@@ -1,10 +1,12 @@
-const CACHE_NAME = "feuerwehr-app-v1";
+const CACHE_NAME = "ff360-app-v3";
 
 const urlsToCache = [
   "index.html",
   "manifest.json",
   "icon-192.png",
-  "icon-512.png"
+  "icon-512.png",
+  "assets/images/logoapp.png",
+  "assets/images/logoff.png"
 ];
 
 self.addEventListener("install", event => {

@@ -4,9 +4,10 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#bc1c1e">
 <link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-title" content="FF360">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>CommandView</title>
+<title>FF360</title>
 
 <style>
 :root {
@@ -61,7 +62,7 @@ html {
 
 header {
     position: relative;
-    padding: 24px 104px 24px 18px;
+    padding: 12px 104px 12px 18px;
     text-align: center;
     font-size: 22px;
     font-weight: 800;
@@ -69,6 +70,96 @@ header {
     color: #fff;
     background: linear-gradient(135deg, var(--primary), var(--primary-strong));
     box-shadow: 0 12px 30px rgba(141, 17, 28, 0.32);
+}
+
+.header-brand {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    line-height: 1.1;
+}
+
+.header-brand-logo {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    position: relative;
+    top: -2px;
+}
+
+.header-brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.header-brand-main {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+}
+
+.header-brand-sub {
+    margin-top: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15px;
+    opacity: 0.92;
+}
+
+.einsatz-lite-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.einsatz-lite-row button {
+    width: auto;
+    margin: 0;
+}
+
+.app-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+        radial-gradient(circle at 8% 5%, rgba(31, 95, 146, 0.2), transparent 36%),
+        radial-gradient(circle at 95% 0%, rgba(201, 33, 45, 0.18), transparent 40%),
+        linear-gradient(180deg, #1a2129, #0f141a);
+    color: #fff;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.app-splash.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.app-splash-main {
+    font-size: clamp(38px, 8vw, 64px);
+    font-weight: 900;
+    letter-spacing: 0.7px;
+}
+
+.app-splash-logo {
+    width: clamp(96px, 20vw, 150px);
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 14px;
+}
+
+.app-splash-sub {
+    margin-top: 12px;
+    font-size: clamp(14px, 2.8vw, 19px);
+    font-weight: 600;
+    opacity: 0.92;
 }
 
 .toggle {
@@ -1599,6 +1690,50 @@ button:active {
 .lage-list {
     display: grid;
     gap: 8px;
+}
+
+.lage-photo-input {
+    display: none;
+}
+
+.lage-photo-list {
+    display: grid;
+    gap: 10px;
+}
+
+.lage-photo-item {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 10px;
+}
+
+.lage-photo-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.lage-photo-preview {
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+}
+
+.lage-photo-note {
+    width: 100%;
+    min-height: 68px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 10px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--card);
+    resize: vertical;
 }
 
 .lage-item {
@@ -3213,6 +3348,15 @@ iframe {
         padding: 20px 84px 20px 12px;
     }
 
+    .header-brand-main {
+        font-size: 25px;
+    }
+
+    .header-brand-sub {
+        margin-top: 5px;
+        font-size: 12px;
+    }
+
     .header-actions {
         right: 10px;
         top: 10px;
@@ -3387,12 +3531,24 @@ iframe {
 </style>
 </head>
 <body>
+<div id="appSplash" class="app-splash" aria-label="FF 360 Grad Startscreen">
+    <div>
+        <img class="app-splash-logo" src="assets/images/logoapp.png" alt="FF 360 Logo">
+        <div class="app-splash-main">FF 360°</div>
+        <div class="app-splash-sub">Unterstützung im Einsatzdienst</div>
+    </div>
+</div>
 
 <header>
-🚒 CommandView
+<div class="header-brand">
+    <img class="header-brand-logo" src="assets/images/logoapp.png" alt="FF 360 Logo">
+    <div class="header-brand-text">
+        <div class="header-brand-main">FF 360°</div>
+        <div class="header-brand-sub">Unterstützung im Einsatzdienst</div>
+    </div>
+</div>
 <div class="header-actions">
-    <span id="trainingModeDot" class="mode-dot" onclick="toggleTrainingMode()" aria-label="Übungsmodus umschalten" title="Übungsmodus umschalten"></span>
-    <span class="toggle" onclick="toggleDarkMode()">🌙</span>
+    <span class="toggle" onclick="openSettingsOverlay()" aria-label="Einstellungen öffnen" title="Einstellungen">⚙️</span>
 </div>
 </header>
 
@@ -3403,18 +3559,15 @@ iframe {
         <div class="home-tool-group">
             <div class="home-subtitle">Führung</div>
             <div class="home-tools-grid">
-                <button onclick="openLageOverlay()">📊 Lageübersicht</button>
-                <button onclick="openStructureOverlay()">🧭 Einsatzstruktur</button>
-                <button onclick="openEinsatzOverlay()">📋 Einsätze</button>
-                <button onclick="openNachforderungOverlay()">🚨 Nachforderung</button>
+                <button onclick="openLageOverlay()">📊 Einsatzlage</button>
+                <button onclick="openEinsatzOverlay()">📋 Einsatzhistorie</button>
             </div>
         </div>
         <div class="home-tool-group">
             <div class="home-subtitle">Kommunikation</div>
             <div class="home-tools-grid">
-                <button onclick="openFunkOverlay()">📡 Funkmeldungen</button>
+                <button onclick="openFunkOverlay()">📡 Funk</button>
                 <button onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</button>
-                <button onclick="openFunkcheckOverlay()">📶 Funk-Check</button>
                 <button onclick="openPresseOverlay()">📰 Presse</button>
                 <button onclick="openSocialOverlay()">📝 Social-Media Beitrag</button>
             </div>
@@ -3429,16 +3582,8 @@ iframe {
                 <button onclick="getLocation()">📍 GPS Koordinaten anzeigen</button>
             </div>
         </div>
-        <div class="home-tool-group">
-            <div class="home-subtitle">Backup</div>
-            <div class="home-tools-grid">
-                <button onclick="exportCommandViewBackup()">📤 Daten exportieren (Backup)</button>
-                <button onclick="triggerCommandViewBackupImport()">📥 Daten importieren (Backup)</button>
-            </div>
-            <div class="backup-tip">Tipp: Backup-Datei per AirDrop, iCloud Drive oder Mail auf iPhone/iPad übertragen.</div>
-        </div>
     </div>
-    <input id="commandViewBackupFileInput" class="hidden" type="file" accept=".json,application/json" onchange="handleCommandViewBackupImport(event)">
+    <input id="ff360BackupFileInput" class="hidden" type="file" accept=".json,application/json" onchange="handleFF360BackupImport(event)">
 
     <div class="card" onclick="openCategory('info')">📞 Informationen</div>
     <div class="home-section-title">Einsatzleiter-Taschenbuch</div>
@@ -3449,14 +3594,63 @@ iframe {
     <div class="card" onclick="openCategory('vu')">🔧 Technische Hilfeleistung</div>
     <div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer</div>
     <div class="card" onclick="openCategory('drohne')">🚁 Drohne</div>
+    <div class="home-tool-group">
+        <div class="home-subtitle">Backup</div>
+        <div class="home-tools-grid">
+            <button onclick="exportFF360Backup()">📤 Daten exportieren (Backup)</button>
+            <button onclick="triggerFF360BackupImport()">📥 Daten importieren (Backup)</button>
+        </div>
+        <div class="backup-tip">Tipp: Backup-Datei per AirDrop, iCloud Drive oder Mail auf iPhone/iPad übertragen.</div>
+    </div>
 
     <div id="searchResults"></div>
 
     <div class="footer">
-        <img src="logo.png" alt="Logo">
+        <img src="assets/images/logoapp.png" alt="FF 360 Logo">
         <div>
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
-            Erstellung durch Jonas Jessen.
+            <span id="homeCreatorLine">Erstellt durch Jonas Jessen.</span>
+        </div>
+    </div>
+</div>
+
+<div
+    id="settingsOverlay"
+    class="social-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="settingsTitle"
+    onclick="handleSettingsOverlayBackdrop(event)">
+    <div class="social-modal">
+        <div class="social-header">
+            <h2 id="settingsTitle">Einstellungen</h2>
+            <button class="social-close" onclick="closeSettingsOverlay()" aria-label="Einstellungen schließen">✕</button>
+        </div>
+        <div class="social-body">
+            <div class="atem-panel">
+                <strong>Erstellerangaben</strong>
+                <div class="atem-grid" style="margin-top:8px;">
+                    <div>
+                        <label for="settingsCreatorName">Name</label>
+                        <input id="settingsCreatorName" type="text" maxlength="120" placeholder="z. B. Max Mustermann" oninput="updateCreatorProfileField('name', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsCreatorFeuerwehr">Feuerwehr</label>
+                        <input id="settingsCreatorFeuerwehr" type="text" maxlength="160" placeholder="z. B. FF Musterstadt" oninput="updateCreatorProfileField('feuerwehr', this.value)">
+                    </div>
+                </div>
+                <div class="psu-meta" id="settingsCreatorPreview" style="margin-top:8px;"></div>
+            </div>
+            <div class="atem-panel">
+                <strong>App</strong>
+                <div class="atem-row-actions" style="margin-top:8px;">
+                    <button id="settingsDarkModeBtn" onclick="toggleDarkModeFromSettings()">Dark Mode umschalten</button>
+                    <button id="settingsTrainingModeBtn" onclick="toggleTrainingModeFromSettings()">Übungsmodus umschalten</button>
+                </div>
+            </div>
+            <div class="social-actions">
+                <button onclick="closeSettingsOverlay()">Schließen</button>
+            </div>
         </div>
     </div>
 </div>
@@ -3565,6 +3759,11 @@ iframe {
                         <label for="socialTaetigkeit">Tätigkeit der Feuerwehr</label>
                         <textarea id="socialTaetigkeit" oninput="updateSocialField('taetigkeit', this.value)"></textarea>
                     </div>
+                    <div class="social-col-full">
+                        <div class="einsatz-lite-row" style="margin-top:8px;">
+                            <button onclick="exportSocialEinsatzprotokollPdf()">📄 Einsatzprotokoll (PDF)</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -3573,7 +3772,7 @@ iframe {
 
             <div class="social-actions">
                 <button onclick="copySocialPost()">📋 Kopieren</button>
-                <button onclick="saveSocialToEinsatzLog()">Für Einsätze speichern</button>
+                <button onclick="saveSocialToEinsatzLog()">Für Einsatzhistorie speichern</button>
                 <button onclick="resetSocialPost()">Zurücksetzen</button>
                 <button onclick="closeSocialOverlay()">Schließen</button>
             </div>
@@ -3590,8 +3789,8 @@ iframe {
     onclick="handleEinsatzOverlayBackdrop(event)">
     <div class="einsatz-modal">
         <div class="einsatz-header">
-            <h2 id="einsatzTitle">Einsätze</h2>
-            <button class="einsatz-close" onclick="closeEinsatzOverlay()" aria-label="Einsätze schließen">✕</button>
+            <h2 id="einsatzTitle">Einsatzhistorie</h2>
+            <button class="einsatz-close" onclick="closeEinsatzOverlay()" aria-label="Einsatzhistorie schließen">✕</button>
         </div>
         <div class="einsatz-body">
             <div id="einsatzSummary" class="einsatz-summary"></div>
@@ -3600,22 +3799,6 @@ iframe {
                 <button onclick="closeEinsatzOverlay()">Schließen</button>
             </div>
         </div>
-    </div>
-</div>
-
-<div
-    id="funkcheckOverlay"
-    class="social-overlay"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="funkcheckTitle"
-    onclick="handleFunkcheckOverlayBackdrop(event)">
-    <div class="social-modal">
-        <div class="social-header">
-            <h2 id="funkcheckTitle">Funk-Check</h2>
-            <button class="social-close" onclick="closeFunkcheckOverlay()" aria-label="Funk-Check schließen">✕</button>
-        </div>
-        <div class="social-body" id="funkcheckBody"></div>
     </div>
 </div>
 
@@ -3668,64 +3851,6 @@ iframe {
 </div>
 
 <div
-    id="nachOverlay"
-    class="nach-overlay"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="nachTitle"
-    onclick="handleNachforderungOverlayBackdrop(event)">
-    <div class="nach-modal">
-        <div class="nach-header">
-            <h2 id="nachTitle">🚨 Nachforderungs-Assistent</h2>
-            <button class="nach-close" onclick="closeNachforderungOverlay()" aria-label="Nachforderung schließen">✕</button>
-        </div>
-        <div class="nach-body">
-            <div class="nach-form">
-                <div class="nach-grid">
-                    <div>
-                        <label for="nachResource">Ressource</label>
-                        <select id="nachResource" onchange="updateNachforderungFormState()">
-                            <option value="DLK">DLK</option>
-                            <option value="TLF">TLF</option>
-                            <option value="HLF">HLF</option>
-                            <option value="RW">RW</option>
-                            <option value="GW-A">GW-A</option>
-                            <option value="SEG">SEG</option>
-                            <option value="THW">THW</option>
-                            <option value="Polizei">Polizei</option>
-                            <option value="Energieversorger">Energieversorger</option>
-                            <option value="Schaum">Schaum</option>
-                            <option value="Sonstiges">Sonstiges</option>
-                        </select>
-                    </div>
-                    <div id="nachResourceOtherWrap" class="hidden">
-                        <label for="nachResourceOther">Sonstiges (Freitext)</label>
-                        <input id="nachResourceOther" type="text" placeholder="Ressource benennen...">
-                    </div>
-                    <div class="nach-col-full">
-                        <label for="nachReason">Begründung</label>
-                        <textarea id="nachReason" placeholder="Warum wird nachgefordert?"></textarea>
-                    </div>
-                    <div class="nach-col-full">
-                        <label for="nachSource">Woher kommt die Ressource? (optional)</label>
-                        <input id="nachSource" type="text" placeholder="z. B. FF Musterdorf, SEG Nord, THW OV ...">
-                    </div>
-                </div>
-                <button onclick="addNachforderung()">Anfordern</button>
-            </div>
-
-            <div id="nachList" class="nach-list"></div>
-
-            <div class="nach-actions">
-                <button onclick="pushNachforderungenToLageLog()">In Lageprotokoll übernehmen</button>
-                <button onclick="resetNachforderungen()">Alle zurücksetzen</button>
-                <button onclick="closeNachforderungOverlay()">Schließen</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div
     id="funkOverlay"
     class="funk-overlay"
     role="dialog"
@@ -3734,8 +3859,8 @@ iframe {
     onclick="handleFunkOverlayBackdrop(event)">
     <div class="funk-modal">
         <div class="funk-header">
-            <h2 id="funkTitle">Funk- &amp; Lagemeldungs-Generator</h2>
-            <button class="funk-close" onclick="closeFunkOverlay()" aria-label="Funkmeldungen schließen">✕</button>
+            <h2 id="funkTitle">Funk &amp; Funk-Check</h2>
+            <button class="funk-close" onclick="closeFunkOverlay()" aria-label="Funk schließen">✕</button>
         </div>
         <div class="funk-body">
             <div class="funk-callsign">
@@ -3916,6 +4041,11 @@ iframe {
                 <h4>Letzte 10 Meldungen</h4>
                 <div id="funkHistoryList" class="funk-history-list"></div>
             </div>
+
+            <div class="funk-history">
+                <h4>Funk-Check Session</h4>
+                <div id="funkcheckInlineBody"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -3929,8 +4059,8 @@ iframe {
     onclick="handleLageOverlayBackdrop(event)">
     <div class="lage-modal">
         <div class="lage-header">
-            <h2 id="lageTitle">Lageübersicht</h2>
-            <button class="lage-close" onclick="closeLageOverlay()" aria-label="Lageübersicht schließen">✕</button>
+            <h2 id="lageTitle">Einsatzlage</h2>
+            <button class="lage-close" onclick="closeLageOverlay()" aria-label="Einsatzlage schließen">✕</button>
         </div>
         <div class="lage-body">
             <div class="lage-headline">
@@ -4035,6 +4165,32 @@ iframe {
                 </div>
             </div>
 
+            <div class="lage-section">
+                <h4>🔥 Abschnitte aktiv · Einsatzstruktur</h4>
+                <div class="structure-toolbar">
+                    <button onclick="showStructureForm()">➕ Abschnitt hinzufügen</button>
+                    <button onclick="clearAllSections()">Alle löschen</button>
+                </div>
+                <div id="structureTotal" class="structure-total">Gesamtkräfte: 0</div>
+                <form id="structureForm" class="structure-form" onsubmit="submitSectionForm(event)">
+                    <label for="sectionNameInput">Abschnittsname</label>
+                    <input id="sectionNameInput" type="text" required maxlength="80" placeholder="z. B. Abschnitt Brandbekämpfung">
+                    <label for="sectionCountInput">Anzahl Kräfte</label>
+                    <input id="sectionCountInput" type="number" required min="0" step="1" placeholder="0">
+                    <label for="sectionStatusInput">Status</label>
+                    <select id="sectionStatusInput" required>
+                        <option value="laufend">🟢 läuft</option>
+                        <option value="kritisch">🟡 kritisch</option>
+                        <option value="eskaliert">🔴 eskaliert</option>
+                    </select>
+                    <div class="structure-form-actions">
+                        <button type="submit">Speichern</button>
+                        <button type="button" onclick="hideStructureForm()">Abbrechen</button>
+                    </div>
+                </form>
+                <div id="structureList" class="structure-list" aria-live="polite"></div>
+            </div>
+
             <div class="lage-priority-switch">
                 <button id="lagePriorityGreen" onclick="setLagePriority('green')">🟢 stabil</button>
                 <button id="lagePriorityYellow" onclick="setLagePriority('yellow')">🟡 dynamisch</button>
@@ -4090,21 +4246,42 @@ iframe {
 
             <div class="lage-section">
                 <h4>Nachforderungen / Ressourcen</h4>
-                <div class="lage-row">
-                    <input id="lageRequestText" type="text" placeholder="Nachforderung eingeben...">
-                    <select id="lageRequestCategory">
-                        <option value="Allgemein">Allgemein</option>
-                        <option value="RD">RD</option>
-                        <option value="Polizei">Polizei</option>
-                        <option value="EVU">EVU</option>
-                        <option value="THW">THW</option>
-                        <option value="Schaum">Schaum</option>
-                        <option value="DLK">DLK</option>
-                        <option value="SEG">SEG</option>
-                    </select>
-                    <button onclick="addLageRequest()">➕ Eintrag hinzufügen</button>
+                <div class="nach-grid">
+                    <div>
+                        <label for="lageNachResource">Ressource</label>
+                        <select id="lageNachResource" onchange="updateNachforderungFormState('lage')">
+                            <option value="DLK">DLK</option>
+                            <option value="TLF">TLF</option>
+                            <option value="HLF">HLF</option>
+                            <option value="RW">RW</option>
+                            <option value="GW-A">GW-A</option>
+                            <option value="SEG">SEG</option>
+                            <option value="THW">THW</option>
+                            <option value="Polizei">Polizei</option>
+                            <option value="Energieversorger">Energieversorger</option>
+                            <option value="Schaum">Schaum</option>
+                            <option value="Sonstiges">Sonstiges</option>
+                        </select>
+                    </div>
+                    <div id="lageNachResourceOtherWrap" class="hidden">
+                        <label for="lageNachResourceOther">Sonstiges (Freitext)</label>
+                        <input id="lageNachResourceOther" type="text" placeholder="Ressource benennen...">
+                    </div>
+                    <div class="nach-col-full">
+                        <label for="lageNachReason">Begründung</label>
+                        <textarea id="lageNachReason" placeholder="Warum wird nachgefordert?"></textarea>
+                    </div>
+                    <div class="nach-col-full">
+                        <label for="lageNachSource">Woher kommt die Ressource? (optional)</label>
+                        <input id="lageNachSource" type="text" placeholder="z. B. FF Musterdorf, SEG Nord, THW OV ...">
+                    </div>
                 </div>
-                <div id="lageRequestsList" class="lage-list"></div>
+                <div class="nach-actions" style="margin-top:8px;">
+                    <button onclick="addNachforderung('lage')">Anfordern</button>
+                    <button onclick="pushNachforderungenToLageLog()">In Lageprotokoll übernehmen</button>
+                    <button onclick="resetNachforderungen()">Alle zurücksetzen</button>
+                </div>
+                <div id="lageNachList" class="nach-list"></div>
             </div>
 
             <div class="lage-section">
@@ -4118,58 +4295,24 @@ iframe {
                 <div id="lageLogList" class="lage-list"></div>
             </div>
 
+            <div class="lage-section">
+                <h4>Bilderdokumentation</h4>
+                <div class="lage-row">
+                    <button onclick="triggerLagePhotoUpload()">📷 Bild hinzufügen</button>
+                </div>
+                <input id="lagePhotoInput" class="lage-photo-input" type="file" accept="image/*" capture="environment" onchange="handleLagePhotoUpload(event)">
+                <div id="lagePhotoList" class="lage-photo-list"></div>
+            </div>
+
             <div class="lage-actions">
                 <button onclick="copyLageSummary()">📋 Lage kopieren</button>
                 <button onclick="editLageSummary()">📝 Lagemeldung bearbeiten</button>
                 <button onclick="copyLageLogExport()">Log exportieren</button>
+                <button onclick="exportLagePdf()">📄 Lage-PDF</button>
                 <button onclick="archiveCurrentIncident()">🗂 Einsatz archivieren</button>
                 <button onclick="resetLageDashboard()">Reset Lage</button>
                 <button onclick="closeLageOverlay()">Schließen</button>
             </div>
-        </div>
-    </div>
-</div>
-
-<div
-    id="structureOverlay"
-    class="structure-overlay"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="structureTitle"
-    onclick="handleStructureOverlayBackdrop(event)">
-    <div class="structure-modal">
-        <div class="structure-header">
-            <h2 id="structureTitle">Einsatzstruktur</h2>
-            <button id="structureCloseBtn" class="structure-close" onclick="closeStructureOverlay()" aria-label="Einsatzstruktur schließen">✕</button>
-        </div>
-        <div class="structure-body">
-            <div class="structure-toolbar">
-                <button onclick="showStructureForm()">➕ Abschnitt hinzufügen</button>
-                <button onclick="clearAllSections()">Alle löschen</button>
-            </div>
-            <div id="structureTotal" class="structure-total">Gesamtkräfte: 0</div>
-
-            <form id="structureForm" class="structure-form" onsubmit="submitSectionForm(event)">
-                <label for="sectionNameInput">Abschnittsname</label>
-                <input id="sectionNameInput" type="text" required maxlength="80" placeholder="z. B. Abschnitt Brandbekämpfung">
-
-                <label for="sectionCountInput">Anzahl Kräfte</label>
-                <input id="sectionCountInput" type="number" required min="0" step="1" placeholder="0">
-
-                <label for="sectionStatusInput">Status</label>
-                <select id="sectionStatusInput" required>
-                    <option value="laufend">🟢 läuft</option>
-                    <option value="kritisch">🟡 kritisch</option>
-                    <option value="eskaliert">🔴 eskaliert</option>
-                </select>
-
-                <div class="structure-form-actions">
-                    <button type="submit">Speichern</button>
-                    <button type="button" onclick="hideStructureForm()">Abbrechen</button>
-                </div>
-            </form>
-
-            <div id="structureList" class="structure-list" aria-live="polite"></div>
         </div>
     </div>
 </div>
@@ -4237,6 +4380,7 @@ iframe {
 let currentCategory = null;
 const FAVORITES_STORAGE_KEY = "einsatz_favoriten";
 const APP_MODE_STORAGE_KEY = "app_mode_v1";
+const CREATOR_PROFILE_STORAGE_KEY = "ff360_creator_profile_v1";
 const SCOPED_STORAGE_BASE_KEYS = new Set([
     "einsatz_favoriten",
     "aaaabceeee_open",
@@ -4478,10 +4622,34 @@ async function importIndexedDbSnapshot(snapshot, mode){
     }
 }
 
-async function exportCommandViewBackup(){
+function flushPendingDataWrites(){
+    const clearIfSet = (timerName)=>{
+        if (typeof window[timerName] !== "undefined" && window[timerName]){
+            clearTimeout(window[timerName]);
+            window[timerName] = null;
+        }
+    };
+
+    clearIfSet("atemschutzSaveTimer");
+    clearIfSet("asu2SaveTimer");
+    clearIfSet("funkcheckSaveTimer");
+    clearIfSet("gefahrgutSaveTimer");
+    clearIfSet("evakSaveTimer");
+    clearIfSet("presseSaveTimer");
+
+    if (typeof saveAtemschutzState === "function") saveAtemschutzState();
+    if (typeof asuSaveStateImmediate === "function") asuSaveStateImmediate();
+    if (typeof saveFunkcheckState === "function") saveFunkcheckState();
+    if (typeof saveGefahrgutState === "function") saveGefahrgutState();
+    if (typeof saveEvakState === "function") saveEvakState();
+    if (typeof savePresseState === "function") savePresseState();
+}
+
+async function exportFF360Backup(){
     try {
+        flushPendingDataWrites();
         const backup = {
-            appName: "CommandView",
+            appName: "FF360",
             backupVersion: "1.0",
             createdAt: new Date().toISOString(),
             data: {
@@ -4489,20 +4657,20 @@ async function exportCommandViewBackup(){
                 indexedDB: await exportIndexedDbSnapshot()
             }
         };
-        downloadTextFile("commandview-backup.json", JSON.stringify(backup, null, 2));
+        downloadTextFile("ff360-backup.json", JSON.stringify(backup, null, 2));
     } catch (error){
         alert(`Backup konnte nicht erstellt werden: ${String(error && error.message ? error.message : error)}`);
     }
 }
 
-function triggerCommandViewBackupImport(){
-    const input = document.getElementById("commandViewBackupFileInput");
+function triggerFF360BackupImport(){
+    const input = document.getElementById("ff360BackupFileInput");
     if (!input) return;
     input.value = "";
     input.click();
 }
 
-async function handleCommandViewBackupImport(event){
+async function handleFF360BackupImport(event){
     try {
         const file = event && event.target && event.target.files ? event.target.files[0] : null;
         if (!file) return;
@@ -4515,8 +4683,8 @@ async function handleCommandViewBackupImport(event){
             return;
         }
 
-        if (!parsed || parsed.appName !== "CommandView" || !parsed.data){
-            alert("Datei ist kein gültiges CommandView-Backup.");
+        if (!parsed || (parsed.appName !== "FF360" && parsed.appName !== "CommandView") || !parsed.data){
+            alert("Datei ist kein gültiges FF360-Backup.");
             return;
         }
 
@@ -4531,6 +4699,11 @@ async function handleCommandViewBackupImport(event){
         alert(`Import fehlgeschlagen: ${String(error && error.message ? error.message : error)}`);
     }
 }
+
+// Rückwärtskompatibilität für bestehende Referenzen.
+const exportCommandViewBackup = exportFF360Backup;
+const triggerCommandViewBackupImport = triggerFF360BackupImport;
+const handleCommandViewBackupImport = handleFF360BackupImport;
 
 function getNowTimeValueWithSeconds(){
     const now = new Date();
@@ -4547,6 +4720,7 @@ function updateTrainingModeUi(){
         dot.classList.toggle("active", isTrainingMode());
     }
 }
+
 
 function toggleTrainingMode(){
     trainingModeActive = !trainingModeActive;
@@ -4570,10 +4744,157 @@ if (appStorageGetItem("darkMode") === "true") {
     document.body.classList.add("dark");
 }
 updateTrainingModeUi();
+renderCreatorFooterLine();
 function toggleDarkMode(){
     document.body.classList.toggle("dark");
     appStorageSetItem("darkMode", document.body.classList.contains("dark"));
 }
+
+function getDefaultCreatorProfile(){
+    return { name: "", feuerwehr: "" };
+}
+
+function getCreatorProfile(){
+    try {
+        const raw = localStorage.getItem(CREATOR_PROFILE_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        const base = getDefaultCreatorProfile();
+        return {
+            name: String((parsed && parsed.name) || base.name || "").trim(),
+            feuerwehr: String((parsed && parsed.feuerwehr) || base.feuerwehr || "").trim()
+        };
+    } catch {
+        return getDefaultCreatorProfile();
+    }
+}
+
+function saveCreatorProfile(profile){
+    const next = {
+        name: String((profile && profile.name) || "").trim(),
+        feuerwehr: String((profile && profile.feuerwehr) || "").trim()
+    };
+    localStorage.setItem(CREATOR_PROFILE_STORAGE_KEY, JSON.stringify(next));
+}
+
+function getAppFooterCreatorText(){
+    return "Erstellt durch Jonas Jessen.";
+}
+
+function getExportCreatorText(){
+    const profile = getCreatorProfile();
+    if (!profile.name && !profile.feuerwehr){
+        return "Erstellt durch: nicht hinterlegt.";
+    }
+    if (profile.name && profile.feuerwehr){
+        return `Erstellt durch: ${profile.name} (${profile.feuerwehr})`;
+    }
+    return `Erstellt durch: ${profile.name || profile.feuerwehr}`;
+}
+
+function renderCreatorFooterLine(){
+    const el = document.getElementById("homeCreatorLine");
+    if (el){
+        el.textContent = getAppFooterCreatorText();
+    }
+}
+
+function updateCreatorProfileField(field, value){
+    const profile = getCreatorProfile();
+    profile[field] = value || "";
+    saveCreatorProfile(profile);
+    renderCreatorFooterLine();
+    const preview = document.getElementById("settingsCreatorPreview");
+    if (preview){
+        preview.textContent = getExportCreatorText();
+    }
+}
+
+function renderSettingsOverlay(){
+    const profile = getCreatorProfile();
+    const nameInput = document.getElementById("settingsCreatorName");
+    const fwInput = document.getElementById("settingsCreatorFeuerwehr");
+    const preview = document.getElementById("settingsCreatorPreview");
+    const darkBtn = document.getElementById("settingsDarkModeBtn");
+    const trainingBtn = document.getElementById("settingsTrainingModeBtn");
+    if (nameInput) nameInput.value = profile.name || "";
+    if (fwInput) fwInput.value = profile.feuerwehr || "";
+    if (preview) preview.textContent = getExportCreatorText();
+    if (darkBtn){
+        darkBtn.textContent = document.body.classList.contains("dark") ? "Dark Mode deaktivieren" : "Dark Mode aktivieren";
+    }
+    if (trainingBtn){
+        trainingBtn.textContent = isTrainingMode() ? "Übungsmodus deaktivieren" : "Übungsmodus aktivieren";
+    }
+}
+
+function toggleDarkModeFromSettings(){
+    toggleDarkMode();
+    renderSettingsOverlay();
+}
+
+function toggleTrainingModeFromSettings(){
+    toggleTrainingMode();
+    renderSettingsOverlay();
+}
+
+function openSettingsOverlay(){
+    const overlay = document.getElementById("settingsOverlay");
+    if (!overlay) return;
+    lastSettingsFocus = document.activeElement;
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    renderSettingsOverlay();
+}
+
+function closeSettingsOverlay(){
+    const overlay = document.getElementById("settingsOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    if (lastSettingsFocus && typeof lastSettingsFocus.focus === "function"){
+        lastSettingsFocus.focus();
+    }
+}
+
+function handleSettingsOverlayBackdrop(event){
+    if (event.target && event.target.id === "settingsOverlay"){
+        closeSettingsOverlay();
+    }
+}
+
+function isSettingsOverlayOpen(){
+    const overlay = document.getElementById("settingsOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function trapFocusInSettingsOverlay(event){
+    if (event.key !== "Tab" || !isSettingsOverlayOpen()) return;
+    const overlay = document.getElementById("settingsOverlay");
+    if (!overlay) return;
+    const focusable = overlay.querySelectorAll(
+        "button, [href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])"
+    );
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first){
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && document.activeElement === last){
+        event.preventDefault();
+        first.focus();
+    }
+}
+
+document.addEventListener("keydown", (event)=>{
+    if (!isSettingsOverlayOpen()) return;
+    if (event.key === "Escape"){
+        closeSettingsOverlay();
+        return;
+    }
+    trapFocusInSettingsOverlay(event);
+});
 
 function getFavorites(){
     try {
@@ -4657,6 +4978,7 @@ const EINSATZ_ARCHIVE_STORAGE_KEY = "einsatz_archiv_v1";
 const PSU_CONTACTS_STORAGE_KEY = "psu_contacts_v1";
 const PSU_REMINDERS_STORAGE_KEY = "psu_reminders_v1";
 const PSU_STATE_STORAGE_KEY = "psu_state_v1";
+const LAGE_PHOTO_MAX_COUNT = 8;
 let lastDangerFocus = null;
 let lastStructureFocus = null;
 let lastLageFocus = null;
@@ -4668,8 +4990,8 @@ let lastFunkcheckFocus = null;
 let lastGefahrgutFocus = null;
 let lastEvakFocus = null;
 let lastPresseFocus = null;
-let lastNachforderungFocus = null;
 let lastPsuFocus = null;
+let lastSettingsFocus = null;
 let editSectionId = null;
 let lageTimerId = null;
 let psuReminderTickerId = null;
@@ -5018,7 +5340,7 @@ function closeDangerOverlay(){
     const overlay = document.getElementById("dangerOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastDangerFocus && typeof lastDangerFocus.focus === "function"){
         lastDangerFocus.focus();
@@ -5242,7 +5564,7 @@ function closeStructureOverlay(){
     if (!overlay) return;
     overlay.classList.remove("show");
     hideStructureForm();
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastStructureFocus && typeof lastStructureFocus.focus === "function"){
         lastStructureFocus.focus();
@@ -5323,6 +5645,7 @@ function getDefaultLageState(){
         freeText: "",
         autoReportCustomText: "",
         requests: [],
+        photos: [],
         log: []
     };
 }
@@ -5346,12 +5669,23 @@ function getLageState(){
                 data: entry && entry.data ? entry.data : null
             };
         }).filter((entry)=>entry.text);
+        const rawPhotos = Array.isArray(parsed && parsed.photos) ? parsed.photos : [];
+        const normalizedPhotos = rawPhotos
+            .filter((entry)=>entry && typeof entry === "object" && typeof entry.dataUrl === "string" && entry.dataUrl.startsWith("data:image/"))
+            .map((entry)=>({
+                id: entry.id || `lage_photo_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                capturedAt: entry.capturedAt || new Date().toISOString(),
+                note: typeof entry.note === "string" ? entry.note : "",
+                dataUrl: entry.dataUrl
+            }))
+            .slice(0, LAGE_PHOTO_MAX_COUNT);
         return {
             ...defaults,
             ...(parsed || {}),
             counters: { ...defaults.counters, ...((parsed && parsed.counters) || {}) },
             toggles: { ...defaults.toggles, ...((parsed && parsed.toggles) || {}) },
             requests: Array.isArray(parsed && parsed.requests) ? parsed.requests : [],
+            photos: normalizedPhotos,
             log: normalizedLog
         };
     } catch {
@@ -5626,8 +5960,8 @@ function renderLageDashboard(){
     }
 
     renderLagePriority(state.priority || "yellow");
-    renderLageRequests(state.requests || []);
     renderLageLog(state.log || []);
+    renderLagePhotos(state.photos || []);
 
     const logTimeInput = document.getElementById("lageLogTime");
     if (logTimeInput && !logTimeInput.value){
@@ -5814,88 +6148,6 @@ function collapseLageTimeControls(){
     if (details) details.open = false;
 }
 
-function renderLageRequests(requests){
-    const container = document.getElementById("lageRequestsList");
-    if (!container) return;
-    if (!requests.length){
-        container.innerHTML = `<div class="lage-empty">Noch keine Nachforderungen.</div>`;
-        return;
-    }
-
-    let html = "";
-    requests.forEach((item)=>{
-        html += `
-        <div class="lage-item">
-            <div class="lage-item-top">
-                <strong>${item.text}</strong>
-                <span class="lage-badge">${item.category || "Allgemein"}</span>
-            </div>
-            <div>Status: ${item.status}</div>
-            <div class="lage-item-actions">
-                <button onclick="setLageRequestStatus('${item.id}','angefordert')">angefordert</button>
-                <button onclick="setLageRequestStatus('${item.id}','unterwegs')">unterwegs</button>
-                <button onclick="setLageRequestStatus('${item.id}','eingetroffen')">eingetroffen</button>
-                <button onclick="editLageRequest('${item.id}')">✏️</button>
-                <button onclick="deleteLageRequest('${item.id}')">🗑</button>
-            </div>
-        </div>`;
-    });
-    container.innerHTML = html;
-}
-
-function addLageRequest(){
-    const textInput = document.getElementById("lageRequestText");
-    const categoryInput = document.getElementById("lageRequestCategory");
-    if (!textInput || !categoryInput) return;
-    const text = textInput.value.trim();
-    if (!text) return;
-    const category = categoryInput.value || "Allgemein";
-
-    patchLageState((state)=>{
-        state.requests.push({
-            id: `req_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-            text,
-            category,
-            status: "angefordert"
-        });
-    });
-    addLageLogInternal(`Nachforderung: ${text} (${category})`, {
-        category: "NACHFORDERUNG",
-        level: "info",
-        dedupeKey: `lage_req_${text}_${category}`
-    });
-    textInput.value = "";
-    renderLageDashboard();
-}
-
-function setLageRequestStatus(id, status){
-    patchLageState((state)=>{
-        const idx = state.requests.findIndex((item)=>item.id === id);
-        if (idx >= 0) state.requests[idx].status = status;
-    });
-    renderLageDashboard();
-}
-
-function editLageRequest(id){
-    const state = getLageState();
-    const entry = state.requests.find((item)=>item.id === id);
-    if (!entry) return;
-    const nextText = prompt("Nachforderung bearbeiten:", entry.text);
-    if (nextText === null) return;
-    patchLageState((s)=>{
-        const idx = s.requests.findIndex((item)=>item.id === id);
-        if (idx >= 0) s.requests[idx].text = nextText.trim() || s.requests[idx].text;
-    });
-    renderLageDashboard();
-}
-
-function deleteLageRequest(id){
-    patchLageState((state)=>{
-        state.requests = state.requests.filter((item)=>item.id !== id);
-    });
-    renderLageDashboard();
-}
-
 function renderLageLog(log){
     const container = document.getElementById("lageLogList");
     if (!container) return;
@@ -5965,6 +6217,225 @@ function copyLageLogExport(){
     }
 }
 
+function formatLagePhotoTimestamp(iso){
+    if (!iso) return "-";
+    const ts = new Date(iso);
+    if (!Number.isFinite(ts.getTime())) return "-";
+    return ts.toLocaleString("de-DE");
+}
+
+function renderLagePhotos(photos){
+    const container = document.getElementById("lagePhotoList");
+    if (!container) return;
+    if (!Array.isArray(photos) || !photos.length){
+        container.innerHTML = `<div class="lage-empty">Noch keine Bilder erfasst.</div>`;
+        return;
+    }
+    let html = "";
+    photos.forEach((item)=>{
+        const escapedId = String(item.id || "").replace(/'/g, "\\'");
+        html += `
+        <div class="lage-photo-item">
+            <div class="lage-photo-meta">Zeitstempel: ${escapeHtml(formatLagePhotoTimestamp(item.capturedAt))}</div>
+            <img class="lage-photo-preview" src="${item.dataUrl}" alt="Lagefoto">
+            <label for="lagePhotoNote_${escapedId}">Notiz</label>
+            <textarea id="lagePhotoNote_${escapedId}" class="lage-photo-note" placeholder="Notiz zum Bild..." oninput="setLagePhotoNote('${escapedId}', this.value)">${escapeHtml(item.note || "")}</textarea>
+            <div class="lage-item-actions">
+                <button onclick="removeLagePhoto('${escapedId}')">🗑 Bild löschen</button>
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function triggerLagePhotoUpload(){
+    const input = document.getElementById("lagePhotoInput");
+    if (!input) return;
+    input.click();
+}
+
+function compressImageFileToDataUrl(file, maxWidth, maxHeight, quality){
+    return new Promise((resolve, reject)=>{
+        const reader = new FileReader();
+        reader.onload = ()=>{
+            const image = new Image();
+            image.onload = ()=>{
+                let targetWidth = image.naturalWidth || image.width || maxWidth;
+                let targetHeight = image.naturalHeight || image.height || maxHeight;
+                const scale = Math.min(1, maxWidth / Math.max(1, targetWidth), maxHeight / Math.max(1, targetHeight));
+                targetWidth = Math.max(1, Math.round(targetWidth * scale));
+                targetHeight = Math.max(1, Math.round(targetHeight * scale));
+                const canvas = document.createElement("canvas");
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+                const ctx = canvas.getContext("2d");
+                if (!ctx){
+                    reject(new Error("Canvas nicht verfügbar."));
+                    return;
+                }
+                ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+                resolve(canvas.toDataURL("image/jpeg", quality));
+            };
+            image.onerror = ()=>reject(new Error("Bild konnte nicht verarbeitet werden."));
+            image.src = String(reader.result || "");
+        };
+        reader.onerror = ()=>reject(new Error("Datei konnte nicht gelesen werden."));
+        reader.readAsDataURL(file);
+    });
+}
+
+async function handleLagePhotoUpload(event){
+    const input = event && event.target ? event.target : document.getElementById("lagePhotoInput");
+    const file = input && input.files && input.files[0] ? input.files[0] : null;
+    if (!file) return;
+
+    const current = getLageState();
+    if (Array.isArray(current.photos) && current.photos.length >= LAGE_PHOTO_MAX_COUNT){
+        alert(`Maximal ${LAGE_PHOTO_MAX_COUNT} Bilder pro Einsatzlage möglich.`);
+        if (input) input.value = "";
+        return;
+    }
+
+    try {
+        const dataUrl = await compressImageFileToDataUrl(file, 1600, 1600, 0.82);
+        patchLageState((state)=>{
+            const list = Array.isArray(state.photos) ? state.photos : [];
+            list.unshift({
+                id: `lage_photo_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                capturedAt: new Date().toISOString(),
+                note: "",
+                dataUrl
+            });
+            state.photos = list.slice(0, LAGE_PHOTO_MAX_COUNT);
+        });
+        addLageLogInternal("Bilddokumentation ergänzt", {
+            category: "DOKU",
+            level: "info",
+            source: "manual"
+        });
+        renderLageDashboard();
+    } catch (error){
+        alert(`Bild konnte nicht hinzugefügt werden: ${String(error && error.message ? error.message : error)}`);
+    } finally {
+        if (input) input.value = "";
+    }
+}
+
+function setLagePhotoNote(id, note){
+    if (!id) return;
+    patchLageState((state)=>{
+        const list = Array.isArray(state.photos) ? state.photos : [];
+        const idx = list.findIndex((item)=>item.id === id);
+        if (idx >= 0){
+            list[idx].note = note || "";
+        }
+    });
+}
+
+function removeLagePhoto(id){
+    if (!id) return;
+    patchLageState((state)=>{
+        const list = Array.isArray(state.photos) ? state.photos : [];
+        state.photos = list.filter((item)=>item.id !== id);
+    });
+    renderLageDashboard();
+}
+
+function exportLagePdf(){
+    const state = getLageState();
+    const datePart = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
+    const timePart = getNowTimeValue().replace(":", "");
+    const file = `Einsatzlage_${datePart}_${timePart}.pdf`;
+    const photos = Array.isArray(state.photos) ? state.photos : [];
+    const nachforderungen = typeof getNachforderungen === "function" ? getNachforderungen() : [];
+    const summary = getLageAutoReport(state) || "-";
+    const logRows = (state.log || []).slice(0, 80).map((entry)=>`<tr>
+        <td style="padding:6px 8px;border:1px solid #bbb;width:72px;white-space:nowrap;">${escapeHtml(entry.time || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;width:90px;white-space:nowrap;">${escapeHtml(entry.category || "EINSATZ")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.text || "")}</td>
+    </tr>`).join("");
+    const nachRows = nachforderungen.map((item)=>`<tr>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.time || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.resource || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.status || "angefordert")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.reason || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.source || "-")}</td>
+    </tr>`).join("");
+    const photoBlocks = photos.length
+        ? photos.map((photo)=>`<div style="margin-top:10px;page-break-inside:avoid;">
+            <div style="font-size:11px;color:#555;margin-bottom:4px;">Zeitstempel: ${escapeHtml(formatLagePhotoTimestamp(photo.capturedAt))}</div>
+            ${photo.note ? `<div style="font-size:12px;margin-bottom:6px;"><strong>Notiz:</strong> ${escapeHtml(photo.note)}</div>` : `<div style="font-size:12px;margin-bottom:6px;"><strong>Notiz:</strong> -</div>`}
+            <img src="${photo.dataUrl}" alt="Lagefoto" style="max-width:100%;max-height:420px;border:1px solid #bbb;border-radius:8px;display:block;">
+        </div>`).join("")
+        : `<div style="color:#555;">Keine Bilder erfasst.</div>`;
+
+    const sectionsAuto = getActiveSectionsCountForLage();
+    const sectionsValue = sectionsAuto !== null ? sectionsAuto : (Number(state.counters.sectionsManual) || 0);
+    const w = window.open("", "_blank");
+    if (!w){
+        alert("Popup blockiert. Bitte Popup-Freigabe aktivieren.");
+        return;
+    }
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
+    <style>
+    @page { size: A4; margin: 12mm; }
+    body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .logo { width:90px; height:auto; object-fit:contain; }
+    h1 { margin:0; font-size:22px; }
+    .sub { margin-top:4px; font-size:13px; color:#444; }
+    .section { margin-top:10px; page-break-inside: avoid; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { border:1px solid #bbb; padding:6px 8px; vertical-align:top; }
+    .meta { margin: 8px 0; font-size: 11px; color:#555; }
+    </style></head><body>
+    <div class="head"><div><h1>Einsatzlage</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div><img class="logo" src="assets/images/logoapp.png" alt="FF 360 Logo"></div>
+    <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
+
+    <div class="section">
+      <strong>Kompaktübersicht</strong>
+      <table style="margin-top:6px;">
+        <tr><th>Startzeit</th><td>${escapeHtml(formatDateTime(state.startedAt))}</td><th>Dauer</th><td>${escapeHtml(formatDuration(Number(state.durationRunning) || 0))}</td></tr>
+        <tr><th>Priorität</th><td>${escapeHtml(state.priority || "yellow")}</td><th>GPS</th><td>${escapeHtml(state.gpsText || "-")}</td></tr>
+        <tr><th>Kräfte</th><td>${escapeHtml(String(Number(state.counters.personnel) || 0))}</td><th>Fahrzeuge</th><td>${escapeHtml(String(Number(state.counters.vehicles) || 0))}</td></tr>
+        <tr><th>PA im Einsatz</th><td>${escapeHtml(String(Number(state.counters.pa) || 0))}</td><th>Abschnitte aktiv</th><td>${escapeHtml(String(sectionsValue))}</td></tr>
+      </table>
+    </div>
+
+    <div class="section">
+      <strong>Lagezusammenfassung</strong>
+      <div style="margin-top:6px;white-space:pre-wrap;">${escapeHtml(summary)}</div>
+      ${state.freeText ? `<div style="margin-top:6px;white-space:pre-wrap;"><strong>Freitext:</strong> ${escapeHtml(state.freeText)}</div>` : ""}
+    </div>
+
+    <div class="section">
+      <strong>Nachforderungen</strong>
+      <table style="margin-top:6px;">
+        <thead><tr><th>Zeit</th><th>Ressource</th><th>Status</th><th>Begründung</th><th>Herkunft</th></tr></thead>
+        <tbody>${nachRows || `<tr><td colspan="5" style="padding:8px;">Keine Nachforderungen erfasst.</td></tr>`}</tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <strong>Ereignislog</strong>
+      <table style="margin-top:6px;">
+        <thead><tr><th>Zeit</th><th>Typ</th><th>Ereignis</th></tr></thead>
+        <tbody>${logRows || `<tr><td colspan="3" style="padding:8px;">Keine Ereignisse erfasst.</td></tr>`}</tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <strong>Bilderdokumentation</strong>
+      ${photoBlocks}
+    </div>
+
+    <div style="margin-top:10px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+}
+
 function getEinsatzArchive(){
     try {
         const raw = appStorageGetItem(EINSATZ_ARCHIVE_STORAGE_KEY);
@@ -6015,7 +6486,7 @@ function archiveCurrentIncident(){
 }
 
 function resetLageDashboard(){
-    if (!confirm("Lageübersicht wirklich zurücksetzen?")) return;
+    if (!confirm("Einsatzlage wirklich zurücksetzen?")) return;
     saveLageState(getDefaultLageState());
     // Legacy-Key entfernen, damit kein Altbestand über den Fallback erneut eingespielt wird.
     localStorage.removeItem(LAGE_STORAGE_KEY);
@@ -6026,6 +6497,8 @@ function resetLageDashboard(){
         summaryEdit.value = "";
         summaryEdit.classList.add("hidden");
     }
+    const photoInput = document.getElementById("lagePhotoInput");
+    if (photoInput) photoInput.value = "";
     renderLageDashboard();
 }
 
@@ -6056,13 +6529,17 @@ function openLageOverlay(){
         }, 1000);
     }
     renderLageDashboard();
+    renderStructureList();
+    updateNachforderungFormState("lage");
+    renderNachforderungen();
 }
 
 function closeLageOverlay(){
     const overlay = document.getElementById("lageOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    hideStructureForm();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lageTimerId){
         clearInterval(lageTimerId);
@@ -6271,7 +6748,7 @@ function closePsuOverlay(){
     const overlay = document.getElementById("psuOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastPsuFocus && typeof lastPsuFocus.focus === "function"){
         lastPsuFocus.focus();
@@ -6998,6 +7475,7 @@ function renderFunkGenerator(){
         output.textContent = generateFunkMessage(state);
     }
     renderFunkHistory(state.history || []);
+    renderFunkcheckTool("funkcheckInlineBody");
 }
 
 function updateFunkCallsignMode(value){
@@ -7282,6 +7760,63 @@ function resetSocialPost(){
     renderSocialGenerator();
 }
 
+function buildProfessionalSocialProtokollText(state){
+    const einsatznummer = formatSocialEinsatznummer(state.einsatznummer);
+    const datum = formatSocialDate(state.date);
+    const uhrzeit = (state.time || "").trim() || "—";
+    const alarmschleife = (state.alarmschleife || "").trim() || "—";
+    const alarmstichwort = (state.alarmstichwort || "").trim() || "—";
+    const kraefte = (state.forces || []).length ? state.forces.join(", ") : "—";
+    const taetigkeit = (state.taetigkeit || "").trim() || "—";
+    return `EINSATZPROTOKOLL
+
+Einsatznummer: ${einsatznummer}
+Datum: ${datum}
+Uhrzeit Alarmierung: ${uhrzeit}
+Alarmschleife: ${alarmschleife}
+Alarmstichwort: ${alarmstichwort}
+Beteiligte Kräfte: ${kraefte}
+
+Kurzbericht:
+${taetigkeit}
+
+Hinweis:
+Dieses Protokoll wurde automatisiert aus dem Social-Media-Generator erstellt.`;
+}
+
+function exportSocialEinsatzprotokollPdf(){
+    const state = getSocialState();
+    const datumKey = (state.date || getTodayBerlinDateISO()).replace(/-/g, "");
+    const timeKey = ((state.time || "").replace(":", "") || "0000");
+    const file = `Einsatzprotokoll_${datumKey}_${timeKey}.pdf`;
+    const text = buildProfessionalSocialProtokollText(state);
+    const w = window.open("", "_blank");
+    if (!w){
+        showSocialHint("Popup blockiert. PDF konnte nicht geöffnet werden.", true);
+        return;
+    }
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
+    <style>
+    @page { size: A4; margin: 12mm; }
+    body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .logo { width:90px; height:auto; object-fit:contain; }
+    h1 { margin:0; font-size:22px; }
+    .sub { margin-top:4px; font-size:13px; color:#444; }
+    pre { white-space: pre-wrap; line-height: 1.4; }
+    .meta { margin: 10px 0; font-size: 11px; color:#555; }
+    </style></head><body>
+    <div class="head"><div><h1>FF 360°</h1><div class="sub">Unterstützung im Einsatzdienst</div></div><img class="logo" src="assets/images/logoff.png" alt="Feuerwehr-Logo"></div>
+    <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
+    <pre>${escapeHtml(text)}</pre>
+    <div style="margin-top:8px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    showSocialHint("PDF-Protokoll geöffnet.", false);
+}
+
 function createStableEinsatzId(entry){
     const seed = `${entry.einsatznummer}|${entry.datum}|${entry.uhrzeit}|${entry.alarmstichwort}`;
     let hash = 0;
@@ -7372,7 +7907,7 @@ function saveSocialToEinsatzLog(){
     }
 
     saveEinsatzLog(list);
-    showSocialHint("Für Einsätze gespeichert.", false);
+    showSocialHint("Für Einsatzhistorie gespeichert.", false);
     if (isEinsatzOverlayOpen()) renderEinsatzOverview();
 }
 
@@ -7394,7 +7929,7 @@ function closeSocialOverlay(){
     const overlay = document.getElementById("socialOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastSocialFocus && typeof lastSocialFocus.focus === "function"){
         lastSocialFocus.focus();
@@ -7518,7 +8053,7 @@ function renderEinsatzSummary(list){
     let html = `
         <strong>Übersicht</strong>
         <div class="einsatz-summary-grid">
-            <div>Gesamt Einsätze: ${total}</div>
+            <div>Gesamt Einträge: ${total}</div>
             <div>Ja: ${yes}</div>
             <div>Nein: ${no}</div>
             <div>Offen: ${open}</div>
@@ -7582,8 +8117,8 @@ function renderEinsatzOverview(){
     if (!listEl) return;
     if (!list.length){
         const hint = einsatzStichwortFilter
-            ? `Keine Einsätze zum Stichwort „${einsatzStichwortFilter}“.`
-            : "Noch keine Einsätze gespeichert.<br>Im Social-Media Beitrag auf „Für Einsätze speichern“ klicken.";
+            ? `Keine Einträge zum Stichwort „${einsatzStichwortFilter}“.`
+            : "Noch keine Einträge gespeichert.<br>Im Social-Media Beitrag auf „Für Einsatzhistorie speichern“ klicken.";
         listEl.innerHTML = `<div class="card">${hint}</div>`;
         return;
     }
@@ -7623,7 +8158,7 @@ function closeEinsatzOverlay(){
     const overlay = document.getElementById("einsatzOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastEinsatzFocus && typeof lastEinsatzFocus.focus === "function"){
         lastEinsatzFocus.focus();
@@ -8617,7 +9152,7 @@ function closeAtemOverlayASU2(){
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastAtemFocus && typeof lastAtemFocus.focus === "function"){
         lastAtemFocus.focus();
@@ -10313,10 +10848,12 @@ function asuExportIncidentPdf(){
     h1 { font-size: 18px; margin: 0; }
     .meta { font-size: 12px; color:#444; margin-bottom: 12px; }
     pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.35; }
+    .footer { margin-top: 10px; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><img src="logo.png" alt="Logo"><h1>Atemschutz-Protokoll</h1></div>
+    <div class="head"><img src="assets/images/logoapp.png" alt="FF 360 Logo"><h1>Atemschutz-Protokoll</h1></div>
     <div class="meta">Datei: ${escapeHtml(base)}.pdf</div>
     <pre>${escapeHtml(text)}</pre>
+    <div class="footer">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script>
     </body></html>`;
     printWindow.document.open();
@@ -10432,7 +10969,7 @@ function closeAtemOverlay(){
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (!keepLocked){
         asuStopTickers();
@@ -10537,15 +11074,37 @@ function createFunkcheckSession(){
         id: `fc_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
         createdAt: nowIso(),
         updatedAt: nowIso(),
-        header: { titel: "", datum: formatDateInputToDE(getTodayBerlinDateISO()), uhrzeit: getNowTimeHHMM(), notiz: "" },
+        header: { titel: "" },
         kanaele: [
             { id: `k_${Date.now().toString(36)}a`, name: "Einsatzleitung", beschreibung: "" },
             { id: `k_${Date.now().toString(36)}b`, name: "Abschnitt", beschreibung: "" },
-            { id: `k_${Date.now().toString(36)}c`, name: "Atemschutz", beschreibung: "" },
-            { id: `k_${Date.now().toString(36)}d`, name: "Logistik", beschreibung: "" }
+            { id: `k_${Date.now().toString(36)}c`, name: "Atemschutz", beschreibung: "" }
         ],
         teilnehmer: []
     };
+}
+
+function normalizeFunkcheckSession(raw){
+    const base = createFunkcheckSession();
+    const session = { ...base, ...(raw || {}) };
+    session.header = { ...base.header, ...((raw && raw.header) || {}) };
+    session.kanaele = Array.isArray(raw && raw.kanaele)
+        ? raw.kanaele.map((k, idx)=>({
+            id: (k && k.id) || `k_${Date.now().toString(36)}_${idx}`,
+            name: (k && k.name) || "",
+            beschreibung: (k && k.beschreibung) || ""
+        }))
+        : base.kanaele;
+    session.teilnehmer = Array.isArray(raw && raw.teilnehmer)
+        ? raw.teilnehmer.map((t, idx)=>({
+            id: (t && t.id) || `t_${Date.now().toString(36)}_${idx}`,
+            name: (t && t.name) || "",
+            rolle: (t && t.rolle) || "",
+            kanalId: (t && t.kanalId) || "",
+            status: (t && t.status) || "offen"
+        }))
+        : [];
+    return session;
 }
 
 function ensureFunkcheckState(){
@@ -10553,7 +11112,7 @@ function ensureFunkcheckState(){
     try {
         const raw = appStorageGetItem(FUNKCHECK_STORAGE_KEY);
         const parsed = raw ? JSON.parse(raw) : { sessions: [], activeId: null };
-        const sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
+        const sessions = Array.isArray(parsed.sessions) ? parsed.sessions.map(normalizeFunkcheckSession) : [];
         if (!sessions.length){
             const first = createFunkcheckSession();
             funkcheckState = { sessions: [first], activeId: first.id };
@@ -10590,54 +11149,23 @@ function touchFunkcheck(){
 }
 
 function openFunkcheckOverlay(){
-    const overlay = document.getElementById("funkcheckOverlay");
-    if (!overlay) return;
-    lastFunkcheckFocus = document.activeElement;
-    ensureFunkcheckState();
-    overlay.classList.add("show");
-    document.body.style.overflow = "hidden";
-    renderFunkcheckTool();
+    openFunkOverlay();
 }
 
 function closeFunkcheckOverlay(){
-    const overlay = document.getElementById("funkcheckOverlay");
-    if (!overlay) return;
-    overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
-    document.body.style.overflow = keepLocked ? "hidden" : "";
-    if (lastFunkcheckFocus && typeof lastFunkcheckFocus.focus === "function") lastFunkcheckFocus.focus();
+    closeFunkOverlay();
 }
 
-function handleFunkcheckOverlayBackdrop(event){
-    if (event.target && event.target.id === "funkcheckOverlay") closeFunkcheckOverlay();
+function handleFunkcheckOverlayBackdrop(){
 }
 
 function isFunkcheckOverlayOpen(){
-    const o = document.getElementById("funkcheckOverlay");
-    return !!o && o.classList.contains("show");
+    return false;
 }
-
-function trapFocusInFunkcheckOverlay(event){
-    if (event.key !== "Tab" || !isFunkcheckOverlayOpen()) return;
-    const overlay = document.getElementById("funkcheckOverlay");
-    if (!overlay) return;
-    const focusable = overlay.querySelectorAll("button, [href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])");
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first){ event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last){ event.preventDefault(); first.focus(); }
-}
-
-document.addEventListener("keydown", (event)=>{
-    if (!isFunkcheckOverlayOpen()) return;
-    if (event.key === "Escape"){ closeFunkcheckOverlay(); return; }
-    trapFocusInFunkcheckOverlay(event);
-});
 
 function updateFunkcheckHeader(field, value){
     const s = getActiveFunkcheckSession(); if (!s) return;
-    s.header[field] = field === "datum" ? formatDateInputToDE(value) : value;
+    s.header[field] = value || "";
     touchFunkcheck();
 }
 
@@ -10650,19 +11178,20 @@ function addFunkcheckKanal(){
 function removeFunkcheckKanal(id){
     const s = getActiveFunkcheckSession(); if (!s) return;
     s.kanaele = s.kanaele.filter((k)=>k.id !== id);
-    s.teilnehmer.forEach((t)=>{ if (t.kanalId === id) t.kanalId = null; });
+    s.teilnehmer.forEach((t)=>{ if (t.kanalId === id) t.kanalId = ""; });
     touchFunkcheck(); renderFunkcheckTool();
 }
 
 function updateFunkcheckKanal(id, field, value){
     const s = getActiveFunkcheckSession(); if (!s) return;
     const k = s.kanaele.find((x)=>x.id === id); if (!k) return;
-    k[field] = value; touchFunkcheck();
+    k[field] = value || "";
+    touchFunkcheck();
 }
 
 function addFunkcheckTeilnehmer(){
     const s = getActiveFunkcheckSession(); if (!s) return;
-    s.teilnehmer.push({ id: `t_${Date.now().toString(36)}${Math.random().toString(36).slice(2,4)}`, name: "", rolle: "", kanalId: null, status: "offen", notiz: "" });
+    s.teilnehmer.push({ id: `t_${Date.now().toString(36)}${Math.random().toString(36).slice(2,4)}`, name: "", rolle: "", kanalId: "", status: "offen" });
     touchFunkcheck(); renderFunkcheckTool();
 }
 
@@ -10675,7 +11204,8 @@ function removeFunkcheckTeilnehmer(id){
 function updateFunkcheckTeilnehmer(id, field, value){
     const s = getActiveFunkcheckSession(); if (!s) return;
     const t = s.teilnehmer.find((x)=>x.id === id); if (!t) return;
-    t[field] = value; touchFunkcheck();
+    t[field] = value || "";
+    touchFunkcheck();
 }
 
 function setFunkcheckStatus(id, status){
@@ -10729,25 +11259,22 @@ function copyFunkcheckSummary(){
         byKanal[key].teilnehmer.push(t);
     });
     const lines = [];
-    lines.push("Funk-Check");
-    lines.push(`Titel: ${s.header.titel || "-"}`);
-    lines.push(`Datum: ${s.header.datum || "-"}`);
-    lines.push(`Uhrzeit: ${s.header.uhrzeit || "-"}`);
-    lines.push(`Notiz: ${s.header.notiz || "-"}`);
+    lines.push("Funk-Check Session");
+    lines.push(`Name: ${s.header.titel || "-"}`);
     lines.push("");
     lines.push("Kanäle:");
-    s.kanaele.forEach((k)=>lines.push(`- ${k.name || "-"} ${k.beschreibung ? `(${k.beschreibung})` : ""}`));
+    s.kanaele.forEach((k)=>lines.push(`- ${k.name || "-"}${k.beschreibung ? ` (${k.beschreibung})` : ""}`));
     lines.push("");
     lines.push("Teilnehmer nach Kanal:");
     Object.values(byKanal).forEach((grp)=>{
         lines.push(`${grp.kanal.name || "Ohne Kanal"}:`);
-        grp.teilnehmer.forEach((t)=>lines.push(`- ${t.name || "-"} | Rolle ${t.rolle || "-"} | Status ${t.status || "offen"}${t.notiz ? ` | ${t.notiz}` : ""}`));
+        grp.teilnehmer.forEach((t)=>lines.push(`- ${t.name || "-"} | Rolle ${t.rolle || "-"} | Status ${t.status || "offen"}`));
     });
     copyTextToClipboard(lines.join("\n"));
 }
 
-function renderFunkcheckTool(){
-    const body = document.getElementById("funkcheckBody");
+function renderFunkcheckTool(targetId = "funkcheckInlineBody"){
+    const body = document.getElementById(targetId);
     if (!body) return;
     const state = ensureFunkcheckState();
     const s = getActiveFunkcheckSession();
@@ -10757,17 +11284,14 @@ function renderFunkcheckTool(){
     const none = s.teilnehmer.filter((t)=>t.status === "keine_verbindung").length;
     const open = s.teilnehmer.filter((t)=>t.status === "offen").length;
     const kanalOptions = `<option value="">-</option>` + s.kanaele.map((k)=>`<option value="${k.id}">${escapeHtml(k.name || "Kanal")}</option>`).join("");
-    const sessionOptions = state.sessions.map((x)=>`<option value="${x.id}" ${x.id === state.activeId ? "selected" : ""}>${escapeHtml(`${x.header.datum || "-"} ${x.header.uhrzeit || "-"} · ${x.header.titel || "Funk-Check"}`)}</option>`).join("");
+    const sessionOptions = state.sessions.map((x)=>`<option value="${x.id}" ${x.id === state.activeId ? "selected" : ""}>${escapeHtml(x.header && x.header.titel ? x.header.titel : "Funk-Check Session")}</option>`).join("");
 
     let html = `
     <div class="atem-panel">
         <div class="atem-grid">
             <div><label>Session</label><select onchange="selectFunkcheckSession(this.value)">${sessionOptions}</select></div>
-            <div class="atem-row-actions"><button onclick="newFunkcheckSession()">Neue Funk-Check Session</button></div>
-            <div><label>Einsatzname</label><input type="text" value="${escapeHtml(s.header.titel || "")}" oninput="updateFunkcheckHeader('titel', this.value)"></div>
-            <div><label>Notiz</label><input type="text" value="${escapeHtml(s.header.notiz || "")}" oninput="updateFunkcheckHeader('notiz', this.value)"></div>
-            <div><label>Datum</label><input type="date" value="${escapeHtml(formatIsoToDateInput(s.header.datum || ""))}" onchange="updateFunkcheckHeader('datum', this.value)"></div>
-            <div><label>Uhrzeit</label><input type="time" value="${escapeHtml(s.header.uhrzeit || "")}" onchange="updateFunkcheckHeader('uhrzeit', this.value)"></div>
+            <div><label>Session Name</label><input type="text" value="${escapeHtml(s.header.titel || "")}" oninput="updateFunkcheckHeader('titel', this.value)"></div>
+            <div class="atem-row-actions"><button onclick="newFunkcheckSession()">Neue Session</button></div>
         </div>
         <div class="atem-row-actions" style="margin-top:8px;">
             <button onclick="setFunkcheckAllStatus('offen')">Alle auf Offen</button>
@@ -10779,7 +11303,7 @@ function renderFunkcheckTool(){
             <div>Teilnehmer: ${s.teilnehmer.length}</div><div>OK: ${ok}</div><div>Keine Verbindung: ${none}</div><div>Offen: ${open}</div>
         </div>
     </div>
-    <div class="atem-panel"><strong>Kanal-Setup</strong>`;
+    <div class="atem-panel"><strong>Kanal Setup</strong>`;
     s.kanaele.forEach((k)=>{
         html += `<div class="atem-grid" style="margin-top:8px;">
             <div><label>Name</label><input type="text" value="${escapeHtml(k.name || "")}" oninput="updateFunkcheckKanal('${k.id}','name',this.value)"></div>
@@ -10798,7 +11322,6 @@ function renderFunkcheckTool(){
                     <option value="">-</option><option value="EL" ${t.rolle==="EL"?"selected":""}>EL</option><option value="GF" ${t.rolle==="GF"?"selected":""}>GF</option><option value="Trupp" ${t.rolle==="Trupp"?"selected":""}>Trupp</option><option value="Maschinist" ${t.rolle==="Maschinist"?"selected":""}>Maschinist</option><option value="RD" ${t.rolle==="RD"?"selected":""}>RD</option><option value="POL" ${t.rolle==="POL"?"selected":""}>POL</option>
                 </select></div>
                 <div><label>Kanal</label><select onchange="updateFunkcheckTeilnehmer('${t.id}','kanalId',this.value)">${kanalOptions}</select></div>
-                <div class="atem-col-full"><label>Notiz</label><input type="text" value="${escapeHtml(t.notiz || "")}" oninput="updateFunkcheckTeilnehmer('${t.id}','notiz',this.value)"></div>
             </div>
             <div class="atem-row-actions" style="margin-top:8px;">
                 <button class="${t.status === "ok" ? "active-yes" : ""}" onclick="setFunkcheckStatus('${t.id}','ok')">OK</button>
@@ -11202,7 +11725,7 @@ function pushGefahrgutNachforderung(resource, reason, sourceOptional){
     appStorageSetItem(NACHFORDERUNG_STORAGE_KEY, JSON.stringify(list));
     appendGefahrgutLog("NACHFORDERUNG", `${resource}${reason ? ` - ${reason}` : ""}`);
     showGefahrgutHint("Nachforderung hinzugefügt");
-    if (typeof renderNachforderungen === "function" && typeof isNachforderungOverlayOpen === "function" && isNachforderungOverlayOpen()){
+    if (typeof renderNachforderungen === "function"){
         renderNachforderungen();
     }
     renderGefahrgutTool();
@@ -11340,7 +11863,7 @@ function getActiveEvakSession(){ const st=ensureEvakState(); let s=st.sessions.f
 function touchEvak(){ const s=getActiveEvakSession(); if(!s) return; s.updatedAt=nowIso(); debounceSave(saveEvakState,"evakSaveTimer"); }
 
 function openEvakOverlay(){ const o=document.getElementById("evakOverlay"); if(!o) return; lastEvakFocus=document.activeElement; ensureEvakState(); o.classList.add("show"); document.body.style.overflow="hidden"; renderEvakTool(); }
-function closeEvakOverlay(){ const o=document.getElementById("evakOverlay"); if(!o) return; o.classList.remove("show"); const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen(); document.body.style.overflow = keepLocked ? "hidden" : ""; if(lastEvakFocus&&typeof lastEvakFocus.focus==="function") lastEvakFocus.focus(); }
+function closeEvakOverlay(){ const o=document.getElementById("evakOverlay"); if(!o) return; o.classList.remove("show"); const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen(); document.body.style.overflow = keepLocked ? "hidden" : ""; if(lastEvakFocus&&typeof lastEvakFocus.focus==="function") lastEvakFocus.focus(); }
 function handleEvakOverlayBackdrop(event){ if(event.target&&event.target.id==="evakOverlay") closeEvakOverlay(); }
 function isEvakOverlayOpen(){ const o=document.getElementById("evakOverlay"); return !!o&&o.classList.contains("show"); }
 function trapFocusInEvakOverlay(event){ if(event.key!=="Tab"||!isEvakOverlayOpen()) return; const o=document.getElementById("evakOverlay"); if(!o) return; const f=o.querySelectorAll("button,[href],input,select,textarea,summary,[tabindex]:not([tabindex='-1'])"); if(!f.length) return; const first=f[0], last=f[f.length-1]; if(event.shiftKey&&document.activeElement===first){event.preventDefault(); last.focus();} else if(!event.shiftKey&&document.activeElement===last){event.preventDefault(); first.focus();}}
@@ -11915,7 +12438,7 @@ function closePresseOverlay(){
     const o = document.getElementById("presseOverlay");
     if (!o) return;
     o.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastPresseFocus && typeof lastPresseFocus.focus === "function") lastPresseFocus.focus();
 }
@@ -12195,6 +12718,7 @@ function openFunkOverlay(){
     lastFunkFocus = document.activeElement;
     overlay.classList.add("show");
     document.body.style.overflow = "hidden";
+    ensureFunkcheckState();
     renderFunkGenerator();
 }
 
@@ -12202,7 +12726,7 @@ function closeFunkOverlay(){
     const overlay = document.getElementById("funkOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastFunkFocus && typeof lastFunkFocus.focus === "function"){
         lastFunkFocus.focus();
@@ -12274,9 +12798,10 @@ function saveNachforderungen(items){
     appStorageSetItem(NACHFORDERUNG_STORAGE_KEY, JSON.stringify(items));
 }
 
-function updateNachforderungFormState(){
-    const resourceSelect = document.getElementById("nachResource");
-    const otherWrap = document.getElementById("nachResourceOtherWrap");
+function updateNachforderungFormState(context = "lage"){
+    const isLegacy = context === "legacy";
+    const resourceSelect = document.getElementById(isLegacy ? "nachResource" : "lageNachResource");
+    const otherWrap = document.getElementById(isLegacy ? "nachResourceOtherWrap" : "lageNachResourceOtherWrap");
     if (!resourceSelect || !otherWrap) return;
     otherWrap.classList.toggle("hidden", resourceSelect.value !== "Sonstiges");
 }
@@ -12308,11 +12833,15 @@ function removeNachforderung(id){
 }
 
 function renderNachforderungen(){
-    const listEl = document.getElementById("nachList");
-    if (!listEl) return;
     const list = getNachforderungen();
+    const targets = ["lageNachList", "nachList"]
+        .map((id)=>document.getElementById(id))
+        .filter(Boolean);
+    if (!targets.length) return;
     if (!list.length){
-        listEl.innerHTML = `<div class="lage-empty">Noch keine Nachforderungen erfasst.</div>`;
+        targets.forEach((listEl)=>{
+            listEl.innerHTML = `<div class="lage-empty">Noch keine Nachforderungen erfasst.</div>`;
+        });
         return;
     }
 
@@ -12333,14 +12862,17 @@ function renderNachforderungen(){
             </div>
         </div>`;
     });
-    listEl.innerHTML = html;
+    targets.forEach((listEl)=>{
+        listEl.innerHTML = html;
+    });
 }
 
-function addNachforderung(){
-    const resourceSelect = document.getElementById("nachResource");
-    const otherInput = document.getElementById("nachResourceOther");
-    const reasonInput = document.getElementById("nachReason");
-    const sourceInput = document.getElementById("nachSource");
+function addNachforderung(context = "lage"){
+    const isLegacy = context === "legacy";
+    const resourceSelect = document.getElementById(isLegacy ? "nachResource" : "lageNachResource");
+    const otherInput = document.getElementById(isLegacy ? "nachResourceOther" : "lageNachResourceOther");
+    const reasonInput = document.getElementById(isLegacy ? "nachReason" : "lageNachReason");
+    const sourceInput = document.getElementById(isLegacy ? "nachSource" : "lageNachSource");
     if (!resourceSelect || !reasonInput) return;
 
     const selected = resourceSelect.value;
@@ -12366,7 +12898,7 @@ function addNachforderung(){
     reasonInput.value = "";
     if (sourceInput) sourceInput.value = "";
     resourceSelect.value = "DLK";
-    updateNachforderungFormState();
+    updateNachforderungFormState(context);
     renderNachforderungen();
 }
 
@@ -12406,65 +12938,9 @@ function resetNachforderungen(){
     renderNachforderungen();
 }
 
-function openNachforderungOverlay(){
-    const overlay = document.getElementById("nachOverlay");
-    if (!overlay) return;
-    lastNachforderungFocus = document.activeElement;
-    overlay.classList.add("show");
-    document.body.style.overflow = "hidden";
-    updateNachforderungFormState();
-    renderNachforderungen();
-}
-
-function closeNachforderungOverlay(){
-    const overlay = document.getElementById("nachOverlay");
-    if (!overlay) return;
-    overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen();
-    document.body.style.overflow = keepLocked ? "hidden" : "";
-    if (lastNachforderungFocus && typeof lastNachforderungFocus.focus === "function"){
-        lastNachforderungFocus.focus();
-    }
-}
-
-function handleNachforderungOverlayBackdrop(event){
-    if (event.target && event.target.id === "nachOverlay"){
-        closeNachforderungOverlay();
-    }
-}
-
 function isNachforderungOverlayOpen(){
-    const overlay = document.getElementById("nachOverlay");
-    return !!overlay && overlay.classList.contains("show");
+    return false;
 }
-
-function trapFocusInNachforderungOverlay(event){
-    if (event.key !== "Tab" || !isNachforderungOverlayOpen()) return;
-    const overlay = document.getElementById("nachOverlay");
-    if (!overlay) return;
-    const focusable = overlay.querySelectorAll(
-        "button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])"
-    );
-    if (!focusable.length) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first){
-        event.preventDefault();
-        last.focus();
-    } else if (!event.shiftKey && document.activeElement === last){
-        event.preventDefault();
-        first.focus();
-    }
-}
-
-document.addEventListener("keydown", (event)=>{
-    if (!isNachforderungOverlayOpen()) return;
-    if (event.key === "Escape"){
-        closeNachforderungOverlay();
-        return;
-    }
-    trapFocusInNachforderungOverlay(event);
-});
 
 const IMPORTANT_PHONE_CONTACTS = [
     { section: "Basis", title: "Zweckverband Ostholstein (Notfaelle)", person: "", phone: "04561 399-400" },
@@ -12940,7 +13416,7 @@ function exportPolKripoPdf(){
         <h1>Abfragebogen an die POL / Kripo</h1>
         <h2>-Personensucheinsätze-</h2>
       </div>
-      <img class="logo" src="logo.png" alt="Logo">
+      <img class="logo" src="assets/images/logoff.png" alt="Feuerwehr-Logo">
     </div>
     <div class="warn">Aktuelles Foto !!!</div>
 
@@ -12975,7 +13451,7 @@ function exportPolKripoPdf(){
       ${photoHtml}
     </div>
 
-    <div class="footer">Export: ${new Date().toLocaleString("de-DE")} | CommandView</div>
+    <div class="footer">Export: ${new Date().toLocaleString("de-DE")} | ${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script>
     </body></html>`;
     w.document.open();
@@ -13297,8 +13773,8 @@ function exportEinsatzKraeftePdf(){
     if (!w) return;
     const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
     <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}</style>
-    </head><body><div class="head"><h1>Einsatzübersicht Kräfte/Funkrufnamen</h1><img class="logo" src="logo.png" alt="Logo"></div><pre>${escapeHtml(text)}</pre>
-    <div style="margin-top:8px;font-size:11px;color:#555;">Export: ${new Date().toLocaleString("de-DE")} | CommandView</div>
+    </head><body><div class="head"><h1>Einsatzübersicht Kräfte/Funkrufnamen</h1><img class="logo" src="assets/images/logoapp.png" alt="FF 360 Logo"></div><pre>${escapeHtml(text)}</pre>
+    <div style="margin-top:8px;font-size:11px;color:#555;">Export: ${new Date().toLocaleString("de-DE")} | ${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
     w.document.open();
     w.document.write(html);
@@ -13479,7 +13955,6 @@ function createDefaultFwdv3TrainerState(){
         lastUsedRoleId: "",
         searchRole: "",
         quickMode: false,
-        einsatzmodus: false,
         checks: {},
         notes: {},
         updatedAt: new Date().toISOString()
@@ -13644,11 +14119,6 @@ function toggleFwdv3Favorite(roleId){
     renderFwdv3Trainer();
 }
 
-function toggleFwdv3Einsatzmodus(checked){
-    patchFwdv3TrainerState((s)=>{ s.einsatzmodus = !!checked; });
-    renderFwdv3Trainer();
-}
-
 function setFwdv3ChecklistChecked(vehicleTypeId, roleId, idx, checked){
     const state = getFwdv3TrainerState();
     const scope = state.activeTab || "brand";
@@ -13738,7 +14208,7 @@ function renderFwdv3RoleDetail(state, vehicle, role){
           </div>`;
     return `
       <button onclick="backToFwdv3RoleSelection()">⬅ Zurück</button>
-      <div class="atem-panel ${state.einsatzmodus ? "fwdv-einsatz" : ""}">
+      <div class="atem-panel">
         <div class="detail-title">
             <h2>${escapeHtml(role.displayName)} – Aufgaben</h2>
             <button class="favorite-star" onclick="toggleFwdv3Favorite('${role.roleId}')">${state.favoriteRoleId === role.roleId ? "⭐" : "☆"}</button>
@@ -15491,13 +15961,7 @@ const data = {
     kraefte:[{
         name:"Kräfte/Funkrufnamen",
         einsatzKraefteTool:true,
-        content:`
-        <div class="links-box">
-            <strong>Funkrufnamen & Fahrzeuge – Einsatz-Auswahl</strong><br>
-            Suche, Auswahl, Status und Export für den laufenden Einsatz.
-        </div>
-        <div id="einsatzKraefteRoot"></div>
-        `
+        content:`<div id="einsatzKraefteRoot"></div>`
     }],
 
     trainer:[{
@@ -15513,12 +15977,13 @@ const data = {
 };
 
 function footerHtml(){
+    const creatorLine = escapeHtml(getAppFooterCreatorText());
     return `
     <div class="footer">
-        <img src="logo.png" alt="Logo">
+        <img src="assets/images/logoapp.png" alt="FF 360 Logo">
         <div>
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
-            Erstellung durch Jonas Jessen.
+            ${creatorLine}
         </div>
     </div>`;
 }
@@ -15866,15 +16331,11 @@ function searchEinsatz(text){
     }
     const einsatzNeedle = "einsätze einsaetze einsatzbeteiligung einsatz beteiligung";
     if (text.length > 0 && einsatzNeedle.includes(text)){
-        result += `<div class="card" onclick="openEinsatzOverlay()">📋 Einsätze</div>`;
+        result += `<div class="card" onclick="openEinsatzOverlay()">📋 Einsatzhistorie</div>`;
     }
     const atemNeedle = "atemschutzüberwachung atemschutz ueberwachung asue";
     if (text.length > 0 && atemNeedle.includes(text)){
         result += `<div class="card" onclick="openAtemOverlay()">🫁 Atemschutzüberwachung</div>`;
-    }
-    const funkcheckNeedle = "funk-check funkcheck funk check";
-    if (text.length > 0 && funkcheckNeedle.includes(text)){
-        result += `<div class="card" onclick="openFunkcheckOverlay()">📶 Funk-Check</div>`;
     }
     const gefahrgutNeedle = "gefahrgut schnellhilfe gefahrgut";
     if (text.length > 0 && gefahrgutNeedle.includes(text)){
@@ -15913,6 +16374,12 @@ function scrollToTop(){
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function hideAppSplash(){
+    const splash = document.getElementById("appSplash");
+    if (!splash) return;
+    splash.classList.add("hidden");
+}
+
 function updateScrollTopButton(){
     const btn = document.getElementById("scrollTopBtn");
     if (!btn) return;
@@ -15920,6 +16387,10 @@ function updateScrollTopButton(){
 }
 
 window.addEventListener("scroll", updateScrollTopButton);
+window.addEventListener("load", ()=>{
+    setTimeout(hideAppSplash, 700);
+});
+setTimeout(hideAppSplash, 1500);
 updateScrollTopButton();
 renderHomeFavorites();
 
