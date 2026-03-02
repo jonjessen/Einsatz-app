@@ -5,8 +5,9 @@ const urlsToCache = [
   "manifest.json",
   "icon-192.png",
   "icon-512.png",
-  "assets/images/logoapp.png",
-  "assets/images/logoff.png"
+  "logoapp.png",
+  "logoff.png",
+  "asue_alarm.wav"
 ];
 
 self.addEventListener("install", event => {

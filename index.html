@@ -3533,7 +3533,7 @@ iframe {
 <body>
 <div id="appSplash" class="app-splash" aria-label="FF 360 Grad Startscreen">
     <div>
-        <img class="app-splash-logo" src="assets/images/logoapp.png" alt="FF 360 Logo">
+        <img class="app-splash-logo" src="logoapp.png" alt="FF 360 Logo">
         <div class="app-splash-main">FF 360°</div>
         <div class="app-splash-sub">Unterstützung im Einsatzdienst</div>
     </div>
@@ -3541,7 +3541,7 @@ iframe {
 
 <header>
 <div class="header-brand">
-    <img class="header-brand-logo" src="assets/images/logoapp.png" alt="FF 360 Logo">
+    <img class="header-brand-logo" src="logoapp.png" alt="FF 360 Logo">
     <div class="header-brand-text">
         <div class="header-brand-main">FF 360°</div>
         <div class="header-brand-sub">Unterstützung im Einsatzdienst</div>
@@ -3606,7 +3606,7 @@ iframe {
     <div id="searchResults"></div>
 
     <div class="footer">
-        <img src="assets/images/logoapp.png" alt="FF 360 Logo">
+        <img src="logoapp.png" alt="FF 360 Logo">
         <div>
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
             <span id="homeCreatorLine">Erstellt durch Jonas Jessen.</span>
@@ -4332,7 +4332,7 @@ iframe {
 <div id="asuGlobalFlash" class="asu-global-flash" aria-hidden="true">
     <div class="asu-global-flash-msg">RÜCKMELDUNG FÄLLIG - ATEMSCHUTZ</div>
 </div>
-<audio id="asuGlobalAlarmAudio" preload="auto" loop playsinline src="assets/sounds/asue_alarm.wav"></audio>
+<audio id="asuGlobalAlarmAudio" preload="auto" loop playsinline src="asue_alarm.wav"></audio>
 <div id="asu2GlobalPopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='asu2GlobalPopup'){asuDismissPressurePrompt()}">
     <div class="asu2-popup">
         <h4 id="asu2PopupTitle">Atemschutz-Rückmeldung</h4>
@@ -6389,7 +6389,7 @@ function exportLagePdf(){
     th, td { border:1px solid #bbb; padding:6px 8px; vertical-align:top; }
     .meta { margin: 8px 0; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><div><h1>Einsatzlage</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div><img class="logo" src="assets/images/logoapp.png" alt="FF 360 Logo"></div>
+    <div class="head"><div><h1>Einsatzlage</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div>
     <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
 
     <div class="section">
@@ -7806,7 +7806,7 @@ function exportSocialEinsatzprotokollPdf(){
     pre { white-space: pre-wrap; line-height: 1.4; }
     .meta { margin: 10px 0; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><div><h1>FF 360°</h1><div class="sub">Unterstützung im Einsatzdienst</div></div><img class="logo" src="assets/images/logoff.png" alt="Feuerwehr-Logo"></div>
+    <div class="head"><div><h1>FF 360°</h1><div class="sub">Unterstützung im Einsatzdienst</div></div><img class="logo" src="logoff.png" alt="Feuerwehr-Logo"></div>
     <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
     <pre>${escapeHtml(text)}</pre>
     <div style="margin-top:8px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
@@ -10850,7 +10850,7 @@ function asuExportIncidentPdf(){
     pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.35; }
     .footer { margin-top: 10px; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><img src="assets/images/logoapp.png" alt="FF 360 Logo"><h1>Atemschutz-Protokoll</h1></div>
+    <div class="head"><img src="logoapp.png" alt="FF 360 Logo"><h1>Atemschutz-Protokoll</h1></div>
     <div class="meta">Datei: ${escapeHtml(base)}.pdf</div>
     <pre>${escapeHtml(text)}</pre>
     <div class="footer">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
@@ -13416,7 +13416,7 @@ function exportPolKripoPdf(){
         <h1>Abfragebogen an die POL / Kripo</h1>
         <h2>-Personensucheinsätze-</h2>
       </div>
-      <img class="logo" src="assets/images/logoff.png" alt="Feuerwehr-Logo">
+      <img class="logo" src="logoff.png" alt="Feuerwehr-Logo">
     </div>
     <div class="warn">Aktuelles Foto !!!</div>
 
@@ -13773,7 +13773,7 @@ function exportEinsatzKraeftePdf(){
     if (!w) return;
     const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
     <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}</style>
-    </head><body><div class="head"><h1>Einsatzübersicht Kräfte/Funkrufnamen</h1><img class="logo" src="assets/images/logoapp.png" alt="FF 360 Logo"></div><pre>${escapeHtml(text)}</pre>
+    </head><body><div class="head"><h1>Einsatzübersicht Kräfte/Funkrufnamen</h1><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div><pre>${escapeHtml(text)}</pre>
     <div style="margin-top:8px;font-size:11px;color:#555;">Export: ${new Date().toLocaleString("de-DE")} | ${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
     w.document.open();
@@ -15980,7 +15980,7 @@ function footerHtml(){
     const creatorLine = escapeHtml(getAppFooterCreatorText());
     return `
     <div class="footer">
-        <img src="assets/images/logoapp.png" alt="FF 360 Logo">
+        <img src="logoapp.png" alt="FF 360 Logo">
         <div>
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
             ${creatorLine}
