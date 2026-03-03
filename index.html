@@ -946,6 +946,49 @@ button:active {
     box-shadow: none;
 }
 
+.sw-update-banner {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(740px, calc(100% - 20px));
+    z-index: 3250;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: rgba(19, 124, 66, 0.96);
+    color: #fff;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.36);
+    backdrop-filter: blur(2px);
+}
+
+.sw-update-banner.show {
+    display: flex;
+}
+
+.sw-update-banner strong {
+    display: block;
+}
+
+.sw-update-actions {
+    display: inline-flex;
+    gap: 8px;
+}
+
+.sw-update-actions button {
+    width: auto;
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+}
+
 .asu-global-flash {
     position: fixed;
     inset: 0;
@@ -3591,6 +3634,18 @@ iframe {
         padding: 9px 10px;
     }
 
+    .sw-update-banner {
+        top: calc(8px + env(safe-area-inset-top, 0px));
+        width: calc(100% - 14px);
+        gap: 8px;
+        padding: 9px 10px;
+    }
+
+    .sw-update-actions button {
+        padding: 7px 9px;
+        font-size: 12px;
+    }
+
     .asu-global-banner button {
         padding: 7px 9px;
         font-size: 12px;
@@ -3982,28 +4037,7 @@ iframe {
                     </div>
                     <div class="social-col-full">
                         <label for="socialAlarmstichwort">Alarmstichwort</label>
-                        <select id="socialAlarmstichwort" onchange="updateSocialField('alarmstichwort', this.value)">
-                            <option value="FEU K BMA">FEU K BMA</option>
-                            <option value="FEU G 00">FEU G 00</option>
-                            <option value="FEU 00">FEU 00</option>
-                            <option value="FEU K 00">FEU K 00</option>
-                            <option value="FEU BMA">FEU BMA</option>
-                            <option value="TH Wasser">TH Wasser</option>
-                            <option value="TH G 00">TH G 00</option>
-                            <option value="TH K 00">TH K 00</option>
-                            <option value="TH K TV">TH K TV</option>
-                            <option value="TH K AUST">TH K AUST</option>
-                            <option value="TH K TIER">TH K TIER</option>
-                            <option value="TH GAS">TH GAS</option>
-                            <option value="TH K ERK">TH K ERK</option>
-                            <option value="TH K DRZF">TH K DRZF</option>
-                            <option value="Tragehilfe">Tragehilfe</option>
-                            <option value="NOTF DL">NOTF DL</option>
-                            <option value="Drohne">Drohne</option>
-                            <option value="Brandschutzbegehung">Brandschutzbegehung</option>
-                            <option value="Brandwache">Brandwache</option>
-                            <option value="Durchfahrtskontrolle">Durchfahrtskontrolle</option>
-                        </select>
+                        <select id="socialAlarmstichwort" onchange="updateSocialField('alarmstichwort', this.value)"></select>
                     </div>
                     <div class="social-col-full">
                         <label>Weitere Kräfte</label>
@@ -4388,6 +4422,16 @@ iframe {
             </div>
 
             <div class="lage-section">
+                <h4>Einsatzdetails</h4>
+                <div class="lage-row">
+                    <div style="flex:1; min-width: 240px;">
+                        <label for="lageAlarmstichwort">Alarmstichwort</label>
+                        <select id="lageAlarmstichwort" onchange="updateLageAlarmstichwort(this.value)"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lage-section">
                 <h4>Bilderdokumentation</h4>
                 <div class="lage-row">
                     <button onclick="triggerLagePhotoUpload()">📷 Bild hinzufügen</button>
@@ -4605,6 +4649,7 @@ iframe {
                 <button onclick="copyLageSummary()">📋 Lage kopieren</button>
                 <button onclick="editLageSummary()">📝 Lagemeldung bearbeiten</button>
                 <button onclick="exportLagePdf()">📄 Lage-PDF</button>
+                <button onclick="exportIncidentFinalReportPdf()">📑 Abschlussbericht</button>
                 <button onclick="archiveCurrentIncident()">🗂 Einsatz archivieren</button>
                 <button onclick="resetLageDashboard()">Reset Lage</button>
                 <button onclick="copyLageLogExport()">Log exportieren</button>
@@ -4632,6 +4677,16 @@ iframe {
         <div id="psuGlobalBannerText">Mindestens ein Team-Check Reminder ist fällig.</div>
     </div>
     <button onclick="event.stopPropagation(); openPsuOverlay()">Zur Nachsorge</button>
+</div>
+<div id="swUpdateBanner" class="sw-update-banner" role="status" aria-live="polite">
+    <div>
+        <strong>Neue Version verfügbar</strong>
+        <div id="swUpdateBannerText">Ein Update wurde geladen und kann jetzt aktiviert werden.</div>
+    </div>
+    <div class="sw-update-actions">
+        <button onclick="applyServiceWorkerUpdate()">Jetzt aktualisieren</button>
+        <button onclick="dismissServiceWorkerUpdateBanner()">Später</button>
+    </div>
 </div>
 <div id="asuGlobalFlash" class="asu-global-flash" aria-hidden="true">
     <div class="asu-global-flash-msg">RÜCKMELDUNG FÄLLIG - ATEMSCHUTZ</div>
@@ -6770,6 +6825,7 @@ function getDefaultLageState(){
         lastTickAt: null,
         gpsText: "",
         priority: "yellow",
+        alarmstichwort: "FEU BMA",
         counters: {
             rescued: 0,
             pa: 0,
@@ -6911,6 +6967,7 @@ function getLageAutoReport(state){
     const sectionsActive = sectionsAuto !== null ? sectionsAuto : (Number(state.counters.sectionsManual) || 0);
     const durationText = formatDuration(Number(state.durationRunning) || 0);
     const startText = formatDateTime(state.startedAt);
+    const alarmstichwort = (state.alarmstichwort || "").trim() || "—";
     const yesChecks = [];
     if (normalizeToggleValue(state.toggles.safetyTrupp) === "yes") yesChecks.push("Sicherheitstrupp gestellt");
     if (normalizeToggleValue(state.toggles.asWatch) === "yes") yesChecks.push("Atemschutzüberwachung eingerichtet");
@@ -6923,7 +6980,7 @@ function getLageAutoReport(state){
     if (normalizeToggleValue(state.toggles.energyOff) === "yes") yesChecks.push("Energieversorgung abgeschaltet");
 
     const baseText =
-        `Einsatzstart: ${startText}. Einsatz läuft seit ${durationText}. ` +
+        `Alarmstichwort: ${alarmstichwort}. Einsatzstart: ${startText}. Einsatz läuft seit ${durationText}. ` +
         `Vor Ort: ${Number(state.counters.vehicles) || 0} Fahrzeuge, ${Number(state.counters.personnel) || 0} Kräfte. ` +
         `PA im Einsatz: ${Number(state.counters.pa) || 0}. ` +
         `Gerettet: ${Number(state.counters.rescued) || 0}. ` +
@@ -7040,6 +7097,7 @@ function renderLageDashboard(){
     const state = getLageState();
     syncLageDuration(state);
     saveLageState(state);
+    renderAlarmstichwortSelect("lageAlarmstichwort", state.alarmstichwort || "FEU BMA");
     const sectionsAuto = getActiveSectionsCountForLage();
     const sectionsValue = sectionsAuto !== null ? sectionsAuto : (Number(state.counters.sectionsManual) || 0);
 
@@ -7195,6 +7253,13 @@ function setLageFreeText(value){
     patchLageState((state)=>{
         state.freeText = value || "";
     });
+}
+
+function updateLageAlarmstichwort(value){
+    patchLageState((state)=>{
+        state.alarmstichwort = (value || "").trim() || "FEU BMA";
+    });
+    renderLageDashboard();
 }
 
 function editLageSummary(){
@@ -7520,6 +7585,7 @@ function exportLagePdf(){
 
     const sectionsAuto = getActiveSectionsCountForLage();
     const sectionsValue = sectionsAuto !== null ? sectionsAuto : (Number(state.counters.sectionsManual) || 0);
+    const alarmstichwort = (state.alarmstichwort || "").trim() || "—";
     const w = window.open("", "_blank");
     if (!w){
         alert("Popup blockiert. Bitte Popup-Freigabe aktivieren.");
@@ -7545,6 +7611,7 @@ function exportLagePdf(){
       <strong>Kompaktübersicht</strong>
       <table style="margin-top:6px;">
         <tr><th>Startzeit</th><td>${escapeHtml(formatDateTime(state.startedAt))}</td><th>Dauer</th><td>${escapeHtml(formatDuration(Number(state.durationRunning) || 0))}</td></tr>
+        <tr><th>Alarmstichwort</th><td>${escapeHtml(alarmstichwort)}</td><th>Modus</th><td>${isTrainingMode() ? "ÜBUNG" : "REAL"}</td></tr>
         <tr><th>Priorität</th><td>${escapeHtml(state.priority || "yellow")}</td><th>GPS</th><td>${escapeHtml(state.gpsText || "-")}</td></tr>
         <tr><th>Kräfte</th><td>${escapeHtml(String(Number(state.counters.personnel) || 0))}</td><th>Fahrzeuge</th><td>${escapeHtml(String(Number(state.counters.vehicles) || 0))}</td></tr>
         <tr><th>PA im Einsatz</th><td>${escapeHtml(String(Number(state.counters.pa) || 0))}</td><th>Abschnitte aktiv</th><td>${escapeHtml(String(sectionsValue))}</td></tr>
@@ -7577,6 +7644,261 @@ function exportLagePdf(){
       <strong>Bilderdokumentation</strong>
       ${photoBlocks}
     </div>
+
+    <div style="margin-top:10px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+}
+
+function formatReportTs(value){
+    if (!value) return "-";
+    const ts = typeof value === "number" ? value : Date.parse(value);
+    if (!Number.isFinite(ts)) return "-";
+    return new Date(ts).toLocaleString("de-DE");
+}
+
+function getIncidentReportSnapshot(){
+    const lage = getLageState();
+    syncLageDuration(lage);
+    return {
+        generatedAt: new Date().toISOString(),
+        mode: isTrainingMode() ? "ÜBUNG" : "REAL",
+        lage,
+        sections: typeof getSections === "function" ? getSections() : [],
+        nachforderungen: typeof getNachforderungen === "function" ? getNachforderungen() : [],
+        social: typeof getSocialState === "function" ? getSocialState() : null,
+        einsatzLog: typeof getEinsatzLog === "function" ? getEinsatzLog() : [],
+        funk: typeof getFunkState === "function" ? getFunkState() : null,
+        atemschutz: typeof getAtemschutzState === "function" ? getAtemschutzState() : null,
+        funkcheck: typeof getFunkcheckState === "function" ? getFunkcheckState() : null,
+        gefahrgut: typeof getGefahrgutState === "function" ? getGefahrgutState() : null,
+        evak: typeof getEvakState === "function" ? getEvakState() : null,
+        presse: typeof getPresseState === "function" ? getPresseState() : null,
+        psu: typeof getPsuState === "function" ? getPsuState() : null,
+        psuContacts: typeof getPsuContacts === "function" ? getPsuContacts() : [],
+        psuReminders: typeof getPsuReminders === "function" ? getPsuReminders() : []
+    };
+}
+
+function getFunkcheckSummaryRows(funkcheck){
+    if (!funkcheck || !Array.isArray(funkcheck.sessions) || !funkcheck.sessions.length){
+        return [];
+    }
+    const active = funkcheck.sessions.find((s)=>s.id === funkcheck.activeId) || funkcheck.sessions[0];
+    const teilnehmer = Array.isArray(active.teilnehmer) ? active.teilnehmer : [];
+    const ok = teilnehmer.filter((t)=>t.status === "ok").length;
+    const none = teilnehmer.filter((t)=>t.status === "keine_verbindung").length;
+    const open = teilnehmer.filter((t)=>t.status === "offen").length;
+    return [
+        { label: "Session", value: active.header && active.header.titel ? active.header.titel : "Funk-Check Session" },
+        { label: "Teilnehmer", value: String(teilnehmer.length) },
+        { label: "Status OK", value: String(ok) },
+        { label: "Keine Verbindung", value: String(none) },
+        { label: "Offen", value: String(open) }
+    ];
+}
+
+function getAtemschutzReportRows(atemschutz){
+    if (!atemschutz || typeof atemschutz !== "object"){
+        return [];
+    }
+    const incident = atemschutz.activeIncident || (Array.isArray(atemschutz.archive) ? atemschutz.archive[0] : null);
+    if (!incident){
+        return [{ label: "Atemschutz", value: "Keine aktive oder archivierte Lage vorhanden" }];
+    }
+    const teams = Array.isArray(incident.teams) ? incident.teams : [];
+    const logs = Array.isArray(incident.logs) ? incident.logs : [];
+    const unsilenced = teams.filter((team)=>!team.alarmSilenced).length;
+    return [
+        { label: "Einsatzname", value: incident.name || "-" },
+        { label: "Einsatznummer", value: incident.number || "-" },
+        { label: "Einsatzort", value: incident.location || "-" },
+        { label: "Start", value: formatReportTs(incident.startedAt) },
+        { label: "Ende", value: formatReportTs(incident.endedAt) },
+        { label: "Trupps gesamt", value: String(teams.length) },
+        { label: "Alarm nicht quittiert", value: String(unsilenced) },
+        { label: "ASÜ-Logeinträge", value: String(logs.length) }
+    ];
+}
+
+function renderReportRowsTable(rows){
+    if (!Array.isArray(rows) || !rows.length){
+        return `<tr><td style="padding:6px 8px;border:1px solid #bbb;" colspan="2">Keine Daten</td></tr>`;
+    }
+    return rows.map((row)=>`<tr>
+        <th style="padding:6px 8px;border:1px solid #bbb;width:34%;text-align:left;">${escapeHtml(row.label || "-")}</th>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(row.value || "-")}</td>
+    </tr>`).join("");
+}
+
+function hasMeaningfulFunkcheckData(funkcheck){
+    if (!funkcheck || !Array.isArray(funkcheck.sessions) || !funkcheck.sessions.length){
+        return false;
+    }
+    return funkcheck.sessions.some((session)=>{
+        const title = session && session.header && String(session.header.titel || "").trim();
+        if (title) return true;
+        const teilnehmer = Array.isArray(session && session.teilnehmer) ? session.teilnehmer : [];
+        if (!teilnehmer.length) return false;
+        return teilnehmer.some((item)=>{
+            if (!item) return false;
+            const name = String(item.name || "").trim();
+            const rolle = String(item.rolle || "").trim();
+            const kanal = String(item.kanalId || "").trim();
+            const status = String(item.status || "offen").trim();
+            return !!(name || rolle || kanal || status !== "offen");
+        });
+    });
+}
+
+function hasMeaningfulPsuData(psu, contacts, reminders){
+    const state = psu || {};
+    if (state.required) return true;
+    if (String(state.selectedContactId || "").trim()) return true;
+    if (String(state.status || "offen").trim() !== "offen") return true;
+    if (state.requestedAt || state.arrivedAt || state.completedAt) return true;
+    if (String(state.exerciseGoal || "").trim()) return true;
+    if (String(state.exerciseNotes || "").trim()) return true;
+    if (Array.isArray(state.feedbackEntries) && state.feedbackEntries.length) return true;
+    if (Array.isArray(contacts) && contacts.length) return true;
+    if (Array.isArray(reminders) && reminders.length) return true;
+    return false;
+}
+
+function exportIncidentFinalReportPdf(){
+    const snapshot = getIncidentReportSnapshot();
+    const lage = snapshot.lage || getDefaultLageState();
+    const sections = Array.isArray(snapshot.sections) ? snapshot.sections : [];
+    const nachforderungen = Array.isArray(snapshot.nachforderungen) ? snapshot.nachforderungen : [];
+    const einsatzLog = Array.isArray(snapshot.einsatzLog) ? snapshot.einsatzLog : [];
+    const funkHistory = snapshot.funk && Array.isArray(snapshot.funk.history) ? snapshot.funk.history : [];
+    const social = snapshot.social || {};
+    const psu = snapshot.psu || {};
+    const gefahrgut = snapshot.gefahrgut || {};
+    const evak = snapshot.evak || {};
+    const presse = snapshot.presse || {};
+    const sectionsAuto = getActiveSectionsCountForLage();
+    const sectionsValue = sectionsAuto !== null ? sectionsAuto : (Number(lage.counters.sectionsManual) || 0);
+    const file = `Abschlussbericht_${(new Date()).toISOString().slice(0, 19).replace(/[-:T]/g, "")}.pdf`;
+
+    const sectionRows = sections.map((item)=>`<tr>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.name || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(String(Number(item.count) || 0))}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.status || "laufend")}</td>
+    </tr>`).join("");
+    const nachRows = nachforderungen.map((item)=>`<tr>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.time || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.resource || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.status || "angefordert")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.reason || "-")}</td>
+    </tr>`).join("");
+    const lageLogRows = (lage.log || []).slice(0, 120).map((entry)=>`<tr>
+        <td style="padding:6px 8px;border:1px solid #bbb;width:72px;white-space:nowrap;">${escapeHtml(entry.time || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;width:92px;white-space:nowrap;">${escapeHtml(entry.category || "EINSATZ")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.text || "-")}</td>
+    </tr>`).join("");
+    const einsatzLogRows = einsatzLog.slice(0, 80).map((item)=>`<tr>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.einsatznummer || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.datum || "-")} ${escapeHtml(item.uhrzeit || "")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.alarmstichwort || "-")}</td>
+    </tr>`).join("");
+    const funkRows = funkHistory.slice(0, 20).map((item)=>`<tr>
+        <td style="padding:6px 8px;border:1px solid #bbb;width:82px;">${escapeHtml(item.time || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;width:180px;">${escapeHtml(item.type || "-")}</td>
+        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.text || "-")}</td>
+    </tr>`).join("");
+
+    const reportRows = [
+        { label: "Modus", value: snapshot.mode || "-" },
+        { label: "Alarmstichwort", value: lage.alarmstichwort || "-" },
+        { label: "Startzeit", value: formatDateTime(lage.startedAt) },
+        { label: "Endzeit", value: formatDateTime(lage.endedAt) },
+        { label: "Dauer", value: formatDuration(Number(lage.durationRunning) || 0) },
+        { label: "Priorität", value: lage.priority || "-" },
+        { label: "GPS", value: lage.gpsText || "-" },
+        { label: "Kräfte", value: String(Number(lage.counters.personnel) || 0) },
+        { label: "Fahrzeuge", value: String(Number(lage.counters.vehicles) || 0) },
+        { label: "PA im Einsatz", value: String(Number(lage.counters.pa) || 0) },
+        { label: "Gerettete", value: String(Number(lage.counters.rescued) || 0) },
+        { label: "Abschnitte aktiv", value: String(sectionsValue) }
+    ];
+    const gefahrgutRows = [
+        { label: "Typ", value: gefahrgut.type || "-" },
+        { label: "Stoff", value: gefahrgut.stoff || "-" },
+        { label: "Kennzeichen", value: gefahrgut.kennzeichen || "-" },
+        { label: "Dekon", value: gefahrgut.dekon || "-" },
+        { label: "Logeinträge", value: String(Array.isArray(gefahrgut.log) ? gefahrgut.log.length : 0) }
+    ];
+    const evakSessions = Array.isArray(evak.sessions) ? evak.sessions : [];
+    const evakActive = evakSessions.find((session)=>session.id === evak.activeId) || evakSessions[0] || null;
+    const evakRows = evakActive ? [
+        { label: "Objekt", value: (evakActive.header && evakActive.header.objekt) || "-" },
+        { label: "Datum/Uhrzeit", value: `${(evakActive.header && evakActive.header.datum) || "-"} ${(evakActive.header && evakActive.header.uhrzeit) || ""}`.trim() },
+        { label: "Szenario", value: (evakActive.lage && evakActive.lage.szenario) || "-" },
+        { label: "Priorität", value: (evakActive.lage && evakActive.lage.prioritaet) || "-" },
+        { label: "Evakuiert", value: String(Number(evakActive.personen && evakActive.personen.evakuiert) || 0) },
+        { label: "Vermisst", value: String(Number(evakActive.personen && evakActive.personen.vermisst) || 0) }
+    ] : [];
+    const presseAssist = presse.assist || {};
+    const presseRows = [
+        { label: "Meldungsart", value: presseAssist.meldungsart || "-" },
+        { label: "Einsatzart", value: presseAssist.einsatzart || "-" },
+        { label: "Ort", value: presseAssist.ort || "-" },
+        { label: "Stand", value: presseAssist.einsatzstand || "-" },
+        { label: "Kernbotschaft", value: presseAssist.kernbotschaft || "-" }
+    ];
+    const psuRows = [
+        { label: "PSU angefordert", value: psu.required ? "Ja" : "Nein" },
+        { label: "Status", value: psu.status || "-" },
+        { label: "Angefordert am", value: formatReportTs(psu.requestedAt) },
+        { label: "Eingetroffen am", value: formatReportTs(psu.arrivedAt) },
+        { label: "Abgeschlossen am", value: formatReportTs(psu.completedAt) },
+        { label: "Feedback-Einträge", value: String(Array.isArray(psu.feedbackEntries) ? psu.feedbackEntries.length : 0) },
+        { label: "PSU Kontakte", value: String(Array.isArray(snapshot.psuContacts) ? snapshot.psuContacts.length : 0) },
+        { label: "PSU Reminder", value: String(Array.isArray(snapshot.psuReminders) ? snapshot.psuReminders.length : 0) }
+    ];
+    const showFunkcheck = hasMeaningfulFunkcheckData(snapshot.funkcheck);
+    const showPsu = hasMeaningfulPsuData(psu, snapshot.psuContacts, snapshot.psuReminders);
+
+    const w = window.open("", "_blank");
+    if (!w){
+        alert("Popup blockiert. Bitte Popup-Freigabe aktivieren.");
+        return;
+    }
+
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
+    <style>
+    @page { size: A4; margin: 12mm; }
+    body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .logo { width:90px; height:auto; object-fit:contain; }
+    h1 { margin:0; font-size:22px; }
+    h2 { margin: 0; font-size: 15px; }
+    .sub { margin-top:4px; font-size:13px; color:#444; }
+    .section { margin-top:10px; page-break-inside: avoid; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { border:1px solid #bbb; padding:6px 8px; vertical-align:top; }
+    .meta { margin: 8px 0; font-size: 11px; color:#555; }
+    .block { border: 1px solid #bbb; border-radius: 8px; padding: 8px; margin-top: 6px; white-space: pre-wrap; }
+    </style></head><body>
+    <div class="head"><div><h1>Einsatz-Abschlussbericht</h1><div class="sub">FF 360° · Vollständiger Abschlussbericht</div></div><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div>
+    <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
+
+    <div class="section"><h2>1) Einsatzübersicht</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(reportRows)}</tbody></table></div>
+    <div class="section"><h2>2) Lagezusammenfassung</h2><div class="block">${escapeHtml(getLageAutoReport(lage) || "-")}</div>${lage.freeText ? `<div class="block" style="margin-top:8px;"><strong>Freitext:</strong>\n${escapeHtml(lage.freeText)}</div>` : ""}</div>
+    <div class="section"><h2>3) Abschnitte</h2><table style="margin-top:6px;"><thead><tr><th>Abschnitt</th><th>Kräfte</th><th>Status</th></tr></thead><tbody>${sectionRows || `<tr><td colspan="3" style="padding:8px;">Keine Abschnitte erfasst.</td></tr>`}</tbody></table></div>
+    <div class="section"><h2>4) Nachforderungen</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Ressource</th><th>Status</th><th>Begründung</th></tr></thead><tbody>${nachRows || `<tr><td colspan="4" style="padding:8px;">Keine Nachforderungen erfasst.</td></tr>`}</tbody></table></div>
+    <div class="section"><h2>5) Lage-Ereignislog</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Ereignis</th></tr></thead><tbody>${lageLogRows || `<tr><td colspan="3" style="padding:8px;">Keine Ereignisse erfasst.</td></tr>`}</tbody></table></div>
+    <div class="section"><h2>6) Einsatzhistorie (Social)</h2><table style="margin-top:6px;"><thead><tr><th>Einsatznummer</th><th>Datum/Uhrzeit</th><th>Alarmstichwort</th></tr></thead><tbody>${einsatzLogRows || `<tr><td colspan="3" style="padding:8px;">Keine Einträge erfasst.</td></tr>`}</tbody></table></div>
+    <div class="section"><h2>7) Funk</h2><div class="block"><strong>Aktive Vorlage:</strong> ${escapeHtml(snapshot.funk && snapshot.funk.activeTemplate ? snapshot.funk.activeTemplate : "-")}\n<strong>Funkrufname:</strong> ${escapeHtml(snapshot.funk ? getActiveCallsign(snapshot.funk) : "-")}\n<strong>Social Alarmstichwort:</strong> ${escapeHtml(social.alarmstichwort || "-")}</div><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Meldung</th></tr></thead><tbody>${funkRows || `<tr><td colspan="3" style="padding:8px;">Keine Funkhistorie erfasst.</td></tr>`}</tbody></table></div>
+    <div class="section"><h2>8) Atemschutzüberwachung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getAtemschutzReportRows(snapshot.atemschutz))}</tbody></table></div>
+    ${showFunkcheck ? `<div class="section"><h2>9) Funk-Check</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getFunkcheckSummaryRows(snapshot.funkcheck))}</tbody></table></div>` : ""}
+    <div class="section"><h2>10) Gefahrgut</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(gefahrgutRows)}</tbody></table></div>
+    <div class="section"><h2>11) Evakuierung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(evakRows)}</tbody></table></div>
+    <div class="section"><h2>12) Presse</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(presseRows)}</tbody></table></div>
+    ${showPsu ? `<div class="section"><h2>13) PSU</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(psuRows)}</tbody></table></div>` : ""}
 
     <div style="margin-top:10px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
@@ -8883,6 +9205,29 @@ const SOCIAL_FORCE_OPTIONS = [
     "THW"
 ];
 
+const ALARM_STICHWORT_OPTIONS = [
+    "FEU K BMA",
+    "FEU G 00",
+    "FEU 00",
+    "FEU K 00",
+    "FEU BMA",
+    "TH Wasser",
+    "TH G 00",
+    "TH K 00",
+    "TH K TV",
+    "TH K AUST",
+    "TH K TIER",
+    "TH GAS",
+    "TH K ERK",
+    "TH K DRZF",
+    "Tragehilfe",
+    "NOTF DL",
+    "Drohne",
+    "Brandschutzbegehung",
+    "Brandwache",
+    "Durchfahrtskontrolle"
+];
+
 const SOCIAL_EMOJI_DIGITS = {
     "0": "0️⃣",
     "1": "1️⃣",
@@ -8895,6 +9240,25 @@ const SOCIAL_EMOJI_DIGITS = {
     "8": "8️⃣",
     "9": "9️⃣"
 };
+
+function renderAlarmstichwortSelect(selectId, selectedValue){
+    const select = document.getElementById(selectId);
+    if (!select) return;
+    const selected = (selectedValue || "").trim();
+    const values = ALARM_STICHWORT_OPTIONS.slice();
+    if (selected && values.indexOf(selected) < 0){
+        values.unshift(selected);
+    }
+    const html = values.map((value)=>`<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+    if (select.innerHTML !== html){
+        select.innerHTML = html;
+    }
+    if (selected){
+        select.value = selected;
+    } else if (values.length){
+        select.value = values[0];
+    }
+}
 
 function getTodayBerlinDateISO(){
     return new Intl.DateTimeFormat("en-CA", {
@@ -9013,6 +9377,7 @@ function syncSocialForm(state){
     if (date) date.value = state.date || "";
     if (time) time.value = state.time || "";
     if (alarmschleife) alarmschleife.value = state.alarmschleife || "Vollalarm";
+    renderAlarmstichwortSelect("socialAlarmstichwort", state.alarmstichwort || "FEU BMA");
     if (alarmstichwort) alarmstichwort.value = state.alarmstichwort || "FEU BMA";
     if (taetigkeit) taetigkeit.value = state.taetigkeit || "";
     if (includeWeather && document.activeElement !== includeWeather) includeWeather.checked = !!state.includeWeather;
@@ -12642,6 +13007,14 @@ function ensureFunkcheckState(){
     return funkcheckState;
 }
 
+function getFunkcheckState(){
+    try {
+        return JSON.parse(JSON.stringify(ensureFunkcheckState()));
+    } catch {
+        return ensureFunkcheckState();
+    }
+}
+
 function saveFunkcheckState(){
     if (!funkcheckState) return;
     appStorageSetItem(FUNKCHECK_STORAGE_KEY, JSON.stringify(funkcheckState));
@@ -13072,6 +13445,14 @@ function ensureGefahrgutState(){
     return gefahrgutState;
 }
 
+function getGefahrgutState(){
+    try {
+        return JSON.parse(JSON.stringify(ensureGefahrgutState()));
+    } catch {
+        return ensureGefahrgutState();
+    }
+}
+
 function saveGefahrgutState(){
     appStorageSetItem(GEFAHRGUT_STORAGE_KEY, JSON.stringify(gefahrgutState || getDefaultGefahrgutState()));
 }
@@ -13422,6 +13803,14 @@ function ensureEvakState(){
         evakState = { sessions: [first], activeId: first.id };
     }
     return evakState;
+}
+
+function getEvakState(){
+    try {
+        return JSON.parse(JSON.stringify(ensureEvakState()));
+    } catch {
+        return ensureEvakState();
+    }
 }
 
 function saveEvakState(){ if (evakState) appStorageSetItem(EVAK_STORAGE_KEY, JSON.stringify(evakState)); }
@@ -14012,6 +14401,14 @@ function ensurePresseState(){
         });
     }
     return presseState;
+}
+
+function getPresseState(){
+    try {
+        return JSON.parse(JSON.stringify(ensurePresseState()));
+    } catch {
+        return ensurePresseState();
+    }
 }
 
 function savePresseState(){
@@ -18497,6 +18894,72 @@ function updateScrollTopButton(){
     btn.style.display = window.scrollY > 180 ? "flex" : "none";
 }
 
+let activeServiceWorkerRegistration = null;
+let swUpdateDismissed = false;
+
+function showServiceWorkerUpdateBanner(){
+    if (swUpdateDismissed) return;
+    const banner = document.getElementById("swUpdateBanner");
+    if (!banner) return;
+    banner.classList.add("show");
+}
+
+function dismissServiceWorkerUpdateBanner(){
+    swUpdateDismissed = true;
+    const banner = document.getElementById("swUpdateBanner");
+    if (!banner) return;
+    banner.classList.remove("show");
+}
+
+function applyServiceWorkerUpdate(){
+    if (activeServiceWorkerRegistration && activeServiceWorkerRegistration.waiting){
+        activeServiceWorkerRegistration.waiting.postMessage({ type: "SKIP_WAITING" });
+        return;
+    }
+    window.location.reload();
+}
+
+function watchServiceWorkerInstallation(registration){
+    if (!registration) return;
+    if (registration.waiting){
+        swUpdateDismissed = false;
+        showServiceWorkerUpdateBanner();
+    }
+    registration.addEventListener("updatefound", ()=>{
+        const worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", ()=>{
+            if (worker.state === "installed" && navigator.serviceWorker.controller){
+                swUpdateDismissed = false;
+                showServiceWorkerUpdateBanner();
+            }
+        });
+    });
+}
+
+function registerAppServiceWorker(){
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("service-worker.js")
+        .then((registration)=>{
+            activeServiceWorkerRegistration = registration;
+            watchServiceWorkerInstallation(registration);
+            setInterval(()=>{
+                registration.update().catch(()=>{});
+            }, 15 * 60 * 1000);
+        })
+        .catch(()=>{});
+
+    navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+        window.location.reload();
+    });
+
+    document.addEventListener("visibilitychange", ()=>{
+        if (document.visibilityState === "visible" && activeServiceWorkerRegistration){
+            activeServiceWorkerRegistration.update().catch(()=>{});
+        }
+    });
+}
+
 window.addEventListener("scroll", updateScrollTopButton);
 window.addEventListener("load", ()=>{
     setTimeout(hideAppSplash, 700);
@@ -18520,9 +18983,7 @@ function getLocation(){
         alert("GPS nicht verfügbar");
     }
 }
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
+registerAppServiceWorker();
 
 </script>
 </body>
