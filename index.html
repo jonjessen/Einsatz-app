@@ -86,6 +86,7 @@ header {
     object-fit: contain;
     position: relative;
     top: -2px;
+    cursor: pointer;
 }
 
 .header-brand-text {
@@ -898,6 +899,44 @@ button:active {
 }
 
 .asu-global-banner button {
+    width: auto;
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+}
+
+.psu-global-banner {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(740px, calc(100% - 20px));
+    z-index: 3190;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: rgba(18, 52, 79, 0.95);
+    color: #fff;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.36);
+    backdrop-filter: blur(2px);
+}
+
+.psu-global-banner.show {
+    display: flex;
+}
+
+.psu-global-banner strong {
+    display: block;
+}
+
+.psu-global-banner button {
     width: auto;
     margin: 0;
     padding: 8px 10px;
@@ -1794,6 +1833,85 @@ button:active {
     font-size: 14px;
 }
 
+.weather-banner {
+    border: 1px solid rgba(199, 68, 14, 0.35);
+    background: rgba(199, 68, 14, 0.12);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin: 10px 0;
+    color: #8e2f06;
+    font-weight: 600;
+}
+
+.weather-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px;
+}
+
+.weather-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    background: var(--card);
+}
+
+.weather-card h5 {
+    margin: 0 0 6px;
+    font-size: 14px;
+}
+
+.weather-value {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.weather-sub {
+    margin-top: 4px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.weather-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.weather-dot.ok {
+    background: #198754;
+}
+
+.weather-dot.warn {
+    background: #e2a20d;
+}
+
+.weather-dot.critical {
+    background: #c92a2a;
+}
+
+.weather-sparkline {
+    font-family: monospace;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+.weather-hint-list {
+    display: grid;
+    gap: 6px;
+}
+
+.weather-hint-item {
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
 .funk-overlay {
     position: fixed;
     inset: 0;
@@ -2369,6 +2487,19 @@ button:active {
     box-shadow: none;
 }
 
+.atem-row-actions button.active-progress {
+    background: rgba(31, 95, 146, 0.2);
+    color: #0f4f80;
+    box-shadow: none;
+}
+
+.evak-divider {
+    height: 2px;
+    margin: 12px 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(18, 52, 79, 0.08), rgba(18, 52, 79, 0.62), rgba(18, 52, 79, 0.08));
+}
+
 .atem-werte-row {
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -2572,6 +2703,11 @@ button:active {
     font-weight: 900;
 }
 
+.asu2-time-value {
+    font-size: 26px;
+    line-height: 1.05;
+}
+
 .asu2-quick-actions {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2661,7 +2797,7 @@ button:active {
 }
 
 .asu2-popup {
-    width: min(440px, 100%);
+    width: min(520px, 100%);
     border-radius: 14px;
     border: 1px solid var(--border);
     background: var(--card);
@@ -2687,6 +2823,27 @@ button:active {
     font-family: inherit;
 }
 
+.asu2-popup select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    background: var(--card);
+}
+
+.asu2-popup textarea {
+    width: 100%;
+    min-height: 92px;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    resize: vertical;
+}
+
 .asu2-popup-actions {
     display: flex;
     flex-wrap: wrap;
@@ -2698,6 +2855,32 @@ button:active {
     width: auto;
     margin: 0;
     padding: 10px 12px;
+}
+
+.asu2-waypoint-fold {
+    margin-top: 8px;
+}
+
+.asu2-waypoint-fold > summary {
+    cursor: pointer;
+    font-weight: 800;
+    color: var(--brand-blue);
+}
+
+.ek-vehicle-popup-form {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ek-vehicle-popup-note {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12px;
 }
 
 @media (max-width: 840px) {
@@ -3080,6 +3263,14 @@ a {
     border-radius: 0;
 }
 
+.footer-status {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
 #searchResults .card {
     border-left-color: var(--primary);
 }
@@ -3141,6 +3332,7 @@ a {
     margin-bottom: 14px;
 }
 
+
 .home-tool-group {
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -3172,6 +3364,7 @@ a {
     font-size: 12px;
     color: var(--text-muted);
 }
+
 
 .detail-title {
     display: flex;
@@ -3541,7 +3734,7 @@ iframe {
 
 <header>
 <div class="header-brand">
-    <img class="header-brand-logo" src="logoapp.png" alt="FF 360 Logo">
+    <img class="header-brand-logo" src="logoapp.png" alt="FF 360 Logo" title="Seite neu laden" onclick="reloadAppPage()">
     <div class="header-brand-text">
         <div class="header-brand-main">FF 360°</div>
         <div class="header-brand-sub">Unterstützung im Einsatzdienst</div>
@@ -3553,7 +3746,7 @@ iframe {
 </header>
 
 <div class="container" id="home">
-    <input type="text" class="searchbar" placeholder="🔍 Einsatz suchen..." oninput="searchEinsatz(this.value)">
+    <div id="weatherHomeBanner" class="weather-banner hidden" onclick="openWeatherOverlay()">Wetterhinweis</div>
 
     <div class="home-tools-shell">
         <div class="home-tool-group">
@@ -3579,6 +3772,7 @@ iframe {
                 <button id="homePsuBtn" onclick="openPsuOverlay()">🧠 Nachsorge <span id="psuReminderBadge" class="psu-reminder-badge hidden">0</span></button>
                 <button onclick="openGefahrgutOverlay()">☣️ Gefahrgut Schnellhilfe</button>
                 <button onclick="openEvakOverlay()">🏃 Evakuierungshelfer</button>
+                <button onclick="openWeatherOverlay()">🌦️ EinsatzWetter</button>
                 <button onclick="getLocation()">📍 GPS Koordinaten anzeigen</button>
             </div>
         </div>
@@ -3603,14 +3797,13 @@ iframe {
         <div class="backup-tip">Tipp: Backup-Datei per AirDrop, iCloud Drive oder Mail auf iPhone/iPad übertragen.</div>
     </div>
 
-    <div id="searchResults"></div>
-
     <div class="footer">
         <img src="logoapp.png" alt="FF 360 Logo">
         <div>
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
             <span id="homeCreatorLine">Erstellt durch Jonas Jessen.</span>
         </div>
+        <div class="footer-status" data-app-footer-status></div>
     </div>
 </div>
 
@@ -3647,6 +3840,69 @@ iframe {
                     <button id="settingsDarkModeBtn" onclick="toggleDarkModeFromSettings()">Dark Mode umschalten</button>
                     <button id="settingsTrainingModeBtn" onclick="toggleTrainingModeFromSettings()">Übungsmodus umschalten</button>
                     <button onclick="reloadAppPage()">Seite neu laden</button>
+                </div>
+            </div>
+            <div class="atem-panel">
+                <strong>Wetter</strong>
+                <div class="atem-grid" style="margin-top:8px;">
+                    <div>
+                        <label for="settingsWeatherDefaultName">Standard-Ort</label>
+                        <input id="settingsWeatherDefaultName" type="text" placeholder="z. B. Timmendorfer Strand" oninput="updateWeatherDefaultName(this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsWeatherUnit">Einheit Wind</label>
+                        <select id="settingsWeatherUnit" onchange="updateWeatherSettingField('unit', this.value)">
+                            <option value="kmh">km/h</option>
+                            <option value="ms">m/s</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="settingsWeatherCacheMinutes">Cache (Min.)</label>
+                        <select id="settingsWeatherCacheMinutes" onchange="updateWeatherSettingField('cacheMinutes', this.value)">
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="60">60</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Nur WLAN aktualisieren</label>
+                        <label class="social-force-item"><input id="settingsWeatherWifiOnly" type="checkbox" onchange="updateWeatherSettingField('wifiOnly', this.checked)"> aktiv</label>
+                    </div>
+                    <div>
+                        <label for="settingsWeatherWindWarn">Wind Warn (km/h)</label>
+                        <input id="settingsWeatherWindWarn" type="number" min="0" oninput="updateWeatherThreshold('windWarn', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsWeatherWindCritical">Wind Kritisch (km/h)</label>
+                        <input id="settingsWeatherWindCritical" type="number" min="0" oninput="updateWeatherThreshold('windCritical', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsWeatherGustWarn">Böen Warn (km/h)</label>
+                        <input id="settingsWeatherGustWarn" type="number" min="0" oninput="updateWeatherThreshold('gustWarn', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsWeatherGustCritical">Böen Kritisch (km/h)</label>
+                        <input id="settingsWeatherGustCritical" type="number" min="0" oninput="updateWeatherThreshold('gustCritical', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsDroneMaxWind">Drohne Max Wind (km/h)</label>
+                        <input id="settingsDroneMaxWind" type="number" min="0" oninput="updateDroneWeatherThreshold('maxWind', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsDroneMaxGust">Drohne Max Böen (km/h)</label>
+                        <input id="settingsDroneMaxGust" type="number" min="0" oninput="updateDroneWeatherThreshold('maxGust', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsDroneMinVisibility">Drohne Min Sicht (m)</label>
+                        <input id="settingsDroneMinVisibility" type="number" min="0" oninput="updateDroneWeatherThreshold('minVisibility', this.value)">
+                    </div>
+                    <div>
+                        <label for="settingsDroneMinTemp">Drohne Min Temp (°C)</label>
+                        <input id="settingsDroneMinTemp" type="number" oninput="updateDroneWeatherThreshold('minTemp', this.value)">
+                    </div>
+                </div>
+                <div class="atem-row-actions" style="margin-top:8px;">
+                    <button onclick="setDefaultWeatherLocationFromCurrent()">Standard-Ort aus letzter Wetter-Ort übernehmen</button>
                 </div>
             </div>
             <div class="social-actions">
@@ -3762,6 +4018,10 @@ iframe {
                     </div>
                     <div class="social-col-full">
                         <div class="einsatz-lite-row" style="margin-top:8px;">
+                            <label class="social-force-item" style="margin-bottom:8px;">
+                                <input id="socialIncludeWeather" type="checkbox" onchange="updateSocialIncludeWeather(this.checked)">
+                                <span>Wetterdaten anhängen</span>
+                            </label>
                             <button onclick="exportSocialEinsatzprotokollPdf()">📄 Einsatzprotokoll (PDF)</button>
                         </div>
                     </div>
@@ -3800,6 +4060,38 @@ iframe {
                 <button onclick="closeEinsatzOverlay()">Schließen</button>
             </div>
         </div>
+    </div>
+</div>
+
+<div
+    id="weatherOverlay"
+    class="social-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="weatherTitle"
+    onclick="handleWeatherOverlayBackdrop(event)">
+    <div class="social-modal">
+        <div class="social-header">
+            <h2 id="weatherTitle">EinsatzWetter - 1 Blick</h2>
+            <button class="social-close" onclick="closeWeatherOverlay()" aria-label="EinsatzWetter schließen">✕</button>
+        </div>
+        <div class="social-body" id="weatherBody"></div>
+    </div>
+</div>
+
+<div
+    id="droneWeatherOverlay"
+    class="social-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="droneWeatherTitle"
+    onclick="handleDroneWeatherOverlayBackdrop(event)">
+    <div class="social-modal">
+        <div class="social-header">
+            <h2 id="droneWeatherTitle">DrohnenWetter-Check</h2>
+            <button class="social-close" onclick="closeDroneWeatherOverlay()" aria-label="DrohnenWetter-Check schließen">✕</button>
+        </div>
+        <div class="social-body" id="droneWeatherBody"></div>
     </div>
 </div>
 
@@ -4028,6 +4320,11 @@ iframe {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="funk-history">
+                <h4>Nimmt am Einsatz teil</h4>
+                <div id="funkTeilnahmeList"></div>
             </div>
 
             <div id="funkOutput" class="funk-output">Hier erscheint die generierte Funkmeldung.</div>
@@ -4329,6 +4626,13 @@ iframe {
     <button onclick="event.stopPropagation(); asuToggleAlarmSoundPause()" id="asuSoundPauseBtn">Ton pausieren</button>
     <button onclick="event.stopPropagation(); openAtemOverlay()">Zur Atemschutzüberwachung</button>
 </div>
+<div id="psuGlobalBanner" class="psu-global-banner" role="status" aria-live="assertive" onclick="openPsuOverlay()">
+    <div>
+        <strong id="psuGlobalBannerTitle">Team-Check fällig</strong>
+        <div id="psuGlobalBannerText">Mindestens ein Team-Check Reminder ist fällig.</div>
+    </div>
+    <button onclick="event.stopPropagation(); openPsuOverlay()">Zur Nachsorge</button>
+</div>
 <div id="asuGlobalFlash" class="asu-global-flash" aria-hidden="true">
     <div class="asu-global-flash-msg">RÜCKMELDUNG FÄLLIG - ATEMSCHUTZ</div>
 </div>
@@ -4344,6 +4648,43 @@ iframe {
             <button onclick="asuDismissPressurePrompt()">Später</button>
             <button onclick="asuJumpToAtemFromPopup()">Zur Atemschutzüberwachung</button>
             <button onclick="asuPopupSetMayday()">Notfall</button>
+        </div>
+    </div>
+</div>
+<div id="asuWaypointPopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='asuWaypointPopup'){asuCloseWaypointPrompt()}">
+    <div class="asu2-popup">
+        <h4 id="asuWaypointPopupTitle">Neuer Wegpunkt</h4>
+        <p>Position/Abschnitt für das Standortjournal erfassen.</p>
+        <textarea id="asuWaypointPopupPoint" placeholder="z. B. Treppenraum 2. OG, linker Flur bis Wohnung 7"></textarea>
+        <div class="asu2-popup-actions">
+            <button onclick="asuConfirmWaypointPrompt()">Speichern</button>
+            <button onclick="asuCloseWaypointPrompt()">Abbrechen</button>
+            <button onclick="asuCloseWaypointPrompt(); openAtemOverlay()">Zur Atemschutzüberwachung</button>
+        </div>
+    </div>
+</div>
+<div id="einsatzKraefteVehiclePopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='einsatzKraefteVehiclePopup'){closeEinsatzKraefteAddVehiclePopup()}">
+    <div class="asu2-popup">
+        <h4>Neues Fahrzeug hinzufügen</h4>
+        <p>Daten werden lokal gespeichert und stehen sofort in Kräfte/Funkrufnamen bereit.</p>
+        <span class="ek-vehicle-popup-note">Pflichtfelder: Organisation, Fahrzeug, Typ, Funkrufname</span>
+        <div class="ek-vehicle-popup-form">
+            <select id="einsatzKraefteVehicleOrganisationSelect" onchange="setEinsatzKraefteVehicleOrganisationMode(this.value)">
+                <option value="">Organisation wählen...</option>
+                <option value="__new__">+ Neue Organisation</option>
+            </select>
+            <div id="einsatzKraefteVehicleOrganisationNewWrap" style="display:none;">
+                <input id="einsatzKraefteVehicleOrganisationNew" type="text" placeholder="Neue Organisation / Feuerwehr *">
+            </div>
+            <input id="einsatzKraefteVehicleGemeinde" type="text" placeholder="Gemeinde / Ort (optional)">
+            <input id="einsatzKraefteVehicleName" type="text" placeholder="Fahrzeugbezeichnung * (z. B. HLF 20)">
+            <input id="einsatzKraefteVehicleType" type="text" placeholder="Fahrzeugtyp * (z. B. HLF, ELW, MTW)">
+            <input id="einsatzKraefteVehicleCallsign" type="text" placeholder="Funkrufname *">
+            <input id="einsatzKraefteVehicleHint" type="text" placeholder="Hinweis (optional)">
+        </div>
+        <div class="asu2-popup-actions">
+            <button onclick="saveEinsatzKraefteVehicleFromPopup()">Speichern</button>
+            <button onclick="closeEinsatzKraefteAddVehiclePopup()">Abbrechen</button>
         </div>
     </div>
 </div>
@@ -4406,6 +4747,7 @@ const SCOPED_STORAGE_BASE_KEYS = new Set([
     "psu_contacts_v1",
     "psu_reminders_v1",
     "psu_state_v1",
+    "weather_module_v1",
     "pol_kripo_abfragebogen_v1",
     "pol_kripo_abfragebogen_archiv_v1",
     "einsatz_kraefte_funkrufnamen_v1",
@@ -4446,6 +4788,65 @@ function isTrainingMode(){
     return !!trainingModeActive;
 }
 
+const APP_VERSION = "1.0";
+const APP_STATUS_META_KEY = "ff360_app_status_meta";
+let appStatusMetaCache = null;
+
+function loadAppStatusMeta(){
+    if (appStatusMetaCache) return appStatusMetaCache;
+    try {
+        const raw = localStorage.getItem(APP_STATUS_META_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        appStatusMetaCache = {
+            lastSavedAt: Number(parsed && parsed.lastSavedAt) || null,
+            lastBackupAt: Number(parsed && parsed.lastBackupAt) || null,
+            lastImportAt: Number(parsed && parsed.lastImportAt) || null
+        };
+    } catch {
+        appStatusMetaCache = { lastSavedAt: null, lastBackupAt: null, lastImportAt: null };
+    }
+    return appStatusMetaCache;
+}
+
+function saveAppStatusMeta(){
+    if (!appStatusMetaCache) return;
+    try {
+        localStorage.setItem(APP_STATUS_META_KEY, JSON.stringify(appStatusMetaCache));
+    } catch {
+        // ignore
+    }
+}
+
+function formatStatusTimestamp(ts){
+    if (!Number.isFinite(Number(ts))) return "-";
+    return new Date(Number(ts)).toLocaleString("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+function getFooterStatusText(){
+    const meta = loadAppStatusMeta();
+    const online = navigator.onLine ? "Online" : "Offline";
+    return `Status: ${online} | Letztes Speichern: ${formatStatusTimestamp(meta.lastSavedAt)} | Letztes Backup: ${formatStatusTimestamp(meta.lastBackupAt)} | Letzter Import: ${formatStatusTimestamp(meta.lastImportAt)} | Version: ${APP_VERSION}`;
+}
+
+function renderFooterStatusLines(){
+    const text = getFooterStatusText();
+    document.querySelectorAll("[data-app-footer-status]").forEach((el)=>{
+        el.textContent = text;
+    });
+}
+
+function touchAppStatusMeta(field){
+    const meta = loadAppStatusMeta();
+    meta[field] = Date.now();
+    saveAppStatusMeta();
+    renderFooterStatusLines();
+}
+
 function getStorageKey(baseKey){
     const modePart = isTrainingMode() ? "uebung" : "real";
     return `${baseKey}_${modePart}_v1`;
@@ -4477,9 +4878,13 @@ function appStorageGetItem(baseKey){
 function appStorageSetItem(baseKey, value){
     if (!shouldUseScopedStorage(baseKey)){
         localStorage.setItem(baseKey, value);
+        if (baseKey !== APP_STATUS_META_KEY){
+            touchAppStatusMeta("lastSavedAt");
+        }
         return;
     }
     localStorage.setItem(getStorageKey(baseKey), value);
+    touchAppStatusMeta("lastSavedAt");
 }
 
 function appStorageRemoveItem(baseKey){
@@ -4644,6 +5049,7 @@ function flushPendingDataWrites(){
     if (typeof saveGefahrgutState === "function") saveGefahrgutState();
     if (typeof saveEvakState === "function") saveEvakState();
     if (typeof savePresseState === "function") savePresseState();
+    if (typeof saveWeatherState === "function") saveWeatherState(getWeatherState());
 }
 
 async function exportFF360Backup(){
@@ -4659,6 +5065,7 @@ async function exportFF360Backup(){
             }
         };
         downloadTextFile("ff360-backup.json", JSON.stringify(backup, null, 2));
+        touchAppStatusMeta("lastBackupAt");
     } catch (error){
         alert(`Backup konnte nicht erstellt werden: ${String(error && error.message ? error.message : error)}`);
     }
@@ -4694,6 +5101,7 @@ async function handleFF360BackupImport(event){
 
         restoreLocalStorageFromBackup(parsed.data.localStorage || {}, mode);
         await importIndexedDbSnapshot(parsed.data.indexedDB || null, mode);
+        touchAppStatusMeta("lastImportAt");
         alert("Import erfolgreich. Die App wird neu geladen.");
         window.location.reload();
     } catch (error){
@@ -4826,6 +5234,7 @@ function renderSettingsOverlay(){
     if (trainingBtn){
         trainingBtn.textContent = isTrainingMode() ? "Übungsmodus deaktivieren" : "Übungsmodus aktivieren";
     }
+    updateWeatherSettingsFields();
 }
 
 function toggleDarkModeFromSettings(){
@@ -4842,6 +5251,738 @@ function reloadAppPage(){
     window.location.reload();
 }
 
+function getDefaultWeatherState(){
+    return {
+        settings: {
+            unit: "kmh",
+            cacheMinutes: 30,
+            wifiOnly: false,
+            defaultLocation: { name: "Timmendorfer Strand", lat: 53.9942, lon: 10.7810 },
+            thresholds: {
+                windWarn: 35,
+                windCritical: 60,
+                gustWarn: 50,
+                gustCritical: 70,
+                visibilityWarn: 800,
+                visibilityCritical: 250,
+                icingTemp: 3,
+                heatWarn: 30,
+                heatCritical: 36
+            },
+            drone: {
+                maxWind: 25,
+                maxGust: 35,
+                minVisibility: 1000,
+                minTemp: -5,
+                allowLightRain: true
+            }
+        },
+        selectedLocation: null,
+        cache: {},
+        lastData: null,
+        lastUpdatedAt: "",
+        lastSource: ""
+    };
+}
+
+const weatherUiState = {
+    loading: false,
+    error: "",
+    searchResults: [],
+    searchText: ""
+};
+
+function normalizeWeatherLocation(location, fallback){
+    const base = fallback || { name: "Ort", lat: 53.9942, lon: 10.7810 };
+    return {
+        name: String((location && location.name) || base.name || "Ort"),
+        lat: Number.isFinite(Number(location && location.lat)) ? Number(location.lat) : Number(base.lat),
+        lon: Number.isFinite(Number(location && location.lon)) ? Number(location.lon) : Number(base.lon)
+    };
+}
+
+function getWeatherState(){
+    try {
+        const raw = appStorageGetItem(WEATHER_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        const defaults = getDefaultWeatherState();
+        const settings = {
+            ...defaults.settings,
+            ...((parsed && parsed.settings) || {}),
+            thresholds: {
+                ...defaults.settings.thresholds,
+                ...(((parsed && parsed.settings && parsed.settings.thresholds) || {}))
+            },
+            drone: {
+                ...defaults.settings.drone,
+                ...(((parsed && parsed.settings && parsed.settings.drone) || {}))
+            }
+        };
+        const defaultLocation = normalizeWeatherLocation(settings.defaultLocation, defaults.settings.defaultLocation);
+        settings.defaultLocation = defaultLocation;
+        const selected = normalizeWeatherLocation((parsed && parsed.selectedLocation) || defaultLocation, defaultLocation);
+        const cache = parsed && parsed.cache && typeof parsed.cache === "object" ? parsed.cache : {};
+        return {
+            ...defaults,
+            ...(parsed || {}),
+            settings,
+            selectedLocation: selected,
+            cache
+        };
+    } catch {
+        return getDefaultWeatherState();
+    }
+}
+
+function saveWeatherState(state){
+    appStorageSetItem(WEATHER_STORAGE_KEY, JSON.stringify(state));
+}
+
+function patchWeatherState(mutator){
+    const state = getWeatherState();
+    mutator(state);
+    saveWeatherState(state);
+    return state;
+}
+
+function weatherLocationKey(location){
+    if (!location) return "default";
+    return `${Number(location.lat).toFixed(3)}_${Number(location.lon).toFixed(3)}`;
+}
+
+function weatherShouldUseCache(state, key, forceRefresh){
+    if (forceRefresh) return false;
+    const entry = state.cache && state.cache[key];
+    if (!entry || !entry.fetchedAt) return false;
+    const ageMs = Date.now() - Number(entry.fetchedAt);
+    const maxMs = Math.max(1, Number(state.settings.cacheMinutes) || 30) * 60 * 1000;
+    return ageMs <= maxMs;
+}
+
+function weatherConnectionBlockedByWifiSetting(settings){
+    if (!settings.wifiOnly) return false;
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!conn) return false;
+    const type = String(conn.type || conn.effectiveType || "").toLowerCase();
+    return !(type.includes("wifi") || type.includes("ethernet"));
+}
+
+function kmhToMs(value){
+    return Number(value) / 3.6;
+}
+
+function formatWindValue(valueKmh, unit){
+    const num = Number(valueKmh) || 0;
+    if (unit === "ms"){
+        return `${kmhToMs(num).toFixed(1)} m/s`;
+    }
+    return `${Math.round(num)} km/h`;
+}
+
+function weatherLevel(value, warn, critical, lowerIsWorse){
+    const num = Number(value);
+    if (!Number.isFinite(num)) return "ok";
+    if (lowerIsWorse){
+        if (num <= critical) return "critical";
+        if (num <= warn) return "warn";
+        return "ok";
+    }
+    if (num >= critical) return "critical";
+    if (num >= warn) return "warn";
+    return "ok";
+}
+
+function weatherCodeIsThunder(code){
+    return [95, 96, 99].includes(Number(code));
+}
+
+function weatherPrecipLabel(mmPerHour){
+    const mm = Number(mmPerHour) || 0;
+    if (mm >= 2) return "stark";
+    if (mm >= 0.5) return "mittel";
+    if (mm > 0) return "leicht";
+    return "kein";
+}
+
+function weatherSparkline(values){
+    const bars = "▁▂▃▄▅▆▇█";
+    const arr = (Array.isArray(values) ? values : []).map((v)=>Math.max(0, Number(v) || 0));
+    if (!arr.length) return "—";
+    const max = Math.max(...arr, 0.1);
+    return arr.map((v)=>{
+        const idx = Math.max(0, Math.min(7, Math.round((v / max) * 7)));
+        return bars[idx];
+    }).join("");
+}
+
+function mapWeatherApiResponse(raw, location){
+    const current = (raw && raw.current) || {};
+    const hourly = raw && raw.hourly ? raw.hourly : {};
+    const min15 = raw && raw.minutely_15 ? raw.minutely_15 : {};
+    const daily = raw && raw.daily ? raw.daily : {};
+    const nowIso = (raw && raw.current && raw.current.time) || new Date().toISOString();
+
+    const visibility = Array.isArray(hourly.visibility) && hourly.visibility.length ? Number(hourly.visibility[0]) : null;
+    const precipNow = Number(current.precipitation || 0);
+    const humidityNow = Number(current.relative_humidity_2m || 0);
+    const tempNow = Number(current.temperature_2m || 0);
+    const thunderNow = weatherCodeIsThunder(current.weather_code);
+    const thunderSoon = Array.isArray(hourly.weather_code) ? hourly.weather_code.slice(0, 3).some(weatherCodeIsThunder) : false;
+    const minutelyPrecip = Array.isArray(min15.precipitation) ? min15.precipitation.slice(0, 8) : [];
+
+    return {
+        location: normalizeWeatherLocation(location),
+        nowIso,
+        current: {
+            temperature: tempNow,
+            apparent: Number(current.apparent_temperature || tempNow),
+            windKmh: Number(current.wind_speed_10m || 0),
+            gustKmh: Number(current.wind_gusts_10m || 0),
+            windDir: Number(current.wind_direction_10m || 0),
+            precipitation: precipNow,
+            precipitationLabel: weatherPrecipLabel(precipNow),
+            visibility,
+            humidity: humidityNow,
+            thunderstorm: thunderNow || thunderSoon,
+            cloudCover: Number(current.cloud_cover || 0)
+        },
+        trends: {
+            precipitation15m: minutelyPrecip,
+            precipitationSparkline: weatherSparkline(minutelyPrecip),
+            precipitationNext2h: minutelyPrecip.reduce((sum, v)=>sum + (Number(v) || 0), 0)
+        },
+        sun: {
+            sunrise: Array.isArray(daily.sunrise) && daily.sunrise[0] ? daily.sunrise[0] : "",
+            sunset: Array.isArray(daily.sunset) && daily.sunset[0] ? daily.sunset[0] : ""
+        }
+    };
+}
+
+function buildWeatherHints(weather){
+    if (!weather || !weather.current) return [];
+    const state = getWeatherState();
+    const t = state.settings.thresholds;
+    const c = weather.current;
+    const hints = [];
+    const nowIso = new Date().toISOString();
+
+    if ((Number(c.gustKmh) || 0) >= Number(t.gustCritical || 70)){
+        hints.push({ severity: "critical", text: "Achtung Sturmböen: lose Teile/Absturzgefahr, Absperrung prüfen.", reason: `Böen ${Math.round(c.gustKmh)} km/h`, timestamp: nowIso });
+    }
+    if ((Number(c.temperature) || 0) <= Number(t.icingTemp || 3) && ((Number(c.precipitation) || 0) > 0 || (Number(c.humidity) || 0) >= 90)){
+        hints.push({ severity: "warn", text: "Glätte möglich: Verkehrsabsicherung und Rutschgefahr beachten.", reason: `Temp ${Math.round(c.temperature)}°C, Niederschlag/Feuchte`, timestamp: nowIso });
+    }
+    if (c.thunderstorm){
+        hints.push({ severity: "critical", text: "Blitzgefahr: Aufenthaltsbereiche und exponierte Arbeiten kritisch prüfen.", reason: "Gewitterindikator aktiv", timestamp: nowIso });
+    }
+    if (Number.isFinite(Number(c.visibility)) && Number(c.visibility) <= Number(t.visibilityWarn || 800)){
+        hints.push({ severity: Number(c.visibility) <= Number(t.visibilityCritical || 250) ? "critical" : "warn", text: "Eingeschränkte Sicht: erhöhte Eigensicherung im Verkehrsraum.", reason: `Sichtweite ${Math.round(Number(c.visibility))} m`, timestamp: nowIso });
+    }
+    if ((Number(c.apparent) || 0) >= Number(t.heatWarn || 30)){
+        hints.push({ severity: (Number(c.apparent) || 0) >= Number(t.heatCritical || 36) ? "critical" : "warn", text: "Hitze: Flüssigkeit und Pausen einplanen, Belastung beobachten.", reason: `Gefühlt ${Math.round(c.apparent)}°C`, timestamp: nowIso });
+    }
+    return hints;
+}
+
+async function fetchWeatherByCoords(location){
+    const lat = Number(location.lat);
+    const lon = Number(location.lon);
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m,apparent_temperature,wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,weather_code,relative_humidity_2m,cloud_cover&hourly=precipitation,visibility,weather_code&minutely_15=precipitation&daily=sunrise,sunset&forecast_days=2&timezone=auto`;
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok){
+        throw new Error(`Wetter-API Fehler ${response.status}`);
+    }
+    const raw = await response.json();
+    return mapWeatherApiResponse(raw, location);
+}
+
+async function searchWeatherPlaces(query){
+    const q = String(query || "").trim();
+    if (!q) return [];
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=de&format=json`;
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) throw new Error("Ortssuche fehlgeschlagen.");
+    const raw = await response.json();
+    const results = Array.isArray(raw && raw.results) ? raw.results : [];
+    return results.map((item)=>({
+        name: [item.name, item.admin1, item.country].filter(Boolean).join(", "),
+        lat: Number(item.latitude),
+        lon: Number(item.longitude)
+    })).filter((x)=>Number.isFinite(x.lat) && Number.isFinite(x.lon));
+}
+
+async function refreshWeatherData(forceRefresh){
+    const state = getWeatherState();
+    const location = normalizeWeatherLocation(state.selectedLocation || state.settings.defaultLocation, state.settings.defaultLocation);
+    const key = weatherLocationKey(location);
+    weatherUiState.error = "";
+
+    if (weatherConnectionBlockedByWifiSetting(state.settings) && !forceRefresh){
+        const cached = state.cache[key];
+        if (cached && cached.data){
+            patchWeatherState((s)=>{
+                s.lastData = cached.data;
+                s.lastUpdatedAt = cached.fetchedAt;
+                s.lastSource = "cache";
+            });
+            return { data: cached.data, source: "cache" };
+        }
+    }
+
+    if (!navigator.onLine && !forceRefresh){
+        const cached = state.cache[key];
+        if (cached && cached.data){
+            patchWeatherState((s)=>{
+                s.lastData = cached.data;
+                s.lastUpdatedAt = cached.fetchedAt;
+                s.lastSource = "cache";
+            });
+            return { data: cached.data, source: "cache" };
+        }
+    }
+
+    if (weatherShouldUseCache(state, key, forceRefresh)){
+        const cached = state.cache[key];
+        patchWeatherState((s)=>{
+            s.lastData = cached.data;
+            s.lastUpdatedAt = cached.fetchedAt;
+            s.lastSource = "cache";
+        });
+        return { data: cached.data, source: "cache" };
+    }
+
+    const data = await fetchWeatherByCoords(location);
+    const fetchedAt = new Date().toISOString();
+    patchWeatherState((s)=>{
+        s.selectedLocation = normalizeWeatherLocation(location, s.settings.defaultLocation);
+        s.lastData = data;
+        s.lastUpdatedAt = fetchedAt;
+        s.lastSource = "network";
+        s.cache[key] = { fetchedAt, data };
+        const keys = Object.keys(s.cache || {});
+        if (keys.length > 8){
+            keys.sort((a, b)=>Date.parse((s.cache[b] && s.cache[b].fetchedAt) || 0) - Date.parse((s.cache[a] && s.cache[a].fetchedAt) || 0));
+            keys.slice(8).forEach((oldKey)=>{ delete s.cache[oldKey]; });
+        }
+    });
+    return { data, source: "network" };
+}
+
+function formatWeatherTimestamp(iso){
+    if (!iso) return "-";
+    const d = new Date(iso);
+    if (!Number.isFinite(d.getTime())) return "-";
+    return d.toLocaleString("de-DE");
+}
+
+function weatherSeverityDot(level){
+    return `<span class="weather-dot ${level}"></span>`;
+}
+
+function renderWeatherHintsBlock(hints){
+    if (!Array.isArray(hints) || !hints.length){
+        return `<div class="lage-empty">Keine akuten Wetterhinweise.</div>`;
+    }
+    return `<div class="weather-hint-list">${hints.map((hint)=>{
+        const sev = hint.severity || "info";
+        return `<div class="weather-hint-item">${weatherSeverityDot(sev === "critical" ? "critical" : (sev === "warn" ? "warn" : "ok"))}<strong>${escapeHtml(hint.text || "")}</strong><div class="weather-sub">${escapeHtml(hint.reason || "")}</div></div>`;
+    }).join("")}</div>`;
+}
+
+function renderWeatherDashboard(){
+    const body = document.getElementById("weatherBody");
+    if (!body) return;
+    const state = getWeatherState();
+    const data = state.lastData;
+    const location = normalizeWeatherLocation(state.selectedLocation || state.settings.defaultLocation, state.settings.defaultLocation);
+    const hints = data ? buildWeatherHints(data) : [];
+    const c = data ? data.current : null;
+    const t = state.settings.thresholds;
+    const unit = state.settings.unit || "kmh";
+
+    const windLevel = c ? weatherLevel(c.windKmh, t.windWarn, t.windCritical, false) : "ok";
+    const gustLevel = c ? weatherLevel(c.gustKmh, t.gustWarn, t.gustCritical, false) : "ok";
+    const visLevel = c && Number.isFinite(Number(c.visibility)) ? weatherLevel(c.visibility, t.visibilityWarn, t.visibilityCritical, true) : "ok";
+    const glatteLevel = c && (Number(c.temperature) <= Number(t.icingTemp) && ((Number(c.precipitation) > 0) || Number(c.humidity) >= 90)) ? "warn" : "ok";
+    const thunderLevel = c && c.thunderstorm ? "critical" : "ok";
+    const sourceHint = state.lastSource === "cache" ? "Offline/Cache" : "Live";
+
+    body.innerHTML = `
+    <div class="atem-panel">
+        <div class="atem-grid">
+            <div><label>Ort</label><div class="weather-value">${escapeHtml(location.name)}</div></div>
+            <div><label>Zuletzt aktualisiert</label><div class="weather-value" style="font-size:14px;">${escapeHtml(formatWeatherTimestamp(state.lastUpdatedAt))}</div><div class="weather-sub">${sourceHint}</div></div>
+            <div class="atem-row-actions">
+                <button onclick="refreshWeatherAndRender(true)">Aktualisieren</button>
+                <button onclick="useCurrentLocationForWeather()">Aktueller Standort</button>
+                <button onclick="setDefaultWeatherLocationFromCurrent()">Als Standard-Ort</button>
+            </div>
+            <div class="atem-col-full">
+                <details id="weatherSearchDetails">
+                    <summary><strong>Ort suchen</strong></summary>
+                    <div class="lage-row" style="margin-top:8px;">
+                        <input id="weatherSearchInput" type="text" value="${escapeHtml(weatherUiState.searchText || "")}" placeholder="Gemeinde / Einsatzort">
+                        <button onclick="searchWeatherLocationAndRender()">Suchen</button>
+                    </div>
+                    <div id="weatherSearchResults" class="lage-list"></div>
+                </details>
+            </div>
+        </div>
+        ${weatherUiState.error ? `<div class="lage-empty" style="margin-top:8px;">${escapeHtml(weatherUiState.error)}</div>` : ""}
+    </div>
+
+    <div class="atem-panel"><strong>Wetterhinweise</strong><div style="margin-top:8px;">${renderWeatherHintsBlock(hints)}</div></div>
+
+    <div class="weather-grid">
+        <div class="weather-card"><h5>${weatherSeverityDot(windLevel)}Wind</h5><div class="weather-value">${c ? `${formatWindValue(c.windKmh, unit)} / ${Math.round(c.windDir)}°` : "-"}</div><div class="weather-sub">Mittelwind</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot(gustLevel)}Böen</h5><div class="weather-value">${c ? formatWindValue(c.gustKmh, unit) : "-"}</div><div class="weather-sub">Spitzen</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot(c && c.precipitation > 0 ? "warn" : "ok")}Niederschlag</h5><div class="weather-value">${c ? `${c.precipitation.toFixed(1)} mm/h (${c.precipitationLabel})` : "-"}</div><div class="weather-sub weather-sparkline">${data ? data.trends.precipitationSparkline : "—"}</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot(glatteLevel)}Temperatur</h5><div class="weather-value">${c ? `${Math.round(c.temperature)}°C` : "-"}</div><div class="weather-sub">Gefühlt: ${c ? `${Math.round(c.apparent)}°C` : "-"}</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot(visLevel)}Sicht/Nebel</h5><div class="weather-value">${c && Number.isFinite(Number(c.visibility)) ? `${Math.round(c.visibility)} m` : `${c ? `${Math.round(c.cloudCover)}% Wolken` : "-"}`}</div><div class="weather-sub">Sicht oder Wolken</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot(thunderLevel)}Gewitter/Blitz</h5><div class="weather-value">${c ? (c.thunderstorm ? "Warnung aktiv" : "Keine Warnung") : "-"}</div><div class="weather-sub">Kurzfristige Lage</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot(glatteLevel)}Glätte-Risiko</h5><div class="weather-value">${c ? (glatteLevel === "warn" ? "Erhöht" : "Niedrig") : "-"}</div><div class="weather-sub">Temp <= ${t.icingTemp}°C + Feuchte/Niederschlag</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot("ok")}Sonnenzeiten</h5><div class="weather-value">${data && data.sun && data.sun.sunrise ? data.sun.sunrise.slice(11,16) : "-"}</div><div class="weather-sub">Untergang: ${data && data.sun && data.sun.sunset ? data.sun.sunset.slice(11,16) : "-"}</div></div>
+    </div>`;
+
+    const searchResultsRoot = document.getElementById("weatherSearchResults");
+    if (searchResultsRoot){
+        if (weatherUiState.searchResults.length){
+            searchResultsRoot.innerHTML = weatherUiState.searchResults.map((item, idx)=>`
+                <div class="lage-item">
+                    <div class="lage-item-top"><strong>${escapeHtml(item.name)}</strong><button onclick="selectWeatherSearchResult(${idx})">Auswählen</button></div>
+                    <div>${item.lat.toFixed(3)}, ${item.lon.toFixed(3)}</div>
+                </div>
+            `).join("");
+        } else {
+            searchResultsRoot.innerHTML = weatherUiState.error ? `<div class="lage-empty">${escapeHtml(weatherUiState.error)}</div>` : "";
+        }
+    }
+}
+
+function getDroneWeatherEvaluation(data){
+    const state = getWeatherState();
+    const d = state.settings.drone;
+    if (!data || !data.current){
+        return { status: "unknown", reasons: ["Keine Wetterdaten verfügbar."] };
+    }
+    const c = data.current;
+    const reasons = [];
+    const warnings = [];
+    if ((Number(c.windKmh) || 0) > Number(d.maxWind || 25)){
+        reasons.push(`Wind ${Math.round(c.windKmh)} km/h über Limit ${d.maxWind} km/h`);
+    } else if ((Number(c.windKmh) || 0) > Number(d.maxWind || 25) * 0.85){
+        warnings.push(`Wind nahe Limit (${Math.round(c.windKmh)} km/h)`);
+    }
+    if ((Number(c.gustKmh) || 0) > Number(d.maxGust || 35)){
+        reasons.push(`Böen ${Math.round(c.gustKmh)} km/h über Limit ${d.maxGust} km/h`);
+    } else if ((Number(c.gustKmh) || 0) > Number(d.maxGust || 35) * 0.85){
+        warnings.push(`Böen nahe Limit (${Math.round(c.gustKmh)} km/h)`);
+    }
+    if ((Number(c.precipitation) || 0) >= 2 || (!d.allowLightRain && (Number(c.precipitation) || 0) > 0)){
+        reasons.push(`Niederschlag ${c.precipitation.toFixed(1)} mm/h`);
+    } else if ((Number(c.precipitation) || 0) > 0){
+        warnings.push(`Leichter Niederschlag ${c.precipitation.toFixed(1)} mm/h`);
+    }
+    if (Number.isFinite(Number(c.visibility)) && (Number(c.visibility) || 0) < Number(d.minVisibility || 1000)){
+        reasons.push(`Sicht ${Math.round(c.visibility)} m unter Minimum ${d.minVisibility} m`);
+    }
+    if ((Number(c.temperature) || 0) < Number(d.minTemp || -5)){
+        reasons.push(`Temperatur ${Math.round(c.temperature)}°C unter Minimum ${d.minTemp}°C`);
+    }
+    if (c.thunderstorm){
+        reasons.push("Gewitterindikator aktiv");
+    }
+    if (reasons.length){
+        return { status: "no-go", reasons };
+    }
+    if (warnings.length){
+        return { status: "caution", reasons: warnings };
+    }
+    return { status: "ok", reasons: ["Wetterlage innerhalb der gesetzten Grenzwerte."] };
+}
+
+function renderDroneWeatherCheck(){
+    const body = document.getElementById("droneWeatherBody");
+    if (!body) return;
+    const state = getWeatherState();
+    const data = state.lastData;
+    const evalResult = getDroneWeatherEvaluation(data);
+    const statusLabel = evalResult.status === "no-go" ? "❌ Nicht empfohlen" : (evalResult.status === "caution" ? "⚠️ Vorsicht" : (evalResult.status === "ok" ? "✅ OK" : "—"));
+    const location = normalizeWeatherLocation(state.selectedLocation || state.settings.defaultLocation, state.settings.defaultLocation);
+    body.innerHTML = `
+    <div class="atem-panel">
+        <strong>Ergebnis</strong>
+        <div class="weather-value" style="margin-top:8px;">${statusLabel}</div>
+        <div class="weather-sub">Ort: ${escapeHtml(location.name)} · Update: ${escapeHtml(formatWeatherTimestamp(state.lastUpdatedAt))}</div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="refreshWeatherAndRender(true, true)">Aktualisieren</button>
+            <button onclick="openSettingsOverlay()">Grenzwerte anpassen</button>
+            <button onclick="useCurrentLocationForWeather(true)">Aktueller Standort</button>
+        </div>
+    </div>
+    <div class="atem-panel">
+        <strong>Begründung</strong>
+        <div class="weather-hint-list" style="margin-top:8px;">
+            ${evalResult.reasons.map((reason)=>`<div class="weather-hint-item">${escapeHtml(reason)}</div>`).join("")}
+        </div>
+    </div>
+    <div class="weather-grid">
+        <div class="weather-card"><h5>Wind</h5><div class="weather-value">${data ? formatWindValue(data.current.windKmh, state.settings.unit) : "-"}</div></div>
+        <div class="weather-card"><h5>Böen</h5><div class="weather-value">${data ? formatWindValue(data.current.gustKmh, state.settings.unit) : "-"}</div></div>
+        <div class="weather-card"><h5>Niederschlag</h5><div class="weather-value">${data ? `${data.current.precipitation.toFixed(1)} mm/h` : "-"}</div><div class="weather-sub">${data ? data.current.precipitationLabel : ""}</div></div>
+        <div class="weather-card"><h5>Sicht</h5><div class="weather-value">${data && Number.isFinite(Number(data.current.visibility)) ? `${Math.round(data.current.visibility)} m` : "-"}</div></div>
+        <div class="weather-card"><h5>Temperatur</h5><div class="weather-value">${data ? `${Math.round(data.current.temperature)}°C` : "-"}</div></div>
+    </div>`;
+}
+
+function renderHomeWeatherBanner(){
+    const banner = document.getElementById("weatherHomeBanner");
+    if (!banner) return;
+    const state = getWeatherState();
+    const data = state.lastData;
+    const hints = data ? buildWeatherHints(data) : [];
+    if (!hints.length){
+        banner.classList.add("hidden");
+        banner.textContent = "";
+        return;
+    }
+    const top = hints[0];
+    banner.classList.remove("hidden");
+    banner.textContent = `Wetterhinweis: ${top.text}`;
+}
+
+function updateWeatherDefaultName(value){
+    patchWeatherState((s)=>{
+        s.settings.defaultLocation = normalizeWeatherLocation({
+            ...s.settings.defaultLocation,
+            name: value || ""
+        }, s.settings.defaultLocation);
+    });
+}
+
+function updateWeatherSettingField(field, value){
+    patchWeatherState((s)=>{
+        if (field === "cacheMinutes"){
+            s.settings.cacheMinutes = Math.max(5, Number(value) || 30);
+            return;
+        }
+        s.settings[field] = typeof value === "boolean" ? value : value;
+    });
+}
+
+function updateWeatherThreshold(key, value){
+    patchWeatherState((s)=>{
+        const num = Number(value);
+        if (Number.isFinite(num)) s.settings.thresholds[key] = num;
+    });
+}
+
+function updateDroneWeatherThreshold(key, value){
+    patchWeatherState((s)=>{
+        const num = Number(value);
+        if (Number.isFinite(num)) s.settings.drone[key] = num;
+    });
+}
+
+function setDefaultWeatherLocationFromCurrent(){
+    patchWeatherState((s)=>{
+        if (!s.selectedLocation) return;
+        s.settings.defaultLocation = normalizeWeatherLocation(s.selectedLocation, s.settings.defaultLocation);
+    });
+    renderSettingsOverlay();
+}
+
+function updateWeatherSettingsFields(){
+    const state = getWeatherState();
+    const s = state.settings;
+    const setVal = (id, value)=>{
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (document.activeElement !== el) el.value = value;
+    };
+    setVal("settingsWeatherDefaultName", s.defaultLocation.name || "");
+    setVal("settingsWeatherUnit", s.unit || "kmh");
+    setVal("settingsWeatherCacheMinutes", String(s.cacheMinutes || 30));
+    const wifiOnly = document.getElementById("settingsWeatherWifiOnly");
+    if (wifiOnly && document.activeElement !== wifiOnly) wifiOnly.checked = !!s.wifiOnly;
+    setVal("settingsWeatherWindWarn", s.thresholds.windWarn);
+    setVal("settingsWeatherWindCritical", s.thresholds.windCritical);
+    setVal("settingsWeatherGustWarn", s.thresholds.gustWarn);
+    setVal("settingsWeatherGustCritical", s.thresholds.gustCritical);
+    setVal("settingsDroneMaxWind", s.drone.maxWind);
+    setVal("settingsDroneMaxGust", s.drone.maxGust);
+    setVal("settingsDroneMinVisibility", s.drone.minVisibility);
+    setVal("settingsDroneMinTemp", s.drone.minTemp);
+}
+
+async function refreshWeatherAndRender(forceRefresh, renderDrone){
+    try {
+        weatherUiState.loading = true;
+        weatherUiState.error = "";
+        await refreshWeatherData(!!forceRefresh);
+    } catch (error){
+        weatherUiState.error = `Wetterdaten konnten nicht geladen werden: ${String(error && error.message ? error.message : error)}`;
+    } finally {
+        weatherUiState.loading = false;
+        renderWeatherDashboard();
+        renderDroneWeatherCheck();
+        renderHomeWeatherBanner();
+        if (renderDrone) renderDroneWeatherCheck();
+    }
+}
+
+async function searchWeatherLocationAndRender(){
+    const input = document.getElementById("weatherSearchInput");
+    weatherUiState.searchText = input ? input.value : "";
+    try {
+        weatherUiState.error = "";
+        weatherUiState.searchResults = await searchWeatherPlaces(weatherUiState.searchText);
+        if (!weatherUiState.searchResults.length){
+            weatherUiState.error = "Kein Ort gefunden.";
+        }
+    } catch (error){
+        weatherUiState.searchResults = [];
+        weatherUiState.error = `Ortssuche fehlgeschlagen: ${String(error && error.message ? error.message : error)}`;
+    }
+    renderWeatherDashboard();
+}
+
+function selectWeatherSearchResult(index){
+    const hit = weatherUiState.searchResults[index];
+    if (!hit) return;
+    patchWeatherState((s)=>{
+        s.selectedLocation = normalizeWeatherLocation(hit, s.settings.defaultLocation);
+    });
+    refreshWeatherAndRender(true);
+}
+
+function useCurrentLocationForWeather(openDrone){
+    if (!navigator.geolocation){
+        weatherUiState.error = "Standort nicht verfügbar.";
+        renderWeatherDashboard();
+        return;
+    }
+    navigator.geolocation.getCurrentPosition((pos)=>{
+        patchWeatherState((s)=>{
+            s.selectedLocation = {
+                name: "Aktueller Standort",
+                lat: Number(pos.coords.latitude),
+                lon: Number(pos.coords.longitude)
+            };
+        });
+        refreshWeatherAndRender(true, !!openDrone);
+    }, ()=>{
+        weatherUiState.error = "Standortzugriff abgelehnt. Bitte Ort manuell wählen.";
+        renderWeatherDashboard();
+    }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+function openWeatherOverlay(){
+    const overlay = document.getElementById("weatherOverlay");
+    if (!overlay) return;
+    lastWeatherFocus = document.activeElement;
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    renderWeatherDashboard();
+    refreshWeatherAndRender(false);
+}
+
+function closeWeatherOverlay(){
+    const overlay = document.getElementById("weatherOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isDroneWeatherOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    if (lastWeatherFocus && typeof lastWeatherFocus.focus === "function"){
+        lastWeatherFocus.focus();
+    }
+}
+
+function handleWeatherOverlayBackdrop(event){
+    if (event.target && event.target.id === "weatherOverlay"){
+        closeWeatherOverlay();
+    }
+}
+
+function isWeatherOverlayOpen(){
+    const overlay = document.getElementById("weatherOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function openDroneWeatherOverlay(){
+    const overlay = document.getElementById("droneWeatherOverlay");
+    if (!overlay) return;
+    lastDroneWeatherFocus = document.activeElement;
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    renderDroneWeatherCheck();
+    refreshWeatherAndRender(false, true);
+}
+
+function closeDroneWeatherOverlay(){
+    const overlay = document.getElementById("droneWeatherOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    if (lastDroneWeatherFocus && typeof lastDroneWeatherFocus.focus === "function"){
+        lastDroneWeatherFocus.focus();
+    }
+}
+
+function handleDroneWeatherOverlayBackdrop(event){
+    if (event.target && event.target.id === "droneWeatherOverlay"){
+        closeDroneWeatherOverlay();
+    }
+}
+
+function isDroneWeatherOverlayOpen(){
+    const overlay = document.getElementById("droneWeatherOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function trapFocusInWeatherOverlay(event){
+    const weatherOpen = isWeatherOverlayOpen();
+    const droneOpen = isDroneWeatherOverlayOpen();
+    if (event.key !== "Tab" || (!weatherOpen && !droneOpen)) return;
+    const overlay = document.getElementById(droneOpen ? "droneWeatherOverlay" : "weatherOverlay");
+    if (!overlay) return;
+    const focusable = overlay.querySelectorAll("button, [href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])");
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first){
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && document.activeElement === last){
+        event.preventDefault();
+        first.focus();
+    }
+}
+
+document.addEventListener("keydown", (event)=>{
+    if (!isWeatherOverlayOpen() && !isDroneWeatherOverlayOpen()) return;
+    if (event.key === "Escape"){
+        if (isDroneWeatherOverlayOpen()) closeDroneWeatherOverlay();
+        else closeWeatherOverlay();
+        return;
+    }
+    trapFocusInWeatherOverlay(event);
+});
+
+function getWeatherProtocolAttachment(){
+    const state = getWeatherState();
+    const data = state.lastData;
+    if (!data || !data.current) return null;
+    const hints = buildWeatherHints(data).slice(0, 2);
+    return {
+        location: data.location && data.location.name ? data.location.name : ((state.selectedLocation && state.selectedLocation.name) || state.settings.defaultLocation.name || "Ort"),
+        updatedAt: state.lastUpdatedAt || "",
+        current: data.current,
+        hints
+    };
+}
+
 function openSettingsOverlay(){
     const overlay = document.getElementById("settingsOverlay");
     if (!overlay) return;
@@ -4855,7 +5996,7 @@ function closeSettingsOverlay(){
     const overlay = document.getElementById("settingsOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastSettingsFocus && typeof lastSettingsFocus.focus === "function"){
         lastSettingsFocus.focus();
@@ -4983,6 +6124,7 @@ const EINSATZ_ARCHIVE_STORAGE_KEY = "einsatz_archiv_v1";
 const PSU_CONTACTS_STORAGE_KEY = "psu_contacts_v1";
 const PSU_REMINDERS_STORAGE_KEY = "psu_reminders_v1";
 const PSU_STATE_STORAGE_KEY = "psu_state_v1";
+const WEATHER_STORAGE_KEY = "weather_module_v1";
 const LAGE_PHOTO_MAX_COUNT = 8;
 let lastDangerFocus = null;
 let lastStructureFocus = null;
@@ -4997,6 +6139,8 @@ let lastEvakFocus = null;
 let lastPresseFocus = null;
 let lastPsuFocus = null;
 let lastSettingsFocus = null;
+let lastWeatherFocus = null;
+let lastDroneWeatherFocus = null;
 let editSectionId = null;
 let lageTimerId = null;
 let psuReminderTickerId = null;
@@ -6656,7 +7800,14 @@ function getDefaultPsuState(){
         arrivedAt: null,
         completedAt: null,
         exerciseGoal: "",
-        exerciseNotes: ""
+        exerciseNotes: "",
+        feedbackDraft: {
+            einsatzart: "uebung",
+            bewertung: "positiv",
+            thema: "",
+            beobachtung: ""
+        },
+        feedbackEntries: []
     };
 }
 
@@ -6723,12 +7874,32 @@ function getPsuReminderState(reminder){
     return { text: `fällig in ${mins} min`, cls: "psu-fine" };
 }
 
+function updatePsuGlobalReminderUi(dueReminders){
+    const banner = document.getElementById("psuGlobalBanner");
+    const title = document.getElementById("psuGlobalBannerTitle");
+    const text = document.getElementById("psuGlobalBannerText");
+    if (!banner || !title || !text) return;
+    const due = Array.isArray(dueReminders)
+        ? dueReminders
+        : getPsuReminders().filter((r)=>!r.done && (Number(r.dueAt) || 0) <= Date.now());
+    const count = due.length;
+    banner.classList.toggle("show", count > 0);
+    if (count <= 0) return;
+    due.sort((a, b)=>(Number(a.dueAt) || 0) - (Number(b.dueAt) || 0));
+    const first = due[0];
+    const overdueMin = Math.max(0, Math.floor((Date.now() - (Number(first.dueAt) || Date.now())) / 60000));
+    title.textContent = count === 1 ? "Team-Check fällig" : `Team-Check fällig (${count})`;
+    text.textContent = `${first.label || "Reminder"} · überfällig seit ${overdueMin} min`;
+}
+
 function updatePsuReminderBadge(){
     const badge = document.getElementById("psuReminderBadge");
     if (!badge) return;
-    const dueCount = getPsuReminders().filter((r)=>!r.done && (Number(r.dueAt) || 0) <= Date.now()).length;
+    const dueReminders = getPsuReminders().filter((r)=>!r.done && (Number(r.dueAt) || 0) <= Date.now());
+    const dueCount = dueReminders.length;
     badge.textContent = String(dueCount);
     badge.classList.toggle("hidden", dueCount <= 0);
+    updatePsuGlobalReminderUi(dueReminders);
 }
 
 function setPsuNotice(text, type = "error"){
@@ -7027,22 +8198,111 @@ function updatePsuExerciseField(field, value){
     });
 }
 
-function pushPsuHotWashToLog(){
+function updatePsuFeedbackDraft(field, value){
+    patchPsuState((state)=>{
+        if (!state.feedbackDraft || typeof state.feedbackDraft !== "object"){
+            state.feedbackDraft = { einsatzart: "uebung", bewertung: "positiv", thema: "", beobachtung: "" };
+        }
+        if (field === "einsatzart"){
+            state.feedbackDraft.einsatzart = value === "einsatz" ? "einsatz" : "uebung";
+        } else if (field === "bewertung"){
+            state.feedbackDraft.bewertung = value === "negativ" ? "negativ" : "positiv";
+        } else if (field === "thema"){
+            state.feedbackDraft.thema = value || "";
+        } else if (field === "beobachtung"){
+            state.feedbackDraft.beobachtung = value || "";
+        }
+    });
+}
+
+function addPsuFeedbackEntry(){
     const state = getPsuState();
-    const goal = (state.exerciseGoal || "").trim();
-    const notes = (state.exerciseNotes || "").trim();
-    if (!goal && !notes){
-        setPsuNotice("Bitte Übungsziel oder Lernpunkte eintragen.", "error");
+    const draft = state.feedbackDraft || {};
+    const thema = (draft.thema || "").trim();
+    const beobachtung = (draft.beobachtung || "").trim();
+    if (!beobachtung){
+        setPsuNotice("Bitte mindestens eine Beobachtung eingeben.", "error");
         renderPsuOverlay();
         return;
     }
+    patchPsuState((s)=>{
+        if (!Array.isArray(s.feedbackEntries)) s.feedbackEntries = [];
+        if (!s.feedbackDraft || typeof s.feedbackDraft !== "object"){
+            s.feedbackDraft = { einsatzart: "uebung", bewertung: "positiv", thema: "", beobachtung: "" };
+        }
+        s.feedbackEntries.unshift({
+            id: `fb_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+            at: Date.now(),
+            einsatzart: s.feedbackDraft.einsatzart === "einsatz" ? "einsatz" : "uebung",
+            bewertung: s.feedbackDraft.bewertung === "negativ" ? "negativ" : "positiv",
+            thema,
+            beobachtung
+        });
+        s.feedbackEntries = s.feedbackEntries.slice(0, 200);
+        s.feedbackDraft.thema = "";
+        s.feedbackDraft.beobachtung = "";
+    });
     logEvent({
-        category: isTrainingMode() ? "UEBUNG" : "PSU",
+        category: "PSU",
         level: "info",
         source: "manual",
-        message: `Hot-Wash: Übungsziel=${goal || "-"} | Lernpunkte=${notes || "-"}.`
+        message: `PSU-Feedback gespeichert (${draft.einsatzart === "einsatz" ? "Einsatz" : "Übung"}, ${draft.bewertung === "negativ" ? "negativ" : "positiv"}).`
     });
-    setPsuNotice("Hot-Wash ins Log übernommen.", "success");
+    setPsuNotice("Feedback gespeichert.", "success");
+    renderPsuOverlay();
+}
+
+function removePsuFeedbackEntry(id){
+    patchPsuState((state)=>{
+        if (!Array.isArray(state.feedbackEntries)) state.feedbackEntries = [];
+        state.feedbackEntries = state.feedbackEntries.filter((item)=>item.id !== id);
+    });
+    setPsuNotice("Feedback-Eintrag entfernt.", "success");
+    renderPsuOverlay();
+}
+
+function buildPsuFeedbackPdfText(state){
+    const entries = Array.isArray(state.feedbackEntries) ? state.feedbackEntries : [];
+    const lines = [];
+    lines.push("PSU Feedback-Protokoll");
+    lines.push(`Übungsziel: ${(state.exerciseGoal || "-").trim() || "-"}`);
+    lines.push(`Lernpunkte: ${(state.exerciseNotes || "-").trim() || "-"}`);
+    lines.push("");
+    if (!entries.length){
+        lines.push("Keine Feedback-Einträge vorhanden.");
+        return lines.join("\n");
+    }
+    entries.forEach((entry, idx)=>{
+        const when = entry.at ? new Date(entry.at).toLocaleString("de-DE") : "-";
+        lines.push(`${idx + 1}. ${when}`);
+        lines.push(`   Typ: ${entry.einsatzart === "einsatz" ? "Einsatz" : "Übung"}`);
+        lines.push(`   Bewertung: ${entry.bewertung === "negativ" ? "Negativ" : "Positiv"}`);
+        lines.push(`   Thema: ${(entry.thema || "-").trim() || "-"}`);
+        lines.push(`   Beobachtung: ${(entry.beobachtung || "-").trim() || "-"}`);
+        lines.push("");
+    });
+    return lines.join("\n");
+}
+
+function exportPsuFeedbackPdf(){
+    const state = getPsuState();
+    const text = buildPsuFeedbackPdfText(state);
+    const file = `PSU_Feedback_${new Date().toISOString().slice(0, 10)}.pdf`;
+    const w = window.open("", "_blank");
+    if (!w){
+        setPsuNotice("Popup blockiert. PDF konnte nicht geöffnet werden.", "error");
+        renderPsuOverlay();
+        return;
+    }
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
+    <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}</style>
+    </head><body><div class="head"><h1>PSU Feedback-Protokoll</h1><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div><pre>${escapeHtml(text)}</pre>
+    <div style="margin-top:8px;font-size:11px;color:#555;">Export: ${new Date().toLocaleString("de-DE")} | ${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    setPsuNotice("PDF-Protokoll geöffnet.", "success");
     renderPsuOverlay();
 }
 
@@ -7070,7 +8330,84 @@ function renderPsuOverlay(){
     const editing = contacts.find((item)=>item.id === psuUiState.editId) || null;
     const selectedContact = contacts.find((item)=>item.id === state.selectedContactId) || null;
 
-    let html = `<div class="psu-panel"><h4>PSU-Status</h4>
+    let html = `<div class="psu-panel"><h4>PSU-Status (kompakt)</h4>
+        <div class="psu-status-badge">${psuEscape(getPsuStatusLabel(state))}</div>
+        ${selectedContact ? `<div class="psu-meta" style="margin-top:8px;">Aktiver Kontakt: ${psuEscape(selectedContact.name)} · ${psuEscape(selectedContact.telefon)}</div>` : ""}
+    </div>`;
+
+    html += `<div class="psu-panel"><h4>PSU-Kurzkarten</h4><div class="psu-grid">`;
+    psuQuickCards.forEach((card)=>{
+        html += `<div class="psu-card">
+            <h5>${card.icon} ${psuEscape(card.title)}</h5>
+            <strong>Sofort</strong><ul>${card.sofort.map((item)=>`<li>${psuEscape(item)}</li>`).join("")}</ul>
+            <strong>Kommunikation</strong><ul>${card.kommunikation.map((item)=>`<li>${psuEscape(item)}</li>`).join("")}</ul>
+            <strong>No-Gos</strong><ul>${card.nogos.map((item)=>`<li>${psuEscape(item)}</li>`).join("")}</ul>
+            <button onclick="logPsuCard('${card.id}')">Als Logeintrag</button>
+        </div>`;
+    });
+    html += `</div></div>`;
+
+    const feedbackDraft = state.feedbackDraft || { einsatzart: "uebung", bewertung: "positiv", thema: "", beobachtung: "" };
+    const feedbackEntries = Array.isArray(state.feedbackEntries) ? state.feedbackEntries : [];
+    html += `<div class="psu-panel"><h4>Übungsziel / Lernpunkte</h4>
+        <div class="psu-training-box">
+            <div class="psu-row">
+                <input type="text" placeholder="Übungsziel" value="${psuEscape(state.exerciseGoal || "")}" oninput="updatePsuExerciseField('goal', this.value)">
+                <textarea placeholder="Lernpunkte / Beobachtungen" oninput="updatePsuExerciseField('notes', this.value)">${psuEscape(state.exerciseNotes || "")}</textarea>
+            </div>
+            <div class="psu-training-hint">${isTrainingMode() ? "ÜBUNG aktiv: Inhalte bleiben getrennt von REAL." : "Hinweis: Für getrennte Übungsdaten ÜBUNG-Modus (blauer Punkt) aktivieren."}</div>
+        </div>
+    </div>`;
+
+    html += `<div class="psu-panel"><h4>Feedback sammeln (Übung / Einsatz)</h4>
+        <div class="psu-row">
+            <select onchange="updatePsuFeedbackDraft('einsatzart', this.value)">
+                <option value="uebung" ${feedbackDraft.einsatzart === "uebung" ? "selected" : ""}>Übung</option>
+                <option value="einsatz" ${feedbackDraft.einsatzart === "einsatz" ? "selected" : ""}>Einsatz</option>
+            </select>
+            <select onchange="updatePsuFeedbackDraft('bewertung', this.value)">
+                <option value="positiv" ${feedbackDraft.bewertung === "positiv" ? "selected" : ""}>Positiv</option>
+                <option value="negativ" ${feedbackDraft.bewertung === "negativ" ? "selected" : ""}>Negativ</option>
+            </select>
+            <input type="text" placeholder="Thema (optional)" value="${psuEscape(feedbackDraft.thema || "")}" oninput="updatePsuFeedbackDraft('thema', this.value)">
+            <textarea placeholder="Was ist aufgefallen?" oninput="updatePsuFeedbackDraft('beobachtung', this.value)">${psuEscape(feedbackDraft.beobachtung || "")}</textarea>
+        </div>
+        <div class="psu-actions">
+            <button onclick="addPsuFeedbackEntry()">Feedback speichern</button>
+            <button onclick="exportPsuFeedbackPdf()">Feedback exportieren</button>
+        </div>
+        <div class="psu-list">${feedbackEntries.length ? feedbackEntries.map((entry)=>`<div class="psu-item">
+            <div class="psu-item-top"><strong>${entry.einsatzart === "einsatz" ? "Einsatz" : "Übung"} · ${entry.bewertung === "negativ" ? "Negativ" : "Positiv"}</strong><span class="psu-meta">${entry.at ? new Date(entry.at).toLocaleString("de-DE") : "-"}</span></div>
+            <div class="psu-meta">${psuEscape((entry.thema || "").trim() || "Thema: -")}</div>
+            <div>${psuEscape(entry.beobachtung || "-")}</div>
+            <div class="psu-actions"><button onclick="removePsuFeedbackEntry('${entry.id}')">Löschen</button></div>
+        </div>`).join("") : `<div class="lage-empty">Noch kein Feedback gespeichert.</div>`}</div>
+    </div>`;
+
+    html += `<div class="psu-panel"><h4>Team-Check Reminder</h4>
+        <div class="psu-actions">
+            <button onclick="addPsuReminder(30)">Team-Check in 30 min</button>
+            <button onclick="addPsuReminder(60)">Team-Check in 60 min</button>
+            <button onclick="addPsuReminder(120)">Team-Check in 120 min</button>
+        </div>
+        <div class="psu-list">${reminders.filter((r)=>!r.done).length ? reminders.filter((r)=>!r.done).map((r)=>{ const status = getPsuReminderState(r); return `<div class="psu-item"><div class="psu-item-top"><strong>${psuEscape(r.label)}</strong><span class="${status.cls}">${status.text}</span></div><div class="psu-actions"><button onclick="completePsuReminder('${r.id}')">Durchgeführt</button></div></div>`; }).join("") : `<div class="lage-empty">Keine offenen Reminder.</div>`}</div>
+    </div>`;
+
+    html += `<div class="psu-panel"><h4>Anleitung Team-Check (Einsatzkräfte)</h4>
+        <div class="psu-training-box">
+            <ol style="margin:0; padding-left:18px;">
+                <li>Kurz stoppen: Abschnittsweise in 2er- oder 3er-Gruppen sammeln.</li>
+                <li>Kurzer Zustand: Jede Person meldet in 1 Satz körperlich/mental „grün/gelb/rot“.</li>
+                <li>Auffälligkeiten klären: Erschöpfung, Unsicherheit, Fehlerdruck oder Rückzug aktiv ansprechen.</li>
+                <li>Maßnahme festlegen: Weiter im Einsatz, kurze Pause, Ablösung oder PSU-Kontakt.</li>
+                <li>Rückmeldung an Führung: Nur Ergebnis/Bedarf melden, keine sensiblen Details über Funk.</li>
+                <li>Dokumentieren: Team-Check als „Durchgeführt“ markieren und ggf. Hot-Wash ergänzen.</li>
+            </ol>
+            <div class="psu-training-hint">Empfehlung: Ersten Team-Check nach 30–60 Minuten und danach lageabhängig wiederholen.</div>
+        </div>
+    </div>`;
+
+    html += `<div class="psu-panel"><h4>PSU-Status</h4>
         <div class="psu-row">
             <label><input type="checkbox" ${state.required ? "checked" : ""} onchange="setPsuRequired(this.checked)"> PSU erforderlich</label>
             <select onchange="setPsuContactSelection(this.value)" ${state.required ? "" : "disabled"}>
@@ -7086,18 +8423,6 @@ function renderPsuOverlay(){
         </div>
         ${selectedContact ? `<div class="psu-meta">Aktiver Kontakt: ${psuEscape(selectedContact.name)} · ${psuEscape(selectedContact.telefon)}</div>` : ""}
     </div>`;
-
-    html += `<div class="psu-panel"><h4>PSU-Kurzkarten</h4><div class="psu-grid">`;
-    psuQuickCards.forEach((card)=>{
-        html += `<div class="psu-card">
-            <h5>${card.icon} ${psuEscape(card.title)}</h5>
-            <strong>Sofort</strong><ul>${card.sofort.map((item)=>`<li>${psuEscape(item)}</li>`).join("")}</ul>
-            <strong>Kommunikation</strong><ul>${card.kommunikation.map((item)=>`<li>${psuEscape(item)}</li>`).join("")}</ul>
-            <strong>No-Gos</strong><ul>${card.nogos.map((item)=>`<li>${psuEscape(item)}</li>`).join("")}</ul>
-            <button onclick="logPsuCard('${card.id}')">Als Logeintrag</button>
-        </div>`;
-    });
-    html += `</div></div>`;
 
     html += `<div class="psu-panel"><h4>Kontakte</h4>
         <div class="psu-row">
@@ -7127,26 +8452,6 @@ function renderPsuOverlay(){
                 <button onclick="deletePsuContact('${item.id}')">Löschen</button>
             </div>
         </div>`).join("") : `<div class="lage-empty">Keine Kontakte gefunden.</div>`}</div>
-    </div>`;
-
-    html += `<div class="psu-panel"><h4>Team-Check Reminder</h4>
-        <div class="psu-actions">
-            <button onclick="addPsuReminder(30)">Team-Check in 30 min</button>
-            <button onclick="addPsuReminder(60)">Team-Check in 60 min</button>
-            <button onclick="addPsuReminder(120)">Team-Check in 120 min</button>
-        </div>
-        <div class="psu-list">${reminders.filter((r)=>!r.done).length ? reminders.filter((r)=>!r.done).map((r)=>{ const status = getPsuReminderState(r); return `<div class="psu-item"><div class="psu-item-top"><strong>${psuEscape(r.label)}</strong><span class="${status.cls}">${status.text}</span></div><div class="psu-actions"><button onclick="completePsuReminder('${r.id}')">Durchgeführt</button></div></div>`; }).join("") : `<div class="lage-empty">Keine offenen Reminder.</div>`}</div>
-    </div>`;
-
-    html += `<div class="psu-panel"><h4>Übungsziel / Lernpunkte</h4>
-        <div class="psu-training-box">
-            <div class="psu-row">
-                <input type="text" placeholder="Übungsziel" value="${psuEscape(state.exerciseGoal || "")}" oninput="updatePsuExerciseField('goal', this.value)">
-                <textarea placeholder="Lernpunkte / Beobachtungen" oninput="updatePsuExerciseField('notes', this.value)">${psuEscape(state.exerciseNotes || "")}</textarea>
-            </div>
-            <div class="psu-actions"><button onclick="pushPsuHotWashToLog()">Hot-Wash ins Log</button></div>
-            <div class="psu-training-hint">${isTrainingMode() ? "ÜBUNG aktiv: Inhalte bleiben getrennt von REAL." : "Hinweis: Für getrennte Übungsdaten ÜBUNG-Modus (blauer Punkt) aktivieren."}</div>
-        </div>
     </div>`;
 
     if (psuUiState.notice){
@@ -7480,6 +8785,7 @@ function renderFunkGenerator(){
         output.textContent = generateFunkMessage(state);
     }
     renderFunkHistory(state.history || []);
+    renderFunkTeilnahmeOverview("funkTeilnahmeList");
     renderFunkcheckTool("funkcheckInlineBody");
 }
 
@@ -7607,7 +8913,8 @@ function getSocialDefaultState(){
         alarmschleife: "Vollalarm",
         alarmstichwort: "FEU BMA",
         forces: [],
-        taetigkeit: ""
+        taetigkeit: "",
+        includeWeather: false
     };
 }
 
@@ -7617,6 +8924,7 @@ function getSocialState(){
         const parsed = raw ? JSON.parse(raw) : {};
         const state = { ...getSocialDefaultState(), ...(parsed || {}) };
         if (!Array.isArray(state.forces)) state.forces = [];
+        state.includeWeather = !!state.includeWeather;
         return state;
     } catch {
         return getSocialDefaultState();
@@ -7700,12 +9008,14 @@ function syncSocialForm(state){
     const alarmschleife = document.getElementById("socialAlarmschleife");
     const alarmstichwort = document.getElementById("socialAlarmstichwort");
     const taetigkeit = document.getElementById("socialTaetigkeit");
+    const includeWeather = document.getElementById("socialIncludeWeather");
     if (einsatznummer) einsatznummer.value = state.einsatznummer || "";
     if (date) date.value = state.date || "";
     if (time) time.value = state.time || "";
     if (alarmschleife) alarmschleife.value = state.alarmschleife || "Vollalarm";
     if (alarmstichwort) alarmstichwort.value = state.alarmstichwort || "FEU BMA";
     if (taetigkeit) taetigkeit.value = state.taetigkeit || "";
+    if (includeWeather && document.activeElement !== includeWeather) includeWeather.checked = !!state.includeWeather;
 }
 
 function renderSocialPreview(){
@@ -7735,6 +9045,13 @@ function toggleSocialForce(force, checked){
         if (checked && idx < 0) list.push(force);
         if (!checked && idx >= 0) list.splice(idx, 1);
         state.forces = list;
+    });
+    renderSocialPreview();
+}
+
+function updateSocialIncludeWeather(checked){
+    patchSocialState((state)=>{
+        state.includeWeather = !!checked;
     });
     renderSocialPreview();
 }
@@ -7773,7 +9090,7 @@ function buildProfessionalSocialProtokollText(state){
     const alarmstichwort = (state.alarmstichwort || "").trim() || "—";
     const kraefte = (state.forces || []).length ? state.forces.join(", ") : "—";
     const taetigkeit = (state.taetigkeit || "").trim() || "—";
-    return `EINSATZPROTOKOLL
+    let text = `EINSATZPROTOKOLL
 
 Einsatznummer: ${einsatznummer}
 Datum: ${datum}
@@ -7787,6 +9104,32 @@ ${taetigkeit}
 
 Hinweis:
 Dieses Protokoll wurde automatisiert aus dem Social-Media-Generator erstellt.`;
+    if (state.includeWeather){
+        const weather = getWeatherProtocolAttachment();
+        if (weather && weather.current){
+            const c = weather.current;
+            const hints = (weather.hints || []).map((h)=>h.text).slice(0, 2);
+            text += `
+
+Wetter:
+Ort: ${weather.location || "-"}
+Temperatur: ${Math.round(Number(c.temperature) || 0)}°C (gefühlt ${Math.round(Number(c.apparent) || 0)}°C)
+Wind: ${Math.round(Number(c.windKmh) || 0)} km/h (Böen ${Math.round(Number(c.gustKmh) || 0)} km/h)
+Niederschlag: ${(Number(c.precipitation) || 0).toFixed(1)} mm/h
+Sicht: ${Number.isFinite(Number(c.visibility)) ? `${Math.round(Number(c.visibility))} m` : "nicht verfügbar"}
+Stand: ${formatWeatherTimestamp(weather.updatedAt)}`;
+            if (hints.length){
+                text += `
+Hinweise: ${hints.join(" | ")}`;
+            }
+        } else {
+            text += `
+
+Wetter:
+Keine aktuellen Wetterdaten verfügbar.`;
+        }
+    }
+    return text;
 }
 
 function exportSocialEinsatzprotokollPdf(){
@@ -9336,7 +10679,9 @@ function asuCreateTeam(idx = 1){
         cycleHistory: [],
         pauseHistory: [],
         pauseStartedAt: null,
-        cycleElapsedSec: 0
+        cycleElapsedSec: 0,
+        currentLocation: "",
+        routeWaypoints: []
     };
 }
 
@@ -9355,6 +10700,7 @@ function asuCreateIncident(){
 }
 
 function asuDefaultState(){
+    const now = Date.now();
     return {
         schemaVersion: ASU_V2_SCHEMA,
         settings: { ...ASU_DEFAULT_SETTINGS },
@@ -9365,7 +10711,15 @@ function asuDefaultState(){
             importMode: "overwrite",
             undo: null,
             showIncidentConfig: false,
-            pressurePrompt: null
+            pressurePrompt: null,
+            waypointPrompt: null,
+            createDraft: {
+                name: "",
+                number: "",
+                location: "",
+                date: asuDateInputValue(now),
+                time: asuTimeInputValue(now)
+            }
         }
     };
 }
@@ -9528,7 +10882,7 @@ function asuMigrateLegacyState(parsed){
         settings: { ...ASU_DEFAULT_SETTINGS },
         activeIncident: incident,
         archive: [],
-        ui: { selectedTeamId: incident.teams[0]?.id || null, importMode: "overwrite", undo: null, showIncidentConfig: false }
+        ui: { selectedTeamId: incident.teams[0]?.id || null, importMode: "overwrite", undo: null, showIncidentConfig: false, waypointPrompt: null }
     };
 }
 
@@ -9594,6 +10948,8 @@ function asuEnsureTeamCycleFields(team){
     team.cycleIndex = Math.max(1, Number(team.cycleIndex) || 1);
     if (!Array.isArray(team.cycleHistory)) team.cycleHistory = [];
     if (!Array.isArray(team.pauseHistory)) team.pauseHistory = [];
+    if (!Array.isArray(team.routeWaypoints)) team.routeWaypoints = [];
+    if (typeof team.currentLocation !== "string") team.currentLocation = "";
     if (!Number.isFinite(Number(team.pauseStartedAt))) team.pauseStartedAt = null;
     if (!Number.isFinite(Number(team.cycleElapsedSec))) team.cycleElapsedSec = 0;
 }
@@ -9670,32 +11026,123 @@ function asuApplyIncidentMutation(label, mutator){
     asuRunAlarmManager();
 }
 
+function asuUpdateCreateDraft(field, value){
+    const state = asuEnsureState();
+    if (!state.ui.createDraft || typeof state.ui.createDraft !== "object"){
+        state.ui.createDraft = asuDefaultState().ui.createDraft;
+    }
+    state.ui.createDraft[field] = value || "";
+    asuScheduleSave();
+}
+
 function asuResetTeamAlarmSilence(team){
     if (!team) return;
     team.alarmSilenced = false;
 }
 
 function asuCreateIncidentFromForm(){
-    const name = (document.getElementById("asu2IncidentName")?.value || "").trim();
-    const numberRaw = (document.getElementById("asu2IncidentNumber")?.value || "").trim();
+    const state = asuEnsureState();
+    const draft = (state.ui && state.ui.createDraft) ? state.ui.createDraft : asuDefaultState().ui.createDraft;
+    const name = (draft.name || "").trim();
+    const numberRaw = (draft.number || "").trim();
     const number = numberRaw.replace(/\D+/g, "");
-    const location = (document.getElementById("asu2IncidentLocation")?.value || "").trim();
-    const date = document.getElementById("asu2IncidentDate")?.value || asuDateInputValue(Date.now());
-    const time = document.getElementById("asu2IncidentTime")?.value || asuTimeInputValue(Date.now());
+    const location = (draft.location || "").trim();
+    const date = draft.date || asuDateInputValue(Date.now());
+    const time = draft.time || asuTimeInputValue(Date.now());
     const incident = asuCreateIncident();
     incident.name = name;
     incident.number = number;
     incident.location = location;
     incident.startedAt = asuParseDateTime(date, time);
     incident.updatedAt = new Date().toISOString();
-    const state = asuEnsureState();
     state.activeIncident = incident;
     state.ui.selectedTeamId = incident.teams[0]?.id || null;
     state.ui.showIncidentConfig = false;
+    state.ui.createDraft = asuDefaultState().ui.createDraft;
     asuAddLog("INCIDENT_START", `Einsatz gestartet${name ? `: ${name}` : ""}.`);
     asuSaveStateImmediate();
     renderAtemTool();
     asuRunAlarmManager();
+}
+
+function asuUpdateTeamCurrentLocation(teamId, value){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    team.currentLocation = value || "";
+    asuScheduleSave();
+}
+
+function asuAddTeamWaypoint(teamId, pointSeed = "", noteSeed = ""){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    const point = String(pointSeed || "").trim();
+    const note = String(noteSeed || "").trim();
+    const fallbackPoint = String(team.currentLocation || "").trim();
+    if (!point && !note && !fallbackPoint) return;
+    team.routeWaypoints.unshift({
+        id: asuUid("wp"),
+        at: Date.now(),
+        point: point || fallbackPoint,
+        note
+    });
+    team.routeWaypoints = team.routeWaypoints.slice(0, 60);
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuRemoveTeamWaypoint(teamId, waypointId){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    team.routeWaypoints = (team.routeWaypoints || []).filter((wp)=>wp.id !== waypointId);
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuUpdateTeamWaypointField(teamId, waypointId, field, value){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    const wp = (team.routeWaypoints || []).find((item)=>item.id === waypointId);
+    if (!wp) return;
+    if (field === "point"){
+        wp.point = value || "";
+    } else if (field === "note"){
+        wp.note = value || "";
+    } else if (field === "at"){
+        if (!value){
+            wp.at = null;
+        } else {
+            const parsed = new Date(value).getTime();
+            if (Number.isFinite(parsed)) wp.at = parsed;
+        }
+    }
+    asuScheduleSave();
+}
+
+function asuSetTeamLocationFromWaypoint(teamId, waypointId){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    const wp = (team.routeWaypoints || []).find((item)=>item.id === waypointId);
+    if (!wp) return;
+    team.currentLocation = wp.point || "";
+    asuScheduleSave();
+    renderAtemTool();
+}
+
+function asuQuickSetTeamLocation(teamId, locationLabel){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    const label = String(locationLabel || "").trim();
+    if (!label) return;
+    team.currentLocation = label;
+    team.routeWaypoints.unshift({
+        id: asuUid("wp"),
+        at: Date.now(),
+        point: label,
+        note: "Quick-Update"
+    });
+    team.routeWaypoints = team.routeWaypoints.slice(0, 60);
+    asuScheduleSave();
+    renderAtemTool();
 }
 
 function asuEndActiveIncident(){
@@ -9977,6 +11424,37 @@ function asuDismissPressurePrompt(){
     if (popup) popup.classList.remove("show");
 }
 
+function asuOpenWaypointPrompt(teamId){
+    const team = asuTeamById(teamId);
+    if (!team) return;
+    const state = asuEnsureState();
+    state.ui.waypointPrompt = { teamId };
+    const popup = document.getElementById("asuWaypointPopup");
+    const input = document.getElementById("asuWaypointPopupPoint");
+    if (!popup || !input) return;
+    popup.classList.add("show");
+    input.value = "";
+    setTimeout(()=>input.focus(), 30);
+}
+
+function asuCloseWaypointPrompt(){
+    const state = asuEnsureState();
+    state.ui.waypointPrompt = null;
+    const popup = document.getElementById("asuWaypointPopup");
+    if (popup) popup.classList.remove("show");
+}
+
+function asuConfirmWaypointPrompt(){
+    const state = asuEnsureState();
+    const prompt = state.ui.waypointPrompt;
+    if (!prompt || !prompt.teamId) return;
+    const input = document.getElementById("asuWaypointPopupPoint");
+    const value = (input && input.value ? input.value : "").trim();
+    if (!value) return;
+    asuAddTeamWaypoint(prompt.teamId, value, "");
+    asuCloseWaypointPrompt();
+}
+
 function asuJumpToAtemFromPopup(){
     asuDismissPressurePrompt();
     if (!isAtemOverlayOpen()) openAtemOverlay();
@@ -10065,6 +11543,10 @@ function asuAcknowledgeAllAlarms(){
     const incident = asuGetActiveIncident();
     if (!incident) return;
     incident.teams.forEach((team)=>{ team.alarmSilenced = true; });
+    // Global beruhigen: Ton aus, Popup zu, Flackern sofort beenden.
+    asuGlobalAlarmState.soundPausedByUser = true;
+    asuGlobalAlarmState.flashingUntil = 0;
+    asuDismissPressurePrompt();
     asuScheduleSave();
     renderAtemTool();
     asuRunAlarmManager();
@@ -10143,32 +11625,10 @@ function asuPrimeAlarmAudio(){
     }
     audio.loop = true;
     audio.volume = 1;
-    audio.muted = true;
-    try {
-        const maybePromise = audio.play();
-        if (maybePromise && typeof maybePromise.then === "function"){
-            maybePromise.then(()=>{
-                // Priming nur zum Freischalten: sofort stoppen und zurücksetzen.
-                audio.pause();
-                audio.currentTime = 0;
-                audio.muted = false;
-                asuGlobalAlarmState.audioPrimed = true;
-                asuGlobalAlarmState.primeAttempted = false;
-            }).catch(()=>{
-                asuGlobalAlarmState.audioPrimed = false;
-                asuGlobalAlarmState.primeAttempted = false;
-            });
-            return;
-        }
-        audio.pause();
-        audio.currentTime = 0;
-        audio.muted = false;
-        asuGlobalAlarmState.audioPrimed = true;
-        asuGlobalAlarmState.primeAttempted = false;
-    } catch {
-        asuGlobalAlarmState.audioPrimed = false;
-        asuGlobalAlarmState.primeAttempted = false;
-    }
+    audio.muted = false;
+    // Kein aktives Autoplay-Priming: verhindert unbeabsichtigte Töne ohne aktiven Alarm.
+    asuGlobalAlarmState.audioPrimed = false;
+    asuGlobalAlarmState.primeAttempted = false;
 }
 
 function asuPlayFallbackAlarmBeep(level = "critical"){
@@ -10483,7 +11943,11 @@ function asuUpdateGlobalAlarmUi(){
         }
     }
     if (flash){
-        const showFlash = asuGlobalAlarmState.alarmActive || Date.now() < asuGlobalAlarmState.flashingUntil;
+        const showFlash = (
+            asuGlobalAlarmState.alarmActive &&
+            asuGlobalAlarmState.unsilencedTeamIds.length > 0 &&
+            !asuGlobalAlarmState.soundPausedByUser
+        ) || Date.now() < asuGlobalAlarmState.flashingUntil;
         flash.classList.toggle("show", showFlash);
     }
 }
@@ -10607,14 +12071,15 @@ function asuRenderArchive(state){
 
 function asuRenderCreateIncident(state){
     const now = Date.now();
+    const draft = (state.ui && state.ui.createDraft) ? state.ui.createDraft : asuDefaultState().ui.createDraft;
     return `
     <div class="atem-panel">
         <strong>Neuer Einsatz</strong>
         <div class="asu2-incident-grid" style="margin-top:8px;">
-            <div><label>Einsatzname (optional)</label><input id="asu2IncidentName" type="text" placeholder="z. B. Zimmerbrand Schule"></div>
-            <div><label>Einsatznummer (optional)</label><input id="asu2IncidentNumber" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="nur Zahlen"></div>
-            <div><label>Ort</label><input id="asu2IncidentLocation" type="text" placeholder="optional"></div>
-            <div><label>Start</label><input id="asu2IncidentDate" type="date" value="${asuDateInputValue(now)}"><input style="margin-top:6px;" id="asu2IncidentTime" type="time" value="${asuTimeInputValue(now)}"></div>
+            <div><label>Einsatzname (optional)</label><input id="asu2IncidentName" type="text" placeholder="z. B. Zimmerbrand Schule" value="${escapeHtml(draft.name || "")}" oninput="asuUpdateCreateDraft('name', this.value)"></div>
+            <div><label>Einsatznummer (optional)</label><input id="asu2IncidentNumber" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="nur Zahlen" value="${escapeHtml(draft.number || "")}" oninput="asuUpdateCreateDraft('number', this.value)"></div>
+            <div><label>Ort</label><input id="asu2IncidentLocation" type="text" placeholder="optional" value="${escapeHtml(draft.location || "")}" oninput="asuUpdateCreateDraft('location', this.value)"></div>
+            <div><label>Start</label><input id="asu2IncidentDate" type="date" value="${escapeHtml(draft.date || asuDateInputValue(now))}" onchange="asuUpdateCreateDraft('date', this.value)"><input style="margin-top:6px;" id="asu2IncidentTime" type="time" value="${escapeHtml(draft.time || asuTimeInputValue(now))}" onchange="asuUpdateCreateDraft('time', this.value)"></div>
             <div class="full asu2-actions"><button onclick="asuCreateIncidentFromForm()">Einsatz starten</button></div>
         </div>
     </div>
@@ -10654,10 +12119,36 @@ function asuRenderTeamCard(team, incident, selectedTeamId){
             : "OK";
     const selected = selectedTeamId === team.id;
     const memberLine = `${team.members[0]?.name || "-"} / ${team.members[1]?.name || "-"}`;
+    const latestWaypoint = Array.isArray(team.routeWaypoints) && team.routeWaypoints.length ? team.routeWaypoints[0] : null;
+    const locationLine = (latestWaypoint && latestWaypoint.point)
+        ? latestWaypoint.point
+        : (team.currentLocation ? team.currentLocation : "-");
     const pauseCount = team.pauseHistory.length;
     const lastPause = pauseCount ? team.pauseHistory[pauseCount - 1] : null;
     const lastPauseLabel = lastPause ? (lastPause.pauseMinutes != null ? `${lastPause.pauseMinutes} min` : "ohne Zeit") : "-";
     const pauseRunningLabel = team.pauseStartedAt ? ` · Pause läuft ${asuFormatDuration(now - team.pauseStartedAt)}` : "";
+    const waypointCount = Array.isArray(team.routeWaypoints) ? team.routeWaypoints.length : 0;
+    const standortjournalHtml = `<div class="asu2-log" style="margin-top:8px;"><strong>Standortjournal</strong>
+            <div class="asu2-actions" style="margin-top:8px;">
+                <button onclick="asuQuickSetTeamLocation('${team.id}','Einstieg')">Einstieg</button>
+                <button onclick="asuQuickSetTeamLocation('${team.id}','Innenangriff')">Innenangriff</button>
+                <button onclick="asuQuickSetTeamLocation('${team.id}','Rückweg')">Rückweg</button>
+                <button onclick="asuQuickSetTeamLocation('${team.id}','Sammelstelle')">Sammelstelle</button>
+                <button onclick="asuOpenWaypointPrompt('${team.id}')">Neuer Wegpunkt</button>
+            </div>
+            <details class="asu2-waypoint-fold">
+                <summary>Wegpunkte gespeichert (${waypointCount})</summary>
+                <div class="atem-log-list" style="margin-top:8px;">${waypointCount ? team.routeWaypoints.map((wp)=>`<div class="atem-log-item">
+                    <strong>${escapeHtml(new Date(wp.at || Date.now()).toLocaleString("de-DE"))}</strong><br>
+                    ${escapeHtml(wp.point || "-")}${wp.note ? `<br><span style="color:var(--text-muted);">${escapeHtml(wp.note)}</span>` : ""}
+                    <div class="asu2-actions" style="margin-top:6px;">
+                        <button onclick="asuSetTeamLocationFromWaypoint('${team.id}','${wp.id}')">Als aktuellen Standort setzen</button>
+                        <button onclick="asuRemoveTeamWaypoint('${team.id}','${wp.id}')">Entfernen</button>
+                    </div>
+                </div>`).join("") : `<div class="lage-empty">Noch keine Wegepunkte erfasst.</div>`}</div>
+            </details>
+        </div>`;
+
     let html = `<div class="asu2-team-card ${warnClass}">
         <div class="asu2-team-head">
             <div class="asu2-team-name">${escapeHtml(team.name)}</div>
@@ -10665,8 +12156,9 @@ function asuRenderTeamCard(team, incident, selectedTeamId){
         </div>
         <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Zyklus ${team.cycleIndex} · Pausen ${pauseCount}${pauseCount ? ` · Letzte ${escapeHtml(lastPauseLabel)}` : ""}${pauseRunningLabel}</div>
         <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">${escapeHtml(memberLine)}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Standort: ${escapeHtml(locationLine)}</div>
         <div class="asu2-team-stats">
-            <div class="asu2-stat"><div class="asu2-stat-label">Zeit unter PA</div><div class="asu2-stat-value">${inPA}</div></div>
+            <div class="asu2-stat"><div class="asu2-stat-label">Zeit unter PA</div><div class="asu2-stat-value asu2-time-value">${inPA}</div></div>
             <div class="asu2-stat"><div class="asu2-stat-label">Nächste Rückmeldung</div><div class="asu2-stat-value">${nextDueLabel}</div></div>
             <div class="asu2-stat"><div class="asu2-stat-label">Seit letzter Rückmeldung</div><div class="asu2-stat-value">${sinceCheckIn}</div></div>
             <div class="asu2-stat"><div class="asu2-stat-label">Status</div><div class="asu2-stat-value" style="font-size:14px;">${statusText}</div></div>
@@ -10694,7 +12186,9 @@ function asuRenderTeamCard(team, incident, selectedTeamId){
                 <div class="full"><label>Bemerkung</label><input type="text" value="${escapeHtml(team.note || "")}" oninput="asuUpdateTeamField('${team.id}','note',this.value)"></div>
             </div>
             <div class="asu2-log"><strong>Rückmeldungsverlauf</strong><div class="atem-log-list">${(team.history || []).length ? team.history.map((ts)=>`<div class="atem-log-item">${new Date(ts).toLocaleString("de-DE")}</div>`).join("") : `<div class="lage-empty">Keine Rückmeldungen.</div>`}</div></div>
-        </div>`;
+        </div>${standortjournalHtml}`;
+    } else {
+        html += standortjournalHtml;
     }
 
     html += `</div>`;
@@ -10789,6 +12283,7 @@ function asuBuildProtocolText(incident){
         lines.push(`Truppmann: ${(team.members && team.members[1] && team.members[1].name) || "-"}`);
         lines.push(`Funkkanal: ${team.channel || "-"}`);
         lines.push(`Bemerkung: ${team.note || "-"}`);
+        lines.push(`Aktueller Standort: ${team.currentLocation || "-"}`);
         lines.push(`Zyklus: ${team.cycleIndex || 1}`);
         lines.push(`Start unter PA: ${team.startedAt ? new Date(team.startedAt).toLocaleString("de-DE") : "-"}`);
         lines.push(`Letzte Rueckmeldung: ${team.lastCheckInAt ? new Date(team.lastCheckInAt).toLocaleString("de-DE") : "-"}`);
@@ -10812,6 +12307,12 @@ function asuBuildProtocolText(incident){
             lines.push("Rueckmeldungen:");
             team.history.forEach((ts, hIdx)=>{
                 lines.push(`  ${hIdx + 1}. ${new Date(ts).toLocaleString("de-DE")}`);
+            });
+        }
+        if (Array.isArray(team.routeWaypoints) && team.routeWaypoints.length){
+            lines.push("Standortjournal:");
+            team.routeWaypoints.forEach((wp, wIdx)=>{
+                lines.push(`  ${wIdx + 1}. ${wp.at ? new Date(wp.at).toLocaleString("de-DE") : "-"} | ${wp.point || "-"}${wp.note ? ` | ${wp.note}` : ""}`);
             });
         }
     });
@@ -10895,7 +12396,6 @@ function asuRenderActiveIncident(state){
             <div>Start: ${new Date(incident.startedAt || now).toLocaleString("de-DE")}</div>
             <div>Aktive Trupps: ${activeCount}</div>
             <div class="asu2-actions">
-                <button onclick="asuAcknowledgeAllAlarms()">Alle Alarm quittieren</button>
                 <button onclick="asuAddTeam()">Trupp hinzufügen</button>
                 <button onclick="asuExportIncidentPdf()">Protokoll PDF</button>
                 <button onclick="asuExportIncidentText()">Protokoll TXT</button>
@@ -10940,6 +12440,11 @@ function asuHasFocusedInput(){
         const active = document.activeElement;
         if (active && popup.contains(active)) return true;
     }
+    const waypointPopup = document.getElementById("asuWaypointPopup");
+    if (waypointPopup && waypointPopup.classList.contains("show")){
+        const active = document.activeElement;
+        if (active && waypointPopup.contains(active)) return true;
+    }
     if (!isAtemOverlayOpen()) return false;
     const overlay = document.getElementById("atemOverlay");
     const el = document.activeElement;
@@ -10979,6 +12484,8 @@ function openAtemOverlay(){
 function closeAtemOverlay(){
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
+    asuDismissPressurePrompt();
+    asuCloseWaypointPrompt();
     overlay.classList.remove("show");
     const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
@@ -11020,7 +12527,6 @@ function trapFocusInAtemOverlay(event){
 
 document.addEventListener("visibilitychange", ()=>{
     if (!document.hidden){
-        asuPrimeAlarmAudio();
         asuEnsureAlarmTicker();
         asuUpdateGlobalAlarmUi();
         if (isAtemOverlayOpen()){
@@ -11060,7 +12566,6 @@ function runAtemschutzV2Tests(){
 runAtemschutzV2Tests();
 AtemschutzUeberwachungService.ensureState();
 asuInitAudioUnlockHooks();
-asuPrimeAlarmAudio();
 AtemschutzUeberwachungService.ensureAlarmTicker();
 asuUpdateGlobalAlarmUi();
 
@@ -11343,6 +12848,7 @@ function renderFunkcheckTool(targetId = "funkcheckInlineBody"){
         </div>`;
     });
     html += `<div class="atem-row-actions"><button onclick="addFunkcheckTeilnehmer()">Teilnehmer hinzufügen</button></div></div>`;
+    html += `<div class="atem-panel"><strong>Nimmt am Einsatz teil</strong><div class="psu-meta" style="margin-top:8px;">Fahrzeuge aus Kräfte/Funkrufnamen mit Funkrufname</div><div class="phonebook-list" style="margin-top:8px;">${getEinsatzTeilnahmeRowsHtml()}</div></div>`;
     body.innerHTML = html;
     s.teilnehmer.forEach((t)=>{
         const sel = body.querySelector(`select[onchange="updateFunkcheckTeilnehmer('${t.id}','kanalId',this.value)"]`);
@@ -11835,18 +13341,67 @@ function createEvakSession(){
         createdAt: nowIso(),
         updatedAt: nowIso(),
         header: { objekt: "", datum: formatDateInputToDE(getTodayBerlinDateISO()), uhrzeit: getNowTimeHHMM(), notiz: "" },
-        plan: { grund: "", bereich: "", sammeltpunkt: "", betreuungsstelle: "", transport: "" },
-        status: {
-            lageErfasst: "offen",
-            raeumungAngeordnet: "offen",
-            bereichAbgesichert: "offen",
-            sammeltpunktEingerichtet: "offen",
-            betreuungOrganisiert: "offen",
-            transportOrganisiert: "offen",
-            rueckmeldungEtabliert: "offen",
-            presseInformiert: "offen"
+        lage: {
+            szenario: "",
+            prioritaet: "mittel",
+            ausloeser: [],
+            gefahrenbereich: "",
+            zugang: "",
+            besondereGefahr: ""
         },
-        einheiten: []
+        plan: { grund: "", bereich: "", sammeltpunkt: "", betreuungsstelle: "", transport: "" },
+        personen: { imObjekt: "", evakuiert: "", vermisst: "", verletzt: "" },
+        status: {
+            evakEntschluss: "offen",
+            alarmiert: "offen",
+            abschnittAktiv: "offen",
+            sammelstelleBereit: "offen",
+            personenabgleich: "offen",
+            nachkontrolle: "offen",
+            abschlussmeldung: "offen"
+        },
+        abschnitte: [],
+        einheiten: [],
+        timeline: []
+    };
+}
+
+function normalizeEvakSession(session){
+    const base = createEvakSession();
+    const s = (session && typeof session === "object") ? session : {};
+    const header = { ...base.header, ...(s.header || {}) };
+    const lage = { ...base.lage, ...(s.lage || {}) };
+    const plan = { ...base.plan, ...(s.plan || {}) };
+    const personen = { ...base.personen, ...(s.personen || {}) };
+    const status = { ...base.status };
+
+    if (s.status && typeof s.status === "object"){
+        if ("lageErfasst" in s.status) status.evakEntschluss = s.status.lageErfasst;
+        if ("raeumungAngeordnet" in s.status) status.alarmiert = s.status.raeumungAngeordnet;
+        if ("bereichAbgesichert" in s.status) status.abschnittAktiv = s.status.bereichAbgesichert;
+        if ("sammeltpunktEingerichtet" in s.status) status.sammelstelleBereit = s.status.sammeltpunktEingerichtet;
+        if ("rueckmeldungEtabliert" in s.status) status.personenabgleich = s.status.rueckmeldungEtabliert;
+        if ("transportOrganisiert" in s.status) status.nachkontrolle = s.status.transportOrganisiert;
+        if ("presseInformiert" in s.status) status.abschlussmeldung = s.status.presseInformiert;
+        Object.keys(status).forEach((key)=>{
+            if (s.status[key]) status[key] = s.status[key];
+        });
+    }
+
+    return {
+        ...base,
+        ...s,
+        id: s.id || base.id,
+        createdAt: s.createdAt || base.createdAt,
+        updatedAt: s.updatedAt || base.updatedAt,
+        header,
+        lage,
+        plan,
+        personen,
+        status,
+        abschnitte: Array.isArray(s.abschnitte) ? s.abschnitte : [],
+        einheiten: Array.isArray(s.einheiten) ? s.einheiten : [],
+        timeline: Array.isArray(s.timeline) ? s.timeline : []
     };
 }
 
@@ -11859,7 +13414,8 @@ function ensureEvakState(){
             const first = createEvakSession();
             evakState = { sessions: [first], activeId: first.id };
         } else {
-            evakState = { sessions: parsed.sessions, activeId: parsed.activeId || parsed.sessions[0].id };
+            const sessions = parsed.sessions.map((session)=>normalizeEvakSession(session));
+            evakState = { sessions, activeId: parsed.activeId || sessions[0].id };
         }
     } catch {
         const first = createEvakSession();
@@ -11881,36 +13437,375 @@ function trapFocusInEvakOverlay(event){ if(event.key!=="Tab"||!isEvakOverlayOpen
 document.addEventListener("keydown",(event)=>{ if(!isEvakOverlayOpen()) return; if(event.key==="Escape"){closeEvakOverlay(); return;} trapFocusInEvakOverlay(event); });
 
 function updateEvakHeader(field,value){ const s=getActiveEvakSession(); if(!s) return; s.header[field]=field==="datum"?formatDateInputToDE(value):value; touchEvak(); }
+function updateEvakLage(field,value,shouldRender=true){
+    const s=getActiveEvakSession();
+    if(!s) return;
+    s.lage[field]=value;
+    touchEvak();
+    if (shouldRender) renderEvakTool();
+}
 function updateEvakPlan(field,value){ const s=getActiveEvakSession(); if(!s) return; s.plan[field]=value; touchEvak(); }
-function cycleEvakStatus(field){ const s=getActiveEvakSession(); if(!s) return; const order=["offen","ja","nein"]; const cur=s.status[field]||"offen"; s.status[field]=order[(order.indexOf(cur)+1)%order.length]; touchEvak(); renderEvakTool(); }
+function refreshEvakPersonIndicators(){
+    const s = getActiveEvakSession();
+    if (!s) return;
+    const personTotal = Number(s.personen.imObjekt || 0);
+    const personEvak = Number(s.personen.evakuiert || 0);
+    const personMissing = Number(s.personen.vermisst || 0);
+    const personOpen = Math.max(personTotal - personEvak, 0);
+
+    const openEl = document.getElementById("evakPersonsOpenBadge");
+    if (openEl){
+        openEl.textContent = `Offen: ${personOpen}`;
+        openEl.classList.toggle("active-yes", personOpen === 0);
+    }
+
+    const missingEl = document.getElementById("evakPersonsMissingBadge");
+    if (missingEl){
+        missingEl.textContent = `Vermisst: ${personMissing}`;
+        missingEl.classList.toggle("active-no", personMissing > 0);
+    }
+
+    const rec = getEvakRecommendation(s);
+    const recBox = document.getElementById("evakRecommendationBox");
+    const recTitle = document.getElementById("evakRecommendationTitle");
+    const recText = document.getElementById("evakRecommendationText");
+    if (recBox){
+        recBox.classList.remove("critical-box", "priority-box", "links-box");
+        recBox.classList.add(rec.level === "kritisch" ? "critical-box" : rec.level === "warnung" ? "priority-box" : "links-box");
+    }
+    if (recTitle) recTitle.textContent = rec.title;
+    if (recText) recText.textContent = rec.text;
+}
+
+function updateEvakPersonen(field,value){
+    const s=getActiveEvakSession();
+    if(!s) return;
+    s.personen[field]=value.replace(/[^\d]/g,"").slice(0,4);
+    touchEvak();
+    refreshEvakPersonIndicators();
+}
+function toggleEvakAusloeser(key){
+    const s = getActiveEvakSession();
+    if (!s) return;
+    const list = Array.isArray(s.lage.ausloeser) ? s.lage.ausloeser : [];
+    if (list.includes(key)){
+        s.lage.ausloeser = list.filter((item)=>item!==key);
+    } else {
+        s.lage.ausloeser = [...list, key];
+    }
+    touchEvak();
+    renderEvakTool();
+}
+function cycleEvakStatus(field){ const s=getActiveEvakSession(); if(!s) return; const order=["offen","laeuft","erledigt","problem"]; const cur=s.status[field]||"offen"; s.status[field]=order[(order.indexOf(cur)+1)%order.length]; touchEvak(); renderEvakTool(); }
 function addEvakEinheit(){ const s=getActiveEvakSession(); if(!s) return; s.einheiten.push({ id:`e_${Date.now().toString(36)}${Math.random().toString(36).slice(2,4)}`, name:"", aufgabe:"", status:"offen" }); touchEvak(); renderEvakTool(); }
 function removeEvakEinheit(id){ const s=getActiveEvakSession(); if(!s) return; s.einheiten=s.einheiten.filter((x)=>x.id!==id); touchEvak(); renderEvakTool(); }
 function updateEvakEinheit(id,field,value){ const s=getActiveEvakSession(); if(!s) return; const e=s.einheiten.find((x)=>x.id===id); if(!e) return; e[field]=value; touchEvak(); }
+function addEvakAbschnitt(){ const s=getActiveEvakSession(); if(!s) return; s.abschnitte.push({ id:`a_${Date.now().toString(36)}${Math.random().toString(36).slice(2,4)}`, name:"", status:"offen", hinweis:"" }); touchEvak(); renderEvakTool(); }
+function removeEvakAbschnitt(id){ const s=getActiveEvakSession(); if(!s) return; s.abschnitte=s.abschnitte.filter((x)=>x.id!==id); touchEvak(); renderEvakTool(); }
+function updateEvakAbschnitt(id,field,value){ const s=getActiveEvakSession(); if(!s) return; const e=s.abschnitte.find((x)=>x.id===id); if(!e) return; e[field]=value; touchEvak(); }
+function addEvakTimeline(eventText){
+    const s = getActiveEvakSession();
+    if (!s) return;
+    const text = (eventText || "").trim();
+    if (!text) return;
+    s.timeline.unshift({
+        id: `t_${Date.now().toString(36)}${Math.random().toString(36).slice(2,4)}`,
+        time: getNowTimeHHMM(),
+        event: text
+    });
+    touchEvak();
+    renderEvakTool();
+}
+function removeEvakTimeline(id){ const s=getActiveEvakSession(); if(!s) return; s.timeline=s.timeline.filter((x)=>x.id!==id); touchEvak(); renderEvakTool(); }
 function newEvakSession(){ const st=ensureEvakState(); const n=createEvakSession(); st.sessions.unshift(n); st.activeId=n.id; saveEvakState(); renderEvakTool(); }
 function selectEvakSession(id){ const st=ensureEvakState(); if(!st.sessions.find((x)=>x.id===id)) return; st.activeId=id; saveEvakState(); renderEvakTool(); }
 function deleteEvakSession(id){ if(!confirm("Session wirklich löschen?")) return; const st=ensureEvakState(); st.sessions=st.sessions.filter((x)=>x.id!==id); if(!st.sessions.length){const n=createEvakSession(); st.sessions=[n]; st.activeId=n.id;} else if(!st.sessions.find((x)=>x.id===st.activeId)){st.activeId=st.sessions[0].id;} saveEvakState(); renderEvakTool(); }
-function copyEvakSummary(){ const s=getActiveEvakSession(); if(!s) return; const lines=["Evakuierungshelfer",`Objekt: ${s.header.objekt||"-"}`,`Datum: ${s.header.datum||"-"}`,`Uhrzeit: ${s.header.uhrzeit||"-"}`,`Notiz: ${s.header.notiz||"-"}`,"",`Grund: ${s.plan.grund||"-"}`,`Bereich: ${s.plan.bereich||"-"}`,`Sammelpunkt: ${s.plan.sammeltpunkt||"-"}`,`Betreuungsstelle: ${s.plan.betreuungsstelle||"-"}`,`Transport: ${s.plan.transport||"-"}`,"","Status:"]; Object.entries(s.status||{}).forEach(([k,v])=>lines.push(`- ${k}: ${v}`)); lines.push("","Einheiten:"); (s.einheiten||[]).forEach((e)=>lines.push(`- ${e.name||"-"} | ${e.aufgabe||"-"} | ${e.status||"offen"}`)); copyTextToClipboard(lines.join("\n")); }
+function showEvakHint(message, isError=false){
+    const hint = document.getElementById("evakHint");
+    if (!hint) return;
+    hint.textContent = message || "";
+    hint.classList.remove("hidden", "error");
+    if (isError) hint.classList.add("error");
+    clearTimeout(showEvakHint._timer);
+    showEvakHint._timer = setTimeout(()=>hint.classList.add("hidden"), 1600);
+}
+
+function saveEvakSessionManual(){
+    touchEvak();
+    saveEvakState();
+    showEvakHint("Session gespeichert");
+}
+
+function buildEvakProtocolText(session){
+    const s = session || getActiveEvakSession();
+    if (!s) return "";
+    const trigger = Array.isArray(s.lage.ausloeser) ? s.lage.ausloeser : [];
+    const lines = [
+        "Evakuierungshelfer - Protokoll",
+        `Objekt/Einsatz: ${s.header.objekt || "-"}`,
+        `Datum: ${s.header.datum || "-"}`,
+        `Uhrzeit: ${s.header.uhrzeit || "-"}`,
+        `Notiz: ${s.header.notiz || "-"}`,
+        "",
+        `Szenario: ${s.lage.szenario || "-"}`,
+        `Priorität: ${s.lage.prioritaet || "-"}`,
+        `Auslöser: ${trigger.length ? trigger.join(", ") : "-"}`,
+        `Gefahrenbereich: ${s.lage.gefahrenbereich || "-"}`,
+        `Zugang/Laufwege: ${s.lage.zugang || "-"}`,
+        `Besondere Gefährdung: ${s.lage.besondereGefahr || "-"}`,
+        "",
+        `Grund: ${s.plan.grund || "-"}`,
+        `Bereich: ${s.plan.bereich || "-"}`,
+        `Sammelpunkt: ${s.plan.sammeltpunkt || "-"}`,
+        `Betreuungsstelle: ${s.plan.betreuungsstelle || "-"}`,
+        `Transport: ${s.plan.transport || "-"}`,
+        "",
+        `Personen im Objekt: ${s.personen.imObjekt || "0"}`,
+        `Evakuiert: ${s.personen.evakuiert || "0"}`,
+        `Vermisst: ${s.personen.vermisst || "0"}`,
+        `Verletzt: ${s.personen.verletzt || "0"}`,
+        "",
+        "Status:"
+    ];
+    Object.entries(s.status || {}).forEach(([k, v])=>{
+        lines.push(`- ${k}: ${v}`);
+    });
+    lines.push("", "Abschnitte:");
+    (s.abschnitte || []).forEach((a)=>{
+        lines.push(`- ${a.name || "-"} | ${a.status || "offen"} | ${a.hinweis || "-"}`);
+    });
+    lines.push("", "Einheiten:");
+    (s.einheiten || []).forEach((e)=>{
+        lines.push(`- ${e.name || "-"} | ${e.aufgabe || "-"} | ${e.status || "offen"}`);
+    });
+    lines.push("", "Timeline:");
+    (s.timeline || []).forEach((t)=>{
+        lines.push(`- ${t.time || "--:--"} ${t.event || "-"}`);
+    });
+    return lines.join("\n");
+}
+
+function exportEvakPdf(){
+    const s = getActiveEvakSession();
+    if (!s){
+        showEvakHint("Keine Session vorhanden", true);
+        return;
+    }
+    const text = buildEvakProtocolText(s);
+    const title = `Evakuierung_${(s.header.datum || "-").replace(/\./g, "-")}_${(s.header.uhrzeit || "--:--").replace(/:/g, "-")}`;
+    const printWindow = window.open("", "_blank");
+    if (!printWindow){
+        showEvakHint("Popup blockiert", true);
+        return;
+    }
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(title)}.pdf</title>
+    <style>
+    @page { size: A4; margin: 14mm; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:#111; }
+    .head { display:flex; align-items:center; gap:12px; margin:0 0 10px; }
+    .head img { width:56px; height:56px; object-fit:contain; }
+    h1 { font-size: 18px; margin: 0; }
+    .meta { font-size: 12px; color:#444; margin-bottom: 12px; }
+    pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.35; }
+    .footer { margin-top: 10px; font-size: 11px; color:#555; }
+    </style></head><body>
+    <div class="head"><img src="logoapp.png" alt="FF 360 Logo"><h1>Evakuierungs-Protokoll</h1></div>
+    <div class="meta">Datei: ${escapeHtml(title)}.pdf</div>
+    <pre>${escapeHtml(text)}</pre>
+    <div class="footer">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script>
+    </body></html>`;
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+    showEvakHint("PDF-Dialog geöffnet");
+}
+
+function getEvakRecommendation(session){
+    const s = session || getActiveEvakSession();
+    if (!s) return { level: "normal", title: "Keine Daten", text: "Bitte Lage erfassen." };
+    const trigger = Array.isArray(s.lage.ausloeser) ? s.lage.ausloeser : [];
+    const vermisst = Number(s.personen.vermisst || 0);
+    const verletzt = Number(s.personen.verletzt || 0);
+    if (trigger.includes("brandrauch") || trigger.includes("gefahrstoff") || verletzt > 0 || vermisst > 0){
+        return {
+            level: "kritisch",
+            title: "Priorität hoch",
+            text: "Abschnitt Evakuierung getrennt führen, Personenabgleich eng takten, Nachforderung Betreuung/Rettungsdienst frühzeitig prüfen."
+        };
+    }
+    if (trigger.includes("statik") || trigger.includes("wasser")){
+        return {
+            level: "warnung",
+            title: "Teilräumung prüfen",
+            text: "Gefahrenbereich klar begrenzen, Laufwege sichern, Sammelstelle mit Rückmeldung betreiben."
+        };
+    }
+    return {
+        level: "normal",
+        title: "Lage stabil",
+        text: "Geordnete Räumung mit Statusführung und Abschlusskontrolle durchführen."
+    };
+}
+
+function buildEvakLeitstelleText(session){
+    const s = session || getActiveEvakSession();
+    if (!s) return "";
+    const p = s.personen || {};
+    const r = getEvakRecommendation(s);
+    return [
+        `Evakuierung läuft: ${s.header.objekt || "-"}`,
+        `Bereich: ${s.plan.bereich || "-"}, Sammelpunkt: ${s.plan.sammeltpunkt || "-"}`,
+        `Personen: evakuiert ${p.evakuiert || "0"} / vermisst ${p.vermisst || "0"} / verletzt ${p.verletzt || "0"}`,
+        `Lageeinschätzung: ${r.title}`
+    ].join("\n");
+}
+
+function copyEvakSummary(){
+    const s = getActiveEvakSession();
+    if (!s) return;
+    const lines = [
+        "Evakuierungshelfer",
+        `Objekt: ${s.header.objekt||"-"}`,
+        `Datum: ${s.header.datum||"-"}`,
+        `Uhrzeit: ${s.header.uhrzeit||"-"}`,
+        `Notiz: ${s.header.notiz||"-"}`,
+        "",
+        `Szenario: ${s.lage.szenario||"-"} (${s.lage.prioritaet||"-"})`,
+        `Grund: ${s.plan.grund||"-"}`,
+        `Bereich: ${s.plan.bereich||"-"}`,
+        `Sammelpunkt: ${s.plan.sammeltpunkt||"-"}`,
+        `Betreuungsstelle: ${s.plan.betreuungsstelle||"-"}`,
+        `Transport: ${s.plan.transport||"-"}`,
+        "",
+        `Personen im Objekt: ${s.personen.imObjekt||"0"}`,
+        `Evakuiert: ${s.personen.evakuiert||"0"} | Vermisst: ${s.personen.vermisst||"0"} | Verletzt: ${s.personen.verletzt||"0"}`,
+        "",
+        "Status:"
+    ];
+    Object.entries(s.status||{}).forEach(([k,v])=>lines.push(`- ${k}: ${v}`));
+    lines.push("", "Abschnitte:");
+    (s.abschnitte||[]).forEach((a)=>lines.push(`- ${a.name||"-"} | ${a.status||"offen"} | ${a.hinweis||"-"}`));
+    lines.push("", "Einheiten:");
+    (s.einheiten||[]).forEach((e)=>lines.push(`- ${e.name||"-"} | ${e.aufgabe||"-"} | ${e.status||"offen"}`));
+    lines.push("", "Timeline:");
+    (s.timeline||[]).forEach((t)=>lines.push(`- ${t.time||"--:--"} ${t.event||""}`));
+    copyTextToClipboard(lines.join("\n"));
+}
 
 function renderEvakTool(){
     const body=document.getElementById("evakBody"); if(!body) return;
     const st=ensureEvakState(); const s=getActiveEvakSession(); if(!s){ body.innerHTML=`<div class="card">Keine Session vorhanden.</div>`; return; }
-    const statusVals=Object.values(s.status||{}); const done=statusVals.filter((v)=>v==="ja").length; const total=statusVals.length || 1;
+    const statusVals=Object.values(s.status||{}); const done=statusVals.filter((v)=>v==="erledigt").length; const total=statusVals.length || 1;
+    const personTotal = Number(s.personen.imObjekt || 0);
+    const personEvak = Number(s.personen.evakuiert || 0);
+    const personMissing = Number(s.personen.vermisst || 0);
+    const personOpen = Math.max(personTotal - personEvak, 0);
+    const recommendation = getEvakRecommendation(s);
     const sessions=st.sessions.map((x)=>`<option value="${x.id}" ${x.id===st.activeId?"selected":""}>${escapeHtml(`${x.header.datum||"-"} ${x.header.uhrzeit||"-"} · ${x.header.objekt||"Evakuierung"}`)}</option>`).join("");
-    const statusLabels={lageErfasst:"Lage erfasst",raeumungAngeordnet:"Räumung angeordnet",bereichAbgesichert:"Bereich abgesichert",sammeltpunktEingerichtet:"Sammelpunkt eingerichtet",betreuungOrganisiert:"Betreuung organisiert",transportOrganisiert:"Transport organisiert",rueckmeldungEtabliert:"Rückmeldung etabliert",presseInformiert:"Presse informiert"};
-    let html=`<div class="atem-panel"><div class="atem-grid"><div><label>Session</label><select onchange="selectEvakSession(this.value)">${sessions}</select></div><div class="atem-row-actions"><button onclick="newEvakSession()">Neue Session</button><button onclick="deleteEvakSession('${s.id}')">Session löschen</button><button onclick="copyEvakSummary()">Kopieren</button></div></div><div style="margin-top:8px;">Fortschritt: ${done}/${total}</div></div>`;
+    const statusLabels={evakEntschluss:"Evakuierungsentschluss",alarmiert:"Warnung/Alarmierung",abschnittAktiv:"Abschnitt aktiv",sammelstelleBereit:"Sammelstelle bereit",personenabgleich:"Personenabgleich",nachkontrolle:"Nachkontrolle",abschlussmeldung:"Abschlussmeldung"};
+    const statusView = { offen: "offen", laeuft: "läuft", erledigt: "erledigt", problem: "Problem" };
+    const recClass = recommendation.level==="kritisch" ? "critical-box" : recommendation.level==="warnung" ? "priority-box" : "links-box";
+    const szenarioButtons = [
+        ["brand", "Brand/Rauch"],
+        ["gefahrstoff", "Gefahrstoff"],
+        ["statik", "Statik/Lageinstabil"],
+        ["wasser", "Wasser/Hochwasser"],
+        ["sonstige", "Sonstige Lage"]
+    ];
+    const ausloeserButtons = [
+        ["brandrauch", "Starke Rauchausbreitung"],
+        ["gefahrstoff", "Gefahrstoffverdacht"],
+        ["statik", "Bauteil-/Statikrisiko"],
+        ["wasser", "Wasseranstieg"],
+        ["stromausfall", "Stromausfall"],
+        ["panik", "Panik/Unruhe"]
+    ];
+    const timelineTemplates = ["Räumung angeordnet", "Sammelstelle aktiv", "Person vermisst", "Bereich geräumt", "Abschluss gemeldet"];
+    let html=`<div id="evakHint" class="social-hint hidden"></div><div class="atem-panel"><div class="atem-grid"><div><label>Session</label><select onchange="selectEvakSession(this.value)">${sessions}</select></div><div class="atem-row-actions"><button onclick="newEvakSession()">Neue Session</button><button onclick="deleteEvakSession('${s.id}')">Session löschen</button><button onclick="saveEvakSessionManual()">Speichern</button><button onclick="exportEvakPdf()">PDF-Export</button><button onclick="copyEvakSummary()">Kopieren</button></div></div><div style="margin-top:8px;">Fortschritt: ${done}/${total}</div></div>`;
     html+=`<div class="atem-panel"><strong>Kopfbereich</strong><div class="atem-grid" style="margin-top:8px;"><div><label>Objekt / Einsatz</label><input type="text" value="${escapeHtml(s.header.objekt||"")}" oninput="updateEvakHeader('objekt',this.value)"></div><div><label>Notiz</label><input type="text" value="${escapeHtml(s.header.notiz||"")}" oninput="updateEvakHeader('notiz',this.value)"></div><div><label>Datum</label><input type="date" value="${escapeHtml(formatIsoToDateInput(s.header.datum||""))}" onchange="updateEvakHeader('datum',this.value)"></div><div><label>Uhrzeit</label><input type="time" value="${escapeHtml(s.header.uhrzeit||"")}" onchange="updateEvakHeader('uhrzeit',this.value)"></div></div></div>`;
+    html+=`<div class="atem-panel"><strong>Schnelllage</strong><div class="atem-row-actions" style="margin-top:8px;">`;
+    szenarioButtons.forEach(([key,label])=>{
+        html += `<button class="${s.lage.szenario===key?"active-yes":""}" onclick="updateEvakLage('szenario','${key}')">${label}</button>`;
+    });
+    html += `</div><div class="evak-divider"></div><div class="atem-row-actions" style="margin-top:8px;">
+        <button class="${s.lage.prioritaet==='niedrig'?'active-yes':''}" onclick="updateEvakLage('prioritaet','niedrig')">Priorität niedrig</button>
+        <button class="${s.lage.prioritaet==='mittel'?'active-yes':''}" onclick="updateEvakLage('prioritaet','mittel')">Priorität mittel</button>
+        <button class="${s.lage.prioritaet==='hoch'?'active-yes':''}" onclick="updateEvakLage('prioritaet','hoch')">Priorität hoch</button>
+    </div><div class="evak-divider"></div><div class="atem-row-actions" style="margin-top:8px;">`;
+    ausloeserButtons.forEach(([key,label])=>{
+        const active = Array.isArray(s.lage.ausloeser) && s.lage.ausloeser.includes(key);
+        html += `<button class="${active?'active-yes':''}" onclick="toggleEvakAusloeser('${key}')">${label}</button>`;
+    });
+    html += `</div><div class="evak-divider"></div><div class="atem-grid" style="margin-top:8px;">
+        <div><label>Gefahrenbereich</label><input type="text" value="${escapeHtml(s.lage.gefahrenbereich||"")}" oninput="updateEvakLage('gefahrenbereich',this.value,false)" placeholder="z. B. Treppenhaus A / Südflügel"></div>
+        <div><label>Zugang / Laufwege</label><input type="text" value="${escapeHtml(s.lage.zugang||"")}" oninput="updateEvakLage('zugang',this.value,false)" placeholder="z. B. Eingang Ost, Weg über Hof"></div>
+        <div class="atem-col-full"><label>Besondere Gefährdung</label><input type="text" value="${escapeHtml(s.lage.besondereGefahr||"")}" oninput="updateEvakLage('besondereGefahr',this.value,false)" placeholder="z. B. verrauchte Bereiche / instabile Fassade"></div>
+    </div></div>`;
+    html += `<div id="evakRecommendationBox" class="${recClass}"><strong id="evakRecommendationTitle">${escapeHtml(recommendation.title)}</strong><br><span id="evakRecommendationText">${escapeHtml(recommendation.text)}</span></div>`;
     html+=`<div class="atem-panel"><strong>Planung</strong><div class="atem-grid" style="margin-top:8px;"><div><label>Grund</label><input type="text" value="${escapeHtml(s.plan.grund||"")}" oninput="updateEvakPlan('grund',this.value)"></div><div><label>Bereich</label><input type="text" value="${escapeHtml(s.plan.bereich||"")}" oninput="updateEvakPlan('bereich',this.value)"></div><div><label>Sammelpunkt</label><input type="text" value="${escapeHtml(s.plan.sammeltpunkt||"")}" oninput="updateEvakPlan('sammeltpunkt',this.value)"></div><div><label>Betreuungsstelle</label><input type="text" value="${escapeHtml(s.plan.betreuungsstelle||"")}" oninput="updateEvakPlan('betreuungsstelle',this.value)"></div><div class="atem-col-full"><label>Transport</label><input type="text" value="${escapeHtml(s.plan.transport||"")}" oninput="updateEvakPlan('transport',this.value)"></div></div></div>`;
+    html += `<div class="atem-panel"><strong>Personenlage</strong><div class="atem-grid" style="margin-top:8px;">
+        <div><label>Personen im Objekt</label><input type="text" inputmode="numeric" value="${escapeHtml(s.personen.imObjekt||"")}" oninput="updateEvakPersonen('imObjekt',this.value)"></div>
+        <div><label>Evakuiert</label><input type="text" inputmode="numeric" value="${escapeHtml(s.personen.evakuiert||"")}" oninput="updateEvakPersonen('evakuiert',this.value)"></div>
+        <div><label>Vermisst</label><input type="text" inputmode="numeric" value="${escapeHtml(s.personen.vermisst||"")}" oninput="updateEvakPersonen('vermisst',this.value)"></div>
+        <div><label>Verletzt</label><input type="text" inputmode="numeric" value="${escapeHtml(s.personen.verletzt||"")}" oninput="updateEvakPersonen('verletzt',this.value)"></div>
+    </div>
+    <div class="atem-row-actions" style="margin-top:8px;">
+        <button id="evakPersonsOpenBadge" class="${personOpen===0?'active-yes':''}">Offen: ${personOpen}</button>
+        <button id="evakPersonsMissingBadge" class="${personMissing>0?'active-no':''}">Vermisst: ${personMissing}</button>
+    </div></div>`;
     html+=`<div class="atem-panel"><strong>Status-Tracker</strong><div class="atem-row-actions" style="margin-top:8px;">`;
     Object.entries(statusLabels).forEach(([key,label])=>{
         const v=s.status[key]||"offen";
-        html += `<button class="${v==="ja"?"active-yes":v==="nein"?"active-no":""}" onclick="cycleEvakStatus('${key}')">${label}: ${v}</button>`;
+        html += `<button class="${v==="erledigt"?"active-yes":v==="problem"?"active-no":v==="laeuft"?"active-progress":""}" onclick="cycleEvakStatus('${key}')">${label}: ${statusView[v] || v}</button>`;
     });
     html+=`</div></div>`;
+    html += `<div class="atem-panel"><strong>Abschnitte aktiv</strong>`;
+    (s.abschnitte||[]).forEach((a)=>{
+        html += `<div class="atem-werte-row"><div class="atem-grid">
+            <div><label>Abschnitt</label><input type="text" value="${escapeHtml(a.name||"")}" oninput="updateEvakAbschnitt('${a.id}','name',this.value)" placeholder="z. B. Gebäudeteil Nord"></div>
+            <div><label>Status</label><select onchange="updateEvakAbschnitt('${a.id}','status',this.value)">
+                <option value="offen" ${a.status==="offen"?"selected":""}>Offen</option>
+                <option value="laeuft" ${a.status==="laeuft"?"selected":""}>Läuft</option>
+                <option value="frei" ${a.status==="frei"?"selected":""}>Geräumt</option>
+                <option value="problem" ${a.status==="problem"?"selected":""}>Problem</option>
+            </select></div>
+            <div><label>Hinweis</label><input type="text" value="${escapeHtml(a.hinweis||"")}" oninput="updateEvakAbschnitt('${a.id}','hinweis',this.value)" placeholder="z. B. Zugang nur über Treppenhaus B"></div>
+            <div class="atem-row-actions"><button onclick="removeEvakAbschnitt('${a.id}')">Entfernen</button></div>
+        </div></div>`;
+    });
+    html += `<div class="atem-row-actions"><button onclick="addEvakAbschnitt()">Abschnitt hinzufügen</button></div></div>`;
     html+=`<div class="atem-panel"><strong>Einheiten / Aufgaben</strong>`;
     (s.einheiten||[]).forEach((e)=>{
         html+=`<div class="atem-werte-row"><div class="atem-grid"><div><label>Einheit</label><input type="text" value="${escapeHtml(e.name||"")}" oninput="updateEvakEinheit('${e.id}','name',this.value)"></div><div><label>Aufgabe</label><input type="text" value="${escapeHtml(e.aufgabe||"")}" oninput="updateEvakEinheit('${e.id}','aufgabe',this.value)"></div><div><label>Status</label><select onchange="updateEvakEinheit('${e.id}','status',this.value)"><option value="offen" ${e.status==="offen"?"selected":""}>Offen</option><option value="in_arbeit" ${e.status==="in_arbeit"?"selected":""}>In Arbeit</option><option value="erledigt" ${e.status==="erledigt"?"selected":""}>Erledigt</option></select></div><div class="atem-row-actions"><button onclick="removeEvakEinheit('${e.id}')">Entfernen</button></div></div></div>`;
     });
     html+=`<div class="atem-row-actions"><button onclick="addEvakEinheit()">Einheit hinzufügen</button></div></div>`;
+    html += `<div class="atem-panel"><strong>Meldungsbausteine</strong>
+        <div class="links-box" style="margin-top:8px;">
+            <strong>Leitstelle / EL</strong><br>
+            <div style="white-space:pre-wrap; margin-top:6px;">${escapeHtml(buildEvakLeitstelleText(s))}</div>
+            <div class="atem-row-actions" style="margin-top:8px;"><button onclick="copyTextToClipboard(buildEvakLeitstelleText())">Text kopieren</button></div>
+        </div>
+    </div>`;
+    html += `<div class="atem-panel"><strong>Timeline</strong>
+        <div class="atem-row-actions" style="margin-top:8px;">`;
+    timelineTemplates.forEach((item)=>{
+        html += `<button onclick="addEvakTimeline('${item}')">${item}</button>`;
+    });
+    html += `</div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <input id="evakTimelineInput" type="text" placeholder="Eigener Timeline-Eintrag">
+            <button onclick="addEvakTimeline((document.getElementById('evakTimelineInput')||{}).value||'')">Eintrag hinzufügen</button>
+        </div>
+        <div class="atem-log-list" style="margin-top:8px;">`;
+    if (!s.timeline.length){
+        html += `<div class="lage-empty">Noch keine Einträge.</div>`;
+    } else {
+        s.timeline.forEach((entry)=>{
+            html += `<div class="atem-log-item"><strong>${escapeHtml(entry.time || "--:--")}</strong> · ${escapeHtml(entry.event || "")}<div class="atem-row-actions" style="margin-top:6px;"><button onclick="removeEvakTimeline('${entry.id}')">Entfernen</button></div></div>`;
+        });
+    }
+    html += `</div></div>`;
     body.innerHTML=html;
 }
 
@@ -13582,6 +15477,7 @@ const FUNKRUFNAMEN_FAHRZEUGE = [
     { id: "rk_elw", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "Fl. OH 88/11/01", hinweis: "" },
     { id: "rk_hlf", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 88/48/01", hinweis: "" },
     { id: "rk_rw", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "RW", fahrzeugtyp: "RW", funkrufname: "Fl. OH 88/52/01", hinweis: "" },
+    { id: "rk_gwl", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "GW-L", fahrzeugtyp: "GW", funkrufname: "Fl. OH 88/64/01", hinweis: "Logistik" },
     { id: "ls_tel", gemeinde: "Kreis Ostholstein", organisation: "TEL Kreis OH", fahrzeugBezeichnung: "TEL-Führung", fahrzeugtyp: "TEL", funkrufname: "Fl. OH 80/11/01", hinweis: "TEL" },
     { id: "drk_drohne", gemeinde: "Kreis Ostholstein", organisation: "DRK OH Drohnengruppe", fahrzeugBezeichnung: "Drohneneinheit", fahrzeugtyp: "Drohne", funkrufname: "DRK Drohne 1", hinweis: "" }
 ];
@@ -13605,6 +15501,7 @@ function createDefaultEinsatzKraefteState(){
             uhrzeit: getEinsatzKraefteNowTime()
         },
         selected: {},
+        customVehicles: [],
         ui: {
             view: "selection",
             search: "",
@@ -13623,6 +15520,7 @@ function normalizeEinsatzKraefteState(raw){
     next.einsatz = { ...base.einsatz, ...((raw && raw.einsatz) || {}) };
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
     next.selected = typeof next.selected === "object" && next.selected ? next.selected : {};
+    next.customVehicles = Array.isArray(next.customVehicles) ? next.customVehicles : [];
     return next;
 }
 
@@ -13664,6 +15562,21 @@ function setEinsatzKraefteSearch(value){
     renderEinsatzKraefteTool();
 }
 
+function showEinsatzKraefteHint(message){
+    const hint = document.getElementById("einsatzKraefteHint");
+    if (!hint) return;
+    hint.textContent = message || "";
+    hint.classList.remove("hidden");
+    clearTimeout(showEinsatzKraefteHint._timer);
+    showEinsatzKraefteHint._timer = setTimeout(()=>hint.classList.add("hidden"), 1400);
+}
+
+function getEinsatzKraefteVehiclePool(state){
+    const s = state || getEinsatzKraefteState();
+    const custom = Array.isArray(s.customVehicles) ? s.customVehicles : [];
+    return FUNKRUFNAMEN_FAHRZEUGE.concat(custom);
+}
+
 function toggleEinsatzKraefteExpanded(groupKey){
     patchEinsatzKraefteState((s)=>{
         s.ui.expanded[groupKey] = !s.ui.expanded[groupKey];
@@ -13672,12 +15585,20 @@ function toggleEinsatzKraefteExpanded(groupKey){
 }
 
 function toggleEinsatzKraefteSelected(id, checked){
-    patchEinsatzKraefteState((s)=>{
+    const state = patchEinsatzKraefteState((s)=>{
         if (!s.selected[id]) s.selected[id] = { selected: false, status: "Alarmiert" };
         s.selected[id].selected = !!checked;
         if (checked && !s.selected[id].status) s.selected[id].status = "Alarmiert";
     });
     renderEinsatzKraefteTool();
+    const item = getSortedFunkrufData().find((x)=>x.id === id);
+    const label = item ? `${item.fahrzeugBezeichnung} (${item.funkrufname})` : "Fahrzeug";
+    const row = state.selected && state.selected[id];
+    if (row && row.selected){
+        showEinsatzKraefteHint(`${label} wurde dem Einsatz zugeordnet.`);
+    } else {
+        showEinsatzKraefteHint(`${label} wurde aus dem Einsatz entfernt.`);
+    }
 }
 
 function setEinsatzKraefteStatus(id, status){
@@ -13708,8 +15629,84 @@ function setEinsatzKraefteGeneratorType(value){
     renderEinsatzKraefteTool();
 }
 
-function getSortedFunkrufData(){
-    return FUNKRUFNAMEN_FAHRZEUGE.slice().sort((a, b)=>{
+function openEinsatzKraefteAddVehiclePopup(){
+    const state = getEinsatzKraefteState();
+    const options = Array.from(new Set(getEinsatzKraefteVehiclePool(state).map((i)=>String(i.organisation || i.gemeinde || "").trim()).filter(Boolean)))
+        .sort((a, b)=>a.localeCompare(b, "de"));
+    const select = document.getElementById("einsatzKraefteVehicleOrganisationSelect");
+    const popup = document.getElementById("einsatzKraefteVehiclePopup");
+    if (!popup) return;
+    const ids = [
+        "einsatzKraefteVehicleOrganisationNew",
+        "einsatzKraefteVehicleGemeinde",
+        "einsatzKraefteVehicleName",
+        "einsatzKraefteVehicleType",
+        "einsatzKraefteVehicleCallsign",
+        "einsatzKraefteVehicleHint"
+    ];
+    ids.forEach((id)=>{
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+    });
+    if (select){
+        select.innerHTML = `<option value="">Organisation wählen...</option>${options.map((org)=>`<option value="${escapeHtml(org)}">${escapeHtml(org)}</option>`).join("")}<option value="__new__">+ Neue Organisation</option>`;
+        select.value = "";
+    }
+    setEinsatzKraefteVehicleOrganisationMode("");
+    popup.classList.add("show");
+    const first = document.getElementById("einsatzKraefteVehicleOrganisationSelect");
+    if (first) setTimeout(()=>first.focus(), 30);
+}
+
+function closeEinsatzKraefteAddVehiclePopup(){
+    const popup = document.getElementById("einsatzKraefteVehiclePopup");
+    if (popup) popup.classList.remove("show");
+}
+
+function setEinsatzKraefteVehicleOrganisationMode(value){
+    const wrap = document.getElementById("einsatzKraefteVehicleOrganisationNewWrap");
+    const input = document.getElementById("einsatzKraefteVehicleOrganisationNew");
+    const isNew = value === "__new__";
+    if (wrap) wrap.style.display = isNew ? "block" : "none";
+    if (!isNew && input) input.value = "";
+    if (isNew && input){
+        setTimeout(()=>input.focus(), 30);
+    }
+}
+
+function saveEinsatzKraefteVehicleFromPopup(){
+    const orgSelectValue = (document.getElementById("einsatzKraefteVehicleOrganisationSelect")?.value || "").trim();
+    const newOrganisation = (document.getElementById("einsatzKraefteVehicleOrganisationNew")?.value || "").trim();
+    const organisation = orgSelectValue === "__new__" ? newOrganisation : orgSelectValue;
+    const gemeinde = (document.getElementById("einsatzKraefteVehicleGemeinde")?.value || "").trim();
+    const fahrzeugBezeichnung = (document.getElementById("einsatzKraefteVehicleName")?.value || "").trim();
+    const fahrzeugtyp = (document.getElementById("einsatzKraefteVehicleType")?.value || "").trim();
+    const funkrufname = (document.getElementById("einsatzKraefteVehicleCallsign")?.value || "").trim();
+    const hinweis = (document.getElementById("einsatzKraefteVehicleHint")?.value || "").trim();
+    if (!organisation || !fahrzeugBezeichnung || !fahrzeugtyp || !funkrufname){
+        showEinsatzKraefteHint("Bitte Organisation, Fahrzeug, Typ und Funkrufname angeben.");
+        return;
+    }
+    const id = `custom_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    patchEinsatzKraefteState((s)=>{
+        if (!Array.isArray(s.customVehicles)) s.customVehicles = [];
+        s.customVehicles.unshift({
+            id,
+            gemeinde: gemeinde || organisation,
+            organisation,
+            fahrzeugBezeichnung,
+            fahrzeugtyp,
+            funkrufname,
+            hinweis
+        });
+    });
+    closeEinsatzKraefteAddVehiclePopup();
+    renderEinsatzKraefteTool();
+    showEinsatzKraefteHint(`${fahrzeugBezeichnung} wurde hinzugefügt.`);
+}
+
+function getSortedFunkrufData(state){
+    return getEinsatzKraefteVehiclePool(state).slice().sort((a, b)=>{
         const g = (a.organisation || a.gemeinde || "").localeCompare((b.organisation || b.gemeinde || ""), "de");
         if (g) return g;
         const t = (a.fahrzeugBezeichnung || "").localeCompare((b.fahrzeugBezeichnung || ""), "de");
@@ -13718,8 +15715,8 @@ function getSortedFunkrufData(){
     });
 }
 
-function getEinsatzKraefteFilteredData(search){
-    const list = getSortedFunkrufData();
+function getEinsatzKraefteFilteredData(search, state){
+    const list = getSortedFunkrufData(state);
     const q = (search || "").trim().toLowerCase();
     if (!q) return list;
     return list.filter((item)=>{
@@ -13730,6 +15727,36 @@ function getEinsatzKraefteFilteredData(search){
 
 function getEinsatzKraefteSelectedCount(state){
     return Object.values(state.selected || {}).filter((row)=>row && row.selected).length;
+}
+
+function getEinsatzKraefteSelectedVehicles(state){
+    const selectedIds = Object.keys((state && state.selected) || {}).filter((id)=>{
+        const row = state.selected[id];
+        return !!(row && row.selected);
+    });
+    return getSortedFunkrufData(state).filter((item)=>selectedIds.includes(item.id));
+}
+
+function getEinsatzTeilnahmeRowsHtml(){
+    if (typeof getEinsatzKraefteState !== "function" || typeof getEinsatzKraefteSelectedVehicles !== "function"){
+        return `<div class="lage-empty">Keine Daten verfügbar.</div>`;
+    }
+    const state = getEinsatzKraefteState();
+    const selectedVehicles = getEinsatzKraefteSelectedVehicles(state);
+    if (!selectedVehicles.length){
+        return `<div class="lage-empty">Noch keine Fahrzeuge als teilnehmend markiert.</div>`;
+    }
+    return selectedVehicles.map((item)=>`<div class="phonebook-item">
+        <div class="phonebook-head">${escapeHtml(item.fahrzeugBezeichnung)}</div>
+        <div class="phonebook-meta">Funkrufname: ${escapeHtml(item.funkrufname)}</div>
+        <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)}${item.hinweis ? ` · ${escapeHtml(item.hinweis)}` : ""}</div>
+    </div>`).join("");
+}
+
+function renderFunkTeilnahmeOverview(targetId = "funkTeilnahmeList"){
+    const root = document.getElementById(targetId);
+    if (!root) return;
+    root.innerHTML = getEinsatzTeilnahmeRowsHtml();
 }
 
 function copyFunkrufname(value){
@@ -13788,7 +15815,9 @@ function exportEinsatzKraeftePdf(){
 
 function renderEinsatzKraefteSelection(state){
     const search = state.ui.search || "";
-    const filtered = getEinsatzKraefteFilteredData(search);
+    const allVehicles = getSortedFunkrufData(state);
+    const filtered = getEinsatzKraefteFilteredData(search, state);
+    const selectedVehicles = getEinsatzKraefteSelectedVehicles(state);
     const groups = {};
     filtered.forEach((item)=>{
         const key = item.organisation || item.gemeinde || "Sonstige";
@@ -13798,6 +15827,7 @@ function renderEinsatzKraefteSelection(state){
     const groupHtml = Object.keys(groups).sort((a, b)=>a.localeCompare(b, "de")).map((groupKey)=>{
         const expanded = search ? true : !!state.ui.expanded[groupKey];
         const rows = groups[groupKey].map((item)=>{
+            const isSelected = !!(state.selected[item.id] && state.selected[item.id].selected);
             return `<div class="ek-item">
                 <div>
                     <div><strong>${escapeHtml(item.fahrzeugBezeichnung)}</strong> <span class="ek-item-meta">(${escapeHtml(item.fahrzeugtyp)})</span></div>
@@ -13805,6 +15835,7 @@ function renderEinsatzKraefteSelection(state){
                 </div>
                 <div><span class="ek-chip">${escapeHtml(item.funkrufname)}</span></div>
                 <div>
+                    <button class="${isSelected ? "active-yes" : ""}" onclick="toggleEinsatzKraefteSelected('${item.id}', ${isSelected ? "false" : "true"})">${isSelected ? "Teilnahme aktiv" : "Nimmt am Einsatz teil"}</button>
                     <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
                 </div>
             </div>`;
@@ -13817,8 +15848,8 @@ function renderEinsatzKraefteSelection(state){
         </div>`;
     }).join("");
 
-    const gemeinden = Array.from(new Set(FUNKRUFNAMEN_FAHRZEUGE.map((i)=>i.organisation || i.gemeinde))).sort((a, b)=>a.localeCompare(b, "de"));
-    const genMatches = FUNKRUFNAMEN_FAHRZEUGE.filter((item)=>{
+    const gemeinden = Array.from(new Set(allVehicles.map((i)=>i.organisation || i.gemeinde))).sort((a, b)=>a.localeCompare(b, "de"));
+    const genMatches = allVehicles.filter((item)=>{
         const okG = !state.ui.generatorGemeinde || (item.organisation || item.gemeinde) === state.ui.generatorGemeinde;
         const q = (state.ui.generatorType || "").trim().toLowerCase();
         const okT = !q || `${item.fahrzeugBezeichnung} ${item.fahrzeugtyp}`.toLowerCase().includes(q);
@@ -13826,20 +15857,36 @@ function renderEinsatzKraefteSelection(state){
     }).slice(0, 20);
 
     return `
+      <div id="einsatzKraefteHint" class="social-hint hidden"></div>
       <div class="atem-panel">
         <strong>Funkrufnamen & Fahrzeuge</strong>
         <div class="psu-meta" style="margin-top:8px;">Schnelles Nachschlagen und Kopieren von Funkrufnamen im Einsatz.</div>
       </div>
 
       <div class="atem-panel">
-        <strong>Smart Search</strong>
-        <input type="text" value="${escapeHtml(search)}" placeholder="Gemeinde, Fahrzeugtyp oder Funkrufname suchen..." oninput="setEinsatzKraefteSearch(this.value)" style="margin-top:8px;">
-        <div class="psu-meta" style="margin-top:6px;">Treffer: ${filtered.length}</div>
+        <strong>Fahrzeugübersicht nach Gemeinde</strong>
+        <div style="margin-top:8px;">${groupHtml || `<div class="lage-empty">Keine Ergebnisse.</div>`}</div>
       </div>
 
       <div class="atem-panel">
-        <strong>Fahrzeugübersicht nach Gemeinde</strong>
-        <div style="margin-top:8px;">${groupHtml || `<div class="lage-empty">Keine Ergebnisse.</div>`}</div>
+        <strong>Nimmt am Einsatz teil</strong>
+        <div class="psu-meta" style="margin-top:8px;">Aktuell markierte Fahrzeuge: ${selectedVehicles.length}</div>
+        <div class="phonebook-list" style="margin-top:8px;">
+            ${selectedVehicles.length ? selectedVehicles.map((item)=>`<div class="phonebook-item">
+                <div class="phonebook-head">${escapeHtml(item.fahrzeugBezeichnung)}</div>
+                <div class="phonebook-meta">Funkrufname: ${escapeHtml(item.funkrufname)}</div>
+                <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)}${item.hinweis ? ` · ${escapeHtml(item.hinweis)}` : ""}</div>
+                <div class="phonebook-actions">
+                    <button class="phonebook-fav-btn" onclick="toggleEinsatzKraefteSelected('${item.id}', false)">Entfernen</button>
+                </div>
+            </div>`).join("") : `<div class="lage-empty">Noch keine Fahrzeuge als teilnehmend markiert.</div>`}
+        </div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>Smart Search</strong>
+        <input type="text" value="${escapeHtml(search)}" placeholder="Gemeinde, Fahrzeugtyp oder Funkrufname suchen..." oninput="setEinsatzKraefteSearch(this.value)" style="margin-top:8px;">
+        <div class="psu-meta" style="margin-top:6px;">Treffer: ${filtered.length}</div>
       </div>
 
       <div class="atem-panel">
@@ -13861,6 +15908,14 @@ function renderEinsatzKraefteSelection(state){
                     <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
                 </div>
             </div>`).join("") : `<div class="lage-empty">Keine Ergebnisse.</div>`}
+        </div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>Eigene Fahrzeuge</strong>
+        <div class="psu-meta" style="margin-top:8px;">Hier kannst du weitere Fahrzeuge ergänzen.</div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="openEinsatzKraefteAddVehiclePopup()">Neues Fahrzeug hinzufügen</button>
         </div>
       </div>
     `;
@@ -15872,6 +17927,16 @@ const data = {
         ]
     },
     {
+        name:"DrohnenWetter-Check",
+        content:`
+        <div class="atem-row-actions">
+            <button onclick="openDroneWeatherOverlay()">🛸 DrohnenWetter-Check öffnen</button>
+            <button onclick="openWeatherOverlay()">🌦️ EinsatzWetter öffnen</button>
+        </div>
+        <p style="margin-top:10px;">Schnellprüfung der Wetterlage für den sicheren Drohneneinsatz mit klarer OK/Vorsicht/Nicht empfohlen Anzeige.</p>
+        `
+    },
+    {
         name:"Taktische Einsatzmuster",
         taktischeMuster:{
             title:"Taktische Einsatzmuster",
@@ -15990,6 +18055,7 @@ function footerHtml(){
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
             ${creatorLine}
         </div>
+        <div class="footer-status" data-app-footer-status></div>
     </div>`;
 }
 
@@ -16005,13 +18071,42 @@ function showCategory(category){
     container.classList.remove("hidden");
 
     let content = `<button onclick="goHome()">⬅ Zurück</button>`;
+    const withSubSearch = category === "brand" || category === "vu";
+    if (withSubSearch){
+        const placeholder = category === "brand"
+            ? "🔍 Unterpunkt in Brand suchen..."
+            : "🔍 Unterpunkt in Technischer Hilfeleistung suchen...";
+        content += `<input id="categorySearchInput" type="text" class="searchbar" placeholder="${placeholder}" oninput="filterCurrentCategoryList(this.value)">`;
+    }
 
+    content += `<div id="categoryListWrap">`;
     data[category].forEach((einsatz,index)=>{
-        content += `<div class="card" onclick="showDetail(${index})">${einsatz.name}</div>`;
+        content += `<div class="card category-list-item" onclick="showDetail(${index})">${einsatz.name}</div>`;
     });
+    content += `</div>`;
+    if (withSubSearch){
+        content += `<div id="categorySearchEmpty" class="lage-empty hidden">Keine passenden Unterpunkte gefunden.</div>`;
+    }
 
     content += footerHtml();
     container.innerHTML = content;
+    renderFooterStatusLines();
+}
+
+function filterCurrentCategoryList(text){
+    const query = String(text || "").trim().toLowerCase();
+    const items = document.querySelectorAll("#category .category-list-item");
+    let visibleCount = 0;
+    items.forEach((item)=>{
+        const label = String(item.textContent || "").toLowerCase();
+        const match = !query || label.includes(query);
+        item.style.display = match ? "" : "none";
+        if (match) visibleCount += 1;
+    });
+    const empty = document.getElementById("categorySearchEmpty");
+    if (empty){
+        empty.classList.toggle("hidden", visibleCount > 0);
+    }
 }
 
 function renderChecklistBlock(title, items, storagePrefix){
@@ -16272,6 +18367,7 @@ function showDetail(index){
     content += footerHtml();
 
     document.getElementById("category").innerHTML = content;
+    renderFooterStatusLines();
     if (einsatz.phonebook){
         renderImportantPhonebook("");
     }
@@ -16301,6 +18397,8 @@ function goHome(){
     document.getElementById("category").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
     renderHomeFavorites();
+    renderHomeWeatherBanner();
+    renderFooterStatusLines();
     const resultsDiv = document.getElementById("searchResults");
     if (resultsDiv) resultsDiv.innerHTML = "";
 }
@@ -16341,6 +18439,14 @@ function searchEinsatz(text){
     const atemNeedle = "atemschutzüberwachung atemschutz ueberwachung asue";
     if (text.length > 0 && atemNeedle.includes(text)){
         result += `<div class="card" onclick="openAtemOverlay()">🫁 Atemschutzüberwachung</div>`;
+    }
+    const wetterNeedle = "wetter einsatzwetter wetterlage";
+    if (text.length > 0 && wetterNeedle.includes(text)){
+        result += `<div class="card" onclick="openWeatherOverlay()">🌦️ EinsatzWetter</div>`;
+    }
+    const drohnenWetterNeedle = "drohnenwetter drohnenwetter-check drohne wetter";
+    if (text.length > 0 && drohnenWetterNeedle.includes(text)){
+        result += `<div class="card" onclick="openDroneWeatherOverlay()">🛸 DrohnenWetter-Check</div>`;
     }
     const gefahrgutNeedle = "gefahrgut schnellhilfe gefahrgut";
     if (text.length > 0 && gefahrgutNeedle.includes(text)){
@@ -16398,6 +18504,11 @@ window.addEventListener("load", ()=>{
 setTimeout(hideAppSplash, 1500);
 updateScrollTopButton();
 renderHomeFavorites();
+renderHomeWeatherBanner();
+renderFooterStatusLines();
+refreshWeatherAndRender(false).catch(()=>{});
+window.addEventListener("online", ()=>{ refreshWeatherAndRender(false).catch(()=>{}); renderFooterStatusLines(); });
+window.addEventListener("offline", ()=>{ renderHomeWeatherBanner(); renderFooterStatusLines(); });
 
 /* GPS */
 function getLocation(){
