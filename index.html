@@ -1898,6 +1898,35 @@ button:active {
     padding: 0 10px 10px;
 }
 
+.lage-checklist-fold {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(18, 52, 79, 0.03);
+    padding: 8px 10px;
+}
+
+.lage-checklist-fold > summary {
+    cursor: pointer;
+    font-weight: 800;
+    color: var(--secondary);
+    list-style: none;
+}
+
+.lage-checklist-fold > summary::-webkit-details-marker {
+    display: none;
+}
+
+.lage-checklist-fold > summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.12s ease;
+}
+
+.lage-checklist-fold[open] > summary::before {
+    transform: rotate(90deg);
+}
+
 .lage-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3686,6 +3715,42 @@ a {
     background: var(--border);
 }
 
+.home-fold {
+    margin: 12px 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(18, 52, 79, 0.04);
+    overflow: hidden;
+}
+
+.home-fold > summary {
+    cursor: pointer;
+    padding: 12px 14px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--secondary);
+    list-style: none;
+}
+
+.home-fold > summary::-webkit-details-marker {
+    display: none;
+}
+
+.home-fold > summary::before {
+    content: "▸";
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.12s ease;
+}
+
+.home-fold[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+.home-fold-content {
+    padding: 0 12px 12px;
+}
+
 .home-tools-shell {
     display: grid;
     gap: 10px;
@@ -4146,7 +4211,7 @@ iframe {
                 <button onclick="openEinsatzOverlay()">📋 Einsatzhistorie</button>
                 <button onclick="openSocialOverlay()">📝 Social-Media Beitrag</button>
                 <button onclick="openPresseOverlay()">📰 Pressezentrale</button>
-                <button onclick="getLocation()">📍 GPS Koordinaten anzeigen</button>
+                <button onclick="openGpsTool()">📍 Standort, Kompass &amp; QR</button>
             </div>
         </div>
         <div class="home-tool-group">
@@ -4161,14 +4226,18 @@ iframe {
     <input id="ff360BackupFileInput" class="hidden" type="file" accept=".json,application/json" onchange="handleFF360BackupImport(event)">
 
     <div class="card" onclick="openCategory('info')">📞 Informationen</div>
-    <div class="home-section-title">Einsatzleiter-Taschenbuch</div>
-    <div class="home-divider"></div>
-    <div id="homeFavorites"></div>
-    <div class="home-divider"></div>
-    <div class="card" onclick="openCategory('brand')">🔥 Brand</div>
-    <div class="card" onclick="openCategory('vu')">🔧 Technische Hilfeleistung</div>
-    <div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer</div>
-    <div class="card" onclick="openCategory('drohne')">🚁 Drohne</div>
+    <details id="homeTaschenbuchFold" class="home-fold">
+        <summary>Einsatzleiter-Taschenbuch</summary>
+        <div class="home-fold-content">
+            <div class="home-divider"></div>
+            <div id="homeFavorites"></div>
+            <div class="home-divider"></div>
+            <div class="card" onclick="openCategory('brand')">🔥 Brand</div>
+            <div class="card" onclick="openCategory('vu')">🔧 Technische Hilfeleistung</div>
+            <div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer</div>
+            <div class="card" onclick="openCategory('drohne')">🚁 Drohne</div>
+        </div>
+    </details>
     <div class="home-tool-group">
         <div class="home-subtitle">Backup</div>
         <div class="home-tools-grid">
@@ -4786,7 +4855,12 @@ iframe {
                         <label for="lageAlarmstichwort">Alarmstichwort</label>
                         <select id="lageAlarmstichwort" onchange="updateLageAlarmstichwort(this.value)"></select>
                     </div>
+                    <div style="flex:1; min-width: 260px;">
+                        <label for="lageChecklistSelect">Checkliste (optional)</label>
+                        <select id="lageChecklistSelect" onchange="updateLageChecklistSelection(this.value)"></select>
+                    </div>
                 </div>
+                <div id="lageChecklistPanel" class="hidden" style="margin-top:10px;"></div>
             </div>
 
             <div class="lage-section">
@@ -7908,6 +7982,201 @@ document.addEventListener("keydown", (event)=>{
     trapFocusInStructureOverlay(event);
 });
 
+const LAGE_CHECKLIST_CATEGORY_LABELS = {
+    brand: "Brand",
+    vu: "Technische Hilfeleistung",
+    gefahrgut: "Gefahrgut",
+    drohne: "Drohne",
+    fuehrung: "Einsatz",
+    lage_doku: "Lage und Doku",
+    support: "Unterstützung",
+    info: "Infos",
+    kraefte: "Kräfte",
+    trainer: "Trainer",
+    grundlagen: "Grundlagen"
+};
+
+function getLageChecklistCategoryLabel(category){
+    if (LAGE_CHECKLIST_CATEGORY_LABELS[category]){
+        return LAGE_CHECKLIST_CATEGORY_LABELS[category];
+    }
+    return String(category || "Sonstiges");
+}
+
+function normalizeChecklistTextList(rawList){
+    if (!Array.isArray(rawList)) return [];
+    return rawList
+        .map((item)=>String(item || "").trim())
+        .filter(Boolean);
+}
+
+function extractLageInfoBlocks(content){
+    if (typeof content !== "string" || !content.trim()) return [];
+    if (typeof DOMParser === "undefined"){
+        return [];
+    }
+    try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(`<div>${content}</div>`, "text/html");
+        const boxes = Array.from(doc.querySelectorAll(".priority-box, .links-box"));
+        return boxes
+            .map((box)=>String(box.textContent || "").replace(/\s+/g, " ").trim())
+            .filter(Boolean);
+    } catch {
+        return [];
+    }
+}
+
+function buildLageChecklistCatalog(){
+    const catalog = [];
+    Object.keys(data || {}).forEach((category)=>{
+        const entries = Array.isArray(data[category]) ? data[category] : [];
+        entries.forEach((einsatz, index)=>{
+            const erkundung = normalizeChecklistTextList(einsatz && einsatz.erkundungChecklist);
+            const massnahmen = normalizeChecklistTextList(einsatz && einsatz.massnahmenChecklist);
+            const lagebewertung = normalizeChecklistTextList(einsatz && einsatz.lageChecklist);
+            const infoBlocks = extractLageInfoBlocks(einsatz && einsatz.content);
+            const hasAny = erkundung.length || massnahmen.length || lagebewertung.length || infoBlocks.length;
+            if (!hasAny) return;
+            const einsatzName = String((einsatz && einsatz.name) || `Eintrag ${index + 1}`);
+            const categoryLabel = getLageChecklistCategoryLabel(category);
+            const sections = [];
+            if (erkundung.length){
+                sections.push({ key: "erkundung", title: "Erkundung", items: erkundung });
+            }
+            if (massnahmen.length){
+                sections.push({ key: "massnahmen", title: "Einsatzmaßnahmen", items: massnahmen });
+            }
+            if (lagebewertung.length){
+                sections.push({ key: "lage", title: "Lagebewertung", items: lagebewertung });
+            }
+            catalog.push({
+                id: `${category}:${index}:lage`,
+                category,
+                categoryLabel,
+                einsatzName,
+                title: `${categoryLabel} · ${einsatzName}`,
+                sections,
+                infoBlocks
+            });
+        });
+    });
+    catalog.sort((a, b)=>{
+        const categorySort = a.categoryLabel.localeCompare(b.categoryLabel, "de");
+        if (categorySort !== 0) return categorySort;
+        return a.einsatzName.localeCompare(b.einsatzName, "de");
+    });
+    return catalog;
+}
+
+function renderLageChecklistSelect(selectId, selectedValue){
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const selectedId = (selectedValue || "none").trim() || "none";
+    const catalog = buildLageChecklistCatalog();
+    const groups = {};
+
+    catalog.forEach((entry)=>{
+        if (!groups[entry.categoryLabel]){
+            groups[entry.categoryLabel] = [];
+        }
+        groups[entry.categoryLabel].push(entry);
+    });
+
+    let html = `<option value="none">Keine Checkliste</option>`;
+    Object.keys(groups).sort((a, b)=>a.localeCompare(b, "de")).forEach((groupLabel)=>{
+        html += `<optgroup label="${escapeHtml(groupLabel)}">`;
+        groups[groupLabel].forEach((entry)=>{
+            html += `<option value="${escapeHtml(entry.id)}">${escapeHtml(entry.einsatzName)}</option>`;
+        });
+        html += `</optgroup>`;
+    });
+
+    if (selectedId !== "none" && !catalog.some((entry)=>entry.id === selectedId)){
+        html += `<option value="${escapeHtml(selectedId)}">Ausgewählte Checkliste nicht mehr verfügbar</option>`;
+    }
+
+    select.innerHTML = html;
+    select.value = selectedId;
+}
+
+function renderLageChecklistPanel(state){
+    const panel = document.getElementById("lageChecklistPanel");
+    if (!panel) return;
+
+    const infoBlocks = Array.isArray(state.checklistInfoBlocks) ? state.checklistInfoBlocks : [];
+    const sections = Array.isArray(state.checklistSections) ? state.checklistSections : [];
+    const hasSectionItems = sections.some((section)=>Array.isArray(section.items) && section.items.length);
+    if (!hasSectionItems && !infoBlocks.length){
+        panel.classList.add("hidden");
+        panel.innerHTML = "";
+        return;
+    }
+
+    const totalCount = sections.reduce((sum, section)=>sum + (Array.isArray(section.items) ? section.items.length : 0), 0);
+    const doneCount = sections.reduce((sum, section)=>sum + (Array.isArray(section.items) ? section.items.filter((item)=>item && item.done).length : 0), 0);
+    let html = `<details class="lage-checklist-fold" open>`;
+    html += `<summary>Aktive Checkliste (${doneCount}/${totalCount})</summary>`;
+    html += `<div class="links-box"><strong>${escapeHtml(state.checklistTitle || "Checkliste")}</strong><br>${doneCount}/${totalCount} erledigt</div>`;
+
+    const renderSection = (section, sectionIndex)=>{
+        if (!section || !Array.isArray(section.items) || !section.items.length) return "";
+        let sectionHtml = `<div class="section-title">${escapeHtml(section.title || "Checkliste")}</div>`;
+        section.items.forEach((item, itemIndex)=>{
+            const text = String((item && item.text) || `Punkt ${itemIndex + 1}`);
+            const checked = !!(item && item.done);
+            sectionHtml += `
+            <label class="checklist-item">
+                <input type="checkbox" ${checked ? "checked" : ""} onchange="toggleLageChecklistItem(${sectionIndex}, ${itemIndex}, this.checked)">
+                <span>${escapeHtml(text)}</span>
+            </label>`;
+        });
+        return sectionHtml;
+    };
+
+    const erkundungIndex = sections.findIndex((section)=>String((section && section.key) || "").toLowerCase() === "erkundung");
+    if (erkundungIndex >= 0){
+        html += renderSection(sections[erkundungIndex], erkundungIndex);
+    }
+
+    infoBlocks.forEach((infoText)=>{
+        html += `
+            <div class="links-box">${escapeHtml(infoText)}</div>`;
+    });
+
+    sections.forEach((section, sectionIndex)=>{
+        if (sectionIndex === erkundungIndex) return;
+        html += renderSection(section, sectionIndex);
+    });
+
+    html += `</details>`;
+    panel.innerHTML = html;
+    panel.classList.remove("hidden");
+}
+
+function getDefaultLageChecklistRuntimeState(){
+    return {
+        selectionId: "",
+        title: "",
+        sections: [],
+        infoBlocks: []
+    };
+}
+
+let lageChecklistRuntimeState = getDefaultLageChecklistRuntimeState();
+
+function resetLageChecklistRuntimeState(){
+    lageChecklistRuntimeState = getDefaultLageChecklistRuntimeState();
+}
+
+function getLageChecklistRuntimeState(){
+    if (!lageChecklistRuntimeState || typeof lageChecklistRuntimeState !== "object"){
+        resetLageChecklistRuntimeState();
+    }
+    return lageChecklistRuntimeState;
+}
+
 function getDefaultLageState(){
     return {
         startedAt: null,
@@ -7990,7 +8259,23 @@ function getLageState(){
 }
 
 function saveLageState(state){
-    appStorageSetItem(LAGE_STORAGE_KEY, JSON.stringify(state));
+    const snapshot = (state && typeof state === "object") ? { ...state } : getDefaultLageState();
+    delete snapshot.checklistSelectionId;
+    delete snapshot.checklistTitle;
+    delete snapshot.checklistSections;
+    delete snapshot.checklistInfoBlocks;
+    delete snapshot.checklistItems;
+    appStorageSetItem(LAGE_STORAGE_KEY, JSON.stringify(snapshot));
+}
+
+function getLageStateWithoutChecklistFields(state){
+    const snapshot = (state && typeof state === "object") ? { ...state } : getDefaultLageState();
+    delete snapshot.checklistSelectionId;
+    delete snapshot.checklistTitle;
+    delete snapshot.checklistSections;
+    delete snapshot.checklistInfoBlocks;
+    delete snapshot.checklistItems;
+    return snapshot;
 }
 
 function getActiveSectionsCountForLage(){
@@ -8186,9 +8471,11 @@ function getToggleSymbol(value){
 
 function renderLageDashboard(){
     const state = getLageState();
+    const checklistRuntime = getLageChecklistRuntimeState();
     syncLageDuration(state);
     saveLageState(state);
     renderAlarmstichwortSelect("lageAlarmstichwort", state.alarmstichwort || "FEU BMA");
+    renderLageChecklistSelect("lageChecklistSelect", checklistRuntime.selectionId || "none");
     const sectionsAuto = getActiveSectionsCountForLage();
     const sectionsValue = sectionsAuto !== null ? sectionsAuto : (Number(state.counters.sectionsManual) || 0);
 
@@ -8260,6 +8547,11 @@ function renderLageDashboard(){
     renderLagePriority(state.priority || "yellow");
     renderLageLog(state.log || []);
     renderLagePhotos(state.photos || []);
+    renderLageChecklistPanel({
+        checklistTitle: checklistRuntime.title,
+        checklistSections: checklistRuntime.sections,
+        checklistInfoBlocks: checklistRuntime.infoBlocks
+    });
 
     const logTimeInput = document.getElementById("lageLogTime");
     if (logTimeInput && !logTimeInput.value){
@@ -8353,6 +8645,50 @@ function updateLageAlarmstichwort(value){
     renderLageDashboard();
 }
 
+function updateLageChecklistSelection(value){
+    const selectedId = (value || "none").trim() || "none";
+    const catalog = buildLageChecklistCatalog();
+    const selected = catalog.find((entry)=>entry.id === selectedId);
+    const runtime = getLageChecklistRuntimeState();
+    if (selectedId === "none" || !selected){
+        resetLageChecklistRuntimeState();
+        renderLageDashboard();
+        return;
+    }
+    if (runtime.selectionId === selected.id && Array.isArray(runtime.sections) && runtime.sections.length){
+        renderLageDashboard();
+        return;
+    }
+    runtime.selectionId = selected.id;
+    runtime.title = selected.title;
+    runtime.sections = (Array.isArray(selected.sections) ? selected.sections : []).map((section, sectionIndex)=>({
+        key: String((section && section.key) || `section_${sectionIndex}`),
+        title: String((section && section.title) || `Checkliste ${sectionIndex + 1}`),
+        items: (Array.isArray(section && section.items) ? section.items : [])
+            .map((text)=>String(text || "").trim())
+            .filter(Boolean)
+            .map((text)=>({ text, done: false }))
+    })).filter((section)=>section.items.length);
+    runtime.infoBlocks = (Array.isArray(selected.infoBlocks) ? selected.infoBlocks : [])
+        .map((block)=>String(block || "").trim())
+        .filter(Boolean);
+    renderLageDashboard();
+}
+
+function toggleLageChecklistItem(sectionIndex, itemIndex, checked){
+    const runtime = getLageChecklistRuntimeState();
+    const sections = Array.isArray(runtime.sections) ? runtime.sections : [];
+    if (sectionIndex < 0 || sectionIndex >= sections.length){
+        return;
+    }
+    const items = Array.isArray(sections[sectionIndex].items) ? sections[sectionIndex].items : [];
+    if (itemIndex < 0 || itemIndex >= items.length){
+        return;
+    }
+    items[itemIndex].done = !!checked;
+    renderLageDashboard();
+}
+
 function editLageSummary(){
     const area = document.getElementById("lageSummaryEdit");
     if (!area) return;
@@ -8378,6 +8714,7 @@ function toggleLageIncident(){
             s.endedAt = Date.now();
             s.lastTickAt = null;
         });
+        resetLageChecklistRuntimeState();
         addLageLogInternal("Einsatz beendet");
         renderLageDashboard();
         return;
@@ -8753,10 +9090,11 @@ function formatReportTs(value){
 function getIncidentReportSnapshot(){
     const lage = getLageState();
     syncLageDuration(lage);
+    const reportLage = getLageStateWithoutChecklistFields(lage);
     return {
         generatedAt: new Date().toISOString(),
         mode: isTrainingMode() ? "ÜBUNG" : "REAL",
-        lage,
+        lage: reportLage,
         sections: typeof getSections === "function" ? getSections() : [],
         nachforderungen: typeof getNachforderungen === "function" ? getNachforderungen() : [],
         social: typeof getSocialState === "function" ? getSocialState() : null,
@@ -9013,11 +9351,14 @@ function saveEinsatzArchive(items){
 }
 
 function archiveCurrentIncident(){
+    const lageSnapshot = getLageStateWithoutChecklistFields(
+        typeof getLageState === "function" ? getLageState() : null
+    );
     const snapshot = {
         id: `arch_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
         archivedAt: new Date().toISOString(),
         mode: isTrainingMode() ? "UEBUNG" : "REAL",
-        lage: typeof getLageState === "function" ? getLageState() : null,
+        lage: lageSnapshot,
         sections: typeof getSections === "function" ? getSections() : [],
         nachforderungen: typeof getNachforderungen === "function" ? getNachforderungen() : [],
         funk: typeof getFunkState === "function" ? getFunkState() : null,
@@ -9049,6 +9390,7 @@ function archiveCurrentIncident(){
 
 function resetLageDashboard(){
     if (!confirm("Einsatzlage wirklich zurücksetzen?")) return;
+    resetLageChecklistRuntimeState();
     saveLageState(getDefaultLageState());
     // Legacy-Key entfernen, damit kein Altbestand über den Fallback erneut eingespielt wird.
     localStorage.removeItem(LAGE_STORAGE_KEY);
@@ -20573,16 +20915,18 @@ const GPS_TOOL_STORAGE_KEY = "gps_tool_v1";
 let gpsMap = null;
 let gpsCurrentMarker = null;
 let gpsTargetMarker = null;
-let gpsWatchId = null;
 let gpsHeadingDeg = null;
 let gpsLastFocus = null;
 let gpsCompassListenerAttached = false;
+let gpsCompassEnabled = false;
 
 function createDefaultGpsState(){
     return {
         current: null,
         target: null,
+        savedPoints: [],
         ui: {
+            saveName: "",
             useAppleQr: true,
             useGoogleQr: true
         }
@@ -20595,12 +20939,14 @@ function normalizeGpsPoint(raw){
     const lon = Number(point.lon);
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
     return {
+        id: String(point.id || ""),
         lat,
         lon,
         accuracy: Number(point.accuracy),
         altitude: Number(point.altitude),
         speed: Number(point.speed),
         heading: Number(point.heading),
+        name: String(point.name || point.label || ""),
         label: String(point.label || ""),
         updatedAt: String(point.updatedAt || "")
     };
@@ -20611,6 +20957,12 @@ function normalizeGpsState(raw){
     const next = { ...base, ...(raw || {}) };
     next.current = normalizeGpsPoint(next.current);
     next.target = normalizeGpsPoint(next.target);
+    next.savedPoints = Array.isArray(next.savedPoints)
+        ? next.savedPoints.map((p)=>normalizeGpsPoint(p)).filter(Boolean).map((p, idx)=>({
+            ...p,
+            id: String(p.id || `gps_${idx}_${Date.now().toString(36)}`)
+        }))
+        : [];
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
     return next;
 }
@@ -20656,6 +21008,29 @@ function formatHeading(deg){
     const dirs = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
     const idx = Math.round((((n % 360) + 360) % 360) / 45) % 8;
     return `${Math.round(n)}° ${dirs[idx]}`;
+}
+
+function getScreenOrientationAngle(){
+    if (typeof screen !== "undefined" && screen.orientation && Number.isFinite(screen.orientation.angle)){
+        return Number(screen.orientation.angle);
+    }
+    if (typeof window.orientation === "number"){
+        return Number(window.orientation);
+    }
+    return 0;
+}
+
+function normalizeHeadingFromEvent(event){
+    if (!event) return null;
+    let heading = null;
+    if (Number.isFinite(event.webkitCompassHeading)){
+        heading = Number(event.webkitCompassHeading);
+    } else if (Number.isFinite(event.alpha)){
+        heading = 360 - Number(event.alpha);
+    }
+    if (!Number.isFinite(heading)) return null;
+    heading = (heading + getScreenOrientationAngle()) % 360;
+    return ((heading % 360) + 360) % 360;
 }
 
 function toDms(value, positive, negative){
@@ -20722,6 +21097,52 @@ function setGpsTarget(lat, lon, label){
 
 function clearGpsTarget(){
     patchGpsState((s)=>{ s.target = null; });
+    renderGpsTool();
+}
+
+function updateGpsSaveName(value){
+    patchGpsState((s)=>{ s.ui.saveName = String(value || ""); });
+}
+
+function saveGpsNamedPoint(){
+    const state = getGpsState();
+    const point = state.target || state.current;
+    if (!point || !Number.isFinite(point.lat) || !Number.isFinite(point.lon)){
+        alert("Kein Punkt vorhanden.");
+        return;
+    }
+    const name = String((state.ui && state.ui.saveName) || "").trim();
+    if (!name){
+        alert("Bitte zuerst einen Namen eingeben.");
+        return;
+    }
+    patchGpsState((s)=>{
+        s.savedPoints = Array.isArray(s.savedPoints) ? s.savedPoints : [];
+        s.savedPoints.unshift({
+            id: `gps_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+            name,
+            lat: Number(point.lat),
+            lon: Number(point.lon),
+            label: name,
+            updatedAt: new Date().toISOString()
+        });
+        s.savedPoints = s.savedPoints.slice(0, 80);
+        s.ui.saveName = "";
+    });
+    renderGpsTool();
+}
+
+function useSavedGpsPoint(id){
+    const state = getGpsState();
+    const point = (state.savedPoints || []).find((p)=>String(p.id) === String(id));
+    if (!point) return;
+    setGpsTarget(point.lat, point.lon, point.name || point.label || "Punkt");
+}
+
+function deleteSavedGpsPoint(id){
+    patchGpsState((s)=>{
+        s.savedPoints = (s.savedPoints || []).filter((p)=>String(p.id) !== String(id));
+    });
     renderGpsTool();
 }
 
@@ -20803,7 +21224,10 @@ function renderGpsTool(){
     const target = state.target;
     const point = target || current;
     const links = point ? getMapLinks(point.lat, point.lon) : { google: "", apple: "" };
-    const heading = Number.isFinite(gpsHeadingDeg) ? gpsHeadingDeg : (current ? Number(current.heading) : null);
+    const savedPoints = Array.isArray(state.savedPoints) ? state.savedPoints : [];
+    const heading = gpsCompassEnabled
+        ? (Number.isFinite(gpsHeadingDeg) ? gpsHeadingDeg : null)
+        : (current ? Number(current.heading) : null);
     const dist = (current && target) ? hydDistanceMeters(current.lat, current.lon, target.lat, target.lon) : null;
 
     body.innerHTML = `
@@ -20813,21 +21237,22 @@ function renderGpsTool(){
             <div><label>Breite / Länge</label><div class="weather-value">${current ? `${formatGpsCoord(current.lat)}, ${formatGpsCoord(current.lon)}` : "-"}</div></div>
             <div><label>DMS</label><div class="weather-value">${current ? `${toDms(current.lat, "N", "S")} · ${toDms(current.lon, "E", "W")}` : "-"}</div></div>
             <div><label>Genauigkeit</label><div class="weather-value">${current && Number.isFinite(current.accuracy) ? `${Math.round(current.accuracy)} m` : "-"}</div></div>
+            <div><label>Höhe</label><div class="weather-value">${current && Number.isFinite(current.altitude) ? `${Math.round(current.altitude)} m ü. NN` : "-"}</div></div>
+            <div><label>Geschwindigkeit</label><div class="weather-value">${current && Number.isFinite(current.speed) ? `${(Number(current.speed) * 3.6).toFixed(1)} km/h` : "-"}</div></div>
             <div><label>3-Wort-Adresse (intern)</label><div class="weather-value">${current ? escapeHtml(getInternalThreeWordAddress(current.lat, current.lon)) : "-"}</div></div>
             <div><label>Zuletzt aktualisiert</label><div class="weather-value">${current ? formatGpsTime(current.updatedAt) : "-"}</div></div>
             <div style="display:flex;align-items:center;gap:10px;">
-                <div class="gps-compass"><div class="gps-compass-arrow" style="transform: rotate(${Number.isFinite(heading) ? heading : 0}deg);"></div></div>
+                <div class="gps-compass"><div id="gpsCompassArrow" class="gps-compass-arrow" style="transform: rotate(${Number.isFinite(heading) ? heading : 0}deg);"></div></div>
                 <div>
                     <label>Kompass</label>
-                    <div class="weather-value">${formatHeading(heading)}</div>
+                    <div id="gpsCompassLabel" class="weather-value">${formatHeading(heading)}</div>
                 </div>
             </div>
         </div>
         <div class="atem-row-actions" style="margin-top:8px;">
             <button onclick="requestSingleGpsPosition()">Standort aktualisieren</button>
-            <button onclick="startGpsWatch()">Live starten</button>
-            <button onclick="stopGpsWatch()">Live stoppen</button>
             <button onclick="requestGpsCompass()">Kompass aktivieren</button>
+            <button onclick="disableGpsCompass()">Kompass deaktivieren</button>
             <button onclick="if(getGpsState().current){setGpsTarget(getGpsState().current.lat,getGpsState().current.lon,'Aktuelle Position')}">Punkt = aktueller Standort</button>
         </div>
     </div>
@@ -20835,8 +21260,12 @@ function renderGpsTool(){
     <div class="atem-panel">
         <strong>Karte &amp; Zielpunkt</strong>
         <div class="psu-meta" style="margin-top:6px;">Punkt per Klick in die Karte setzen.${dist !== null ? ` Distanz zum Punkt: ${formatHydDist(dist)}.` : ""}</div>
+        <div class="atem-grid" style="margin-top:8px;">
+            <div class="atem-col-full"><label>Punktname</label><input type="text" value="${escapeHtml((state.ui && state.ui.saveName) || "")}" placeholder="z. B. Einsatzstelle Nord" oninput="updateGpsSaveName(this.value)"></div>
+        </div>
         <div class="atem-row-actions" style="margin-top:8px;">
             <button onclick="clearGpsTarget()">Punkt löschen</button>
+            <button onclick="saveGpsNamedPoint()">Punkt speichern</button>
             <button onclick="openGpsExternal('google')">In Google Maps öffnen</button>
             <button onclick="openGpsExternal('apple')">In Apple Maps öffnen</button>
         </div>
@@ -20864,9 +21293,38 @@ function renderGpsTool(){
             </div>
         </div>` : `<div class="lage-empty" style="margin-top:8px;">Noch keine Position verfügbar.</div>`}
     </div>
+    <div class="atem-panel">
+        <strong>Gespeicherte Punkte</strong>
+        ${savedPoints.length ? `<div class="hydrant-list" style="margin-top:8px;">
+            ${savedPoints.map((p)=>`<div class="hydrant-item">
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+                    <strong>${escapeHtml(p.name || p.label || "Punkt")}</strong>
+                    <div style="display:flex;gap:6px;">
+                        <button style="width:auto;margin:0;" onclick="useSavedGpsPoint('${String(p.id).replace(/'/g, "\\'")}')">Übernehmen</button>
+                        <button style="width:auto;margin:0;" onclick="deleteSavedGpsPoint('${String(p.id).replace(/'/g, "\\'")}')">Löschen</button>
+                    </div>
+                </div>
+                <div class="psu-meta">${formatGpsCoord(p.lat)}, ${formatGpsCoord(p.lon)} · ${formatGpsTime(p.updatedAt)}</div>
+            </div>`).join("")}
+        </div>` : `<div class="lage-empty" style="margin-top:8px;">Noch keine Punkte gespeichert.</div>`}
+    </div>
     `;
 
     renderGpsLeafletMap(state);
+}
+
+function renderGpsCompassOnly(){
+    const heading = gpsCompassEnabled
+        ? (Number.isFinite(gpsHeadingDeg) ? gpsHeadingDeg : null)
+        : (getGpsState().current ? Number(getGpsState().current.heading) : null);
+    const arrow = document.getElementById("gpsCompassArrow");
+    const label = document.getElementById("gpsCompassLabel");
+    if (arrow){
+        arrow.style.transform = `rotate(${Number.isFinite(heading) ? heading : 0}deg)`;
+    }
+    if (label){
+        label.textContent = formatHeading(heading);
+    }
 }
 
 function onGpsPositionUpdate(position){
@@ -20899,35 +21357,12 @@ function requestSingleGpsPosition(){
     );
 }
 
-function startGpsWatch(){
-    if (!navigator.geolocation){
-        alert("GPS nicht verfügbar");
-        return;
-    }
-    if (gpsWatchId !== null) return;
-    gpsWatchId = navigator.geolocation.watchPosition(
-        onGpsPositionUpdate,
-        ()=>{},
-        { enableHighAccuracy: true, maximumAge: 5000, timeout: 12000 }
-    );
-}
-
-function stopGpsWatch(){
-    if (gpsWatchId === null || !navigator.geolocation) return;
-    navigator.geolocation.clearWatch(gpsWatchId);
-    gpsWatchId = null;
-}
-
 function onDeviceOrientation(event){
-    let heading = null;
-    if (Number.isFinite(event.webkitCompassHeading)){
-        heading = Number(event.webkitCompassHeading);
-    } else if (Number.isFinite(event.alpha)){
-        heading = 360 - Number(event.alpha);
-    }
+    if (!gpsCompassEnabled) return;
+    const heading = normalizeHeadingFromEvent(event);
     if (!Number.isFinite(heading)) return;
-    gpsHeadingDeg = ((heading % 360) + 360) % 360;
-    if (isGpsOverlayOpen()) renderGpsTool();
+    gpsHeadingDeg = heading;
+    if (isGpsOverlayOpen()) renderGpsCompassOnly();
 }
 
 function requestGpsCompass(){
@@ -20942,9 +21377,17 @@ function requestGpsCompass(){
         if (result !== "granted") return;
         if (!gpsCompassListenerAttached){
             window.addEventListener("deviceorientation", onDeviceOrientation);
+            window.addEventListener("deviceorientationabsolute", onDeviceOrientation);
             gpsCompassListenerAttached = true;
         }
+        gpsCompassEnabled = true;
     }).catch(()=>{});
+}
+
+function disableGpsCompass(){
+    gpsCompassEnabled = false;
+    gpsHeadingDeg = null;
+    renderGpsCompassOnly();
 }
 
 function openGpsOverlay(){
@@ -20955,7 +21398,6 @@ function openGpsOverlay(){
     document.body.style.overflow = "hidden";
     renderGpsTool();
     requestSingleGpsPosition();
-    startGpsWatch();
     setTimeout(()=>{
         if (gpsMap) gpsMap.invalidateSize();
     }, 80);
@@ -20965,7 +21407,6 @@ function closeGpsOverlay(){
     const overlay = document.getElementById("gpsOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    stopGpsWatch();
     const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (gpsLastFocus && typeof gpsLastFocus.focus === "function") gpsLastFocus.focus();
@@ -20985,8 +21426,12 @@ document.addEventListener("keydown", (event)=>{
     if (event.key === "Escape") closeGpsOverlay();
 });
 
-function getLocation(){
+function openGpsTool(){
     openGpsOverlay();
+}
+
+function getLocation(){
+    openGpsTool();
 }
 registerAppServiceWorker();
 
