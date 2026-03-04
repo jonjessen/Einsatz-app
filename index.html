@@ -822,43 +822,68 @@ body.training-mode {
 }
 
 .hydrant-pin {
-    width: 18px;
-    height: 18px;
-    border-radius: 5px;
-    border: 2px solid #ffffff;
-    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
+    --hydrant-color: #5a6b7c;
+    width: 14px;
+    height: 17px;
+    border-radius: 4px 4px 3px 3px;
+    border: 2px solid var(--hydrant-color);
+    background: var(--hydrant-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
     position: relative;
+    box-sizing: border-box;
 }
 
 .hydrant-pin::before {
     content: "";
     position: absolute;
     left: 50%;
-    top: -4px;
-    width: 7px;
-    height: 4px;
+    top: -7px;
+    width: 11px;
+    height: 8px;
     transform: translateX(-50%);
-    border-radius: 2px 2px 0 0;
-    background: rgba(255, 255, 255, 0.92);
+    border-radius: 6px 6px 2px 2px;
+    border: 2px solid var(--hydrant-color);
+    border-bottom: 0;
+    background: var(--hydrant-color);
 }
 
 .hydrant-pin::after {
     content: "";
     position: absolute;
     left: 50%;
-    bottom: -3px;
-    width: 5px;
-    height: 3px;
+    bottom: -5px;
+    width: 14px;
+    height: 4px;
     transform: translateX(-50%);
-    border-radius: 0 0 2px 2px;
-    background: rgba(255, 255, 255, 0.92);
+    border-radius: 2px;
+    border: 2px solid var(--hydrant-color);
+    border-top: 0;
+    background: var(--hydrant-color);
 }
 
-.hydrant-pin.ok { background: #11994a; }
-.hydrant-pin.warn { background: #d38c00; }
-.hydrant-pin.bad { background: #c9212d; }
-.hydrant-pin.unknown { background: #5a6b7c; }
-.hydrant-pin.active { transform: scale(1.14); box-shadow: 0 3px 10px rgba(0, 0, 0, 0.34); }
+.hydrant-pin-nozzle {
+    position: absolute;
+    top: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    border: 1px solid var(--hydrant-color);
+    background: var(--hydrant-color);
+}
+
+.hydrant-pin-nozzle.left {
+    left: -5px;
+}
+
+.hydrant-pin-nozzle.right {
+    right: -5px;
+}
+
+.hydrant-pin.ok { --hydrant-color: #11994a; }
+.hydrant-pin.warn { --hydrant-color: #d38c00; }
+.hydrant-pin.bad { --hydrant-color: #c9212d; }
+.hydrant-pin.unknown { --hydrant-color: #5a6b7c; }
+.hydrant-pin.active { transform: scale(1.18); box-shadow: 0 3px 11px rgba(0, 0, 0, 0.34); }
 
 .hydrant-marker {
     position: absolute;
@@ -906,6 +931,65 @@ body.training-mode {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+}
+
+.gps-map {
+    min-height: clamp(280px, 46vh, 480px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.gps-qr-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.gps-qr-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    background: rgba(18, 52, 79, 0.04);
+    text-align: center;
+}
+
+.gps-qr-card img {
+    width: min(100%, 220px);
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+}
+
+.gps-compass {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 50% 40%, rgba(18, 52, 79, 0.1), rgba(18, 52, 79, 0.02));
+}
+
+.gps-compass-arrow {
+    width: 2px;
+    height: 26px;
+    background: #c9212d;
+    transform-origin: 50% 90%;
+    border-radius: 2px;
+    position: relative;
+}
+
+.gps-compass-arrow::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #c9212d;
 }
 
 .fwdv-top > * {
@@ -4046,31 +4130,31 @@ iframe {
 
     <div class="home-tools-shell">
         <div class="home-tool-group">
-            <div class="home-subtitle">Führung</div>
+            <div class="home-subtitle">Einsatz</div>
             <div class="home-tools-grid">
                 <button onclick="openLageOverlay()">📊 Einsatzlage</button>
-                <button onclick="openEinsatzOverlay()">📋 Einsatzhistorie</button>
-            </div>
-        </div>
-        <div class="home-tool-group">
-            <div class="home-subtitle">Kommunikation</div>
-            <div class="home-tools-grid">
                 <button onclick="openFunkOverlay()">📡 Funk</button>
-                <button onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</button>
-                <button onclick="openPresseOverlay()">📰 Pressezentrale</button>
-                <button onclick="openSocialOverlay()">📝 Social-Media Beitrag</button>
-            </div>
-        </div>
-        <div class="home-tool-group">
-            <div class="home-subtitle">Spezial</div>
-            <div class="home-tools-grid">
                 <button onclick="openAtemOverlay()">🫁 Atemschutzüberwachung</button>
-                <button id="homePsuBtn" onclick="openPsuOverlay()">🧠 Nachsorge <span id="psuReminderBadge" class="psu-reminder-badge hidden">0</span></button>
                 <button onclick="openGefahrgutOverlay()">☣️ Gefahrgut</button>
                 <button onclick="openHydrantenOverlay()">💧 Hydrantenkarte</button>
-                <button onclick="openEvakOverlay()">🏃 Evakuierungshelfer</button>
                 <button onclick="openWeatherOverlay()">🌦️ EinsatzWetter</button>
+            </div>
+        </div>
+        <div class="home-tool-group">
+            <div class="home-subtitle">Lage &amp; Doku</div>
+            <div class="home-tools-grid">
+                <button onclick="openEinsatzOverlay()">📋 Einsatzhistorie</button>
+                <button onclick="openSocialOverlay()">📝 Social-Media Beitrag</button>
+                <button onclick="openPresseOverlay()">📰 Pressezentrale</button>
                 <button onclick="getLocation()">📍 GPS Koordinaten anzeigen</button>
+            </div>
+        </div>
+        <div class="home-tool-group">
+            <div class="home-subtitle">Personal &amp; Betreuung</div>
+            <div class="home-tools-grid">
+                <button onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</button>
+                <button onclick="openEvakOverlay()">🏃 Evakuierungshelfer</button>
+                <button id="homePsuBtn" onclick="openPsuOverlay()">🧠 Nachsorge <span id="psuReminderBadge" class="psu-reminder-badge hidden">0</span></button>
             </div>
         </div>
     </div>
@@ -4416,6 +4500,22 @@ iframe {
             <button class="social-close" onclick="closeEvakOverlay()" aria-label="Evakuierungshelfer schließen">✕</button>
         </div>
         <div class="social-body" id="evakBody"></div>
+    </div>
+</div>
+
+<div
+    id="gpsOverlay"
+    class="social-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="gpsTitle"
+    onclick="handleGpsOverlayBackdrop(event)">
+    <div class="social-modal">
+        <div class="social-header">
+            <h2 id="gpsTitle">GPS &amp; Position</h2>
+            <button class="social-close" onclick="closeGpsOverlay()" aria-label="GPS schließen">✕</button>
+        </div>
+        <div class="social-body" id="gpsBody"></div>
     </div>
 </div>
 
@@ -6302,6 +6402,8 @@ function getWeatherProtocolAttachment(){
 }
 
 const HYDRANT_STORAGE_KEY = "hydrantenkarte_v1";
+const HYDRANT_DEFAULT_CENTER = { lat: 53.985, lon: 10.78, zoom: 13 };
+const HYDRANT_VIEW_MAX_DISTANCE_M = 30000;
 let lastHydrantenFocus = null;
 const HYDRANTEN_TIMMENDORFER_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_TIMMENDORFER_DATA))
     ? window.HYDRANTEN_TIMMENDORFER_DATA
@@ -6411,6 +6513,11 @@ function hydDistanceMeters(aLat, aLon, bLat, bLon){
     const sb = Math.sin(dLon / 2);
     const h = sa * sa + Math.cos(aLat * Math.PI / 180) * Math.cos(bLat * Math.PI / 180) * sb * sb;
     return 2 * R * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+
+function isHydrantPointNearDefaultArea(lat, lon){
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return false;
+    return hydDistanceMeters(HYDRANT_DEFAULT_CENTER.lat, HYDRANT_DEFAULT_CENTER.lon, lat, lon) <= HYDRANT_VIEW_MAX_DISTANCE_M;
 }
 
 function formatHydDist(m){
@@ -6717,7 +6824,7 @@ function renderHydrantenLeafletMap(filtered, selectedId, location, addMode, draf
         const isActive = h.id === selectedId;
         const markerIcon = L.divIcon({
             className: "hydrant-pin-wrap",
-            html: `<div class="hydrant-pin ${escapeHtml(String(h.status || "unknown"))} ${isActive ? "active" : ""}"></div>`,
+            html: `<div class="hydrant-pin ${escapeHtml(String(h.status || "unknown"))} ${isActive ? "active" : ""}"><span class="hydrant-pin-nozzle left"></span><span class="hydrant-pin-nozzle right"></span></div>`,
             iconSize: [20, 20],
             iconAnchor: [10, 10]
         });
@@ -6752,7 +6859,7 @@ function renderHydrantenLeafletMap(filtered, selectedId, location, addMode, draf
         bounds.push([location.lat, location.lon]);
     }
 
-    if (draftPoint && Number.isFinite(draftPoint.lat) && Number.isFinite(draftPoint.lon)){
+    if (addMode && draftPoint && Number.isFinite(draftPoint.lat) && Number.isFinite(draftPoint.lon) && isHydrantPointNearDefaultArea(draftPoint.lat, draftPoint.lon)){
         L.circleMarker([draftPoint.lat, draftPoint.lon], {
             radius: 8,
             color: "#ffffff",
@@ -6781,12 +6888,17 @@ function renderHydrantenLeafletMap(filtered, selectedId, location, addMode, draf
         });
     }
 
-    if (hydrantenLeafletView && Number.isFinite(hydrantenLeafletView.lat) && Number.isFinite(hydrantenLeafletView.lon)){
+    if (
+        hydrantenLeafletView &&
+        Number.isFinite(hydrantenLeafletView.lat) &&
+        Number.isFinite(hydrantenLeafletView.lon) &&
+        isHydrantPointNearDefaultArea(hydrantenLeafletView.lat, hydrantenLeafletView.lon)
+    ){
         hydrantenLeafletMap.setView([hydrantenLeafletView.lat, hydrantenLeafletView.lon], Number(hydrantenLeafletView.zoom) || 15);
     } else if (bounds.length){
         hydrantenLeafletMap.fitBounds(bounds, { padding: [24, 24], maxZoom: 18 });
     } else {
-        hydrantenLeafletMap.setView([53.985, 10.78], 13);
+        hydrantenLeafletMap.setView([HYDRANT_DEFAULT_CENTER.lat, HYDRANT_DEFAULT_CENTER.lon], HYDRANT_DEFAULT_CENTER.zoom);
     }
 }
 
@@ -6801,6 +6913,10 @@ function openHydrantenNavigation(lat, lon){
 
 function resetHydrantenMapView(){
     hydrantenLeafletView = null;
+    patchHydrantenState((s)=>{
+        s.ui.addLat = "";
+        s.ui.addLon = "";
+    });
     renderHydrantenTool();
 }
 
@@ -6872,26 +6988,6 @@ function renderHydrantenTool(){
     ` : ""}
 
     <div class="atem-panel">
-        <strong>Filter</strong>
-        <div class="atem-grid" style="margin-top:8px;">
-            <div><label>Suche</label><input type="text" value="${escapeHtml(state.ui.search || "")}" placeholder="ID, Straße, Typ..." oninput="setHydrantenUiField('search', this.value)"></div>
-            <div><label>Status</label><select onchange="setHydrantenUiField('statusFilter', this.value)">
-                <option value="all" ${state.ui.statusFilter === "all" ? "selected" : ""}>Alle</option>
-                <option value="ok" ${state.ui.statusFilter === "ok" ? "selected" : ""}>Einsatzbereit</option>
-                <option value="warn" ${state.ui.statusFilter === "warn" ? "selected" : ""}>Eingeschränkt</option>
-                <option value="bad" ${state.ui.statusFilter === "bad" ? "selected" : ""}>Defekt/Blockiert</option>
-                <option value="unknown" ${state.ui.statusFilter === "unknown" ? "selected" : ""}>Unbekannt</option>
-            </select></div>
-            <div><label>Typ</label><select onchange="setHydrantenUiField('typeFilter', this.value)">
-                <option value="all" ${state.ui.typeFilter === "all" ? "selected" : ""}>Alle</option>
-                ${typeSet.map((t)=>`<option value="${escapeHtml(t)}" ${state.ui.typeFilter === t ? "selected" : ""}>${escapeHtml(t)}</option>`).join("")}
-            </select></div>
-            <div><label>Nur in Nähe (m)</label><input type="number" min="50" step="50" value="${escapeHtml(String(state.ui.maxDistanceM || 500))}" oninput="setHydrantenUiField('maxDistanceM', Number(this.value)||500)"></div>
-            <div class="atem-col-full"><label class="social-force-item"><input type="checkbox" ${state.ui.nearbyOnly ? "checked" : ""} onchange="setHydrantenUiField('nearbyOnly', this.checked)"> Nur Hydranten innerhalb Distanz</label></div>
-        </div>
-    </div>
-
-    <div class="atem-panel">
         <strong>Karte</strong>
         <div class="psu-meta" style="margin-top:6px;">Treffer: ${filtered.length}${state.lastKnownLocation ? ` · Standort: ${escapeHtml(new Date(state.lastKnownLocation.updatedAt || Date.now()).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}))}` : ""}</div>
         <div class="hydrant-map-legend" style="margin-top:8px;">
@@ -6929,6 +7025,28 @@ function renderHydrantenTool(){
             ${Number.isFinite(selected.lat) && Number.isFinite(selected.lon) ? `<div class="atem-row-actions" style="margin-top:8px;"><button onclick="openHydrantenNavigation(${selected.lat}, ${selected.lon})">Zum Hydranten navigieren</button></div>` : ""}
         </div>`;
     }
+
+    html += `
+    <div class="atem-panel">
+        <strong>Filter</strong>
+        <div class="atem-grid" style="margin-top:8px;">
+            <div><label>Suche</label><input type="text" value="${escapeHtml(state.ui.search || "")}" placeholder="ID, Straße, Typ..." oninput="setHydrantenUiField('search', this.value)"></div>
+            <div><label>Status</label><select onchange="setHydrantenUiField('statusFilter', this.value)">
+                <option value="all" ${state.ui.statusFilter === "all" ? "selected" : ""}>Alle</option>
+                <option value="ok" ${state.ui.statusFilter === "ok" ? "selected" : ""}>Einsatzbereit</option>
+                <option value="warn" ${state.ui.statusFilter === "warn" ? "selected" : ""}>Eingeschränkt</option>
+                <option value="bad" ${state.ui.statusFilter === "bad" ? "selected" : ""}>Defekt/Blockiert</option>
+                <option value="unknown" ${state.ui.statusFilter === "unknown" ? "selected" : ""}>Unbekannt</option>
+            </select></div>
+            <div><label>Typ</label><select onchange="setHydrantenUiField('typeFilter', this.value)">
+                <option value="all" ${state.ui.typeFilter === "all" ? "selected" : ""}>Alle</option>
+                ${typeSet.map((t)=>`<option value="${escapeHtml(t)}" ${state.ui.typeFilter === t ? "selected" : ""}>${escapeHtml(t)}</option>`).join("")}
+            </select></div>
+            <div><label>Nur in Nähe (m)</label><input type="number" min="50" step="50" value="${escapeHtml(String(state.ui.maxDistanceM || 500))}" oninput="setHydrantenUiField('maxDistanceM', Number(this.value)||500)"></div>
+            <div class="atem-col-full"><label class="social-force-item"><input type="checkbox" ${state.ui.nearbyOnly ? "checked" : ""} onchange="setHydrantenUiField('nearbyOnly', this.checked)"> Nur Hydranten innerhalb Distanz</label></div>
+        </div>
+    </div>
+    `;
 
     html += `<div class="atem-panel"><strong>Hydrantenliste</strong><div class="hydrant-list" style="margin-top:8px;">`;
     if (!filtered.length){
@@ -20310,6 +20428,10 @@ function searchEinsatz(text){
     if (text.length > 0 && wetterNeedle.includes(text)){
         result += `<div class="card" onclick="openWeatherOverlay()">🌦️ EinsatzWetter</div>`;
     }
+    const gpsNeedle = "gps koordinaten position standort kompass qr qrcode apple maps google maps";
+    if (text.length > 0 && gpsNeedle.includes(text)){
+        result += `<div class="card" onclick="openGpsOverlay()">📍 GPS & Position</div>`;
+    }
     const drohnenWetterNeedle = "drohnenwetter drohnenwetter-check drohne wetter";
     if (text.length > 0 && drohnenWetterNeedle.includes(text)){
         result += `<div class="card" onclick="openDroneWeatherOverlay()">🛸 DrohnenWetter-Check</div>`;
@@ -20447,14 +20569,424 @@ window.addEventListener("online", ()=>{ refreshWeatherAndRender(false).catch(()=
 window.addEventListener("offline", ()=>{ renderHomeWeatherBanner(); renderFooterStatusLines(); });
 
 /* GPS */
-function getLocation(){
-    if (navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(function(pos){
-            alert("Breite: " + pos.coords.latitude + "\nLänge: " + pos.coords.longitude);
-        });
-    } else {
-        alert("GPS nicht verfügbar");
+const GPS_TOOL_STORAGE_KEY = "gps_tool_v1";
+let gpsMap = null;
+let gpsCurrentMarker = null;
+let gpsTargetMarker = null;
+let gpsWatchId = null;
+let gpsHeadingDeg = null;
+let gpsLastFocus = null;
+let gpsCompassListenerAttached = false;
+
+function createDefaultGpsState(){
+    return {
+        current: null,
+        target: null,
+        ui: {
+            useAppleQr: true,
+            useGoogleQr: true
+        }
+    };
+}
+
+function normalizeGpsPoint(raw){
+    const point = raw && typeof raw === "object" ? raw : {};
+    const lat = Number(point.lat);
+    const lon = Number(point.lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+    return {
+        lat,
+        lon,
+        accuracy: Number(point.accuracy),
+        altitude: Number(point.altitude),
+        speed: Number(point.speed),
+        heading: Number(point.heading),
+        label: String(point.label || ""),
+        updatedAt: String(point.updatedAt || "")
+    };
+}
+
+function normalizeGpsState(raw){
+    const base = createDefaultGpsState();
+    const next = { ...base, ...(raw || {}) };
+    next.current = normalizeGpsPoint(next.current);
+    next.target = normalizeGpsPoint(next.target);
+    next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
+    return next;
+}
+
+function getGpsState(){
+    try {
+        const raw = appStorageGetItem(GPS_TOOL_STORAGE_KEY);
+        return normalizeGpsState(raw ? JSON.parse(raw) : null);
+    } catch {
+        return createDefaultGpsState();
     }
+}
+
+function saveGpsState(state){
+    appStorageSetItem(GPS_TOOL_STORAGE_KEY, JSON.stringify(normalizeGpsState(state)));
+}
+
+function patchGpsState(mutator){
+    const s = getGpsState();
+    mutator(s);
+    saveGpsState(s);
+    return s;
+}
+
+function formatGpsCoord(value){
+    const n = Number(value);
+    if (!Number.isFinite(n)) return "-";
+    return n.toFixed(6);
+}
+
+function formatGpsTime(iso){
+    if (!iso) return "-";
+    try {
+        return new Date(iso).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    } catch {
+        return "-";
+    }
+}
+
+function formatHeading(deg){
+    const n = Number(deg);
+    if (!Number.isFinite(n)) return "-";
+    const dirs = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
+    const idx = Math.round((((n % 360) + 360) % 360) / 45) % 8;
+    return `${Math.round(n)}° ${dirs[idx]}`;
+}
+
+function toDms(value, positive, negative){
+    const n = Number(value);
+    if (!Number.isFinite(n)) return "-";
+    const abs = Math.abs(n);
+    const deg = Math.floor(abs);
+    const minFloat = (abs - deg) * 60;
+    const min = Math.floor(minFloat);
+    const sec = ((minFloat - min) * 60).toFixed(2);
+    const hemi = n >= 0 ? positive : negative;
+    return `${deg}° ${min}' ${sec}" ${hemi}`;
+}
+
+function getInternalThreeWordAddress(lat, lon){
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return "-";
+    const words = [
+        "alarm","anker","atlas","bahn","basis","blick","brand","brise","dach","delta","dienst","düne",
+        "eiche","einsatz","elbe","feuer","fjord","flamme","flur","funk","gabe","gabel","geist","glut",
+        "hafen","hain","hilfe","horn","insel","jagd","kanal","karte","kette","klippe","kraft","lage",
+        "leiter","licht","linie","lotse","marsch","mole","nord","ost","pegel","punkt","rampe","rettung",
+        "route","sand","schicht","schlüssel","see","sicher","spur","steg","strand","team","tide","turm",
+        "ufer","wind","winkel","ziel"
+    ];
+    const key = `${lat.toFixed(5)},${lon.toFixed(5)}`;
+    let hash = 2166136261;
+    for (let i = 0; i < key.length; i += 1){
+        hash ^= key.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+    const a = Math.abs(hash) % words.length;
+    const b = Math.abs(hash >> 7) % words.length;
+    const c = Math.abs(hash >> 13) % words.length;
+    return `${words[a]}.${words[b]}.${words[c]}`;
+}
+
+function getMapLinks(lat, lon){
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return { google: "", apple: "" };
+    const coord = `${lat},${lon}`;
+    return {
+        google: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coord)}`,
+        apple: `https://maps.apple.com/?ll=${encodeURIComponent(coord)}&q=${encodeURIComponent(coord)}`
+    };
+}
+
+function buildQrUrl(content){
+    return `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(String(content || ""))}`;
+}
+
+function setGpsTarget(lat, lon, label){
+    const nLat = Number(lat);
+    const nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)) return;
+    patchGpsState((s)=>{
+        s.target = {
+            lat: nLat,
+            lon: nLon,
+            label: String(label || ""),
+            updatedAt: new Date().toISOString()
+        };
+    });
+    renderGpsTool();
+}
+
+function clearGpsTarget(){
+    patchGpsState((s)=>{ s.target = null; });
+    renderGpsTool();
+}
+
+function copyGpsLink(type){
+    const state = getGpsState();
+    const point = state.target || state.current;
+    if (!point) return;
+    const links = getMapLinks(point.lat, point.lon);
+    const url = type === "apple" ? links.apple : links.google;
+    if (!url) return;
+    copyTextToClipboard(url).then((ok)=>{
+        alert(ok ? "Link kopiert." : "Kopieren nicht möglich.");
+    });
+}
+
+function openGpsExternal(type){
+    const state = getGpsState();
+    const point = state.target || state.current;
+    if (!point) return;
+    const links = getMapLinks(point.lat, point.lon);
+    const url = type === "apple" ? links.apple : links.google;
+    if (!url) return;
+    const w = window.open(url, "_blank", "noopener,noreferrer");
+    if (!w) window.location.href = url;
+}
+
+function renderGpsLeafletMap(state){
+    const mapEl = document.getElementById("gpsMap");
+    if (!mapEl) return;
+    if (typeof window.L === "undefined"){
+        mapEl.innerHTML = `<div class="lage-empty" style="padding:14px;">Kartenmodul konnte nicht geladen werden.</div>`;
+        return;
+    }
+    if (gpsMap){
+        gpsMap.remove();
+        gpsMap = null;
+        gpsCurrentMarker = null;
+        gpsTargetMarker = null;
+    }
+    gpsMap = L.map(mapEl, { zoomControl: true, preferCanvas: true });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20,
+        attribution: "&copy; OpenStreetMap"
+    }).addTo(gpsMap);
+
+    const bounds = [];
+    if (state.current && Number.isFinite(state.current.lat) && Number.isFinite(state.current.lon)){
+        gpsCurrentMarker = L.circleMarker([state.current.lat, state.current.lon], {
+            radius: 8, color: "#ffffff", weight: 2, fillColor: "#1769ff", fillOpacity: 0.95
+        }).addTo(gpsMap).bindTooltip("Aktuelle Position", { direction: "right", offset: [10, 0] });
+        bounds.push([state.current.lat, state.current.lon]);
+    }
+    if (state.target && Number.isFinite(state.target.lat) && Number.isFinite(state.target.lon)){
+        gpsTargetMarker = L.circleMarker([state.target.lat, state.target.lon], {
+            radius: 8, color: "#ffffff", weight: 2, fillColor: "#c9212d", fillOpacity: 0.95
+        }).addTo(gpsMap).bindTooltip("Gesetzter Punkt", { direction: "top", offset: [0, -8] });
+        bounds.push([state.target.lat, state.target.lon]);
+    }
+
+    gpsMap.on("click", (event)=>{
+        if (!event || !event.latlng) return;
+        setGpsTarget(event.latlng.lat, event.latlng.lng, "Punkt");
+    });
+
+    if (bounds.length > 1){
+        gpsMap.fitBounds(bounds, { padding: [24, 24], maxZoom: 18 });
+    } else if (bounds.length === 1){
+        gpsMap.setView(bounds[0], 16);
+    } else {
+        gpsMap.setView([53.985, 10.78], 13);
+    }
+}
+
+function renderGpsTool(){
+    const body = document.getElementById("gpsBody");
+    if (!body) return;
+    const state = getGpsState();
+    const current = state.current;
+    const target = state.target;
+    const point = target || current;
+    const links = point ? getMapLinks(point.lat, point.lon) : { google: "", apple: "" };
+    const heading = Number.isFinite(gpsHeadingDeg) ? gpsHeadingDeg : (current ? Number(current.heading) : null);
+    const dist = (current && target) ? hydDistanceMeters(current.lat, current.lon, target.lat, target.lon) : null;
+
+    body.innerHTML = `
+    <div class="atem-panel">
+        <strong>Position</strong>
+        <div class="atem-grid" style="margin-top:8px;">
+            <div><label>Breite / Länge</label><div class="weather-value">${current ? `${formatGpsCoord(current.lat)}, ${formatGpsCoord(current.lon)}` : "-"}</div></div>
+            <div><label>DMS</label><div class="weather-value">${current ? `${toDms(current.lat, "N", "S")} · ${toDms(current.lon, "E", "W")}` : "-"}</div></div>
+            <div><label>Genauigkeit</label><div class="weather-value">${current && Number.isFinite(current.accuracy) ? `${Math.round(current.accuracy)} m` : "-"}</div></div>
+            <div><label>3-Wort-Adresse (intern)</label><div class="weather-value">${current ? escapeHtml(getInternalThreeWordAddress(current.lat, current.lon)) : "-"}</div></div>
+            <div><label>Zuletzt aktualisiert</label><div class="weather-value">${current ? formatGpsTime(current.updatedAt) : "-"}</div></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="gps-compass"><div class="gps-compass-arrow" style="transform: rotate(${Number.isFinite(heading) ? heading : 0}deg);"></div></div>
+                <div>
+                    <label>Kompass</label>
+                    <div class="weather-value">${formatHeading(heading)}</div>
+                </div>
+            </div>
+        </div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="requestSingleGpsPosition()">Standort aktualisieren</button>
+            <button onclick="startGpsWatch()">Live starten</button>
+            <button onclick="stopGpsWatch()">Live stoppen</button>
+            <button onclick="requestGpsCompass()">Kompass aktivieren</button>
+            <button onclick="if(getGpsState().current){setGpsTarget(getGpsState().current.lat,getGpsState().current.lon,'Aktuelle Position')}">Punkt = aktueller Standort</button>
+        </div>
+    </div>
+
+    <div class="atem-panel">
+        <strong>Karte &amp; Zielpunkt</strong>
+        <div class="psu-meta" style="margin-top:6px;">Punkt per Klick in die Karte setzen.${dist !== null ? ` Distanz zum Punkt: ${formatHydDist(dist)}.` : ""}</div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="clearGpsTarget()">Punkt löschen</button>
+            <button onclick="openGpsExternal('google')">In Google Maps öffnen</button>
+            <button onclick="openGpsExternal('apple')">In Apple Maps öffnen</button>
+        </div>
+        <div style="margin-top:8px;" id="gpsMap" class="gps-map"></div>
+    </div>
+
+    <div class="atem-panel">
+        <strong>QR-Code Übergabe</strong>
+        <div class="psu-meta" style="margin-top:6px;">QR verweist auf ${target ? "gesetzten Punkt" : "aktuelle Position"}.</div>
+        ${point ? `
+        <div class="gps-qr-grid" style="margin-top:8px;">
+            <div class="gps-qr-card">
+                <div><strong>Google Maps</strong></div>
+                <img alt="QR Google Maps" src="${buildQrUrl(links.google)}">
+                <div class="atem-row-actions" style="margin-top:8px;">
+                    <button onclick="copyGpsLink('google')">Link kopieren</button>
+                </div>
+            </div>
+            <div class="gps-qr-card">
+                <div><strong>Apple Maps</strong></div>
+                <img alt="QR Apple Maps" src="${buildQrUrl(links.apple)}">
+                <div class="atem-row-actions" style="margin-top:8px;">
+                    <button onclick="copyGpsLink('apple')">Link kopieren</button>
+                </div>
+            </div>
+        </div>` : `<div class="lage-empty" style="margin-top:8px;">Noch keine Position verfügbar.</div>`}
+    </div>
+    `;
+
+    renderGpsLeafletMap(state);
+}
+
+function onGpsPositionUpdate(position){
+    const c = position && position.coords ? position.coords : null;
+    if (!c) return;
+    patchGpsState((s)=>{
+        s.current = {
+            lat: Number(c.latitude),
+            lon: Number(c.longitude),
+            accuracy: Number(c.accuracy),
+            altitude: Number(c.altitude),
+            speed: Number(c.speed),
+            heading: Number(c.heading),
+            updatedAt: new Date().toISOString()
+        };
+    });
+    if (Number.isFinite(c.heading)) gpsHeadingDeg = Number(c.heading);
+    if (isGpsOverlayOpen()) renderGpsTool();
+}
+
+function requestSingleGpsPosition(){
+    if (!navigator.geolocation){
+        alert("GPS nicht verfügbar");
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        onGpsPositionUpdate,
+        ()=>alert("Standort konnte nicht ermittelt werden."),
+        { enableHighAccuracy: true, maximumAge: 10000, timeout: 12000 }
+    );
+}
+
+function startGpsWatch(){
+    if (!navigator.geolocation){
+        alert("GPS nicht verfügbar");
+        return;
+    }
+    if (gpsWatchId !== null) return;
+    gpsWatchId = navigator.geolocation.watchPosition(
+        onGpsPositionUpdate,
+        ()=>{},
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 12000 }
+    );
+}
+
+function stopGpsWatch(){
+    if (gpsWatchId === null || !navigator.geolocation) return;
+    navigator.geolocation.clearWatch(gpsWatchId);
+    gpsWatchId = null;
+}
+
+function onDeviceOrientation(event){
+    let heading = null;
+    if (Number.isFinite(event.webkitCompassHeading)){
+        heading = Number(event.webkitCompassHeading);
+    } else if (Number.isFinite(event.alpha)){
+        heading = 360 - Number(event.alpha);
+    }
+    if (!Number.isFinite(heading)) return;
+    gpsHeadingDeg = ((heading % 360) + 360) % 360;
+    if (isGpsOverlayOpen()) renderGpsTool();
+}
+
+function requestGpsCompass(){
+    if (typeof window.DeviceOrientationEvent === "undefined"){
+        alert("Kompass auf diesem Gerät nicht verfügbar.");
+        return;
+    }
+    const maybePermission = DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function"
+        ? DeviceOrientationEvent.requestPermission()
+        : Promise.resolve("granted");
+    maybePermission.then((result)=>{
+        if (result !== "granted") return;
+        if (!gpsCompassListenerAttached){
+            window.addEventListener("deviceorientation", onDeviceOrientation);
+            gpsCompassListenerAttached = true;
+        }
+    }).catch(()=>{});
+}
+
+function openGpsOverlay(){
+    const overlay = document.getElementById("gpsOverlay");
+    if (!overlay) return;
+    gpsLastFocus = document.activeElement;
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    renderGpsTool();
+    requestSingleGpsPosition();
+    startGpsWatch();
+    setTimeout(()=>{
+        if (gpsMap) gpsMap.invalidateSize();
+    }, 80);
+}
+
+function closeGpsOverlay(){
+    const overlay = document.getElementById("gpsOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    stopGpsWatch();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    if (gpsLastFocus && typeof gpsLastFocus.focus === "function") gpsLastFocus.focus();
+}
+
+function isGpsOverlayOpen(){
+    const overlay = document.getElementById("gpsOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function handleGpsOverlayBackdrop(event){
+    if (event.target && event.target.id === "gpsOverlay") closeGpsOverlay();
+}
+
+document.addEventListener("keydown", (event)=>{
+    if (!isGpsOverlayOpen()) return;
+    if (event.key === "Escape") closeGpsOverlay();
+});
+
+function getLocation(){
+    openGpsOverlay();
 }
 registerAppServiceWorker();
 
