@@ -1,4 +1,4 @@
-const CACHE_NAME = "ff360-app-v8";
+const CACHE_NAME = "ff360-app-v11";
 
 const urlsToCache = [
   "index.html",
@@ -8,7 +8,13 @@ const urlsToCache = [
   "logoapp.png",
   "logoff.png",
   "asue_alarm.wav",
-  "asu_confirm.wav"
+  "asu_confirm.wav",
+  "gefahrgut_un_catalog.js",
+  "gefahrgut_un_catalog.json",
+  "gefahrgut_eri_map.js",
+  "gefahrgut_eri_map.json",
+  "hydranten_timmendorfer_strand.js",
+  "hydranten_timmendorfer_strand.json"
 ];
 
 self.addEventListener("install", event => {

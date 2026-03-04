@@ -610,6 +610,115 @@ body.training-mode {
     width: 100%;
 }
 
+.gg-un-card {
+    border: 2px solid #222;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #f38a1f;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.32);
+}
+
+.gg-un-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 10px 12px;
+    border-bottom: 2px solid #222;
+    color: #191919;
+    font-weight: 900;
+}
+
+.gg-un-row:last-child {
+    border-bottom: none;
+}
+
+.gg-un-value {
+    font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    letter-spacing: 2px;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.gg-un-label {
+    font-size: 12px;
+    letter-spacing: 0.2px;
+}
+
+.gg-un-input {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 11px 12px;
+    font-size: 24px;
+    font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    font-weight: 800;
+    letter-spacing: 4px;
+    text-align: center;
+    color: var(--text);
+    background: var(--card);
+}
+
+.gg-un-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.gg-un-keypad button {
+    margin: 0;
+    min-height: 50px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.gg-un-data {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    background: rgba(18, 52, 79, 0.04);
+}
+
+.gg-un-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.gg-un-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    background: var(--card);
+}
+
+.gg-un-item label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+}
+
+.gg-un-signs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.gg-un-sign {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 800;
+    background: var(--card);
+}
+
 .ek-row {
     display: flex;
     flex-wrap: wrap;
@@ -667,6 +776,60 @@ body.training-mode {
     padding: 3px 8px;
     font-size: 12px;
     font-weight: 700;
+}
+
+.hydrant-map {
+    position: relative;
+    min-height: 320px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background:
+        linear-gradient(0deg, rgba(18, 52, 79, 0.03), rgba(18, 52, 79, 0.03)),
+        repeating-linear-gradient(0deg, rgba(18, 52, 79, 0.08) 0 1px, transparent 1px 32px),
+        repeating-linear-gradient(90deg, rgba(18, 52, 79, 0.08) 0 1px, transparent 1px 32px);
+    overflow: hidden;
+}
+
+.hydrant-marker {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+.hydrant-marker.ok { background: #11994a; }
+.hydrant-marker.warn { background: #d38c00; }
+.hydrant-marker.bad { background: #c9212d; }
+.hydrant-marker.unknown { background: #5a6b7c; }
+.hydrant-marker.active { outline: 2px solid #12344f; }
+
+.hydrant-you {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #1769ff;
+    border: 2px solid #fff;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 4px rgba(23, 105, 255, 0.2);
+}
+
+.hydrant-list {
+    display: grid;
+    gap: 8px;
+}
+
+.hydrant-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    padding: 10px;
 }
 
 .fwdv-top {
@@ -3675,6 +3838,14 @@ iframe {
         grid-template-columns: 1fr;
     }
 
+    .gg-un-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gg-un-keypad button {
+        min-height: 46px;
+    }
+
     .lage-header h2 {
         font-size: 18px;
     }
@@ -3825,7 +3996,8 @@ iframe {
             <div class="home-tools-grid">
                 <button onclick="openAtemOverlay()">🫁 Atemschutzüberwachung</button>
                 <button id="homePsuBtn" onclick="openPsuOverlay()">🧠 Nachsorge <span id="psuReminderBadge" class="psu-reminder-badge hidden">0</span></button>
-                <button onclick="openGefahrgutOverlay()">☣️ Gefahrgut Schnellhilfe</button>
+                <button onclick="openGefahrgutOverlay()">☣️ Gefahrgut</button>
+                <button onclick="openHydrantenOverlay()">💧 Hydrantenkarte</button>
                 <button onclick="openEvakOverlay()">🏃 Evakuierungshelfer</button>
                 <button onclick="openWeatherOverlay()">🌦️ EinsatzWetter</button>
                 <button onclick="getLocation()">📍 GPS Koordinaten anzeigen</button>
@@ -4138,10 +4310,26 @@ iframe {
     onclick="handleGefahrgutOverlayBackdrop(event)">
     <div class="social-modal">
         <div class="social-header">
-            <h2 id="gefahrgutTitle">Gefahrgut Schnellhilfe</h2>
-            <button class="social-close" onclick="closeGefahrgutOverlay()" aria-label="Gefahrgut Schnellhilfe schließen">✕</button>
+            <h2 id="gefahrgutTitle">Gefahrgut</h2>
+            <button class="social-close" onclick="closeGefahrgutOverlay()" aria-label="Gefahrgut schließen">✕</button>
         </div>
         <div class="social-body" id="gefahrgutBody"></div>
+    </div>
+</div>
+
+<div
+    id="hydrantenOverlay"
+    class="social-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="hydrantenTitle"
+    onclick="handleHydrantenOverlayBackdrop(event)">
+    <div class="social-modal">
+        <div class="social-header">
+            <h2 id="hydrantenTitle">Hydrantenkarte</h2>
+            <button class="social-close" onclick="closeHydrantenOverlay()" aria-label="Hydrantenkarte schließen">✕</button>
+        </div>
+        <div class="social-body" id="hydrantenBody"></div>
     </div>
 </div>
 
@@ -4720,8 +4908,8 @@ iframe {
 </div>
 <div id="einsatzKraefteVehiclePopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='einsatzKraefteVehiclePopup'){closeEinsatzKraefteAddVehiclePopup()}">
     <div class="asu2-popup">
-        <h4>Neues Fahrzeug hinzufügen</h4>
-        <p>Daten werden lokal gespeichert und stehen sofort in Kräfte/Funkrufnamen bereit.</p>
+        <h4 id="einsatzKraefteVehiclePopupTitle">Neues Fahrzeug hinzufügen</h4>
+        <p id="einsatzKraefteVehiclePopupSubtitle">Daten werden lokal gespeichert und stehen sofort in Kräfte/Funkrufnamen bereit.</p>
         <span class="ek-vehicle-popup-note">Pflichtfelder: Organisation, Fahrzeug, Typ, Funkrufname</span>
         <div class="ek-vehicle-popup-form">
             <select id="einsatzKraefteVehicleOrganisationSelect" onchange="setEinsatzKraefteVehicleOrganisationMode(this.value)">
@@ -4738,7 +4926,7 @@ iframe {
             <input id="einsatzKraefteVehicleHint" type="text" placeholder="Hinweis (optional)">
         </div>
         <div class="asu2-popup-actions">
-            <button onclick="saveEinsatzKraefteVehicleFromPopup()">Speichern</button>
+            <button id="einsatzKraefteVehiclePopupSaveBtn" onclick="saveEinsatzKraefteVehicleFromPopup()">Speichern</button>
             <button onclick="closeEinsatzKraefteAddVehiclePopup()">Abbrechen</button>
         </div>
     </div>
@@ -4773,6 +4961,9 @@ iframe {
     </div>
 </div>
 
+<script src="gefahrgut_un_catalog.js"></script>
+<script src="gefahrgut_eri_map.js"></script>
+<script src="hydranten_timmendorfer_strand.js"></script>
 <script>
 let currentCategory = null;
 const FAVORITES_STORAGE_KEY = "einsatz_favoriten";
@@ -4790,6 +4981,7 @@ const SCOPED_STORAGE_BASE_KEYS = new Set([
     "atemschutz_ueberwachung_sessions",
     "funkcheck_sessions",
     "gefahrgut_last_state",
+    "hydrantenkarte_v1",
     "evakuierung_sessions",
     "presse_archiv",
     "presse_quick_state",
@@ -5946,7 +6138,7 @@ function closeWeatherOverlay(){
     const overlay = document.getElementById("weatherOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isDroneWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isDroneWeatherOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastWeatherFocus && typeof lastWeatherFocus.focus === "function"){
         lastWeatherFocus.focus();
@@ -5978,7 +6170,7 @@ function closeDroneWeatherOverlay(){
     const overlay = document.getElementById("droneWeatherOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastDroneWeatherFocus && typeof lastDroneWeatherFocus.focus === "function"){
         lastDroneWeatherFocus.focus();
@@ -6038,6 +6230,516 @@ function getWeatherProtocolAttachment(){
     };
 }
 
+const HYDRANT_STORAGE_KEY = "hydrantenkarte_v1";
+let lastHydrantenFocus = null;
+const HYDRANTEN_TIMMENDORFER_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_TIMMENDORFER_DATA))
+    ? window.HYDRANTEN_TIMMENDORFER_DATA
+    : [];
+
+function createDefaultHydrantenState(){
+    return {
+        hydrants: [],
+        logs: [],
+        lastKnownLocation: null,
+        ui: {
+            search: "",
+            statusFilter: "all",
+            typeFilter: "all",
+            nearbyOnly: false,
+            maxDistanceM: 500,
+            selectedId: ""
+        }
+    };
+}
+
+function normalizeHydrantenItem(raw, idx){
+    const item = raw && typeof raw === "object" ? raw : {};
+    const lat = Number(item.lat);
+    const lon = Number(item.lon);
+    return {
+        id: String(item.id || `hydrant_${idx}_${Date.now().toString(36)}`),
+        name: String(item.name || item.id || `Hydrant ${idx + 1}`),
+        adresse: String(item.adresse || ""),
+        lat: Number.isFinite(lat) ? lat : null,
+        lon: Number.isFinite(lon) ? lon : null,
+        typ: String(item.typ || "Unbekannt"),
+        nennweite: String(item.nennweite || ""),
+        status: String(item.status || "unknown"),
+        note: String(item.note || ""),
+        statusUpdatedAt: String(item.statusUpdatedAt || ""),
+        updatedAt: String(item.updatedAt || "")
+    };
+}
+
+function normalizeHydrantenState(raw){
+    const base = createDefaultHydrantenState();
+    const next = { ...base, ...(raw || {}) };
+    next.hydrants = Array.isArray(next.hydrants) ? next.hydrants.map((item, idx)=>normalizeHydrantenItem(item, idx)) : [];
+    next.logs = Array.isArray(next.logs) ? next.logs : [];
+    next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
+    if (!next.lastKnownLocation || typeof next.lastKnownLocation !== "object"){
+        next.lastKnownLocation = null;
+    }
+    return next;
+}
+
+function getHydrantenState(){
+    try {
+        const raw = appStorageGetItem(HYDRANT_STORAGE_KEY);
+        return normalizeHydrantenState(raw ? JSON.parse(raw) : null);
+    } catch {
+        return createDefaultHydrantenState();
+    }
+}
+
+function saveHydrantenState(state){
+    appStorageSetItem(HYDRANT_STORAGE_KEY, JSON.stringify(normalizeHydrantenState(state)));
+}
+
+function patchHydrantenState(mutator){
+    const state = getHydrantenState();
+    mutator(state);
+    saveHydrantenState(state);
+    return state;
+}
+
+function appendHydrantenLog(text){
+    patchHydrantenState((s)=>{
+        s.logs.unshift({
+            time: new Date().toISOString(),
+            text: String(text || "")
+        });
+        s.logs = s.logs.slice(0, 120);
+    });
+}
+
+function hydDistanceMeters(aLat, aLon, bLat, bLon){
+    const R = 6371000;
+    const dLat = (bLat - aLat) * Math.PI / 180;
+    const dLon = (bLon - aLon) * Math.PI / 180;
+    const sa = Math.sin(dLat / 2);
+    const sb = Math.sin(dLon / 2);
+    const h = sa * sa + Math.cos(aLat * Math.PI / 180) * Math.cos(bLat * Math.PI / 180) * sb * sb;
+    return 2 * R * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+}
+
+function formatHydDist(m){
+    if (!Number.isFinite(m)) return "-";
+    if (m < 1000) return `${Math.round(m)} m`;
+    return `${(m / 1000).toFixed(2)} km`;
+}
+
+function getHydrantenFiltered(state){
+    const s = state || getHydrantenState();
+    const q = String(s.ui.search || "").trim().toLowerCase();
+    const statusFilter = s.ui.statusFilter || "all";
+    const typeFilter = s.ui.typeFilter || "all";
+    const nearbyOnly = !!s.ui.nearbyOnly;
+    const maxDistanceM = Number(s.ui.maxDistanceM) || 500;
+    const loc = s.lastKnownLocation;
+
+    return s.hydrants
+        .map((h)=>{
+            const distance = (loc && Number.isFinite(h.lat) && Number.isFinite(h.lon))
+                ? hydDistanceMeters(loc.lat, loc.lon, h.lat, h.lon)
+                : null;
+            return { ...h, distance };
+        })
+        .filter((h)=>{
+            if (statusFilter !== "all" && h.status !== statusFilter) return false;
+            if (typeFilter !== "all" && String(h.typ || "").toLowerCase() !== String(typeFilter).toLowerCase()) return false;
+            if (nearbyOnly && Number.isFinite(h.distance) && h.distance > maxDistanceM) return false;
+            if (!q) return true;
+            const blob = `${h.name} ${h.adresse} ${h.typ} ${h.nennweite} ${h.note}`.toLowerCase();
+            return blob.includes(q);
+        })
+        .sort((a, b)=>{
+            if (Number.isFinite(a.distance) && Number.isFinite(b.distance)) return a.distance - b.distance;
+            if (Number.isFinite(a.distance)) return -1;
+            if (Number.isFinite(b.distance)) return 1;
+            return String(a.name).localeCompare(String(b.name), "de");
+        });
+}
+
+function setHydrantenUiField(field, value){
+    patchHydrantenState((s)=>{ s.ui[field] = value; });
+    renderHydrantenTool();
+}
+
+function selectHydrantById(id){
+    patchHydrantenState((s)=>{ s.ui.selectedId = String(id || ""); });
+    renderHydrantenTool();
+}
+
+function setHydrantenStatus(id, status){
+    patchHydrantenState((s)=>{
+        const idx = s.hydrants.findIndex((h)=>h.id === id);
+        if (idx < 0) return;
+        s.hydrants[idx].status = status;
+        s.hydrants[idx].statusUpdatedAt = new Date().toISOString();
+    });
+    appendHydrantenLog(`Status gesetzt: ${id} -> ${status}`);
+    renderHydrantenTool();
+}
+
+function updateHydrantenNote(id, value){
+    patchHydrantenState((s)=>{
+        const idx = s.hydrants.findIndex((h)=>h.id === id);
+        if (idx < 0) return;
+        s.hydrants[idx].note = String(value || "");
+        s.hydrants[idx].updatedAt = new Date().toISOString();
+    });
+}
+
+function requestHydrantenLocation(){
+    if (!navigator.geolocation){
+        alert("Geolocation wird auf diesem Gerät nicht unterstützt.");
+        return;
+    }
+    navigator.geolocation.getCurrentPosition((pos)=>{
+        patchHydrantenState((s)=>{
+            s.lastKnownLocation = {
+                lat: Number(pos.coords.latitude),
+                lon: Number(pos.coords.longitude),
+                updatedAt: new Date().toISOString()
+            };
+        });
+        renderHydrantenTool();
+    }, ()=>{
+        alert("Standort konnte nicht ermittelt werden.");
+    }, {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 10000
+    });
+}
+
+function triggerHydrantenImport(){
+    const input = document.getElementById("hydrantenImportInput");
+    if (!input) return;
+    input.value = "";
+    input.click();
+}
+
+function importHydrantenTimmendorferStrand(){
+    if (!Array.isArray(HYDRANTEN_TIMMENDORFER_SOURCE) || !HYDRANTEN_TIMMENDORFER_SOURCE.length){
+        alert("Keine Timmendorfer Strand Datenquelle geladen.");
+        return;
+    }
+    const modeRaw = prompt(
+        "Hydranten aus Timmendorfer Strand laden:\n1 = Zusammenführen\n2 = Ersetzen",
+        "1"
+    );
+    if (modeRaw === null) return;
+    const mode = String(modeRaw).trim() === "2" ? "replace" : "merge";
+
+    patchHydrantenState((s)=>{
+        const incoming = HYDRANTEN_TIMMENDORFER_SOURCE.map((item, idx)=>normalizeHydrantenItem(item, idx));
+        if (mode === "replace"){
+            s.hydrants = incoming;
+            s.ui.selectedId = incoming[0] ? incoming[0].id : "";
+            return;
+        }
+        const map = {};
+        s.hydrants.forEach((h)=>{ map[h.id] = h; });
+        incoming.forEach((h)=>{ map[h.id] = h; });
+        s.hydrants = Object.values(map);
+        if (!s.ui.selectedId && s.hydrants.length){
+            s.ui.selectedId = s.hydrants[0].id;
+        }
+    });
+    appendHydrantenLog(`Timmendorfer Strand importiert (${HYDRANTEN_TIMMENDORFER_SOURCE.length} Datensätze, Modus: ${mode === "replace" ? "Ersetzen" : "Zusammenführen"})`);
+    renderHydrantenTool();
+}
+
+function parseHydrantenCsv(text){
+    const rows = String(text || "").split(/\r?\n/).filter((line)=>line.trim().length > 0);
+    if (!rows.length) return [];
+    const delimiter = rows[0].includes(";") ? ";" : ",";
+    const headers = rows[0].split(delimiter).map((x)=>x.trim().toLowerCase());
+    const idx = (names)=>headers.findIndex((h)=>names.includes(h));
+    const iId = idx(["id", "hydrantid", "nummer"]);
+    const iName = idx(["name", "bezeichnung", "hydrant"]);
+    const iAdr = idx(["adresse", "strasse", "straße", "ort"]);
+    const iLat = idx(["lat", "latitude", "breite"]);
+    const iLon = idx(["lon", "lng", "long", "longitude", "laenge", "länge"]);
+    const iTyp = idx(["typ", "type", "hydranttyp"]);
+    const iDn = idx(["nennweite", "dn"]);
+    const iStatus = idx(["status"]);
+    const iNote = idx(["hinweis", "note", "bemerkung"]);
+    const out = [];
+    rows.slice(1).forEach((line, rIdx)=>{
+        const cols = line.split(delimiter).map((x)=>x.trim());
+        const lat = Number(cols[iLat]);
+        const lon = Number(cols[iLon]);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+        out.push(normalizeHydrantenItem({
+            id: iId >= 0 ? cols[iId] : `csv_${Date.now().toString(36)}_${rIdx}`,
+            name: iName >= 0 ? cols[iName] : "",
+            adresse: iAdr >= 0 ? cols[iAdr] : "",
+            lat,
+            lon,
+            typ: iTyp >= 0 ? cols[iTyp] : "Unbekannt",
+            nennweite: iDn >= 0 ? cols[iDn] : "",
+            status: iStatus >= 0 ? cols[iStatus] : "unknown",
+            note: iNote >= 0 ? cols[iNote] : ""
+        }, rIdx));
+    });
+    return out;
+}
+
+function parseHydrantenGeoJson(text){
+    const data = JSON.parse(text);
+    if (!data || !Array.isArray(data.features)) return [];
+    return data.features
+        .map((feature, idx)=>{
+            const geom = feature && feature.geometry ? feature.geometry : null;
+            const props = feature && feature.properties ? feature.properties : {};
+            if (!geom || geom.type !== "Point" || !Array.isArray(geom.coordinates) || geom.coordinates.length < 2) return null;
+            const lon = Number(geom.coordinates[0]);
+            const lat = Number(geom.coordinates[1]);
+            if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+            return normalizeHydrantenItem({
+                id: props.id || props.hydrant_id || props.nummer || `geo_${idx}`,
+                name: props.name || props.bezeichnung || "",
+                adresse: props.adresse || props.strasse || props.strasse_name || props.ort || "",
+                lat,
+                lon,
+                typ: props.typ || props.type || props.hydranttyp || "Unbekannt",
+                nennweite: props.nennweite || props.dn || "",
+                status: props.status || "unknown",
+                note: props.hinweis || props.note || props.bemerkung || ""
+            }, idx);
+        })
+        .filter(Boolean);
+}
+
+async function handleHydrantenImport(event){
+    const file = event && event.target && event.target.files ? event.target.files[0] : null;
+    if (!file) return;
+    try {
+        const text = await file.text();
+        let incoming = [];
+        const lower = String(file.name || "").toLowerCase();
+        if (lower.endsWith(".geojson") || lower.endsWith(".json")){
+            incoming = parseHydrantenGeoJson(text);
+        } else {
+            incoming = parseHydrantenCsv(text);
+        }
+        if (!incoming.length){
+            alert("Keine gültigen Hydranten gefunden.");
+            return;
+        }
+        patchHydrantenState((s)=>{
+            const map = {};
+            s.hydrants.forEach((h)=>{ map[h.id] = h; });
+            incoming.forEach((h)=>{ map[h.id] = h; });
+            s.hydrants = Object.values(map);
+            if (!s.ui.selectedId && s.hydrants.length){
+                s.ui.selectedId = s.hydrants[0].id;
+            }
+        });
+        appendHydrantenLog(`Import: ${incoming.length} Hydranten aus ${file.name}`);
+        renderHydrantenTool();
+    } catch (error){
+        alert(`Import fehlgeschlagen: ${String(error && error.message ? error.message : error)}`);
+    }
+}
+
+function renderHydrantenMap(filtered, selectedId, location){
+    if (!filtered.length){
+        return `<div class="hydrant-map"><div class="lage-empty" style="padding:14px;">Keine Hydranten im Filter.</div></div>`;
+    }
+    const points = filtered.filter((h)=>Number.isFinite(h.lat) && Number.isFinite(h.lon));
+    if (!points.length){
+        return `<div class="hydrant-map"><div class="lage-empty" style="padding:14px;">Hydranten ohne Koordinaten.</div></div>`;
+    }
+    const allLats = points.map((p)=>p.lat);
+    const allLons = points.map((p)=>p.lon);
+    if (location && Number.isFinite(location.lat) && Number.isFinite(location.lon)){
+        allLats.push(location.lat);
+        allLons.push(location.lon);
+    }
+    let minLat = Math.min(...allLats);
+    let maxLat = Math.max(...allLats);
+    let minLon = Math.min(...allLons);
+    let maxLon = Math.max(...allLons);
+    if (maxLat === minLat){ maxLat += 0.001; minLat -= 0.001; }
+    if (maxLon === minLon){ maxLon += 0.001; minLon -= 0.001; }
+    const padLat = (maxLat - minLat) * 0.08;
+    const padLon = (maxLon - minLon) * 0.08;
+    minLat -= padLat; maxLat += padLat; minLon -= padLon; maxLon += padLon;
+    const xPct = (lon)=>((lon - minLon) / (maxLon - minLon)) * 100;
+    const yPct = (lat)=>((maxLat - lat) / (maxLat - minLat)) * 100;
+
+    const markers = points.map((h)=>{
+        const statusClass = h.status === "ok" ? "ok" : (h.status === "warn" ? "warn" : (h.status === "bad" ? "bad" : "unknown"));
+        const active = h.id === selectedId ? "active" : "";
+        return `<button class="hydrant-marker ${statusClass} ${active}" style="left:${xPct(h.lon)}%; top:${yPct(h.lat)}%;" onclick="selectHydrantById('${String(h.id).replace(/'/g, "\\'")}')" title="${escapeHtml(h.name)}"></button>`;
+    }).join("");
+
+    const you = (location && Number.isFinite(location.lat) && Number.isFinite(location.lon))
+        ? `<div class="hydrant-you" style="left:${xPct(location.lon)}%; top:${yPct(location.lat)}%;" title="Eigener Standort"></div>`
+        : "";
+
+    return `<div class="hydrant-map">${markers}${you}</div>`;
+}
+
+function renderHydrantenTool(){
+    const body = document.getElementById("hydrantenBody");
+    if (!body) return;
+    const state = getHydrantenState();
+    const filtered = getHydrantenFiltered(state);
+    const selected = filtered.find((h)=>h.id === state.ui.selectedId) || filtered[0] || null;
+    const selectedId = selected ? selected.id : "";
+    const statusOptions = [
+        { key: "ok", label: "Einsatzbereit" },
+        { key: "warn", label: "Eingeschränkt" },
+        { key: "bad", label: "Defekt/Blockiert" },
+        { key: "unknown", label: "Unbekannt" }
+    ];
+    const typeSet = Array.from(new Set(state.hydrants.map((h)=>String(h.typ || "").trim()).filter(Boolean))).sort((a, b)=>a.localeCompare(b, "de"));
+    const firstActions = selected ? [
+        "Nächsten einsatzbereiten Hydranten nutzen.",
+        "Wasserentnahme schnell absichern und Rückmeldung geben.",
+        "Status sofort dokumentieren (z. B. blockiert/defekt)."
+    ] : [];
+
+    let html = `
+    <div class="atem-panel">
+        <strong>Hydrantenkarte - Ersteinsatz</strong>
+        ${firstActions.length ? `<div class="priority-box" style="margin-top:8px;">${firstActions.map((x)=>`• ${escapeHtml(x)}`).join("<br>")}</div>` : `<div class="lage-empty" style="margin-top:8px;">Noch keine Hydranten geladen.</div>`}
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="requestHydrantenLocation()">Standort aktualisieren</button>
+            <button onclick="importHydrantenTimmendorferStrand()">Timmendorfer Strand laden</button>
+            <button onclick="triggerHydrantenImport()">GeoJSON/CSV importieren</button>
+        </div>
+        <input id="hydrantenImportInput" class="hidden" type="file" accept=".geojson,.json,.csv,text/csv,application/geo+json,application/json" onchange="handleHydrantenImport(event)">
+    </div>
+
+    <div class="atem-panel">
+        <strong>Filter</strong>
+        <div class="atem-grid" style="margin-top:8px;">
+            <div><label>Suche</label><input type="text" value="${escapeHtml(state.ui.search || "")}" placeholder="ID, Straße, Typ..." oninput="setHydrantenUiField('search', this.value)"></div>
+            <div><label>Status</label><select onchange="setHydrantenUiField('statusFilter', this.value)">
+                <option value="all" ${state.ui.statusFilter === "all" ? "selected" : ""}>Alle</option>
+                <option value="ok" ${state.ui.statusFilter === "ok" ? "selected" : ""}>Einsatzbereit</option>
+                <option value="warn" ${state.ui.statusFilter === "warn" ? "selected" : ""}>Eingeschränkt</option>
+                <option value="bad" ${state.ui.statusFilter === "bad" ? "selected" : ""}>Defekt/Blockiert</option>
+                <option value="unknown" ${state.ui.statusFilter === "unknown" ? "selected" : ""}>Unbekannt</option>
+            </select></div>
+            <div><label>Typ</label><select onchange="setHydrantenUiField('typeFilter', this.value)">
+                <option value="all" ${state.ui.typeFilter === "all" ? "selected" : ""}>Alle</option>
+                ${typeSet.map((t)=>`<option value="${escapeHtml(t)}" ${state.ui.typeFilter === t ? "selected" : ""}>${escapeHtml(t)}</option>`).join("")}
+            </select></div>
+            <div><label>Nur in Nähe (m)</label><input type="number" min="50" step="50" value="${escapeHtml(String(state.ui.maxDistanceM || 500))}" oninput="setHydrantenUiField('maxDistanceM', Number(this.value)||500)"></div>
+            <div class="atem-col-full"><label class="social-force-item"><input type="checkbox" ${state.ui.nearbyOnly ? "checked" : ""} onchange="setHydrantenUiField('nearbyOnly', this.checked)"> Nur Hydranten innerhalb Distanz</label></div>
+        </div>
+    </div>
+
+    <div class="atem-panel">
+        <strong>Karte</strong>
+        <div class="psu-meta" style="margin-top:6px;">Treffer: ${filtered.length}${state.lastKnownLocation ? ` · Standort: ${escapeHtml(new Date(state.lastKnownLocation.updatedAt || Date.now()).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}))}` : ""}</div>
+        <div style="margin-top:8px;">${renderHydrantenMap(filtered, selectedId, state.lastKnownLocation)}</div>
+    </div>
+    `;
+
+    html += `<div class="atem-panel"><strong>Hydrantenliste</strong><div class="hydrant-list" style="margin-top:8px;">`;
+    if (!filtered.length){
+        html += `<div class="lage-empty">Keine Hydranten gefunden.</div>`;
+    } else {
+        filtered.slice(0, 120).forEach((h)=>{
+            const active = h.id === selectedId;
+            html += `<div class="hydrant-item ${active ? "trainer-info-box" : ""}">
+                <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+                    <strong>${escapeHtml(h.name || h.id)}</strong>
+                    <button style="width:auto;margin:0;" onclick="selectHydrantById('${String(h.id).replace(/'/g, "\\'")}')">Auswählen</button>
+                </div>
+                <div class="psu-meta">${escapeHtml(h.adresse || "-")} · ${escapeHtml(h.typ || "Unbekannt")}${h.nennweite ? ` · DN ${escapeHtml(h.nennweite)}` : ""}${Number.isFinite(h.distance) ? ` · ${escapeHtml(formatHydDist(h.distance))}` : ""}</div>
+            </div>`;
+        });
+    }
+    html += `</div></div>`;
+
+    if (selected){
+        html += `<div class="atem-panel">
+            <strong>Hydrant-Details</strong>
+            <div class="atem-grid" style="margin-top:8px;">
+                <div><label>ID/Name</label><div class="weather-value">${escapeHtml(selected.name || selected.id)}</div></div>
+                <div><label>Adresse</label><div class="weather-value">${escapeHtml(selected.adresse || "-")}</div></div>
+                <div><label>Typ</label><div class="weather-value">${escapeHtml(selected.typ || "-")}</div></div>
+                <div><label>Entfernung</label><div class="weather-value">${escapeHtml(formatHydDist(selected.distance))}</div></div>
+            </div>
+            <div class="atem-row-actions" style="margin-top:8px;">
+                ${statusOptions.map((opt)=>`<button class="${selected.status === opt.key ? "active-yes" : ""}" onclick="setHydrantenStatus('${String(selected.id).replace(/'/g, "\\'")}','${opt.key}')">${opt.label}</button>`).join("")}
+            </div>
+            <div style="margin-top:8px;">
+                <label>Notiz</label>
+                <textarea oninput="updateHydrantenNote('${String(selected.id).replace(/'/g, "\\'")}', this.value)">${escapeHtml(selected.note || "")}</textarea>
+            </div>
+        </div>`;
+    }
+
+    body.innerHTML = html;
+}
+
+function openHydrantenOverlay(){
+    const overlay = document.getElementById("hydrantenOverlay");
+    if (!overlay) return;
+    lastHydrantenFocus = document.activeElement;
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    renderHydrantenTool();
+}
+
+function closeHydrantenOverlay(){
+    const overlay = document.getElementById("hydrantenOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    if (lastHydrantenFocus && typeof lastHydrantenFocus.focus === "function"){
+        lastHydrantenFocus.focus();
+    }
+}
+
+function handleHydrantenOverlayBackdrop(event){
+    if (event.target && event.target.id === "hydrantenOverlay"){
+        closeHydrantenOverlay();
+    }
+}
+
+function isHydrantenOverlayOpen(){
+    const overlay = document.getElementById("hydrantenOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function trapFocusInHydrantenOverlay(event){
+    if (event.key !== "Tab" || !isHydrantenOverlayOpen()) return;
+    const overlay = document.getElementById("hydrantenOverlay");
+    if (!overlay) return;
+    const focusable = overlay.querySelectorAll("button, [href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])");
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first){
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && document.activeElement === last){
+        event.preventDefault();
+        first.focus();
+    }
+}
+
+document.addEventListener("keydown", (event)=>{
+    if (!isHydrantenOverlayOpen()) return;
+    if (event.key === "Escape"){
+        closeHydrantenOverlay();
+        return;
+    }
+    trapFocusInHydrantenOverlay(event);
+});
+
 function openSettingsOverlay(){
     const overlay = document.getElementById("settingsOverlay");
     if (!overlay) return;
@@ -6051,7 +6753,7 @@ function closeSettingsOverlay(){
     const overlay = document.getElementById("settingsOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastSettingsFocus && typeof lastSettingsFocus.focus === "function"){
         lastSettingsFocus.focus();
@@ -6544,7 +7246,7 @@ function closeDangerOverlay(){
     const overlay = document.getElementById("dangerOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastDangerFocus && typeof lastDangerFocus.focus === "function"){
         lastDangerFocus.focus();
@@ -6768,7 +7470,7 @@ function closeStructureOverlay(){
     if (!overlay) return;
     overlay.classList.remove("show");
     hideStructureForm();
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastStructureFocus && typeof lastStructureFocus.focus === "function"){
         lastStructureFocus.focus();
@@ -8010,7 +8712,7 @@ function closeLageOverlay(){
     if (!overlay) return;
     overlay.classList.remove("show");
     hideStructureForm();
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lageTimerId){
         clearInterval(lageTimerId);
@@ -8246,7 +8948,7 @@ function closePsuOverlay(){
     const overlay = document.getElementById("psuOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastPsuFocus && typeof lastPsuFocus.focus === "function"){
         lastPsuFocus.focus();
@@ -9642,7 +10344,7 @@ function closeSocialOverlay(){
     const overlay = document.getElementById("socialOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastSocialFocus && typeof lastSocialFocus.focus === "function"){
         lastSocialFocus.focus();
@@ -9871,7 +10573,7 @@ function closeEinsatzOverlay(){
     const overlay = document.getElementById("einsatzOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastEinsatzFocus && typeof lastEinsatzFocus.focus === "function"){
         lastEinsatzFocus.focus();
@@ -10865,7 +11567,7 @@ function closeAtemOverlayASU2(){
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastAtemFocus && typeof lastAtemFocus.focus === "function"){
         lastAtemFocus.focus();
@@ -12852,7 +13554,7 @@ function closeAtemOverlay(){
     asuDismissPressurePrompt();
     asuCloseWaypointPrompt();
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (!keepLocked){
         asuStopTickers();
@@ -13417,9 +14119,126 @@ const GEFAHRGUT_NACHFORDERUNG = [
     "Umweltbehörde/Ordnungsamt"
 ];
 
+const GEFAHRGUT_UN_SIGNS = {
+    entzuendlich: { icon: "🔥", label: "Entzündlich" },
+    giftig: { icon: "☠️", label: "Giftig" },
+    aetzend: { icon: "🧪", label: "Ätzend" },
+    gas: { icon: "🫧", label: "Gas unter Druck" },
+    oxidierend: { icon: "🟡", label: "Oxidierend" },
+    explosiv: { icon: "💥", label: "Explosiv" },
+    umwelt: { icon: "🌿", label: "Umweltgefährlich" },
+    gesundheit: { icon: "⚠️", label: "Gesundheitsschädlich" }
+};
+const GEFAHRGUT_ERI_SEARCH_URL = "https://www.ericards.net/psp/ericards.psp_search?lang=3";
+let GEFAHRGUT_ERI_MAP = (typeof window !== "undefined" && window.GEFAHRGUT_ERI_MAP_DATA && typeof window.GEFAHRGUT_ERI_MAP_DATA === "object")
+    ? window.GEFAHRGUT_ERI_MAP_DATA
+    : {};
+
+const GEFAHRGUT_UN_CATALOG_FALLBACK = {
+    "1005": {
+        stoff: "AMMONIAK, WASSERFREI",
+        typ: "Gas",
+        giftig: "Ja",
+        adrKlasse: "2",
+        adrGefahrzettel: "2.3 / 8",
+        klassifizierung: "2TC",
+        verpackungsgruppe: "-",
+        gefahrnummer: "268",
+        eriCard: "2-13",
+        eriUrl: "https://www.ericards.net/index.php?lang=DE",
+        signs: ["giftig", "aetzend", "gas", "gesundheit"]
+    },
+    "1017": {
+        stoff: "CHLOR",
+        typ: "Gas",
+        giftig: "Ja",
+        adrKlasse: "2",
+        adrGefahrzettel: "2.3 / 5.1 / 8",
+        klassifizierung: "2TOC",
+        verpackungsgruppe: "-",
+        gefahrnummer: "265",
+        eriCard: "2-20",
+        eriUrl: "https://www.ericards.net/index.php?lang=DE",
+        signs: ["giftig", "oxidierend", "aetzend", "gas", "umwelt"]
+    },
+    "1090": {
+        stoff: "ACETON",
+        typ: "Flüssigkeit",
+        giftig: "Nein",
+        adrKlasse: "3",
+        adrGefahrzettel: "3",
+        klassifizierung: "F1",
+        verpackungsgruppe: "II",
+        gefahrnummer: "33",
+        eriCard: "3-09",
+        eriUrl: "https://www.ericards.net/index.php?lang=DE",
+        signs: ["entzuendlich", "gesundheit"]
+    },
+    "1202": {
+        stoff: "DIESELKRAFTSTOFF oder HEIZÖL, LEICHT",
+        typ: "Flüssigkeit",
+        giftig: "Nein",
+        adrKlasse: "3",
+        adrGefahrzettel: "3",
+        klassifizierung: "F1",
+        verpackungsgruppe: "III",
+        gefahrnummer: "30",
+        eriCard: "3-30",
+        eriUrl: "https://www.ericards.net/index.php?lang=DE",
+        signs: ["entzuendlich", "umwelt"]
+    },
+    "1203": {
+        stoff: "BENZIN oder OTTOKRAFTSTOFF",
+        typ: "Flüssigkeit",
+        giftig: "Nein",
+        adrKlasse: "3",
+        adrGefahrzettel: "3",
+        klassifizierung: "F1",
+        verpackungsgruppe: "II",
+        gefahrnummer: "33",
+        eriCard: "3-35",
+        eriUrl: "https://www.ericards.net/index.php?lang=DE",
+        signs: ["entzuendlich", "gesundheit", "umwelt"]
+    },
+    "1208": {
+        stoff: "HEXANE",
+        typ: "Flüssigkeit",
+        giftig: "Nein",
+        adrKlasse: "3",
+        adrGefahrzettel: "3",
+        klassifizierung: "F1",
+        verpackungsgruppe: "II",
+        gefahrnummer: "33",
+        eriCard: "3-39",
+        eriUrl: "https://www.ericards.net/index.php?lang=DE",
+        signs: ["entzuendlich", "gesundheit", "umwelt"]
+    },
+    "1965": {
+        stoff: "KOHLENWASSERSTOFFGAS, GEMISCH, VERFLÜSSIGT, N.A.G. (z. B. GEMISCHE A, A01, A02, A0, A1, B1, B2, B oder C)",
+        typ: "Gas",
+        giftig: "Nein",
+        adrKlasse: "2",
+        adrGefahrzettel: "2.1",
+        klassifizierung: "2F",
+        verpackungsgruppe: "-",
+        gefahrnummer: "23",
+        eriCard: "2-07",
+        eriUrl: "https://www.ericards.net/index.php?lang=DE",
+        signs: ["entzuendlich", "gas"]
+    }
+};
+let GEFAHRGUT_UN_CATALOG = {
+    ...GEFAHRGUT_UN_CATALOG_FALLBACK,
+    ...((typeof window !== "undefined" && window.GEFAHRGUT_UN_CATALOG_DATA && typeof window.GEFAHRGUT_UN_CATALOG_DATA === "object")
+        ? window.GEFAHRGUT_UN_CATALOG_DATA
+        : {})
+};
+let gefahrgutCatalogLoadPromise = null;
+
 function getDefaultGefahrgutState(){
     return {
         type: "unknown",
+        unNumber: "",
         stoff: "",
         kennzeichen: "",
         beobachtung: "",
@@ -13442,6 +14261,7 @@ function ensureGefahrgutState(){
     if (!gefahrgutState.flags) gefahrgutState.flags = {};
     if (!Array.isArray(gefahrgutState.log)) gefahrgutState.log = [];
     if (!gefahrgutState.dekon) gefahrgutState.dekon = "unbekannt";
+    gefahrgutState.unNumber = String(gefahrgutState.unNumber || "").replace(/\D/g, "").slice(0, 4);
     return gefahrgutState;
 }
 
@@ -13486,6 +14306,9 @@ function openGefahrgutOverlay(){
     o.classList.add("show");
     document.body.style.overflow = "hidden";
     renderGefahrgutTool();
+    loadGefahrgutUnCatalog().then(()=>{
+        if (isGefahrgutOverlayOpen()) renderGefahrgutTool();
+    });
 }
 
 function closeGefahrgutOverlay(){
@@ -13532,6 +14355,142 @@ function setGefahrgutDekon(value){
 
 function updateGefahrgutField(field, value){ patchGefahrgut((s)=>{ s[field] = value || ""; }); }
 
+function normalizeGefahrgutUN(value){
+    return String(value || "").replace(/\D/g, "").slice(0, 4);
+}
+
+function loadGefahrgutUnCatalog(){
+    if (gefahrgutCatalogLoadPromise) return gefahrgutCatalogLoadPromise;
+    if (typeof window !== "undefined" && window.GEFAHRGUT_UN_CATALOG_DATA && typeof window.GEFAHRGUT_UN_CATALOG_DATA === "object"){
+        GEFAHRGUT_UN_CATALOG = { ...GEFAHRGUT_UN_CATALOG_FALLBACK, ...window.GEFAHRGUT_UN_CATALOG_DATA };
+        gefahrgutCatalogLoadPromise = Promise.resolve(GEFAHRGUT_UN_CATALOG);
+        return gefahrgutCatalogLoadPromise;
+    }
+    gefahrgutCatalogLoadPromise = fetch("gefahrgut_un_catalog.json", { cache: "no-cache" })
+        .then((res)=>{
+            if (!res || !res.ok) throw new Error(`HTTP ${res ? res.status : "?"}`);
+            return res.json();
+        })
+        .then((data)=>{
+            if (data && typeof data === "object"){
+                GEFAHRGUT_UN_CATALOG = { ...GEFAHRGUT_UN_CATALOG_FALLBACK, ...data };
+            }
+            return GEFAHRGUT_UN_CATALOG;
+        })
+        .catch(()=>{
+            GEFAHRGUT_UN_CATALOG = { ...GEFAHRGUT_UN_CATALOG_FALLBACK };
+            return GEFAHRGUT_UN_CATALOG;
+        });
+    return gefahrgutCatalogLoadPromise;
+}
+
+function getGefahrgutUnRecord(unNumber){
+    const key = normalizeGefahrgutUN(unNumber);
+    if (!key || key.length !== 4) return null;
+    return GEFAHRGUT_UN_CATALOG[key] || null;
+}
+
+function normalizeHIN(value){
+    return String(value || "").replace(/\D/g, "");
+}
+
+function getGefahrgutEriEntry(unNumber, gefahrnummer){
+    const un = normalizeGefahrgutUN(unNumber);
+    if (!un || un.length !== 4) return null;
+    const rows = Array.isArray(GEFAHRGUT_ERI_MAP[un]) ? GEFAHRGUT_ERI_MAP[un] : [];
+    if (!rows.length) return null;
+
+    const hin = normalizeHIN(gefahrnummer);
+    if (hin){
+        const exact = rows.find((row)=>normalizeHIN(row.hin) === hin);
+        if (exact) return exact;
+    }
+    const starred = rows.find((row)=>String(row.hin || "").includes("*"));
+    return starred || rows[0];
+}
+
+function buildGefahrgutQuickActions(record){
+    if (!record) return [];
+    const actions = [];
+    const cls = String(record.adrKlasse || "");
+    const signs = Array.isArray(record.signs) ? record.signs : [];
+    const has = (key)=>signs.includes(key);
+    if (has("giftig")) actions.push("Atemschutz + Bereich großzügig absperren, Menschen sofort aus Windrichtung führen.");
+    if (has("aetzend")) actions.push("Haut-/Augenkontakt strikt vermeiden, Dekon früh vorbereiten.");
+    if (has("entzuendlich")) actions.push("Alle Zündquellen ausschließen, Motoren/Funkenquellen stoppen.");
+    if (has("gas")) actions.push("Tiefpunkte/Keller beachten, Ausbreitung in Senken kontrollieren.");
+    if (cls.startsWith("2")) actions.push("Druckbehälter kühlen und Sicherheitsabstand einhalten.");
+    if (cls.startsWith("3")) actions.push("Flüssigkeitsaustritt eindämmen und Kanalisation schützen.");
+    if (cls.startsWith("8")) actions.push("Korrosionsgefahr beachten, nur geeignete Schutzmittel verwenden.");
+    if (cls.startsWith("6.1")) actions.push("Kontaktzeiten minimieren, klare Hot/Warm/Cold-Zonen setzen.");
+    if (!actions.length) actions.push("Eigenschutz priorisieren, Stoffinformationen verifizieren, Lage strukturiert melden.");
+    return actions.slice(0, 3);
+}
+
+function setGefahrgutUN(value){
+    const next = normalizeGefahrgutUN(value);
+    const state = ensureGefahrgutState();
+    const previous = normalizeGefahrgutUN(state.unNumber || "");
+    patchGefahrgut((s)=>{ s.unNumber = next; });
+
+    if (next.length === 4 && next !== previous){
+        const record = getGefahrgutUnRecord(next);
+        if (record){
+            patchGefahrgut((s)=>{
+                if (!s.stoff || !s.stoff.trim()){
+                    s.stoff = record.stoff || s.stoff;
+                }
+                if (!s.kennzeichen || /^UN\s*\d{4}$/i.test(s.kennzeichen.trim())){
+                    s.kennzeichen = `UN ${next}`;
+                }
+            });
+            appendGefahrgutLog("UN", `UN ${next}: ${record.stoff}`);
+            showGefahrgutHint(`UN ${next} erkannt: ${record.stoff}`);
+        } else {
+            appendGefahrgutLog("UN", `UN ${next}: Kein lokaler Treffer`);
+            showGefahrgutHint(`UN ${next} nicht im lokalen Katalog`);
+        }
+    }
+
+    renderGefahrgutTool();
+}
+
+function pushGefahrgutUNDigit(digit){
+    const state = ensureGefahrgutState();
+    const current = normalizeGefahrgutUN(state.unNumber || "");
+    if (current.length >= 4) return;
+    setGefahrgutUN(`${current}${String(digit ?? "").replace(/\D/g, "")}`);
+}
+
+function backspaceGefahrgutUN(){
+    const state = ensureGefahrgutState();
+    const current = normalizeGefahrgutUN(state.unNumber || "");
+    if (!current) return;
+    setGefahrgutUN(current.slice(0, -1));
+}
+
+function clearGefahrgutUN(){
+    setGefahrgutUN("");
+}
+
+function openGefahrgutEriCard(){
+    const unNumber = normalizeGefahrgutUN(ensureGefahrgutState().unNumber || "");
+    if (!unNumber || unNumber.length !== 4){
+        showGefahrgutHint("Bitte zuerst 4-stellige UN-Nummer eingeben");
+        return;
+    }
+    const record = getGefahrgutUnRecord(unNumber);
+    const eriEntry = getGefahrgutEriEntry(unNumber, record && record.gefahrnummer ? record.gefahrnummer : "");
+    const url = eriEntry && eriEntry.subkey
+        ? `https://www.ericards.net/psp/ericards.psp_ericard?lang=3&subkey=${encodeURIComponent(eriEntry.subkey)}`
+        : `https://www.ericards.net/psp/ericards.psp_search_result?lang=3&unnumber=${encodeURIComponent(unNumber)}`;
+    const popup = window.open(url, "_blank", "noopener,noreferrer");
+    if (!popup){
+        window.location.href = url;
+    }
+    appendGefahrgutLog("ERI", `ERI-Card geöffnet (UN ${unNumber}${eriEntry && eriEntry.subkey ? `, Subkey ${eriEntry.subkey}` : ""})`);
+}
+
 function setGefahrgutType(type){
     patchGefahrgut((s)=>{ s.type = type; });
     appendGefahrgutLog("SZENARIO", `Schnellauswahl: ${GEFAHRGUT_SCENARIOS[type]?.label || type}`);
@@ -13546,6 +14505,7 @@ function resetGefahrgut(){
 
 function getGefahrgutOpenPoints(state){
     const points = [];
+    if (!state.unNumber || String(state.unNumber).length !== 4) points.push("UN-Nummer unvollständig");
     if (!state.stoff) points.push("Stoff unklar");
     if (!state.kennzeichen) points.push("Kennzeichen unklar");
     if (state.flags.windUnklar) points.push("Windrichtung unklar");
@@ -13557,6 +14517,8 @@ function getGefahrgutOpenPoints(state){
 function buildGefahrgutMessage(){
     const s = ensureGefahrgutState();
     const scenario = GEFAHRGUT_SCENARIOS[s.type] || GEFAHRGUT_SCENARIOS.unknown;
+    const unNumber = normalizeGefahrgutUN(s.unNumber || "");
+    const record = getGefahrgutUnRecord(unNumber);
     const activeFlags = GEFAHRGUT_FLAGS.filter((flag)=>s.flags[flag.key]).map((flag)=>flag.label);
     const erledigt = Object.keys(s.checks || {}).filter((k)=>s.checks[k]).join(", ") || "-";
     const nachforderungen = (s.log || [])
@@ -13567,9 +14529,11 @@ function buildGefahrgutMessage(){
 
     return `Gefahrgut Führungsassistent
 Lage: ${scenario.label}
+UN-Nummer: ${unNumber || "-"}
 Stoff: ${s.stoff || "-"}
 Kennzeichen: ${s.kennzeichen || "-"}
 Beobachtung: ${s.beobachtung || "-"}
+${record ? `ADR Klasse: ${record.adrKlasse || "-"} | ADR-Zettel: ${record.adrGefahrzettel || "-"} | Verpackungsgruppe: ${record.verpackungsgruppe || "-"}` : ""}
 
 Gesichert / erkannt:
 ${activeFlags.length ? activeFlags.map((f)=>`- ${f}`).join("\n") : "- Keine Flags gesetzt"}
@@ -13645,11 +14609,91 @@ function renderGefahrgutTool(){
     if (!body) return;
     const s = ensureGefahrgutState();
     const scenario = GEFAHRGUT_SCENARIOS[s.type] || GEFAHRGUT_SCENARIOS.unknown;
+    const unNumber = normalizeGefahrgutUN(s.unNumber || "");
+    const unRecord = getGefahrgutUnRecord(unNumber);
+    const eriEntry = getGefahrgutEriEntry(unNumber, unRecord && unRecord.gefahrnummer ? unRecord.gefahrnummer : "");
+    const quickActions = buildGefahrgutQuickActions(unRecord);
+    const unSignsHtml = unRecord && Array.isArray(unRecord.signs)
+        ? unRecord.signs
+            .map((key)=>{
+                const meta = GEFAHRGUT_UN_SIGNS[key] || { icon: "⚠️", label: key };
+                return `<span class="gg-un-sign">${meta.icon} ${escapeHtml(meta.label)}</span>`;
+            })
+            .join("")
+        : "";
     const message = buildGefahrgutMessage();
 
     let html = `<div id="gefahrgutHint" class="social-hint hidden"></div>
     <div class="atem-panel">
-        <div class="atem-row-actions">`;
+        <strong>Orange Gefahrentafel: UN-Nummer eingeben</strong>
+        <div class="gg-un-card" style="margin-top:8px;">
+            <div class="gg-un-row">
+                <div class="gg-un-value">${escapeHtml(unRecord?.gefahrnummer || "---")}</div>
+                <div class="gg-un-label">Gefahrnummer (oben)</div>
+            </div>
+            <div class="gg-un-row">
+                <div class="gg-un-value">${escapeHtml(unNumber || "----")}</div>
+                <div class="gg-un-label">UN-Nummer (unten)</div>
+            </div>
+        </div>
+        <input
+            class="gg-un-input"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="4"
+            placeholder="UN"
+            value="${escapeHtml(unNumber)}"
+            oninput="setGefahrgutUN(this.value)"
+            aria-label="UN Nummer Eingabe">
+        <div class="gg-un-keypad">
+            <button onclick="pushGefahrgutUNDigit(1)">1</button>
+            <button onclick="pushGefahrgutUNDigit(2)">2</button>
+            <button onclick="pushGefahrgutUNDigit(3)">3</button>
+            <button onclick="pushGefahrgutUNDigit(4)">4</button>
+            <button onclick="pushGefahrgutUNDigit(5)">5</button>
+            <button onclick="pushGefahrgutUNDigit(6)">6</button>
+            <button onclick="pushGefahrgutUNDigit(7)">7</button>
+            <button onclick="pushGefahrgutUNDigit(8)">8</button>
+            <button onclick="pushGefahrgutUNDigit(9)">9</button>
+            <button onclick="clearGefahrgutUN()">C</button>
+            <button onclick="pushGefahrgutUNDigit(0)">0</button>
+            <button onclick="backspaceGefahrgutUN()">⌫</button>
+        </div>`;
+
+    if (!unNumber || unNumber.length < 4){
+        html += `<div class="links-box" style="margin-top:10px;">4-stellige UN-Nummer eingeben, dann werden Stoffdaten und ERI-Hinweise angezeigt.</div>`;
+    } else if (!unRecord){
+        html += `<div class="links-box" style="margin-top:10px;">Für UN ${escapeHtml(unNumber)} liegt lokal noch kein Datensatz vor. Bitte ERI-Card/Hommel prüfen.</div>`;
+    } else {
+        html += `
+        <div class="gg-un-data">
+            <div style="font-weight:900; font-size:18px;">${escapeHtml(unRecord.stoff || "-")}</div>
+            <div class="priority-box" style="margin-top:8px;">
+                <strong>Ersteinsatz - Wichtig</strong><br>
+                ${quickActions.map((line)=>`• ${escapeHtml(line)}`).join("<br>")}
+            </div>
+            ${Array.isArray(unRecord.aliases) && unRecord.aliases.length ? `<div style="margin-top:4px; font-size:12px; color:var(--text-muted);"><strong>Alternative Bezeichnungen:</strong> ${escapeHtml(unRecord.aliases.slice(0, 4).join(" | "))}${unRecord.aliases.length > 4 ? " ..." : ""}</div>` : ""}
+            <div class="gg-un-grid" style="margin-top:8px;">
+                <div class="gg-un-item"><label>Giftig</label>${escapeHtml(unRecord.giftig || "-")}</div>
+                <div class="gg-un-item"><label>ADR Gefahrzettel</label>${escapeHtml(unRecord.adrGefahrzettel || "-")}</div>
+                <div class="gg-un-item"><label>ADR Klasse</label>${escapeHtml(unRecord.adrKlasse || "-")}</div>
+                <div class="gg-un-item"><label>Klassifizierung</label>${escapeHtml(unRecord.klassifizierung || "-")}</div>
+                <div class="gg-un-item"><label>Typ</label>${escapeHtml(unRecord.typ || "-")}</div>
+                <div class="gg-un-item"><label>Verpackungsgruppe</label>${escapeHtml(unRecord.verpackungsgruppe || "-")}</div>
+                <div class="gg-un-item"><label>ERI-Card</label>${escapeHtml((eriEntry && eriEntry.eric) || unRecord.eriCard || "-")}</div>
+                <div class="gg-un-item"><label>Gefahrnummer</label>${escapeHtml(unRecord.gefahrnummer || "-")}</div>
+            </div>
+            <div class="gg-un-signs">${unSignsHtml}</div>
+            <div class="atem-row-actions" style="margin-top:10px;">
+                <button onclick="openGefahrgutEriCard()">ERI-Card direkt öffnen</button>
+            </div>
+        </div>`;
+    }
+
+    html += `</div>
+    <div class="atem-panel">
+        <strong>Schnelllage / Maßnahmenassistent</strong>
+        <div class="atem-row-actions" style="margin-top:8px;">`;
 
     Object.entries(GEFAHRGUT_SCENARIOS).forEach(([key, val])=>{
         html += `<button class="${s.type===key?"active-yes":""}" onclick="setGefahrgutType('${key}')">${val.label}</button>`;
@@ -13819,7 +14863,7 @@ function getActiveEvakSession(){ const st=ensureEvakState(); let s=st.sessions.f
 function touchEvak(){ const s=getActiveEvakSession(); if(!s) return; s.updatedAt=nowIso(); debounceSave(saveEvakState,"evakSaveTimer"); }
 
 function openEvakOverlay(){ const o=document.getElementById("evakOverlay"); if(!o) return; lastEvakFocus=document.activeElement; ensureEvakState(); o.classList.add("show"); document.body.style.overflow="hidden"; renderEvakTool(); }
-function closeEvakOverlay(){ const o=document.getElementById("evakOverlay"); if(!o) return; o.classList.remove("show"); const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen(); document.body.style.overflow = keepLocked ? "hidden" : ""; if(lastEvakFocus&&typeof lastEvakFocus.focus==="function") lastEvakFocus.focus(); }
+function closeEvakOverlay(){ const o=document.getElementById("evakOverlay"); if(!o) return; o.classList.remove("show"); const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen(); document.body.style.overflow = keepLocked ? "hidden" : ""; if(lastEvakFocus&&typeof lastEvakFocus.focus==="function") lastEvakFocus.focus(); }
 function handleEvakOverlayBackdrop(event){ if(event.target&&event.target.id==="evakOverlay") closeEvakOverlay(); }
 function isEvakOverlayOpen(){ const o=document.getElementById("evakOverlay"); return !!o&&o.classList.contains("show"); }
 function trapFocusInEvakOverlay(event){ if(event.key!=="Tab"||!isEvakOverlayOpen()) return; const o=document.getElementById("evakOverlay"); if(!o) return; const f=o.querySelectorAll("button,[href],input,select,textarea,summary,[tabindex]:not([tabindex='-1'])"); if(!f.length) return; const first=f[0], last=f[f.length-1]; if(event.shiftKey&&document.activeElement===first){event.preventDefault(); last.focus();} else if(!event.shiftKey&&document.activeElement===last){event.preventDefault(); first.focus();}}
@@ -14741,7 +15785,7 @@ function closePresseOverlay(){
     const o = document.getElementById("presseOverlay");
     if (!o) return;
     o.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastPresseFocus && typeof lastPresseFocus.focus === "function") lastPresseFocus.focus();
 }
@@ -15023,7 +16067,7 @@ function closeFunkOverlay(){
     const overlay = document.getElementById("funkOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastFunkFocus && typeof lastFunkFocus.focus === "function"){
         lastFunkFocus.focus();
@@ -15855,28 +16899,46 @@ function renderPolKripoForm(){
 const EINSATZ_KRAEFTE_STORAGE_KEY = "einsatz_kraefte_funkrufnamen_v1";
 const EINSATZ_STATUS_OPTIONS = ["Alarmiert", "Ausgerückt", "Eingetroffen", "Frei"];
 const FUNKRUFNAMEN_FAHRZEUGE = [
-    { id: "ts_hlf", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/48/02", hinweis: "" },
-    { id: "ts_elw", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "Fl. OH 89/11/01", hinweis: "" },
-    { id: "ts_mtw", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "Fl. OH 89/19/01", hinweis: "" },
-    { id: "tdf_dlk", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "DLK 23/12", fahrzeugtyp: "DLK", funkrufname: "Fl. OH 89/32/01", hinweis: "" },
-    { id: "ni_hlf", gemeinde: "Niendorf", organisation: "FF Niendorf/Ostsee", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/48/03", hinweis: "" },
-    { id: "ni_lf", gemeinde: "Niendorf", organisation: "FF Niendorf/Ostsee", fahrzeugBezeichnung: "LF 10", fahrzeugtyp: "LF", funkrufname: "Fl. OH 89/43/01", hinweis: "" },
-    { id: "ni_mtw", gemeinde: "Niendorf", organisation: "FF Niendorf/Ostsee", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "Fl. OH 89/19/02", hinweis: "" },
-    { id: "sb_hlf", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/48/01", hinweis: "" },
-    { id: "sb_lf", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "LF 20 KatS", fahrzeugtyp: "LF", funkrufname: "Fl. OH 89/44/01", hinweis: "KatS" },
-    { id: "sb_elw", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "Fl. OH 89/11/02", hinweis: "" },
-    { id: "hf_hlf", gemeinde: "Haffkrug", organisation: "FF Haffkrug", fahrzeugBezeichnung: "HLF 10", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/47/01", hinweis: "" },
-    { id: "hf_tlf", gemeinde: "Haffkrug", organisation: "FF Haffkrug", fahrzeugBezeichnung: "TLF 3000", fahrzeugtyp: "TLF", funkrufname: "Fl. OH 89/24/01", hinweis: "" },
-    { id: "po_lf", gemeinde: "Pönitz", organisation: "FF Pönitz", fahrzeugBezeichnung: "LF 10", fahrzeugtyp: "LF", funkrufname: "Fl. OH 89/42/01", hinweis: "" },
-    { id: "po_mtw", gemeinde: "Pönitz", organisation: "FF Pönitz", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "Fl. OH 89/19/03", hinweis: "" },
-    { id: "gt_hlf", gemeinde: "Groß Timmendorf", organisation: "FF Groß Timmendorf", fahrzeugBezeichnung: "HLF 10", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 89/46/01", hinweis: "" },
-    { id: "gt_mlf", gemeinde: "Groß Timmendorf", organisation: "FF Groß Timmendorf", fahrzeugBezeichnung: "MLF", fahrzeugtyp: "MLF", funkrufname: "Fl. OH 89/40/01", hinweis: "" },
-    { id: "rk_elw", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "Fl. OH 88/11/01", hinweis: "" },
-    { id: "rk_hlf", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "Fl. OH 88/48/01", hinweis: "" },
-    { id: "rk_rw", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "RW", fahrzeugtyp: "RW", funkrufname: "Fl. OH 88/52/01", hinweis: "" },
-    { id: "rk_gwl", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "GW-L", fahrzeugtyp: "GW", funkrufname: "Fl. OH 88/64/01", hinweis: "Logistik" },
-    { id: "ls_tel", gemeinde: "Kreis Ostholstein", organisation: "TEL Kreis OH", fahrzeugBezeichnung: "TEL-Führung", fahrzeugtyp: "TEL", funkrufname: "Fl. OH 80/11/01", hinweis: "TEL" },
-    { id: "drk_drohne", gemeinde: "Kreis Ostholstein", organisation: "DRK OH Drohnengruppe", fahrzeugBezeichnung: "Drohneneinheit", fahrzeugtyp: "Drohne", funkrufname: "DRK Drohne 1", hinweis: "" }
+    { id: "xlsx_2", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "GWF KdoW", fahrzeugtyp: "KdoW", funkrufname: "80/10/01", hinweis: "" },
+    { id: "xlsx_3", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "HLF 20/20", fahrzeugtyp: "HLF", funkrufname: "80/48/02", hinweis: "" },
+    { id: "xlsx_4", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "HLF 10/20", fahrzeugtyp: "HLF", funkrufname: "80/48/01", hinweis: "" },
+    { id: "xlsx_5", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "TKM 30", fahrzeugtyp: "TKM", funkrufname: "80/36/01", hinweis: "" },
+    { id: "xlsx_6", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "RW 1", fahrzeugtyp: "RW", funkrufname: "80/50/01", hinweis: "" },
+    { id: "xlsx_7", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "80/18/01", hinweis: "" },
+    { id: "xlsx_9", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "GWF KdoW", fahrzeugtyp: "KdoW", funkrufname: "86/10/01", hinweis: "" },
+    { id: "xlsx_10", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "86/48/02", hinweis: "" },
+    { id: "xlsx_11", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "HLF 10", fahrzeugtyp: "HLF", funkrufname: "86/47/02", hinweis: "" },
+    { id: "xlsx_12", gemeinde: "Ratekau", organisation: "FF Ratekau", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "86/18/02", hinweis: "" },
+    { id: "xlsx_14", gemeinde: "Pansdorf", organisation: "FF Pansdorf", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "86/11/01", hinweis: "" },
+    { id: "xlsx_15", gemeinde: "Pansdorf", organisation: "FF Pansdorf", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "86/48/01", hinweis: "" },
+    { id: "xlsx_16", gemeinde: "Pansdorf", organisation: "FF Pansdorf", fahrzeugBezeichnung: "HLF 10 Bahn", fahrzeugtyp: "HLF Bahn", funkrufname: "86/46/01", hinweis: "" },
+    { id: "xlsx_18", gemeinde: "Luschendorf", organisation: "FF Luschendorf", fahrzeugBezeichnung: "LF 10/8", fahrzeugtyp: "LF", funkrufname: "86/45/01", hinweis: "" },
+    { id: "xlsx_19", gemeinde: "Luschendorf", organisation: "FF Luschendorf", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "86/18/01", hinweis: "" },
+    { id: "xlsx_21", gemeinde: "Offendorf", organisation: "FF Offendorf", fahrzeugBezeichnung: "LF 8/6", fahrzeugtyp: "LF", funkrufname: "86/44/01", hinweis: "" },
+    { id: "xlsx_22", gemeinde: "Offendorf", organisation: "FF Offendorf", fahrzeugBezeichnung: "RTB 1", fahrzeugtyp: "RTB", funkrufname: "86/78/01", hinweis: "" },
+    { id: "xlsx_23", gemeinde: "Offendorf", organisation: "FF Offendorf", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "86/18/05", hinweis: "" },
+    { id: "xlsx_25", gemeinde: "Warnsdorf-Häfen", organisation: "FF Warnsdorf-Häfen", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "86/48/04", hinweis: "" },
+    { id: "xlsx_27", gemeinde: "Ovendorf", organisation: "FF Ovendorf", fahrzeugBezeichnung: "MLF 10/20", fahrzeugtyp: "MLF", funkrufname: "86/41/03", hinweis: "" },
+    { id: "xlsx_28", gemeinde: "Ovendorf", organisation: "FF Ovendorf", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "86/18/04", hinweis: "" },
+    { id: "xlsx_30", gemeinde: "TEL OH", organisation: "TEL OH", fahrzeugBezeichnung: "Leitung TEL", fahrzeugtyp: "TEL", funkrufname: "02/06/01", hinweis: "" },
+    { id: "xlsx_31", gemeinde: "TEL OH", organisation: "TEL OH", fahrzeugBezeichnung: "ELW 2", fahrzeugtyp: "ELW 2", funkrufname: "02/12/01", hinweis: "KatFall: Kater OH 2" },
+    { id: "xlsx_32", gemeinde: "TEL OH", organisation: "TEL OH", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "02/18/01", hinweis: "" },
+    { id: "xlsx_33", gemeinde: "TEL OH", organisation: "TEL OH", fahrzeugBezeichnung: "UTV", fahrzeugtyp: "UTV", funkrufname: "02/15/01", hinweis: "" },
+    { id: "xlsx_35", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "ELW 1", fahrzeugtyp: "ELW", funkrufname: "89/11/01", hinweis: "" },
+    { id: "xlsx_36", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "LF 10", fahrzeugtyp: "LF", funkrufname: "89/47/01", hinweis: "" },
+    { id: "xlsx_37", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "LF 16/12", fahrzeugtyp: "LF", funkrufname: "89/48/02", hinweis: "" },
+    { id: "xlsx_38", gemeinde: "Timmendorfer Strand", organisation: "FF Timmendorfer Strand", fahrzeugBezeichnung: "DLK 23/12", fahrzeugtyp: "DLK", funkrufname: "89/32/01", hinweis: "" },
+    { id: "xlsx_40", gemeinde: "Niendorf Ostsee", organisation: "FF Niendorf Ostsee", fahrzeugBezeichnung: "HLF 20", fahrzeugtyp: "HLF", funkrufname: "89/48/01", hinweis: "" },
+    { id: "xlsx_41", gemeinde: "Niendorf Ostsee", organisation: "FF Niendorf Ostsee", fahrzeugBezeichnung: "TSF-W", fahrzeugtyp: "TSF-W", funkrufname: "89/41/01", hinweis: "" },
+    { id: "xlsx_42", gemeinde: "Niendorf Ostsee", organisation: "FF Niendorf Ostsee", fahrzeugBezeichnung: "MZF", fahrzeugtyp: "MZF", funkrufname: "89/14/01", hinweis: "" },
+    { id: "xlsx_43", gemeinde: "Niendorf Ostsee", organisation: "FF Niendorf Ostsee", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "89/18/02", hinweis: "" },
+    { id: "xlsx_44", gemeinde: "Niendorf Ostsee", organisation: "FF Niendorf Ostsee", fahrzeugBezeichnung: "Heinrich", fahrzeugtyp: "RTB", funkrufname: "89/78/01", hinweis: "" },
+    { id: "xlsx_45", gemeinde: "Niendorf Ostsee", organisation: "FF Niendorf Ostsee", fahrzeugBezeichnung: "Schlauchboot", fahrzeugtyp: "RTB", funkrufname: "89/78/02", hinweis: "" },
+    { id: "xlsx_47", gemeinde: "Hemmelsdorf", organisation: "FF Hemmelsdorf", fahrzeugBezeichnung: "LF 10", fahrzeugtyp: "LF", funkrufname: "89/47/02", hinweis: "" },
+    { id: "xlsx_48", gemeinde: "Hemmelsdorf", organisation: "FF Hemmelsdorf", fahrzeugBezeichnung: "MTW", fahrzeugtyp: "MTW", funkrufname: "89/18/01", hinweis: "" },
+    { id: "xlsx_49", gemeinde: "Hemmelsdorf", organisation: "FF Hemmelsdorf", fahrzeugBezeichnung: "RTB", fahrzeugtyp: "RTB", funkrufname: "89/78/03", hinweis: "" },
+    { id: "xlsx_51", gemeinde: "Groß Timmendorf", organisation: "FF Groß Timmendorf", fahrzeugBezeichnung: "LF 10", fahrzeugtyp: "LF", funkrufname: "89/46/01", hinweis: "" },
+    { id: "xlsx_53", gemeinde: "DLRG Haffkrug Scharbeutz", organisation: "DLRG Haffkrug Scharbeutz", fahrzeugBezeichnung: "DLRG", fahrzeugtyp: "DLRG", funkrufname: "OH 80/01", hinweis: "" }
 ];
 
 function getEinsatzKraefteTodayIso(){
@@ -15899,6 +16961,8 @@ function createDefaultEinsatzKraefteState(){
         },
         selected: {},
         customVehicles: [],
+        vehicleOverrides: {},
+        deletedVehicles: {},
         ui: {
             view: "selection",
             search: "",
@@ -15918,6 +16982,8 @@ function normalizeEinsatzKraefteState(raw){
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
     next.selected = typeof next.selected === "object" && next.selected ? next.selected : {};
     next.customVehicles = Array.isArray(next.customVehicles) ? next.customVehicles : [];
+    next.vehicleOverrides = typeof next.vehicleOverrides === "object" && next.vehicleOverrides ? next.vehicleOverrides : {};
+    next.deletedVehicles = typeof next.deletedVehicles === "object" && next.deletedVehicles ? next.deletedVehicles : {};
     return next;
 }
 
@@ -15968,10 +17034,33 @@ function showEinsatzKraefteHint(message){
     showEinsatzKraefteHint._timer = setTimeout(()=>hint.classList.add("hidden"), 1400);
 }
 
+let einsatzKraefteEditVehicleId = null;
+
+function setEinsatzKraefteVehiclePopupMode(mode){
+    const title = document.getElementById("einsatzKraefteVehiclePopupTitle");
+    const subtitle = document.getElementById("einsatzKraefteVehiclePopupSubtitle");
+    const saveBtn = document.getElementById("einsatzKraefteVehiclePopupSaveBtn");
+    const isEdit = mode === "edit";
+    if (title) title.textContent = isEdit ? "Funkrufname/Fahrzeug bearbeiten" : "Neues Fahrzeug hinzufügen";
+    if (subtitle) subtitle.textContent = isEdit
+        ? "Änderungen werden lokal gespeichert und bleiben in Backup Export/Import erhalten."
+        : "Daten werden lokal gespeichert und stehen sofort in Kräfte/Funkrufnamen bereit.";
+    if (saveBtn) saveBtn.textContent = isEdit ? "Änderungen speichern" : "Speichern";
+}
+
 function getEinsatzKraefteVehiclePool(state){
     const s = state || getEinsatzKraefteState();
+    const overrides = (s && typeof s.vehicleOverrides === "object" && s.vehicleOverrides) ? s.vehicleOverrides : {};
+    const deleted = (s && typeof s.deletedVehicles === "object" && s.deletedVehicles) ? s.deletedVehicles : {};
+    const applyOverride = (item)=>{
+        const patch = overrides[item.id] || null;
+        return patch ? { ...item, ...patch, id: item.id } : item;
+    };
     const custom = Array.isArray(s.customVehicles) ? s.customVehicles : [];
-    return FUNKRUFNAMEN_FAHRZEUGE.concat(custom);
+    return FUNKRUFNAMEN_FAHRZEUGE
+        .map(applyOverride)
+        .concat(custom.map(applyOverride))
+        .filter((item)=>!deleted[item.id]);
 }
 
 function toggleEinsatzKraefteExpanded(groupKey){
@@ -16027,6 +17116,8 @@ function setEinsatzKraefteGeneratorType(value){
 }
 
 function openEinsatzKraefteAddVehiclePopup(){
+    einsatzKraefteEditVehicleId = null;
+    setEinsatzKraefteVehiclePopupMode("add");
     const state = getEinsatzKraefteState();
     const options = Array.from(new Set(getEinsatzKraefteVehiclePool(state).map((i)=>String(i.organisation || i.gemeinde || "").trim()).filter(Boolean)))
         .sort((a, b)=>a.localeCompare(b, "de"));
@@ -16055,9 +17146,60 @@ function openEinsatzKraefteAddVehiclePopup(){
     if (first) setTimeout(()=>first.focus(), 30);
 }
 
+function openEinsatzKraefteEditVehiclePopup(id){
+    const vehicleId = String(id || "");
+    if (!vehicleId) return;
+    const state = getEinsatzKraefteState();
+    const item = getSortedFunkrufData(state).find((x)=>x.id === vehicleId);
+    if (!item){
+        showEinsatzKraefteHint("Fahrzeug nicht gefunden.");
+        return;
+    }
+    einsatzKraefteEditVehicleId = vehicleId;
+    setEinsatzKraefteVehiclePopupMode("edit");
+
+    const options = Array.from(new Set(getEinsatzKraefteVehiclePool(state).map((i)=>String(i.organisation || i.gemeinde || "").trim()).filter(Boolean)))
+        .sort((a, b)=>a.localeCompare(b, "de"));
+    const select = document.getElementById("einsatzKraefteVehicleOrganisationSelect");
+    const popup = document.getElementById("einsatzKraefteVehiclePopup");
+    if (!popup) return;
+
+    if (select){
+        select.innerHTML = `<option value="">Organisation wählen...</option>${options.map((org)=>`<option value="${escapeHtml(org)}">${escapeHtml(org)}</option>`).join("")}<option value="__new__">+ Neue Organisation</option>`;
+        select.value = "";
+    }
+    setEinsatzKraefteVehicleOrganisationMode("");
+
+    const knownOrg = options.includes(item.organisation || "");
+    if (knownOrg){
+        if (select) select.value = item.organisation || "";
+    } else {
+        if (select) select.value = "__new__";
+        setEinsatzKraefteVehicleOrganisationMode("__new__");
+        const orgNew = document.getElementById("einsatzKraefteVehicleOrganisationNew");
+        if (orgNew) orgNew.value = item.organisation || "";
+    }
+
+    const setValue = (elId, value)=>{
+        const el = document.getElementById(elId);
+        if (el) el.value = value || "";
+    };
+    setValue("einsatzKraefteVehicleGemeinde", item.gemeinde || "");
+    setValue("einsatzKraefteVehicleName", item.fahrzeugBezeichnung || "");
+    setValue("einsatzKraefteVehicleType", item.fahrzeugtyp || "");
+    setValue("einsatzKraefteVehicleCallsign", item.funkrufname || "");
+    setValue("einsatzKraefteVehicleHint", item.hinweis || "");
+
+    popup.classList.add("show");
+    const first = document.getElementById("einsatzKraefteVehicleName");
+    if (first) setTimeout(()=>first.focus(), 30);
+}
+
 function closeEinsatzKraefteAddVehiclePopup(){
     const popup = document.getElementById("einsatzKraefteVehiclePopup");
     if (popup) popup.classList.remove("show");
+    einsatzKraefteEditVehicleId = null;
+    setEinsatzKraefteVehiclePopupMode("add");
 }
 
 function setEinsatzKraefteVehicleOrganisationMode(value){
@@ -16084,22 +17226,43 @@ function saveEinsatzKraefteVehicleFromPopup(){
         showEinsatzKraefteHint("Bitte Organisation, Fahrzeug, Typ und Funkrufname angeben.");
         return;
     }
-    const id = `custom_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
-    patchEinsatzKraefteState((s)=>{
-        if (!Array.isArray(s.customVehicles)) s.customVehicles = [];
-        s.customVehicles.unshift({
-            id,
-            gemeinde: gemeinde || organisation,
-            organisation,
-            fahrzeugBezeichnung,
-            fahrzeugtyp,
-            funkrufname,
-            hinweis
+    const editId = einsatzKraefteEditVehicleId;
+    if (editId){
+        patchEinsatzKraefteState((s)=>{
+            const payload = {
+                gemeinde: gemeinde || organisation,
+                organisation,
+                fahrzeugBezeichnung,
+                fahrzeugtyp,
+                funkrufname,
+                hinweis
+            };
+            const customIndex = Array.isArray(s.customVehicles) ? s.customVehicles.findIndex((v)=>v.id === editId) : -1;
+            if (customIndex >= 0){
+                s.customVehicles[customIndex] = { ...s.customVehicles[customIndex], ...payload, id: editId };
+                return;
+            }
+            if (!s.vehicleOverrides || typeof s.vehicleOverrides !== "object") s.vehicleOverrides = {};
+            s.vehicleOverrides[editId] = payload;
         });
-    });
+    } else {
+        const id = `custom_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+        patchEinsatzKraefteState((s)=>{
+            if (!Array.isArray(s.customVehicles)) s.customVehicles = [];
+            s.customVehicles.unshift({
+                id,
+                gemeinde: gemeinde || organisation,
+                organisation,
+                fahrzeugBezeichnung,
+                fahrzeugtyp,
+                funkrufname,
+                hinweis
+            });
+        });
+    }
     closeEinsatzKraefteAddVehiclePopup();
     renderEinsatzKraefteTool();
-    showEinsatzKraefteHint(`${fahrzeugBezeichnung} wurde hinzugefügt.`);
+    showEinsatzKraefteHint(editId ? `${fahrzeugBezeichnung} wurde aktualisiert.` : `${fahrzeugBezeichnung} wurde hinzugefügt.`);
 }
 
 function getSortedFunkrufData(state){
@@ -16158,6 +17321,30 @@ function renderFunkTeilnahmeOverview(targetId = "funkTeilnahmeList"){
 
 function copyFunkrufname(value){
     copyTextToClipboard(value || "").then(()=>{});
+}
+
+function deleteEinsatzKraefteVehicle(id){
+    const vehicleId = String(id || "");
+    if (!vehicleId) return;
+    const vehicle = getSortedFunkrufData().find((item)=>item.id === vehicleId);
+    if (!vehicle){
+        showEinsatzKraefteHint("Fahrzeug nicht gefunden.");
+        return;
+    }
+    if (!confirm(`"${vehicle.fahrzeugBezeichnung}" wirklich löschen?`)) return;
+    patchEinsatzKraefteState((s)=>{
+        if (!s.deletedVehicles || typeof s.deletedVehicles !== "object") s.deletedVehicles = {};
+        s.deletedVehicles[vehicleId] = true;
+        s.customVehicles = (Array.isArray(s.customVehicles) ? s.customVehicles : []).filter((item)=>item.id !== vehicleId);
+        if (s.vehicleOverrides && s.vehicleOverrides[vehicleId]){
+            delete s.vehicleOverrides[vehicleId];
+        }
+        if (s.selected && s.selected[vehicleId]){
+            delete s.selected[vehicleId];
+        }
+    });
+    renderEinsatzKraefteTool();
+    showEinsatzKraefteHint(`${vehicle.fahrzeugBezeichnung} wurde gelöscht.`);
 }
 
 function buildEinsatzKraefteExportText(state){
@@ -16234,6 +17421,8 @@ function renderEinsatzKraefteSelection(state){
                 <div>
                     <button class="${isSelected ? "active-yes" : ""}" onclick="toggleEinsatzKraefteSelected('${item.id}', ${isSelected ? "false" : "true"})">${isSelected ? "Teilnahme aktiv" : "Nimmt am Einsatz teil"}</button>
                     <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
+                    <button class="phonebook-fav-btn" onclick="openEinsatzKraefteEditVehiclePopup('${item.id}')">Bearbeiten</button>
+                    <button class="phonebook-fav-btn" onclick="deleteEinsatzKraefteVehicle('${item.id}')">Löschen</button>
                 </div>
             </div>`;
         }).join("");
@@ -16275,6 +17464,8 @@ function renderEinsatzKraefteSelection(state){
                 <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)}${item.hinweis ? ` · ${escapeHtml(item.hinweis)}` : ""}</div>
                 <div class="phonebook-actions">
                     <button class="phonebook-fav-btn" onclick="toggleEinsatzKraefteSelected('${item.id}', false)">Entfernen</button>
+                    <button class="phonebook-fav-btn" onclick="openEinsatzKraefteEditVehiclePopup('${item.id}')">Bearbeiten</button>
+                    <button class="phonebook-fav-btn" onclick="deleteEinsatzKraefteVehicle('${item.id}')">Löschen</button>
                 </div>
             </div>`).join("") : `<div class="lage-empty">Noch keine Fahrzeuge als teilnehmend markiert.</div>`}
         </div>
@@ -16303,6 +17494,8 @@ function renderEinsatzKraefteSelection(state){
                 <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)}</div>
                 <div class="phonebook-actions">
                     <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
+                    <button class="phonebook-fav-btn" onclick="openEinsatzKraefteEditVehiclePopup('${item.id}')">Bearbeiten</button>
+                    <button class="phonebook-fav-btn" onclick="deleteEinsatzKraefteVehicle('${item.id}')">Löschen</button>
                 </div>
             </div>`).join("") : `<div class="lage-empty">Keine Ergebnisse.</div>`}
         </div>
@@ -16334,6 +17527,11 @@ function renderEinsatzKraefteOverview(state){
             return `<div class="phonebook-item">
                 <div class="phonebook-head">${escapeHtml(item.fahrzeugBezeichnung)} · ${escapeHtml(item.funkrufname)}</div>
                 <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)} · Status: ${escapeHtml(s.status || "Alarmiert")}${item.hinweis ? ` · ${escapeHtml(item.hinweis)}` : ""}</div>
+                <div class="phonebook-actions">
+                    <button class="phonebook-fav-btn" onclick="toggleEinsatzKraefteSelected('${item.id}', false)">Entfernen</button>
+                    <button class="phonebook-fav-btn" onclick="openEinsatzKraefteEditVehiclePopup('${item.id}')">Bearbeiten</button>
+                    <button class="phonebook-fav-btn" onclick="deleteEinsatzKraefteVehicle('${item.id}')">Löschen</button>
+                </div>
             </div>`;
         }).join("");
         return `<div class="section-title">${escapeHtml(key)}</div>${rows}`;
@@ -18847,7 +20045,11 @@ function searchEinsatz(text){
     }
     const gefahrgutNeedle = "gefahrgut schnellhilfe gefahrgut";
     if (text.length > 0 && gefahrgutNeedle.includes(text)){
-        result += `<div class="card" onclick="openGefahrgutOverlay()">☣️ Gefahrgut Schnellhilfe</div>`;
+        result += `<div class="card" onclick="openGefahrgutOverlay()">☣️ Gefahrgut</div>`;
+    }
+    const hydrantenNeedle = "hydranten hydrant hydrantenkarte wasserentnahme wasserstelle";
+    if (text.length > 0 && hydrantenNeedle.includes(text)){
+        result += `<div class="card" onclick="openHydrantenOverlay()">💧 Hydrantenkarte</div>`;
     }
     const evakNeedle = "evakuierungshelfer evakuierung";
     if (text.length > 0 && evakNeedle.includes(text)){
