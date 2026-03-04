@@ -8,6 +8,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>FF360</title>
+<link rel="stylesheet" href="leaflet.css">
 
 <style>
 :root {
@@ -780,7 +781,7 @@ body.training-mode {
 
 .hydrant-map {
     position: relative;
-    min-height: 320px;
+    min-height: clamp(320px, 52vh, 560px);
     border: 1px solid var(--border);
     border-radius: 14px;
     background:
@@ -788,6 +789,32 @@ body.training-mode {
         repeating-linear-gradient(0deg, rgba(18, 52, 79, 0.08) 0 1px, transparent 1px 32px),
         repeating-linear-gradient(90deg, rgba(18, 52, 79, 0.08) 0 1px, transparent 1px 32px);
     overflow: hidden;
+    touch-action: pan-x pan-y pinch-zoom;
+}
+
+.hydrant-map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.hydrant-map-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 9px;
+    background: rgba(18, 52, 79, 0.04);
+}
+
+.hydrant-map-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.85);
 }
 
 .hydrant-marker {
@@ -4964,6 +4991,7 @@ iframe {
 <script src="gefahrgut_un_catalog.js"></script>
 <script src="gefahrgut_eri_map.js"></script>
 <script src="hydranten_timmendorfer_strand.js"></script>
+<script src="leaflet.js"></script>
 <script>
 let currentCategory = null;
 const FAVORITES_STORAGE_KEY = "einsatz_favoriten";
@@ -6235,10 +6263,17 @@ let lastHydrantenFocus = null;
 const HYDRANTEN_TIMMENDORFER_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_TIMMENDORFER_DATA))
     ? window.HYDRANTEN_TIMMENDORFER_DATA
     : [];
+let hydrantenLeafletMap = null;
+let hydrantenLeafletLayer = null;
+let hydrantenLeafletUserMarker = null;
+let hydrantenLeafletView = null;
 
 function createDefaultHydrantenState(){
+    const seededHydrants = Array.isArray(HYDRANTEN_TIMMENDORFER_SOURCE)
+        ? HYDRANTEN_TIMMENDORFER_SOURCE.map((item)=>({ ...item }))
+        : [];
     return {
-        hydrants: [],
+        hydrants: seededHydrants,
         logs: [],
         lastKnownLocation: null,
         ui: {
@@ -6275,6 +6310,9 @@ function normalizeHydrantenState(raw){
     const base = createDefaultHydrantenState();
     const next = { ...base, ...(raw || {}) };
     next.hydrants = Array.isArray(next.hydrants) ? next.hydrants.map((item, idx)=>normalizeHydrantenItem(item, idx)) : [];
+    if (!next.hydrants.length && Array.isArray(HYDRANTEN_TIMMENDORFER_SOURCE) && HYDRANTEN_TIMMENDORFER_SOURCE.length){
+        next.hydrants = HYDRANTEN_TIMMENDORFER_SOURCE.map((item, idx)=>normalizeHydrantenItem(item, idx));
+    }
     next.logs = Array.isArray(next.logs) ? next.logs : [];
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
     if (!next.lastKnownLocation || typeof next.lastKnownLocation !== "object"){
@@ -6421,37 +6459,6 @@ function triggerHydrantenImport(){
     input.click();
 }
 
-function importHydrantenTimmendorferStrand(){
-    if (!Array.isArray(HYDRANTEN_TIMMENDORFER_SOURCE) || !HYDRANTEN_TIMMENDORFER_SOURCE.length){
-        alert("Keine Timmendorfer Strand Datenquelle geladen.");
-        return;
-    }
-    const modeRaw = prompt(
-        "Hydranten aus Timmendorfer Strand laden:\n1 = Zusammenführen\n2 = Ersetzen",
-        "1"
-    );
-    if (modeRaw === null) return;
-    const mode = String(modeRaw).trim() === "2" ? "replace" : "merge";
-
-    patchHydrantenState((s)=>{
-        const incoming = HYDRANTEN_TIMMENDORFER_SOURCE.map((item, idx)=>normalizeHydrantenItem(item, idx));
-        if (mode === "replace"){
-            s.hydrants = incoming;
-            s.ui.selectedId = incoming[0] ? incoming[0].id : "";
-            return;
-        }
-        const map = {};
-        s.hydrants.forEach((h)=>{ map[h.id] = h; });
-        incoming.forEach((h)=>{ map[h.id] = h; });
-        s.hydrants = Object.values(map);
-        if (!s.ui.selectedId && s.hydrants.length){
-            s.ui.selectedId = s.hydrants[0].id;
-        }
-    });
-    appendHydrantenLog(`Timmendorfer Strand importiert (${HYDRANTEN_TIMMENDORFER_SOURCE.length} Datensätze, Modus: ${mode === "replace" ? "Ersetzen" : "Zusammenführen"})`);
-    renderHydrantenTool();
-}
-
 function parseHydrantenCsv(text){
     const rows = String(text || "").split(/\r?\n/).filter((line)=>line.trim().length > 0);
     if (!rows.length) return [];
@@ -6546,43 +6553,116 @@ async function handleHydrantenImport(event){
     }
 }
 
-function renderHydrantenMap(filtered, selectedId, location){
-    if (!filtered.length){
-        return `<div class="hydrant-map"><div class="lage-empty" style="padding:14px;">Keine Hydranten im Filter.</div></div>`;
+function renderHydrantenMap(){
+    return `<div id="hydrantenLeafletMap" class="hydrant-map"></div>`;
+}
+
+function getHydrantStatusColor(status){
+    if (status === "ok") return "#11994a";
+    if (status === "warn") return "#d38c00";
+    if (status === "bad") return "#c9212d";
+    return "#5a6b7c";
+}
+
+function getHydrantStatusLabel(status){
+    if (status === "ok") return "Einsatzbereit";
+    if (status === "warn") return "Eingeschränkt";
+    if (status === "bad") return "Defekt/Blockiert";
+    return "Unbekannt";
+}
+
+function renderHydrantenLeafletMap(filtered, selectedId, location){
+    const mapEl = document.getElementById("hydrantenLeafletMap");
+    if (!mapEl) return;
+    if (typeof window.L === "undefined"){
+        mapEl.innerHTML = `<div class="lage-empty" style="padding:14px;">Kartenmodul konnte nicht geladen werden.</div>`;
+        return;
     }
+
+    if (hydrantenLeafletMap){
+        hydrantenLeafletMap.remove();
+        hydrantenLeafletMap = null;
+        hydrantenLeafletLayer = null;
+        hydrantenLeafletUserMarker = null;
+    }
+
+    hydrantenLeafletMap = L.map(mapEl, {
+        zoomControl: true,
+        preferCanvas: true
+    });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 20,
+        attribution: "&copy; OpenStreetMap"
+    }).addTo(hydrantenLeafletMap);
+    hydrantenLeafletLayer = L.layerGroup().addTo(hydrantenLeafletMap);
+
     const points = filtered.filter((h)=>Number.isFinite(h.lat) && Number.isFinite(h.lon));
-    if (!points.length){
-        return `<div class="hydrant-map"><div class="lage-empty" style="padding:14px;">Hydranten ohne Koordinaten.</div></div>`;
-    }
-    const allLats = points.map((p)=>p.lat);
-    const allLons = points.map((p)=>p.lon);
+    const bounds = [];
+    points.forEach((h)=>{
+        const isActive = h.id === selectedId;
+        const marker = L.circleMarker([h.lat, h.lon], {
+            radius: isActive ? 9 : 7,
+            color: "#ffffff",
+            weight: 2,
+            fillColor: getHydrantStatusColor(h.status),
+            fillOpacity: 0.95
+        });
+        marker.bindTooltip(escapeHtml(h.name || h.id), { direction: "top", offset: [0, -8] });
+        marker.bindPopup(
+            `<strong>${escapeHtml(h.name || h.id)}</strong><br>` +
+            `${escapeHtml(h.adresse || "Adresse unbekannt")}<br>` +
+            `Status: ${escapeHtml(getHydrantStatusLabel(h.status))}`
+        );
+        marker.on("click", ()=>{
+            hydrantenLeafletView = {
+                lat: h.lat,
+                lon: h.lon,
+                zoom: Math.max(hydrantenLeafletMap ? hydrantenLeafletMap.getZoom() : 16, 16)
+            };
+            selectHydrantById(h.id);
+        });
+        marker.addTo(hydrantenLeafletLayer);
+        bounds.push([h.lat, h.lon]);
+    });
+
     if (location && Number.isFinite(location.lat) && Number.isFinite(location.lon)){
-        allLats.push(location.lat);
-        allLons.push(location.lon);
+        hydrantenLeafletUserMarker = L.circleMarker([location.lat, location.lon], {
+            radius: 8,
+            color: "#ffffff",
+            weight: 2,
+            fillColor: "#1769ff",
+            fillOpacity: 0.95
+        }).addTo(hydrantenLeafletMap);
+        hydrantenLeafletUserMarker.bindTooltip("Eigener Standort", { direction: "right", offset: [10, 0] });
+        bounds.push([location.lat, location.lon]);
     }
-    let minLat = Math.min(...allLats);
-    let maxLat = Math.max(...allLats);
-    let minLon = Math.min(...allLons);
-    let maxLon = Math.max(...allLons);
-    if (maxLat === minLat){ maxLat += 0.001; minLat -= 0.001; }
-    if (maxLon === minLon){ maxLon += 0.001; minLon -= 0.001; }
-    const padLat = (maxLat - minLat) * 0.08;
-    const padLon = (maxLon - minLon) * 0.08;
-    minLat -= padLat; maxLat += padLat; minLon -= padLon; maxLon += padLon;
-    const xPct = (lon)=>((lon - minLon) / (maxLon - minLon)) * 100;
-    const yPct = (lat)=>((maxLat - lat) / (maxLat - minLat)) * 100;
 
-    const markers = points.map((h)=>{
-        const statusClass = h.status === "ok" ? "ok" : (h.status === "warn" ? "warn" : (h.status === "bad" ? "bad" : "unknown"));
-        const active = h.id === selectedId ? "active" : "";
-        return `<button class="hydrant-marker ${statusClass} ${active}" style="left:${xPct(h.lon)}%; top:${yPct(h.lat)}%;" onclick="selectHydrantById('${String(h.id).replace(/'/g, "\\'")}')" title="${escapeHtml(h.name)}"></button>`;
-    }).join("");
+    hydrantenLeafletMap.on("moveend zoomend", ()=>{
+        const c = hydrantenLeafletMap.getCenter();
+        hydrantenLeafletView = { lat: c.lat, lon: c.lng, zoom: hydrantenLeafletMap.getZoom() };
+    });
 
-    const you = (location && Number.isFinite(location.lat) && Number.isFinite(location.lon))
-        ? `<div class="hydrant-you" style="left:${xPct(location.lon)}%; top:${yPct(location.lat)}%;" title="Eigener Standort"></div>`
-        : "";
+    if (hydrantenLeafletView && Number.isFinite(hydrantenLeafletView.lat) && Number.isFinite(hydrantenLeafletView.lon)){
+        hydrantenLeafletMap.setView([hydrantenLeafletView.lat, hydrantenLeafletView.lon], Number(hydrantenLeafletView.zoom) || 15);
+    } else if (bounds.length){
+        hydrantenLeafletMap.fitBounds(bounds, { padding: [24, 24], maxZoom: 18 });
+    } else {
+        hydrantenLeafletMap.setView([53.985, 10.78], 13);
+    }
+}
 
-    return `<div class="hydrant-map">${markers}${you}</div>`;
+function openHydrantenNavigation(lat, lon){
+    const nLat = Number(lat);
+    const nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${nLat},${nLon}`)}`;
+    const w = window.open(url, "_blank", "noopener,noreferrer");
+    if (!w) window.location.href = url;
+}
+
+function resetHydrantenMapView(){
+    hydrantenLeafletView = null;
+    renderHydrantenTool();
 }
 
 function renderHydrantenTool(){
@@ -6611,7 +6691,6 @@ function renderHydrantenTool(){
         ${firstActions.length ? `<div class="priority-box" style="margin-top:8px;">${firstActions.map((x)=>`• ${escapeHtml(x)}`).join("<br>")}</div>` : `<div class="lage-empty" style="margin-top:8px;">Noch keine Hydranten geladen.</div>`}
         <div class="atem-row-actions" style="margin-top:8px;">
             <button onclick="requestHydrantenLocation()">Standort aktualisieren</button>
-            <button onclick="importHydrantenTimmendorferStrand()">Timmendorfer Strand laden</button>
             <button onclick="triggerHydrantenImport()">GeoJSON/CSV importieren</button>
         </div>
         <input id="hydrantenImportInput" class="hidden" type="file" accept=".geojson,.json,.csv,text/csv,application/geo+json,application/json" onchange="handleHydrantenImport(event)">
@@ -6640,7 +6719,17 @@ function renderHydrantenTool(){
     <div class="atem-panel">
         <strong>Karte</strong>
         <div class="psu-meta" style="margin-top:6px;">Treffer: ${filtered.length}${state.lastKnownLocation ? ` · Standort: ${escapeHtml(new Date(state.lastKnownLocation.updatedAt || Date.now()).toLocaleTimeString("de-DE", {hour:"2-digit", minute:"2-digit"}))}` : ""}</div>
-        <div style="margin-top:8px;">${renderHydrantenMap(filtered, selectedId, state.lastKnownLocation)}</div>
+        <div class="hydrant-map-legend" style="margin-top:8px;">
+            <div class="hydrant-map-legend-item"><span class="hydrant-map-legend-dot" style="background:#11994a;"></span>Einsatzbereit</div>
+            <div class="hydrant-map-legend-item"><span class="hydrant-map-legend-dot" style="background:#d38c00;"></span>Eingeschränkt</div>
+            <div class="hydrant-map-legend-item"><span class="hydrant-map-legend-dot" style="background:#c9212d;"></span>Defekt/Blockiert</div>
+            <div class="hydrant-map-legend-item"><span class="hydrant-map-legend-dot" style="background:#5a6b7c;"></span>Unbekannt</div>
+            <div class="hydrant-map-legend-item"><span class="hydrant-map-legend-dot" style="background:#1769ff;"></span>Eigener Standort</div>
+        </div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="resetHydrantenMapView()">Karte auf alle Hydranten setzen</button>
+        </div>
+        <div style="margin-top:8px;">${renderHydrantenMap()}</div>
     </div>
     `;
 
@@ -6668,7 +6757,9 @@ function renderHydrantenTool(){
                 <div><label>ID/Name</label><div class="weather-value">${escapeHtml(selected.name || selected.id)}</div></div>
                 <div><label>Adresse</label><div class="weather-value">${escapeHtml(selected.adresse || "-")}</div></div>
                 <div><label>Typ</label><div class="weather-value">${escapeHtml(selected.typ || "-")}</div></div>
+                <div><label>Status</label><div class="weather-value">${escapeHtml(getHydrantStatusLabel(selected.status))}</div></div>
                 <div><label>Entfernung</label><div class="weather-value">${escapeHtml(formatHydDist(selected.distance))}</div></div>
+                <div><label>Koordinaten</label><div class="weather-value">${Number.isFinite(selected.lat) && Number.isFinite(selected.lon) ? `${selected.lat.toFixed(6)}, ${selected.lon.toFixed(6)}` : "-"}</div></div>
             </div>
             <div class="atem-row-actions" style="margin-top:8px;">
                 ${statusOptions.map((opt)=>`<button class="${selected.status === opt.key ? "active-yes" : ""}" onclick="setHydrantenStatus('${String(selected.id).replace(/'/g, "\\'")}','${opt.key}')">${opt.label}</button>`).join("")}
@@ -6677,10 +6768,12 @@ function renderHydrantenTool(){
                 <label>Notiz</label>
                 <textarea oninput="updateHydrantenNote('${String(selected.id).replace(/'/g, "\\'")}', this.value)">${escapeHtml(selected.note || "")}</textarea>
             </div>
+            ${Number.isFinite(selected.lat) && Number.isFinite(selected.lon) ? `<div class="atem-row-actions" style="margin-top:8px;"><button onclick="openHydrantenNavigation(${selected.lat}, ${selected.lon})">Zum Hydranten navigieren</button></div>` : ""}
         </div>`;
     }
 
     body.innerHTML = html;
+    renderHydrantenLeafletMap(filtered, selectedId, state.lastKnownLocation);
 }
 
 function openHydrantenOverlay(){
@@ -6690,6 +6783,9 @@ function openHydrantenOverlay(){
     overlay.classList.add("show");
     document.body.style.overflow = "hidden";
     renderHydrantenTool();
+    setTimeout(()=>{
+        if (hydrantenLeafletMap) hydrantenLeafletMap.invalidateSize();
+    }, 80);
 }
 
 function closeHydrantenOverlay(){

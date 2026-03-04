@@ -1,4 +1,4 @@
-const CACHE_NAME = "ff360-app-v11";
+const CACHE_NAME = "ff360-app-v13";
 
 const urlsToCache = [
   "index.html",
@@ -14,7 +14,12 @@ const urlsToCache = [
   "gefahrgut_eri_map.js",
   "gefahrgut_eri_map.json",
   "hydranten_timmendorfer_strand.js",
-  "hydranten_timmendorfer_strand.json"
+  "hydranten_timmendorfer_strand.json",
+  "leaflet.css",
+  "leaflet.js",
+  "marker-icon.png",
+  "marker-icon-2x.png",
+  "marker-shadow.png"
 ];
 
 self.addEventListener("install", event => {
