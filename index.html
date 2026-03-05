@@ -5528,7 +5528,6 @@ document.addEventListener("focusin", (event)=>{
     const target = event.target;
     if (!isIncidentProtectedInputElement(target)) return;
     if (isIncidentEditingUnlocked()) return;
-    showIncidentStartRequiredNotice();
     setTimeout(()=>{
         if (target instanceof HTMLElement && document.activeElement === target){
             target.blur();
@@ -5681,7 +5680,6 @@ function appStorageSetItem(baseKey, value){
         INCIDENT_REQUIRED_STORAGE_KEYS.has(baseKey) &&
         !isIncidentEditingUnlocked()
     ){
-        showIncidentStartRequiredNotice();
         return;
     }
     if (!shouldUseScopedStorage(baseKey)){
@@ -6686,7 +6684,6 @@ function useCurrentLocationForWeather(openDrone){
 }
 
 function openWeatherOverlay(){
-    if (!requireActiveIncidentOrRoute()) return;
     const overlay = document.getElementById("weatherOverlay");
     if (!overlay) return;
     lastWeatherFocus = document.activeElement;
@@ -6719,7 +6716,6 @@ function isWeatherOverlayOpen(){
 }
 
 function openDroneWeatherOverlay(){
-    if (!requireActiveIncidentOrRoute()) return;
     const overlay = document.getElementById("droneWeatherOverlay");
     if (!overlay) return;
     lastDroneWeatherFocus = document.activeElement;
@@ -7501,7 +7497,6 @@ function renderHydrantenTool(){
 }
 
 function openHydrantenOverlay(){
-    if (!requireActiveIncidentOrRoute()) return;
     const overlay = document.getElementById("hydrantenOverlay");
     if (!overlay) return;
     lastHydrantenFocus = document.activeElement;
@@ -8058,7 +8053,6 @@ function resetDangerOpenStorage(){
 }
 
 function openDangerOverlay(){
-    if (!requireActiveIncidentOrRoute()) return;
     const overlay = document.getElementById("dangerOverlay");
     if (!overlay) return;
     lastDangerFocus = document.activeElement;
@@ -21863,7 +21857,6 @@ function footerHtml(){
 }
 
 function openCategory(category){
-    if (!requireActiveIncidentOrRoute()) return;
     showCategory(category);
 }
 
@@ -22865,7 +22858,6 @@ function disableGpsCompass(){
 }
 
 function openGpsOverlay(){
-    if (!requireActiveIncidentOrRoute()) return;
     const overlay = document.getElementById("gpsOverlay");
     if (!overlay) return;
     gpsLastFocus = document.activeElement;
