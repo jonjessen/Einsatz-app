@@ -5539,7 +5539,7 @@ function isTrainingMode(){
     return !!trainingModeActive;
 }
 
-const APP_VERSION = "1.1";
+const APP_VERSION = "1.2";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 let appStatusMetaCache = null;
 
@@ -12727,7 +12727,6 @@ function renderEinsatzOverview(){
 }
 
 function openEinsatzOverlay(){
-    if (!requireActiveIncidentOrRoute()) return;
     const overlay = document.getElementById("einsatzOverlay");
     if (!overlay) return;
     lastEinsatzFocus = document.activeElement;
