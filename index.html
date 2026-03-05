@@ -7416,6 +7416,14 @@ function selectHydrantById(id){
     renderHydrantenTool();
 }
 
+function clearHydrantenSelection(){
+    patchHydrantenState((s)=>{
+        s.ui.selectedId = "";
+    });
+    hydrantenLeafletView = null;
+    renderHydrantenTool();
+}
+
 function setHydrantenStatus(id, status){
     patchHydrantenState((s)=>{
         const idx = s.hydrants.findIndex((h)=>h.id === id);
@@ -7890,6 +7898,9 @@ function renderHydrantenTool(){
                 <textarea oninput="updateHydrantenNote('${String(selected.id).replace(/'/g, "\\'")}', this.value)">${escapeHtml(selected.note || "")}</textarea>
             </div>
             ${Number.isFinite(selected.lat) && Number.isFinite(selected.lon) ? `<div class="atem-row-actions" style="margin-top:8px;"><button onclick="openHydrantenNavigation(${selected.lat}, ${selected.lon})">Zum Hydranten navigieren</button></div>` : ""}
+            <div class="atem-row-actions" style="margin-top:8px;">
+                <button onclick="clearHydrantenSelection()">Diesen Hydranten nicht mehr auswählen</button>
+            </div>
         </div>`;
     }
 
