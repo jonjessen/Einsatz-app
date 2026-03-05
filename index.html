@@ -22785,6 +22785,7 @@ let gpsHeadingDeg = null;
 let gpsLastFocus = null;
 let gpsCompassListenerAttached = false;
 let gpsCompassEnabled = false;
+let gpsNorthLockHeadingDeg = null;
 
 function createDefaultGpsState(){
     return {
@@ -22947,6 +22948,9 @@ function buildQrUrl(content){
 }
 
 function getGpsHeadingForDisplay(state){
+    if (Number.isFinite(gpsNorthLockHeadingDeg)){
+        return Number(gpsNorthLockHeadingDeg);
+    }
     if (Number.isFinite(gpsHeadingDeg)){
         return Number(gpsHeadingDeg);
     }
@@ -23234,7 +23238,10 @@ function onDeviceOrientation(event){
     if (!gpsCompassEnabled) return;
     const heading = normalizeHeadingFromEvent(event);
     if (!Number.isFinite(heading)) return;
-    gpsHeadingDeg = heading;
+    if (!Number.isFinite(gpsNorthLockHeadingDeg)){
+        gpsNorthLockHeadingDeg = heading;
+    }
+    gpsHeadingDeg = Number(gpsNorthLockHeadingDeg);
     if (isGpsOverlayOpen()) renderGpsCompassOnly();
 }
 
@@ -23258,6 +23265,7 @@ function requestGpsCompass(){
             gpsCompassListenerAttached = true;
         }
         gpsCompassEnabled = true;
+        gpsNorthLockHeadingDeg = null;
         renderGpsCompassOnly();
     }).catch(()=>{});
 }
@@ -23265,6 +23273,7 @@ function requestGpsCompass(){
 function disableGpsCompass(){
     gpsCompassEnabled = false;
     gpsHeadingDeg = null;
+    gpsNorthLockHeadingDeg = null;
     renderGpsCompassOnly();
 }
 
