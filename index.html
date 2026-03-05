@@ -3913,6 +3913,42 @@ a {
     font-size: 14px;
 }
 
+.training-quick-off-wrap {
+    margin-top: 8px;
+}
+
+.training-quick-off-btn {
+    width: 100%;
+    margin: 0;
+    background: #2f8fd7;
+    border-color: #2f8fd7;
+    color: #fff;
+}
+
+.training-quick-off-btn:hover {
+    background: #277fbe;
+    border-color: #277fbe;
+}
+
+.settings-training-archive-list {
+    margin-top: 8px;
+    display: grid;
+    gap: 8px;
+}
+
+.settings-training-archive-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    background: var(--card);
+    font-size: 13px;
+}
+
+.settings-training-archive-item strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
 .backup-tip {
     margin-top: 8px;
     font-size: 12px;
@@ -4353,6 +4389,7 @@ iframe {
                 <button onclick="openHydrantenOverlay()">💧 Hydrantenkarte</button>
                 <button onclick="openWeatherOverlay()">🌦️ EinsatzWetter</button>
             </div>
+            <div id="trainingQuickOffWrap" class="training-quick-off-wrap hidden"></div>
         </div>
         <div class="home-tool-group">
             <div class="home-subtitle">Lage &amp; Doku</div>
@@ -4438,7 +4475,15 @@ iframe {
                 <div class="atem-row-actions" style="margin-top:8px;">
                     <button id="settingsDarkModeBtn" onclick="toggleDarkModeFromSettings()">Dark Mode umschalten</button>
                     <button id="settingsTrainingModeBtn" onclick="toggleTrainingModeFromSettings()">Übungsmodus umschalten</button>
+                    <button onclick="resetAllKlappenToDefaults()">Klappbereiche zurücksetzen</button>
                     <button onclick="reloadAppPage()">Seite neu laden</button>
+                </div>
+            </div>
+            <div class="atem-panel">
+                <strong>Übungen Archiv</strong>
+                <div id="settingsTrainingArchiveList" class="settings-training-archive-list"></div>
+                <div class="atem-row-actions" style="margin-top:8px;">
+                    <button onclick="clearTrainingArchiveSessions()">Übungsarchiv leeren</button>
                 </div>
             </div>
             <div class="atem-panel">
@@ -4638,16 +4683,6 @@ iframe {
         </div>
         <div class="einsatz-body">
             <div id="einsatzSummary" class="einsatz-summary"></div>
-            <div class="einsatz-summary" style="padding:10px;">
-                <strong>Verursacher-Suche</strong>
-                <div class="einsatz-toggle-row" style="margin-top:8px;">
-                    <button id="einsatzVerursacherFilterAll" class="active-yes" onclick="setEinsatzVerursacherFilter('all')">Alle</button>
-                    <button id="einsatzVerursacherFilterJa" onclick="setEinsatzVerursacherFilter('ja')">Bekannt: Ja</button>
-                    <button id="einsatzVerursacherFilterNein" onclick="setEinsatzVerursacherFilter('nein')">Bekannt: Nein</button>
-                    <button id="einsatzVerursacherFilterUnklar" onclick="setEinsatzVerursacherFilter('unklar')">Bekannt: Unklar</button>
-                </div>
-                <input id="einsatzVerursacherSearch" type="text" placeholder="Name/Firma, Adresse, Kontakt oder Hinweise suchen..." oninput="setEinsatzVerursacherSearch(this.value)" style="margin-top:8px;">
-            </div>
             <div id="einsatzList" class="einsatz-list"></div>
             <div class="einsatz-actions">
                 <button onclick="closeEinsatzOverlay()">Schließen</button>
@@ -5084,80 +5119,85 @@ iframe {
                 <div id="lagePhotoList" class="lage-photo-list"></div>
             </div>
 
-            <div class="lage-grid">
-                <div class="lage-tile">
-                    <h4>👥 Gerettete Personen</h4>
-                    <div class="lage-counter">
-                        <button onclick="changeLageCounter('rescued',-1)">-</button>
-                        <div id="lageRescuedValue" class="lage-counter-value">0</div>
-                        <button onclick="changeLageCounter('rescued',1)">+</button>
+            <div class="lage-section">
+                <details>
+                    <summary><strong>Karten / Lagewerte</strong></summary>
+                    <div class="lage-grid" style="margin-top:8px;">
+                        <div class="lage-tile">
+                            <h4>👥 Gerettete Personen</h4>
+                            <div class="lage-counter">
+                                <button onclick="changeLageCounter('rescued',-1)">-</button>
+                                <div id="lageRescuedValue" class="lage-counter-value">0</div>
+                                <button onclick="changeLageCounter('rescued',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="lage-tile">
+                            <h4>🧯 PA-Träger im Einsatz</h4>
+                            <div class="lage-counter">
+                                <button onclick="changeLageCounter('pa',-1)">-</button>
+                                <div id="lagePaValue" class="lage-counter-value">0</div>
+                                <button onclick="changeLageCounter('pa',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="lage-tile">
+                            <h4>🚑 Patienten gesichtet</h4>
+                            <div class="lage-counter">
+                                <button onclick="changeLageCounter('patients',-1)">-</button>
+                                <div id="lagePatientsValue" class="lage-counter-value">0</div>
+                                <button onclick="changeLageCounter('patients',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="lage-tile">
+                            <h4>🚒 Fahrzeuge vor Ort</h4>
+                            <div class="lage-counter">
+                                <button onclick="changeLageCounter('vehicles',-1)">-</button>
+                                <div id="lageVehiclesValue" class="lage-counter-value">0</div>
+                                <button onclick="changeLageCounter('vehicles',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="lage-tile">
+                            <h4>🔥 Abschnitte aktiv</h4>
+                            <div class="lage-counter">
+                                <button id="lageSectionsMinusBtn" onclick="changeLageCounter('sectionsManual',-1)">-</button>
+                                <div id="lageSectionsValue" class="lage-counter-value">0</div>
+                                <button id="lageSectionsPlusBtn" onclick="changeLageCounter('sectionsManual',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="lage-tile">
+                            <h4>🧑‍🚒 Einsatzkräfte gesamt</h4>
+                            <div class="lage-counter">
+                                <button onclick="changeLageCounter('personnel',-1)">-</button>
+                                <div id="lagePersonnelValue" class="lage-counter-value">0</div>
+                                <button onclick="changeLageCounter('personnel',1)">+</button>
+                            </div>
+                            <input
+                                id="lagePersonnelInput"
+                                class="lage-direct-input"
+                                type="number"
+                                min="0"
+                                step="1"
+                                inputmode="numeric"
+                                placeholder="Anzahl direkt eingeben"
+                                oninput="setLageCounterValue('personnel', this.value)">
+                        </div>
+                        <div class="lage-tile">
+                            <h4>⛑ Verletzte Einsatzkräfte</h4>
+                            <div class="lage-counter">
+                                <button onclick="changeLageCounter('injuredCrew',-1)">-</button>
+                                <div id="lageInjuredCrewValue" class="lage-counter-value">0</div>
+                                <button onclick="changeLageCounter('injuredCrew',1)">+</button>
+                            </div>
+                        </div>
+                        <div class="lage-tile">
+                            <h4>🧰 Atemschutzflaschen verbraucht</h4>
+                            <div class="lage-counter">
+                                <button onclick="changeLageCounter('cylindersUsed',-1)">-</button>
+                                <div id="lageCylindersValue" class="lage-counter-value">0</div>
+                                <button onclick="changeLageCounter('cylindersUsed',1)">+</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="lage-tile">
-                    <h4>🧯 PA-Träger im Einsatz</h4>
-                    <div class="lage-counter">
-                        <button onclick="changeLageCounter('pa',-1)">-</button>
-                        <div id="lagePaValue" class="lage-counter-value">0</div>
-                        <button onclick="changeLageCounter('pa',1)">+</button>
-                    </div>
-                </div>
-                <div class="lage-tile">
-                    <h4>🚑 Patienten gesichtet</h4>
-                    <div class="lage-counter">
-                        <button onclick="changeLageCounter('patients',-1)">-</button>
-                        <div id="lagePatientsValue" class="lage-counter-value">0</div>
-                        <button onclick="changeLageCounter('patients',1)">+</button>
-                    </div>
-                </div>
-                <div class="lage-tile">
-                    <h4>🚒 Fahrzeuge vor Ort</h4>
-                    <div class="lage-counter">
-                        <button onclick="changeLageCounter('vehicles',-1)">-</button>
-                        <div id="lageVehiclesValue" class="lage-counter-value">0</div>
-                        <button onclick="changeLageCounter('vehicles',1)">+</button>
-                    </div>
-                </div>
-                <div class="lage-tile">
-                    <h4>🔥 Abschnitte aktiv</h4>
-                    <div class="lage-counter">
-                        <button id="lageSectionsMinusBtn" onclick="changeLageCounter('sectionsManual',-1)">-</button>
-                        <div id="lageSectionsValue" class="lage-counter-value">0</div>
-                        <button id="lageSectionsPlusBtn" onclick="changeLageCounter('sectionsManual',1)">+</button>
-                    </div>
-                </div>
-                <div class="lage-tile">
-                    <h4>🧑‍🚒 Einsatzkräfte gesamt</h4>
-                    <div class="lage-counter">
-                        <button onclick="changeLageCounter('personnel',-1)">-</button>
-                        <div id="lagePersonnelValue" class="lage-counter-value">0</div>
-                        <button onclick="changeLageCounter('personnel',1)">+</button>
-                    </div>
-                    <input
-                        id="lagePersonnelInput"
-                        class="lage-direct-input"
-                        type="number"
-                        min="0"
-                        step="1"
-                        inputmode="numeric"
-                        placeholder="Anzahl direkt eingeben"
-                        oninput="setLageCounterValue('personnel', this.value)">
-                </div>
-                <div class="lage-tile">
-                    <h4>⛑ Verletzte Einsatzkräfte</h4>
-                    <div class="lage-counter">
-                        <button onclick="changeLageCounter('injuredCrew',-1)">-</button>
-                        <div id="lageInjuredCrewValue" class="lage-counter-value">0</div>
-                        <button onclick="changeLageCounter('injuredCrew',1)">+</button>
-                    </div>
-                </div>
-                <div class="lage-tile">
-                    <h4>🧰 Atemschutzflaschen verbraucht</h4>
-                    <div class="lage-counter">
-                        <button onclick="changeLageCounter('cylindersUsed',-1)">-</button>
-                        <div id="lageCylindersValue" class="lage-counter-value">0</div>
-                        <button onclick="changeLageCounter('cylindersUsed',1)">+</button>
-                    </div>
-                </div>
+                </details>
             </div>
 
             <div class="lage-section">
@@ -5192,110 +5232,121 @@ iframe {
                 <button id="lagePriorityRed" onclick="setLagePriority('red')">🔴 kritisch</button>
             </div>
 
-            <div class="lage-status-grid">
-                <div id="lageStatusSafety" class="lage-status warn" onclick="toggleLageStatus('safetyTrupp')">
-                    <div class="label">Sicherheitstrupp gestellt?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusAsWatch" class="lage-status warn" onclick="toggleLageStatus('asWatch')">
-                    <div class="label">Atemschutzüberwachung eingerichtet?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusWater" class="lage-status warn" onclick="toggleLageStatus('waterSupply')">
-                    <div class="label">Wasserversorgung gesichert?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusSecure" class="lage-status warn" onclick="toggleLageStatus('sceneSecured')">
-                    <div class="label">Einsatzstelle abgesichert?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusSections" class="lage-status warn" onclick="toggleLageStatus('sectionsBuilt')">
-                    <div class="label">Einsatzabschnitte gebildet?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusStaging" class="lage-status warn" onclick="toggleLageStatus('stagingReady')">
-                    <div class="label">Bereitstellungsraum eingerichtet?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusDekon" class="lage-status warn" onclick="toggleLageStatus('deconReady')">
-                    <div class="label">Dekon eingerichtet?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusWarning" class="lage-status warn" onclick="toggleLageStatus('publicWarning')">
-                    <div class="label">Bevölkerungswarnung ausgelöst?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
-                <div id="lageStatusEnergy" class="lage-status warn" onclick="toggleLageStatus('energyOff')">
-                    <div class="label">Energieversorgung abgeschaltet?</div>
-                    <div class="state">❌ Nein</div>
-                </div>
+            <div class="lage-section">
+                <details>
+                    <summary><strong>Statusfragen / Sicherheitsabfragen</strong></summary>
+                    <div class="lage-status-grid" style="margin-top:8px;">
+                        <div id="lageStatusSafety" class="lage-status warn" onclick="toggleLageStatus('safetyTrupp')">
+                            <div class="label">Sicherheitstrupp gestellt?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusAsWatch" class="lage-status warn" onclick="toggleLageStatus('asWatch')">
+                            <div class="label">Atemschutzüberwachung eingerichtet?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusWater" class="lage-status warn" onclick="toggleLageStatus('waterSupply')">
+                            <div class="label">Wasserversorgung gesichert?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusSecure" class="lage-status warn" onclick="toggleLageStatus('sceneSecured')">
+                            <div class="label">Einsatzstelle abgesichert?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusSections" class="lage-status warn" onclick="toggleLageStatus('sectionsBuilt')">
+                            <div class="label">Einsatzabschnitte gebildet?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusStaging" class="lage-status warn" onclick="toggleLageStatus('stagingReady')">
+                            <div class="label">Bereitstellungsraum eingerichtet?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusDekon" class="lage-status warn" onclick="toggleLageStatus('deconReady')">
+                            <div class="label">Dekon eingerichtet?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusWarning" class="lage-status warn" onclick="toggleLageStatus('publicWarning')">
+                            <div class="label">Bevölkerungswarnung ausgelöst?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                        <div id="lageStatusEnergy" class="lage-status warn" onclick="toggleLageStatus('energyOff')">
+                            <div class="label">Energieversorgung abgeschaltet?</div>
+                            <div class="state">❌ Nein</div>
+                        </div>
+                    </div>
+                </details>
             </div>
 
             <div class="lage-note">
-                <h4>Lagekurztext (frei)</h4>
-                <textarea id="lageFreeText" placeholder="Freie Lagenotiz..." oninput="setLageFreeText(this.value)"></textarea>
+                <h4>Lagemeldung (frei)</h4>
+                <textarea id="lageFreeText" placeholder="Freie Lagemeldung..." oninput="setLageFreeText(this.value)"></textarea>
             </div>
 
             <div id="lageSummary" class="lage-summary"></div>
             <textarea id="lageSummaryEdit" class="lage-summary-edit hidden" placeholder="Lagemeldung bearbeiten..." oninput="setLageSummaryCustomText(this.value)"></textarea>
 
             <div class="lage-section">
-                <h4>📡 1-Tap Lagemeldung an Leitstelle</h4>
-                <div class="lage-row">
-                    <button onclick="generateOneTapLeitstelleMessage('erst')">🟥 Erstmeldung</button>
-                    <button onclick="generateOneTapLeitstelleMessage('lage')">🟧 Lagemeldung</button>
-                    <button onclick="copyOneTapLeitstelleMessage()">📋 Meldung kopieren</button>
-                    <button onclick="pushOneTapLeitstelleToFunkHistory()">🕒 In Funkhistorie</button>
-                </div>
-                <div id="lageOneTapMeta" class="lage-onetap-meta">Noch keine Meldung generiert.</div>
-                <div id="lageOneTapOutput" class="lage-onetap-output">Hier erscheint die formatierte Meldung.</div>
+                <details>
+                    <summary><strong>📡 1-Tap Lagemeldung an Leitstelle</strong></summary>
+                    <div class="lage-row" style="margin-top:8px;">
+                        <button onclick="generateOneTapLeitstelleMessage('erst')">🟥 Erstmeldung</button>
+                        <button onclick="generateOneTapLeitstelleMessage('lage')">🟧 Lagemeldung</button>
+                        <button onclick="copyOneTapLeitstelleMessage()">📋 Meldung kopieren</button>
+                        <button onclick="pushOneTapLeitstelleToFunkHistory()">🕒 In Funkhistorie</button>
+                    </div>
+                    <div id="lageOneTapMeta" class="lage-onetap-meta">Noch keine Meldung generiert.</div>
+                    <div id="lageOneTapOutput" class="lage-onetap-output">Hier erscheint die formatierte Meldung.</div>
+                </details>
             </div>
 
             <div class="lage-section">
-                <h4>🗺 Ressourcen-Board in Echtzeit</h4>
-                <div id="lageResourceBoardCards" class="lage-resource-grid"></div>
-                <div id="lageResourceBoardMeta" class="lage-resource-meta">Wird live aus Einsatzlage, Atemschutz und Nachforderungen aktualisiert.</div>
-                <div id="lageResourceMap" class="lage-resource-map"></div>
+                <details ontoggle="handleLageResourceBoardToggle(this.open)">
+                    <summary><strong>🗺 Ressourcen-Board in Echtzeit</strong></summary>
+                    <div id="lageResourceBoardCards" class="lage-resource-grid" style="margin-top:8px;"></div>
+                    <div id="lageResourceBoardMeta" class="lage-resource-meta">Wird live aus Einsatzlage, Atemschutz und Nachforderungen aktualisiert.</div>
+                    <div id="lageResourceMap" class="lage-resource-map"></div>
+                </details>
             </div>
 
             <div class="lage-section">
-                <h4>Nachforderungen / Ressourcen</h4>
-                <div class="nach-grid">
-                    <div>
-                        <label for="lageNachResource">Ressource</label>
-                        <select id="lageNachResource" onchange="updateNachforderungFormState('lage')">
-                            <option value="DLK">DLK</option>
-                            <option value="TLF">TLF</option>
-                            <option value="HLF">HLF</option>
-                            <option value="RW">RW</option>
-                            <option value="GW-A">GW-A</option>
-                            <option value="SEG">SEG</option>
-                            <option value="THW">THW</option>
-                            <option value="Polizei">Polizei</option>
-                            <option value="Energieversorger">Energieversorger</option>
-                            <option value="Schaum">Schaum</option>
-                            <option value="Sonstiges">Sonstiges</option>
-                        </select>
+                <details>
+                    <summary><strong>Nachforderungen / Ressourcen</strong></summary>
+                    <div class="nach-grid" style="margin-top:8px;">
+                        <div>
+                            <label for="lageNachResource">Ressource</label>
+                            <select id="lageNachResource" onchange="updateNachforderungFormState('lage')">
+                                <option value="DLK">DLK</option>
+                                <option value="TLF">TLF</option>
+                                <option value="HLF">HLF</option>
+                                <option value="RW">RW</option>
+                                <option value="GW-A">GW-A</option>
+                                <option value="SEG">SEG</option>
+                                <option value="THW">THW</option>
+                                <option value="Polizei">Polizei</option>
+                                <option value="Energieversorger">Energieversorger</option>
+                                <option value="Schaum">Schaum</option>
+                                <option value="Sonstiges">Sonstiges</option>
+                            </select>
+                        </div>
+                        <div id="lageNachResourceOtherWrap" class="hidden">
+                            <label for="lageNachResourceOther">Sonstiges (Freitext)</label>
+                            <input id="lageNachResourceOther" type="text" placeholder="Ressource benennen...">
+                        </div>
+                        <div class="nach-col-full">
+                            <label for="lageNachReason">Begründung</label>
+                            <textarea id="lageNachReason" placeholder="Warum wird nachgefordert?"></textarea>
+                        </div>
+                        <div class="nach-col-full">
+                            <label for="lageNachSource">Woher kommt die Ressource? (optional)</label>
+                            <input id="lageNachSource" type="text" placeholder="z. B. FF Musterdorf, SEG Nord, THW OV ...">
+                        </div>
                     </div>
-                    <div id="lageNachResourceOtherWrap" class="hidden">
-                        <label for="lageNachResourceOther">Sonstiges (Freitext)</label>
-                        <input id="lageNachResourceOther" type="text" placeholder="Ressource benennen...">
+                    <div class="nach-actions" style="margin-top:8px;">
+                        <button onclick="addNachforderung('lage')">Anfordern</button>
+                        <button onclick="pushNachforderungenToLageLog()">In Lageprotokoll übernehmen</button>
+                        <button onclick="resetNachforderungen()">Alle zurücksetzen</button>
                     </div>
-                    <div class="nach-col-full">
-                        <label for="lageNachReason">Begründung</label>
-                        <textarea id="lageNachReason" placeholder="Warum wird nachgefordert?"></textarea>
-                    </div>
-                    <div class="nach-col-full">
-                        <label for="lageNachSource">Woher kommt die Ressource? (optional)</label>
-                        <input id="lageNachSource" type="text" placeholder="z. B. FF Musterdorf, SEG Nord, THW OV ...">
-                    </div>
-                </div>
-                <div class="nach-actions" style="margin-top:8px;">
-                    <button onclick="addNachforderung('lage')">Anfordern</button>
-                    <button onclick="pushNachforderungenToLageLog()">In Lageprotokoll übernehmen</button>
-                    <button onclick="resetNachforderungen()">Alle zurücksetzen</button>
-                </div>
-                <div id="lageNachList" class="nach-list"></div>
+                    <div id="lageNachList" class="nach-list"></div>
+                </details>
             </div>
 
             <div class="lage-section">
@@ -5305,7 +5356,10 @@ iframe {
                     <input id="lageLogText" type="text" placeholder="Ereignistext...">
                     <button onclick="addLageLogEvent()">➕ Ereignis hinzufügen</button>
                 </div>
-                <div id="lageLogList" class="lage-list"></div>
+                <details style="margin-top:8px;">
+                    <summary><strong>Historie</strong></summary>
+                    <div id="lageLogList" class="lage-list" style="margin-top:8px;"></div>
+                </details>
             </div>
 
             <div class="lage-actions">
@@ -5570,6 +5624,7 @@ function isTrainingMode(){
 
 const APP_VERSION = "1.4";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
+const TRAINING_ARCHIVE_STORAGE_KEY = "ff360_training_archive_v1";
 let appStatusMetaCache = null;
 
 function loadAppStatusMeta(){
@@ -5676,6 +5731,7 @@ function requireActiveIncidentOrRoute(){
 }
 
 function isIncidentEditingUnlocked(){
+    if (isTrainingMode()) return true;
     try {
         const paketRaw = appStorageGetItem("einsatz_pakete_v1");
         const paket = paketRaw ? JSON.parse(paketRaw) : null;
@@ -5957,17 +6013,122 @@ function getNowTimeValueWithSeconds(){
     return `${h}:${m}:${s}`;
 }
 
+function getTrainingArchiveSessions(){
+    try {
+        const raw = localStorage.getItem(TRAINING_ARCHIVE_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveTrainingArchiveSessions(list){
+    const next = Array.isArray(list) ? list.slice(0, 100) : [];
+    localStorage.setItem(TRAINING_ARCHIVE_STORAGE_KEY, JSON.stringify(next));
+}
+
+function getTrainingScopedStorageEntries(){
+    const entries = {};
+    SCOPED_STORAGE_BASE_KEYS.forEach((baseKey)=>{
+        const scopedKey = `${baseKey}_uebung_v1`;
+        const value = localStorage.getItem(scopedKey);
+        if (value !== null) entries[scopedKey] = value;
+    });
+    return entries;
+}
+
+function clearTrainingScopedStorageEntries(){
+    SCOPED_STORAGE_BASE_KEYS.forEach((baseKey)=>{
+        localStorage.removeItem(`${baseKey}_uebung_v1`);
+    });
+}
+
+function archiveTrainingSessionAndClearLiveData(){
+    const entries = getTrainingScopedStorageEntries();
+    const keys = Object.keys(entries);
+    if (keys.length){
+        const nowIso = new Date().toISOString();
+        const sessions = getTrainingArchiveSessions();
+        sessions.unshift({
+            id: `ueb_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+            title: `Übung ${new Date().toLocaleString("de-DE")}`,
+            createdAt: nowIso,
+            itemCount: keys.length,
+            entries
+        });
+        saveTrainingArchiveSessions(sessions);
+    }
+    clearTrainingScopedStorageEntries();
+}
+
+function deleteTrainingArchiveSession(id){
+    const sessions = getTrainingArchiveSessions().filter((item)=>String(item.id || "") !== String(id || ""));
+    saveTrainingArchiveSessions(sessions);
+    renderTrainingArchiveSettingsList();
+}
+
+function clearTrainingArchiveSessions(){
+    if (!confirm("Übungsarchiv wirklich komplett löschen?")) return;
+    localStorage.removeItem(TRAINING_ARCHIVE_STORAGE_KEY);
+    renderTrainingArchiveSettingsList();
+}
+
+function renderTrainingArchiveSettingsList(){
+    const listEl = document.getElementById("settingsTrainingArchiveList");
+    if (!listEl) return;
+    const sessions = getTrainingArchiveSessions();
+    if (!sessions.length){
+        listEl.innerHTML = `<div class="lage-empty">Noch keine Übungs-Sessions archiviert.</div>`;
+        return;
+    }
+    listEl.innerHTML = sessions.slice(0, 25).map((session)=>{
+        const created = session && session.createdAt ? new Date(session.createdAt).toLocaleString("de-DE") : "-";
+        const count = Number(session && session.itemCount) || 0;
+        return `<div class="settings-training-archive-item">
+            <strong>${escapeHtml(String((session && session.title) || "Übung"))}</strong>
+            <div>${escapeHtml(created)} · ${count} Speicherblöcke</div>
+            <div class="atem-row-actions" style="margin-top:6px;">
+                <button onclick="deleteTrainingArchiveSession('${escapeHtml(String((session && session.id) || ""))}')">Löschen</button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+function renderTrainingQuickOffButton(){
+    const wrap = document.getElementById("trainingQuickOffWrap");
+    if (!wrap) return;
+    if (!isTrainingMode()){
+        wrap.classList.add("hidden");
+        wrap.innerHTML = "";
+        return;
+    }
+    wrap.classList.remove("hidden");
+    wrap.innerHTML = `<button class="training-quick-off-btn" onclick="disableTrainingModeFromQuickButton()">🔵 Übungsmodus beenden</button>`;
+}
+
 function updateTrainingModeUi(){
     document.body.classList.toggle("training-mode", isTrainingMode());
     const dot = document.getElementById("trainingModeDot");
     if (dot){
         dot.classList.toggle("active", isTrainingMode());
     }
+    renderTrainingQuickOffButton();
 }
 
+function disableTrainingModeFromQuickButton(){
+    if (!isTrainingMode()) return;
+    toggleTrainingMode(false);
+}
 
-function toggleTrainingMode(){
-    trainingModeActive = !trainingModeActive;
+function toggleTrainingMode(nextMode = null){
+    const targetMode = typeof nextMode === "boolean" ? nextMode : !trainingModeActive;
+    if (targetMode === trainingModeActive) return;
+    const wasTraining = trainingModeActive;
+    if (wasTraining && !targetMode){
+        archiveTrainingSessionAndClearLiveData();
+    }
+    trainingModeActive = targetMode;
     localStorage.setItem(APP_MODE_STORAGE_KEY, trainingModeActive ? "uebung" : "real");
     updateTrainingModeUi();
     logEvent({
@@ -5981,6 +6142,11 @@ function toggleTrainingMode(){
     updatePsuReminderBadge();
     if (isLageOverlayOpen()) renderLageDashboard();
     if (isPsuOverlayOpen()) renderPsuOverlay();
+    if (isSettingsOverlayOpen()) renderSettingsOverlay();
+    if (wasTraining && !targetMode){
+        alert("Übungsmodus beendet. Übungsdaten wurden als Session archiviert und die aktive Übungsdatenbank geleert.");
+        window.location.reload();
+    }
 }
 
 /* Dark Mode Speicherung */
@@ -6069,6 +6235,7 @@ function renderSettingsOverlay(){
     if (trainingBtn){
         trainingBtn.textContent = isTrainingMode() ? "Übungsmodus deaktivieren" : "Übungsmodus aktivieren";
     }
+    renderTrainingArchiveSettingsList();
     updateWeatherSettingsFields();
 }
 
@@ -6084,6 +6251,48 @@ function toggleTrainingModeFromSettings(){
 
 function reloadAppPage(){
     window.location.reload();
+}
+
+function resetAllKlappenToDefaults(){
+    const closeById = [
+        "homeTaschenbuchFold",
+        "lageTimeControls",
+        "weatherSearchDetails"
+    ];
+    closeById.forEach((id)=>{
+        const el = document.getElementById(id);
+        if (el && "open" in el){
+            el.open = false;
+        }
+    });
+
+    const closeByRoot = [
+        "lageOverlay",
+        "einsatzKraefteRoot",
+        "settingsOverlay",
+        "weatherOverlay",
+        "droneWeatherOverlay"
+    ];
+    closeByRoot.forEach((rootId)=>{
+        const root = document.getElementById(rootId);
+        if (!root) return;
+        root.querySelectorAll("details").forEach((detail)=>{
+            detail.open = false;
+        });
+    });
+
+    if (typeof patchEinsatzKraefteState === "function"){
+        patchEinsatzKraefteState((s)=>{
+            if (!s.ui || typeof s.ui !== "object") s.ui = {};
+            s.ui.expanded = {};
+            s.ui.generatorOpen = false;
+        });
+    }
+
+    if (typeof renderEinsatzKraefteTool === "function"){
+        renderEinsatzKraefteTool();
+    }
+    alert("Klappbereiche wurden auf Standard zurückgesetzt.");
 }
 
 function getDefaultWeatherState(){
@@ -7075,22 +7284,36 @@ function updateHydrantenNote(id, value){
     });
 }
 
-function requestHydrantenLocation(){
+function updateHydrantenLiveLocation(lat, lon, centerMap){
+    const nLat = Number(lat);
+    const nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)) return false;
+    patchHydrantenState((s)=>{
+        s.lastKnownLocation = {
+            lat: nLat,
+            lon: nLon,
+            updatedAt: new Date().toISOString()
+        };
+    });
+    if (centerMap){
+        hydrantenLeafletView = { lat: nLat, lon: nLon, zoom: HYDRANT_LOCATION_FOCUS_ZOOM };
+    }
+    return true;
+}
+
+function requestHydrantenLocation(options = {}){
+    const opts = options && typeof options === "object" ? options : {};
+    const silentError = !!opts.silentError;
+    const centerMap = !!opts.centerMap;
     if (!navigator.geolocation){
-        alert("Geolocation wird auf diesem Gerät nicht unterstützt.");
+        if (!silentError) alert("Geolocation wird auf diesem Gerät nicht unterstützt.");
         return;
     }
     navigator.geolocation.getCurrentPosition((pos)=>{
-        patchHydrantenState((s)=>{
-            s.lastKnownLocation = {
-                lat: Number(pos.coords.latitude),
-                lon: Number(pos.coords.longitude),
-                updatedAt: new Date().toISOString()
-            };
-        });
+        updateHydrantenLiveLocation(pos.coords.latitude, pos.coords.longitude, centerMap);
         renderHydrantenTool();
     }, ()=>{
-        alert("Standort konnte nicht ermittelt werden.");
+        if (!silentError) alert("Standort konnte nicht ermittelt werden.");
     }, {
         enableHighAccuracy: true,
         maximumAge: 30000,
@@ -7531,7 +7754,16 @@ function openHydrantenOverlay(){
     lastHydrantenFocus = document.activeElement;
     overlay.classList.add("show");
     document.body.style.overflow = "hidden";
+    const known = getHydrantenState().lastKnownLocation;
+    if (known && Number.isFinite(Number(known.lat)) && Number.isFinite(Number(known.lon))){
+        hydrantenLeafletView = {
+            lat: Number(known.lat),
+            lon: Number(known.lon),
+            zoom: HYDRANT_LOCATION_FOCUS_ZOOM
+        };
+    }
     renderHydrantenTool();
+    requestHydrantenLocation({ silentError: true, centerMap: true });
     setTimeout(()=>{
         if (hydrantenLeafletMap) hydrantenLeafletMap.invalidateSize();
     }, 80);
@@ -8898,9 +9130,9 @@ function buildOneTapLeitstelleMessage(type = "lage"){
     const alarmstichwort = String(lage.alarmstichwort || "-").trim() || "-";
 
     if (type === "erst"){
-        return `Hier ${callsign} für Leitstelle, Erstmeldung ${timeStamp}: ${alarmstichwort}. Lage auf Sicht: ${lageText}. Personenlage: ${lageTpl.personen || "Unklar"}. Maßnahmen laufen: ${measures}. ${statusText}. ${nachText}. ${gpsText}. Ende.`;
+        return `Hier ${callsign} für Leitstelle, Erstmeldung ${timeStamp}: ${alarmstichwort}. Lagemeldung: ${lageText}. Personenlage: ${lageTpl.personen || "Unklar"}. Maßnahmen laufen: ${measures}. Aktueller Stand: ${statusText}. Nachforderungen: ${nachText}. Standort: ${gpsText}. Ende.`;
     }
-    return `Hier ${callsign} für Leitstelle, Lagemeldung ${timeStamp}: ${alarmstichwort}. ${statusText}. Abschnitte aktiv: ${resBoard.sections}. Maßnahmen: ${measures}. Atemschutztrupps: ${resBoard.atemschutzTeams}, Notfallstatus: ${resBoard.atemschutzNotfall > 0 ? "auffällig" : "unauffällig"}. ${nachText}. Lagehinweis: ${lageText}. ${gpsText}. Ende.`;
+    return `Hier ${callsign} für Leitstelle, Lagemeldung ${timeStamp}: ${alarmstichwort}. Aktueller Stand: ${statusText}. Abschnitte aktiv: ${resBoard.sections}. Maßnahmen laufen: ${measures}. Atemschutztrupps: ${resBoard.atemschutzTeams}, Notfallstatus: ${resBoard.atemschutzNotfall > 0 ? "auffällig" : "unauffällig"}. Nachforderungen: ${nachText}. Lagemeldung: ${lageText}. Standort: ${gpsText}. Ende.`;
 }
 
 function renderLageOneTapMessage(state){
@@ -9284,6 +9516,15 @@ function renderLageDashboard(){
     if (logTimeInput && !logTimeInput.value){
         logTimeInput.value = getNowTimeValue();
     }
+}
+
+function handleLageResourceBoardToggle(isOpen){
+    if (!isOpen) return;
+    window.setTimeout(()=>{
+        if (lageResourceMap){
+            lageResourceMap.invalidateSize();
+        }
+    }, 90);
 }
 
 function setLageStatusUi(elementId, isOk){
@@ -10175,6 +10416,89 @@ function hasMeaningfulPsuData(psu, contacts, reminders){
     return false;
 }
 
+function hasAnyTruthyValue(obj){
+    if (!obj || typeof obj !== "object") return false;
+    return Object.values(obj).some((value)=>!!value);
+}
+
+function isNonEmptyText(value){
+    return !!String(value || "").trim();
+}
+
+function hasMeaningfulGefahrgutData(gefahrgut){
+    const state = gefahrgut || {};
+    const defaults = getDefaultGefahrgutState();
+    if (String(state.type || defaults.type).trim() !== defaults.type) return true;
+    if (String(state.dekon || defaults.dekon).trim() !== defaults.dekon) return true;
+    if (isNonEmptyText(state.unNumber) || isNonEmptyText(state.stoff) || isNonEmptyText(state.kennzeichen) || isNonEmptyText(state.beobachtung)) return true;
+    if (hasAnyTruthyValue(state.checks) || hasAnyTruthyValue(state.flags)) return true;
+    if (Array.isArray(state.log) && state.log.length) return true;
+    return false;
+}
+
+function hasMeaningfulEvakData(evak){
+    const sessions = Array.isArray(evak && evak.sessions) ? evak.sessions : [];
+    return sessions.some((session)=>{
+        if (!session || typeof session !== "object") return false;
+        const header = session.header || {};
+        const lage = session.lage || {};
+        const plan = session.plan || {};
+        const personen = session.personen || {};
+        const status = session.status || {};
+        const hasHeader = isNonEmptyText(header.objekt) || isNonEmptyText(header.notiz);
+        const hasLage = isNonEmptyText(lage.szenario) || (Array.isArray(lage.ausloeser) && lage.ausloeser.length) || isNonEmptyText(lage.gefahrenbereich) || isNonEmptyText(lage.zugang) || isNonEmptyText(lage.besondereGefahr);
+        const hasPlan = isNonEmptyText(plan.grund) || isNonEmptyText(plan.bereich) || isNonEmptyText(plan.sammeltpunkt) || isNonEmptyText(plan.betreuungsstelle) || isNonEmptyText(plan.transport);
+        const hasPersonen = Number(personen.imObjekt || 0) > 0 || Number(personen.evakuiert || 0) > 0 || Number(personen.vermisst || 0) > 0 || Number(personen.verletzt || 0) > 0;
+        const hasStatus = Object.values(status).some((value)=>String(value || "offen").trim() !== "offen");
+        const hasLists = (Array.isArray(session.abschnitte) && session.abschnitte.length) || (Array.isArray(session.einheiten) && session.einheiten.length) || (Array.isArray(session.timeline) && session.timeline.length);
+        return hasHeader || hasLage || hasPlan || hasPersonen || hasStatus || hasLists;
+    });
+}
+
+function hasMeaningfulPresseData(presse){
+    const state = presse || {};
+    const defaults = getDefaultPresseState();
+    const assist = state.assist || {};
+    const assistDefaults = defaults.assist || {};
+    if (isNonEmptyText(assist.ort) || isNonEmptyText(assist.kurz) || isNonEmptyText(assist.kernbotschaft) || isNonEmptyText(assist.weitere)) return true;
+    if ((assist.einsatzart || assistDefaults.einsatzart) !== assistDefaults.einsatzart) return true;
+    if ((assist.meldungsart || assistDefaults.meldungsart) !== assistDefaults.meldungsart) return true;
+    if ((assist.kanal || assistDefaults.kanal) !== assistDefaults.kanal) return true;
+    if ((assist.einsatzstand || assistDefaults.einsatzstand) !== assistDefaults.einsatzstand) return true;
+    if ((assist.bevoelkerung || assistDefaults.bevoelkerung) !== assistDefaults.bevoelkerung) return true;
+    if (hasAnyTruthyValue(assist.besonderheiten) || hasAnyTruthyValue(assist.massnahmen)) return true;
+    if (state.statement && hasAnyTruthyValue(state.statement.selected)) return true;
+    if (state.vorlagen && (isNonEmptyText(state.vorlagen.ort) || isNonEmptyText(state.vorlagen.text))) return true;
+    if (state.sperr && (hasAnyTruthyValue(state.sperr.base) || hasAnyTruthyValue(state.sperr.reason) || hasAnyTruthyValue(state.sperr.actions) || hasAnyTruthyValue(state.sperr.legal) || isNonEmptyText(state.sperr.custom))) return true;
+    if (state.freigabe && (hasAnyTruthyValue(state.freigabe.checks) || isNonEmptyText(state.freigabe.confirmedAt))) return true;
+    if (state.modus && !!state.modus.active) return true;
+    return false;
+}
+
+function getSocialReportRows(social){
+    const state = social || {};
+    const rows = [];
+    if (isNonEmptyText(state.einsatznummer)) rows.push({ label: "Einsatznummer", value: formatSocialEinsatznummer(state.einsatznummer) });
+    if (isNonEmptyText(state.date)) rows.push({ label: "Datum", value: formatSocialDate(state.date) });
+    if (isNonEmptyText(state.time)) rows.push({ label: "Uhrzeit", value: formatSocialTime(state.time) });
+    if (isNonEmptyText(state.alarmschleife)) rows.push({ label: "Alarmschleife", value: state.alarmschleife });
+    if (isNonEmptyText(state.alarmstichwort)) rows.push({ label: "Alarmstichwort", value: state.alarmstichwort });
+    if (Array.isArray(state.forces) && state.forces.length){
+        rows.push({ label: "Weitere Kräfte", value: state.forces.join(", ") });
+    }
+    if (isNonEmptyText(state.taetigkeit)) rows.push({ label: "Tätigkeit / Durchführung", value: state.taetigkeit.trim() });
+    const freigabe = state.freigabe || {};
+    const checks = freigabe.checks || {};
+    const checksComplete = ["datenschutz", "keinePersonendaten", "keineSpekulation", "fuehrungFreigegeben"].every((key)=>!!checks[key]);
+    if (checksComplete || isNonEmptyText(freigabe.confirmedAt)){
+        rows.push({ label: "Freigabe", value: isNonEmptyText(freigabe.confirmedAt) ? `Bestätigt (${formatReportTs(freigabe.confirmedAt)})` : "Checks vollständig" });
+    }
+    if (state.includeWeather){
+        rows.push({ label: "Wetteranhang", value: "Aktiviert" });
+    }
+    return rows;
+}
+
 function exportIncidentFinalReportPdf(){
     let snapshot = null;
     const activePackage = getActiveEinsatzPaket();
@@ -10188,7 +10512,6 @@ function exportIncidentFinalReportPdf(){
     const lage = snapshot.lage || getDefaultLageState();
     const sections = Array.isArray(snapshot.sections) ? snapshot.sections : [];
     const nachforderungen = Array.isArray(snapshot.nachforderungen) ? snapshot.nachforderungen : [];
-    const einsatzLog = Array.isArray(snapshot.einsatzLog) ? snapshot.einsatzLog : [];
     const funkHistory = snapshot.funk && Array.isArray(snapshot.funk.history) ? snapshot.funk.history : [];
     const social = snapshot.social || {};
     const psu = snapshot.psu || {};
@@ -10216,30 +10539,6 @@ function exportIncidentFinalReportPdf(){
         <td style="padding:6px 8px;border:1px solid #bbb;width:92px;white-space:nowrap;">${escapeHtml(entry.category || "EINSATZ")}</td>
         <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.text || "-")}</td>
     </tr>`).join("");
-    const einsatzLogRows = einsatzLog.slice(0, 80).map((item)=>`<tr>
-        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.einsatznummer || "-")}</td>
-        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.datum || "-")} ${escapeHtml(item.uhrzeit || "")}</td>
-        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.alarmstichwort || "-")}</td>
-        <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(buildVerursacherCompactText(item.verursacher))}</td>
-    </tr>`).join("");
-    const verursacherRowsFromLog = einsatzLog
-        .map((item)=>({
-            einsatznummer: item.einsatznummer || "-",
-            datum: item.datum || "-",
-            uhrzeit: item.uhrzeit || "-",
-            verursacher: normalizeVerursacherInfo(item.verursacher)
-        }))
-        .filter((item)=>hasVerursacherInfo(item.verursacher))
-        .slice(0, 40)
-        .map((item)=>`<tr>
-            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.einsatznummer)}</td>
-            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.datum)} ${escapeHtml(item.uhrzeit)}</td>
-            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(getVerursacherBekanntLabel(item.verursacher.bekannt))}</td>
-            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.verursacher.nameFirma || "-")}</td>
-            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.verursacher.adresse || "-")}</td>
-            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.verursacher.kontakt || "-")}</td>
-            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.verursacher.hinweise || "-")}</td>
-        </tr>`).join("");
     const funkRows = funkHistory.slice(0, 20).map((item)=>`<tr>
         <td style="padding:6px 8px;border:1px solid #bbb;width:82px;">${escapeHtml(item.time || "-")}</td>
         <td style="padding:6px 8px;border:1px solid #bbb;width:180px;">${escapeHtml(item.type || "-")}</td>
@@ -10286,6 +10585,7 @@ function exportIncidentFinalReportPdf(){
         { label: "Stand", value: presseAssist.einsatzstand || "-" },
         { label: "Kernbotschaft", value: presseAssist.kernbotschaft || "-" }
     ];
+    const socialRows = getSocialReportRows(social);
     const psuRows = [
         { label: "PSU angefordert", value: psu.required ? "Ja" : "Nein" },
         { label: "Status", value: psu.status || "-" },
@@ -10298,7 +10598,10 @@ function exportIncidentFinalReportPdf(){
     ];
     const showFunkcheck = hasMeaningfulFunkcheckData(snapshot.funkcheck);
     const showPsu = hasMeaningfulPsuData(psu, snapshot.psuContacts, snapshot.psuReminders);
-    const showVerursacherSection = hasVerursacherInfo(lageVerursacher) || !!verursacherRowsFromLog;
+    const showGefahrgut = hasMeaningfulGefahrgutData(gefahrgut);
+    const showEvak = hasMeaningfulEvakData(evak);
+    const showPresse = hasMeaningfulPresseData(presse);
+    const showVerursacherSection = hasVerursacherInfo(lageVerursacher);
 
     const w = window.open("", "_blank");
     if (!w){
@@ -10329,17 +10632,16 @@ function exportIncidentFinalReportPdf(){
     <div class="section"><h2>3) Abschnitte</h2><table style="margin-top:6px;"><thead><tr><th>Abschnitt</th><th>Kräfte</th><th>Status</th></tr></thead><tbody>${sectionRows || `<tr><td colspan="3" style="padding:8px;">Keine Abschnitte erfasst.</td></tr>`}</tbody></table></div>
     <div class="section"><h2>4) Nachforderungen</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Ressource</th><th>Status</th><th>Begründung</th></tr></thead><tbody>${nachRows || `<tr><td colspan="4" style="padding:8px;">Keine Nachforderungen erfasst.</td></tr>`}</tbody></table></div>
     <div class="section"><h2>5) Lage-Ereignislog</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Ereignis</th></tr></thead><tbody>${lageLogRows || `<tr><td colspan="3" style="padding:8px;">Keine Ereignisse erfasst.</td></tr>`}</tbody></table></div>
-    <div class="section"><h2>6) Einsatzhistorie (Social)</h2><table style="margin-top:6px;"><thead><tr><th>Einsatznummer</th><th>Datum/Uhrzeit</th><th>Alarmstichwort</th><th>Verursacher</th></tr></thead><tbody>${einsatzLogRows || `<tr><td colspan="4" style="padding:8px;">Keine Einträge erfasst.</td></tr>`}</tbody></table></div>
+    <div class="section"><h2>6) Social-Media-Bericht</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(socialRows)}</tbody></table><div class="block" style="margin-top:8px;"><strong>Hinweis Lageabteilung / Durchführung:</strong> Dokumentation gemäß Social-Media-Modul (inkl. Durchführung, falls erfasst).</div></div>
     ${showVerursacherSection ? `<div class="section"><h2>Verursacherangaben</h2>
         ${hasVerursacherInfo(lageVerursacher) ? `<div class="block"><strong>Aus Einsatzlage</strong>\nBekannt: ${escapeHtml(getVerursacherBekanntLabel(lageVerursacher.bekannt))}\nName/Firma: ${escapeHtml(lageVerursacher.nameFirma || "-")}\nAdresse: ${escapeHtml(lageVerursacher.adresse || "-")}\nKontaktdaten: ${escapeHtml(lageVerursacher.kontakt || "-")}\nHinweise: ${escapeHtml(lageVerursacher.hinweise || "-")}</div>` : ""}
-        ${verursacherRowsFromLog ? `<table style="margin-top:6px;"><thead><tr><th>Einsatznummer</th><th>Datum/Uhrzeit</th><th>Bekannt?</th><th>Name/Firma</th><th>Adresse</th><th>Kontakt</th><th>Hinweise</th></tr></thead><tbody>${verursacherRowsFromLog}</tbody></table>` : ""}
     </div>` : ""}
     <div class="section"><h2>7) Funk</h2><div class="block"><strong>Aktive Vorlage:</strong> ${escapeHtml(snapshot.funk && snapshot.funk.activeTemplate ? snapshot.funk.activeTemplate : "-")}\n<strong>Funkrufname:</strong> ${escapeHtml(snapshot.funk ? getActiveCallsign(snapshot.funk) : "-")}\n<strong>Social Alarmstichwort:</strong> ${escapeHtml(social.alarmstichwort || "-")}</div><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Meldung</th></tr></thead><tbody>${funkRows || `<tr><td colspan="3" style="padding:8px;">Keine Funkhistorie erfasst.</td></tr>`}</tbody></table></div>
     <div class="section"><h2>8) Atemschutzüberwachung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getAtemschutzReportRows(snapshot.atemschutz))}</tbody></table></div>
     ${showFunkcheck ? `<div class="section"><h2>9) Funk-Check</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getFunkcheckSummaryRows(snapshot.funkcheck))}</tbody></table></div>` : ""}
-    <div class="section"><h2>10) Gefahrgut</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(gefahrgutRows)}</tbody></table></div>
-    <div class="section"><h2>11) Evakuierung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(evakRows)}</tbody></table></div>
-    <div class="section"><h2>12) Presse</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(presseRows)}</tbody></table></div>
+    ${showGefahrgut ? `<div class="section"><h2>10) Gefahrgut</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(gefahrgutRows)}</tbody></table></div>` : ""}
+    ${showEvak ? `<div class="section"><h2>11) Evakuierung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(evakRows)}</tbody></table></div>` : ""}
+    ${showPresse ? `<div class="section"><h2>12) Presse</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(presseRows)}</tbody></table></div>` : ""}
     ${showPsu ? `<div class="section"><h2>13) PSU</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(psuRows)}</tbody></table></div>` : ""}
 
     <div style="margin-top:10px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
@@ -12710,22 +13012,16 @@ function removeEinsatzEntry(id){
 function renderEinsatzOverview(){
     const fullList = getSortedEinsatzLog();
     renderEinsatzSummary(fullList);
-    updateEinsatzVerursacherFilterUi();
-    const list = einsatzStichwortFilter
+    const filteredList = einsatzStichwortFilter
         ? fullList.filter((item)=>(item.alarmstichwort || "").trim() === einsatzStichwortFilter)
         : fullList;
-    const filteredList = list
-        .filter((item)=>isEinsatzVerursacherMatchFilter(item))
-        .filter((item)=>isEinsatzVerursacherMatchSearch(item));
 
     const listEl = document.getElementById("einsatzList");
     if (!listEl) return;
     if (!filteredList.length){
         const hint = einsatzStichwortFilter
             ? `Keine Einträge zum Stichwort „${einsatzStichwortFilter}“.`
-            : (einsatzVerursacherSearch || einsatzVerursacherFilter !== "all"
-                ? "Keine Einträge für den gesetzten Verursacher-Filter gefunden."
-                : "Noch keine Einträge gespeichert.<br>Im Social-Media Beitrag auf „Für Einsatzhistorie speichern“ klicken.");
+            : "Noch keine Einträge gespeichert.<br>Im Social-Media Beitrag auf „Für Einsatzhistorie speichern“ klicken.";
         listEl.innerHTML = `<div class="card">${hint}</div>`;
         return;
     }
@@ -12733,9 +13029,6 @@ function renderEinsatzOverview(){
     let html = "";
     filteredList.forEach((item)=>{
         const status = getEinsatzStatusMeta(item.beteiligt);
-        const verursacher = normalizeVerursacherInfo(item.verursacher);
-        const verursacherBekannt = getVerursacherBekanntLabel(verursacher.bekannt);
-        const hasVerursacher = hasVerursacherInfo(verursacher);
         html += `
         <div class="einsatz-item">
             <div class="einsatz-item-top">
@@ -12745,16 +13038,6 @@ function renderEinsatzOverview(){
             <div>Datum: ${item.datum || "—"}</div>
             <div>Uhrzeit: ${item.uhrzeit || "—"}</div>
             <div>Alarmstichwort: ${item.alarmstichwort || "—"}</div>
-            <div style="margin-top:6px; border-top:1px dashed var(--border); padding-top:6px;">
-                <strong>Verursacher</strong>
-                <div>Bekannt: ${verursacherBekannt}</div>
-                ${hasVerursacher ? `
-                    <div>Name/Firma: ${verursacher.nameFirma || "—"}</div>
-                    <div>Adresse: ${verursacher.adresse || "—"}</div>
-                    <div>Kontakt: ${verursacher.kontakt || "—"}</div>
-                    <div>Hinweise: ${verursacher.hinweise || "—"}</div>
-                ` : `<div>Keine Angaben.</div>`}
-            </div>
             <div class="einsatz-toggle-row">
                 <button class="${item.beteiligt === true ? "active-yes" : ""}" onclick="setEinsatzBeteiligung('${item.id}', true)">Ja</button>
                 <button class="${item.beteiligt === false ? "active-no" : ""}" onclick="setEinsatzBeteiligung('${item.id}', false)">Nein</button>
@@ -15024,6 +15307,32 @@ function asuGetTopPriorityAlarmTeamId(){
     return best ? best.id : null;
 }
 
+function asuShouldShowQuickButtonForIncident(incident){
+    if (!incident || !Array.isArray(incident.teams)) return false;
+    const hasActiveOrPause = incident.teams.some((team)=>{
+        const status = String((team && team.status) || "");
+        return status === ASU_STATUS.IM_EINSATZ || status === ASU_STATUS.PAUSE;
+    });
+    if (hasActiveOrPause) return true;
+
+    const hasDeploymentTrace = incident.teams.some((team)=>{
+        if (!team) return false;
+        if (Number.isFinite(Number(team.startedAt)) && Number(team.startedAt) > 0) return true;
+        if (Array.isArray(team.history) && team.history.length > 0) return true;
+        if (Array.isArray(team.cycleHistory) && team.cycleHistory.length > 0) return true;
+        if (Array.isArray(team.pauseHistory) && team.pauseHistory.length > 0) return true;
+        if (Number(team.cycleElapsedSec || 0) > 0) return true;
+        return false;
+    });
+    if (hasDeploymentTrace) return true;
+
+    const logs = Array.isArray(incident.logs) ? incident.logs : [];
+    return logs.some((entry)=>{
+        const type = String((entry && entry.type) || "");
+        return type === "START_PA" || type === "PAUSE_START" || type === "CHECKIN" || type === "TIMER_RESET" || type === "CYCLE_RESTART";
+    });
+}
+
 function asuPauseAlarmSoundByUser(){
     asuGlobalAlarmState.soundPausedByUser = true;
     asuStopGlobalAlarmAudio();
@@ -15185,7 +15494,7 @@ function asuUpdateGlobalAlarmUi(){
     const soundPauseBtn = document.getElementById("asuSoundPauseBtn");
     const flash = document.getElementById("asuGlobalFlash");
 
-    const monitorActive = !!incident;
+    const monitorActive = asuShouldShowQuickButtonForIncident(incident);
     if (quickBtn){
         quickBtn.classList.toggle("show", monitorActive);
         quickBtn.classList.toggle("alarm", asuGlobalAlarmState.alarmActive);
@@ -19209,7 +19518,8 @@ function createDefaultEinsatzKraefteState(){
             groupBy: "gemeinde",
             expanded: {},
             generatorGemeinde: "",
-            generatorType: ""
+            generatorType: "",
+            generatorOpen: true
         },
         updatedAt: new Date().toISOString()
     };
@@ -19353,6 +19663,10 @@ function setEinsatzKraefteGeneratorGemeinde(value){
 function setEinsatzKraefteGeneratorType(value){
     patchEinsatzKraefteState((s)=>{ s.ui.generatorType = value || ""; });
     renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteGeneratorOpen(isOpen){
+    patchEinsatzKraefteState((s)=>{ s.ui.generatorOpen = !!isOpen; });
 }
 
 function openEinsatzKraefteAddVehiclePopup(){
@@ -19718,27 +20032,29 @@ function renderEinsatzKraefteSelection(state){
       </div>
 
       <div class="atem-panel">
-        <strong>Funkrufname finden</strong>
-        <div class="ek-row" style="margin-top:8px;">
-            <div><label>Gemeinde/Feuerwehr</label>
-                <select onchange="setEinsatzKraefteGeneratorGemeinde(this.value)">
-                    <option value="">Alle</option>
-                    ${gemeinden.map((g)=>`<option value="${escapeHtml(g)}" ${state.ui.generatorGemeinde === g ? "selected" : ""}>${escapeHtml(g)}</option>`).join("")}
-                </select>
-            </div>
-            <div><label>Fahrzeugtyp/-name</label><input type="text" value="${escapeHtml(state.ui.generatorType || "")}" placeholder="z. B. HLF, MTW, ELW" oninput="setEinsatzKraefteGeneratorType(this.value)"></div>
-        </div>
-        <div class="phonebook-list" style="margin-top:8px;">
-            ${genMatches.length ? genMatches.map((item)=>`<div class="phonebook-item">
-                <div class="phonebook-head">${escapeHtml(item.fahrzeugBezeichnung)} · ${escapeHtml(item.funkrufname)}</div>
-                <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)}</div>
-                <div class="phonebook-actions">
-                    <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
-                    <button class="phonebook-fav-btn" onclick="openEinsatzKraefteEditVehiclePopup('${item.id}')">Bearbeiten</button>
-                    <button class="phonebook-fav-btn" onclick="deleteEinsatzKraefteVehicle('${item.id}')">Löschen</button>
+        <details>
+            <summary><strong>Funkrufname finden</strong></summary>
+            <div class="ek-row" style="margin-top:8px;">
+                <div><label>Gemeinde/Feuerwehr</label>
+                    <select onchange="setEinsatzKraefteGeneratorGemeinde(this.value)">
+                        <option value="">Alle</option>
+                        ${gemeinden.map((g)=>`<option value="${escapeHtml(g)}" ${state.ui.generatorGemeinde === g ? "selected" : ""}>${escapeHtml(g)}</option>`).join("")}
+                    </select>
                 </div>
-            </div>`).join("") : `<div class="lage-empty">Keine Ergebnisse.</div>`}
-        </div>
+                <div><label>Fahrzeugtyp/-name</label><input type="text" value="${escapeHtml(state.ui.generatorType || "")}" placeholder="z. B. HLF, MTW, ELW" oninput="setEinsatzKraefteGeneratorType(this.value)"></div>
+            </div>
+            <div class="phonebook-list" style="margin-top:8px;">
+                ${genMatches.length ? genMatches.map((item)=>`<div class="phonebook-item">
+                    <div class="phonebook-head">${escapeHtml(item.fahrzeugBezeichnung)} · ${escapeHtml(item.funkrufname)}</div>
+                    <div class="phonebook-meta">${escapeHtml(item.organisation || item.gemeinde)}</div>
+                    <div class="phonebook-actions">
+                        <button class="phonebook-fav-btn" onclick="copyFunkrufname('${item.funkrufname}')">Kopieren</button>
+                        <button class="phonebook-fav-btn" onclick="openEinsatzKraefteEditVehiclePopup('${item.id}')">Bearbeiten</button>
+                        <button class="phonebook-fav-btn" onclick="deleteEinsatzKraefteVehicle('${item.id}')">Löschen</button>
+                    </div>
+                </div>`).join("") : `<div class="lage-empty">Keine Ergebnisse.</div>`}
+            </div>
+        </details>
       </div>
 
       <div class="atem-panel">
@@ -22340,6 +22656,45 @@ function updateScrollTopButton(){
     btn.style.display = window.scrollY > 180 ? "flex" : "none";
 }
 
+const APP_SPLASH_HIDE_DELAY_MS = 700;
+const APP_STARTUP_LOCATION_DELAY_AFTER_SPLASH_MS = 2600;
+let appStartupLocationScheduled = false;
+let appStartupLocationRequested = false;
+
+function requestStartupLocationSilently(){
+    if (appStartupLocationRequested) return;
+    appStartupLocationRequested = true;
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition((pos)=>{
+        const lat = Number(pos.coords.latitude);
+        const lon = Number(pos.coords.longitude);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+        patchLageState((s)=>{
+            s.gpsText = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+        });
+        patchHydrantenState((s)=>{
+            s.lastKnownLocation = {
+                lat,
+                lon,
+                updatedAt: new Date().toISOString()
+            };
+        });
+        onGpsPositionUpdate(pos);
+        if (isLageOverlayOpen()) renderLageDashboard();
+        if (isHydrantenOverlayOpen()) renderHydrantenTool();
+    }, ()=>{}, {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 12000
+    });
+}
+
+function scheduleStartupLocationRequest(){
+    if (appStartupLocationScheduled) return;
+    appStartupLocationScheduled = true;
+    setTimeout(requestStartupLocationSilently, APP_SPLASH_HIDE_DELAY_MS + APP_STARTUP_LOCATION_DELAY_AFTER_SPLASH_MS);
+}
+
 let activeServiceWorkerRegistration = null;
 let swUpdateDismissed = false;
 
@@ -22408,9 +22763,11 @@ function registerAppServiceWorker(){
 
 window.addEventListener("scroll", updateScrollTopButton);
 window.addEventListener("load", ()=>{
-    setTimeout(hideAppSplash, 700);
+    setTimeout(hideAppSplash, APP_SPLASH_HIDE_DELAY_MS);
+    scheduleStartupLocationRequest();
 });
 setTimeout(hideAppSplash, 1500);
+setTimeout(scheduleStartupLocationRequest, 2400);
 updateScrollTopButton();
 renderHomeFavorites();
 renderHomeWeatherBanner();
@@ -22589,6 +22946,17 @@ function buildQrUrl(content){
     return `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(String(content || ""))}`;
 }
 
+function getGpsHeadingForDisplay(state){
+    if (Number.isFinite(gpsHeadingDeg)){
+        return Number(gpsHeadingDeg);
+    }
+    const current = state && state.current ? state.current : null;
+    if (current && Number.isFinite(current.heading)){
+        return Number(current.heading);
+    }
+    return null;
+}
+
 function setGpsTarget(lat, lon, label){
     const nLat = Number(lat);
     const nLon = Number(lon);
@@ -22734,7 +23102,7 @@ function renderGpsTool(){
     const point = target || current;
     const links = point ? getMapLinks(point.lat, point.lon) : { google: "", apple: "" };
     const savedPoints = Array.isArray(state.savedPoints) ? state.savedPoints : [];
-    const heading = 0;
+    const heading = getGpsHeadingForDisplay(state);
     const dist = (current && target) ? hydDistanceMeters(current.lat, current.lon, target.lat, target.lon) : null;
 
     body.innerHTML = `
@@ -22821,7 +23189,7 @@ function renderGpsTool(){
 }
 
 function renderGpsCompassOnly(){
-    const heading = 0;
+    const heading = getGpsHeadingForDisplay(getGpsState());
     const arrow = document.getElementById("gpsCompassArrow");
     const label = document.getElementById("gpsCompassLabel");
     if (arrow){
@@ -22875,6 +23243,10 @@ function requestGpsCompass(){
         alert("Kompass auf diesem Gerät nicht verfügbar.");
         return;
     }
+    if (!window.isSecureContext){
+        alert("Kompass benötigt eine sichere Verbindung (HTTPS).");
+        return;
+    }
     const maybePermission = DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === "function"
         ? DeviceOrientationEvent.requestPermission()
         : Promise.resolve("granted");
@@ -22886,6 +23258,7 @@ function requestGpsCompass(){
             gpsCompassListenerAttached = true;
         }
         gpsCompassEnabled = true;
+        renderGpsCompassOnly();
     }).catch(()=>{});
 }
 
@@ -22903,6 +23276,7 @@ function openGpsOverlay(){
     document.body.style.overflow = "hidden";
     renderGpsTool();
     requestSingleGpsPosition();
+    requestGpsCompass();
     setTimeout(()=>{
         if (gpsMap) gpsMap.invalidateSize();
     }, 80);
