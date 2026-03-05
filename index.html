@@ -2723,6 +2723,13 @@ button:active {
     font-size: 14px;
 }
 
+.social-form input[type="date"],
+.social-form input[type="time"] {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
 .social-form textarea {
     min-height: 92px;
     resize: vertical;
@@ -4233,6 +4240,12 @@ iframe {
         min-width: 0 !important;
     }
 
+    #socialDate,
+    #socialTime {
+        font-size: 13px;
+        padding: 8px 9px;
+    }
+
     .funk-callsign-row {
         grid-template-columns: 1fr;
     }
@@ -5555,7 +5568,7 @@ function isTrainingMode(){
     return !!trainingModeActive;
 }
 
-const APP_VERSION = "1.3";
+const APP_VERSION = "1.4";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 let appStatusMetaCache = null;
 
