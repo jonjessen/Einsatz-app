@@ -4794,15 +4794,6 @@ iframe {
     <div class="social-modal">
         <div class="social-header">
             <h2 id="hydrantenTitle">Hydrantenkarte</h2>
-            <details id="hydrantenHeaderLoadMenu" class="hydranten-header-menu">
-                <summary>Weitere Hydranten laden</summary>
-                <div class="hydranten-header-menu-content">
-                    <button onclick="loadHydrantenByScope('nearby')">Umkreis 400 m um Standort</button>
-                    <button onclick="loadHydrantenByScope('timmendorfer')">Gesamte Gemeinde Timmendorfer Strand</button>
-                    <button onclick="loadHydrantenByScope('scharbeutz')">Gesamte Gemeinde Scharbeutz</button>
-                    <button onclick="loadHydrantenByScope('ratekau')">Gesamte Gemeinde Ratekau</button>
-                </div>
-            </details>
             <button class="social-close" onclick="closeHydrantenOverlay()" aria-label="Hydrantenkarte schließen">✕</button>
         </div>
         <div class="social-body" id="hydrantenBody"></div>
@@ -7109,6 +7100,7 @@ let hydrantenLeafletMap = null;
 let hydrantenLeafletLayer = null;
 let hydrantenLeafletUserMarker = null;
 let hydrantenLeafletView = null;
+let hydrantenLeafletBounds = null;
 
 function createDefaultHydrantenState(){
     const seededHydrants = Array.isArray(HYDRANTEN_SEEDED_SOURCE)
@@ -7168,7 +7160,7 @@ function normalizeHydrantenState(raw){
     }
     next.logs = Array.isArray(next.logs) ? next.logs : [];
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
-    if (!["nearby", "timmendorfer", "scharbeutz", "ratekau"].includes(String(next.ui.loadScope || ""))){
+    if (!["nearby", "mapview", "timmendorfer", "scharbeutz", "ratekau"].includes(String(next.ui.loadScope || ""))){
         next.ui.loadScope = "nearby";
     }
     if (!next.lastKnownLocation || typeof next.lastKnownLocation !== "object"){
@@ -7228,6 +7220,19 @@ function formatHydDist(m){
     return `${(m / 1000).toFixed(2)} km`;
 }
 
+function isHydrantPointInBounds(lat, lon, bounds){
+    if (!bounds) return false;
+    const nLat = Number(lat);
+    const nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)) return false;
+    return (
+        nLat <= Number(bounds.north) &&
+        nLat >= Number(bounds.south) &&
+        nLon <= Number(bounds.east) &&
+        nLon >= Number(bounds.west)
+    );
+}
+
 function getHydrantGemeindeKey(item){
     const h = item && typeof item === "object" ? item : {};
     const direct = String(h.gemeinde || "").trim().toLowerCase();
@@ -7245,11 +7250,12 @@ function getHydrantGemeindeKey(item){
     return "";
 }
 
-function getHydrantenScopeLabel(scope){
+function getHydrantenScopeLabel(scope, nearbyRadiusM = HYDRANT_START_NEARBY_RADIUS_M){
+    if (scope === "mapview") return "Aktueller Kartenbereich";
     if (scope === "timmendorfer") return "Gesamte Gemeinde Timmendorfer Strand";
     if (scope === "scharbeutz") return "Gesamte Gemeinde Scharbeutz";
     if (scope === "ratekau") return "Gesamte Gemeinde Ratekau";
-    return `Umkreis ${HYDRANT_START_NEARBY_RADIUS_M} m um Standort`;
+    return `Umkreis ${Math.max(50, Number(nearbyRadiusM) || HYDRANT_START_NEARBY_RADIUS_M)} m um Standort`;
 }
 
 function closeHydrantenHeaderLoadMenu(){
@@ -7260,7 +7266,7 @@ function closeHydrantenHeaderLoadMenu(){
 }
 
 function setHydrantenLoadScope(scope, options = {}){
-    const nextScope = ["nearby", "timmendorfer", "scharbeutz", "ratekau"].includes(String(scope || "")) ? String(scope) : "nearby";
+    const nextScope = ["nearby", "mapview", "timmendorfer", "scharbeutz", "ratekau"].includes(String(scope || "")) ? String(scope) : "nearby";
     const opts = options && typeof options === "object" ? options : {};
     const forceNearbyRadius = Number(opts.forceNearbyRadiusM);
     patchHydrantenState((s)=>{
@@ -7310,6 +7316,11 @@ function getHydrantenFiltered(state){
         .filter((h)=>{
             if (loadScope === "nearby"){
                 if (!loc || !Number.isFinite(h.distance) || h.distance > maxDistanceM) return false;
+            } else if (loadScope === "mapview"){
+                const activeBounds = hydrantenLeafletMap && typeof hydrantenLeafletMap.getBounds === "function"
+                    ? (()=>{ const b = hydrantenLeafletMap.getBounds(); return b ? { north: b.getNorth(), south: b.getSouth(), east: b.getEast(), west: b.getWest() } : null; })()
+                    : hydrantenLeafletBounds;
+                if (!isHydrantPointInBounds(h.lat, h.lon, activeBounds)) return false;
             } else if (["timmendorfer", "scharbeutz", "ratekau"].includes(loadScope)){
                 if (h.gemeinde !== loadScope) return false;
             }
@@ -7680,6 +7691,15 @@ function renderHydrantenLeafletMap(filtered, selectedId, location, addMode, draf
     hydrantenLeafletMap.on("moveend zoomend", ()=>{
         const c = hydrantenLeafletMap.getCenter();
         hydrantenLeafletView = { lat: c.lat, lon: c.lng, zoom: hydrantenLeafletMap.getZoom() };
+        const b = hydrantenLeafletMap.getBounds();
+        if (b){
+            hydrantenLeafletBounds = {
+                north: b.getNorth(),
+                south: b.getSouth(),
+                east: b.getEast(),
+                west: b.getWest()
+            };
+        }
     });
 
     if (addMode){
@@ -7706,6 +7726,17 @@ function renderHydrantenLeafletMap(filtered, selectedId, location, addMode, draf
         hydrantenLeafletMap.fitBounds(bounds, { padding: [24, 24], maxZoom: 18 });
     } else {
         hydrantenLeafletMap.setView([HYDRANT_DEFAULT_CENTER.lat, HYDRANT_DEFAULT_CENTER.lon], HYDRANT_DEFAULT_CENTER.zoom);
+    }
+    if (hydrantenLeafletMap && typeof hydrantenLeafletMap.getBounds === "function"){
+        const b = hydrantenLeafletMap.getBounds();
+        if (b){
+            hydrantenLeafletBounds = {
+                north: b.getNorth(),
+                south: b.getSouth(),
+                east: b.getEast(),
+                west: b.getWest()
+            };
+        }
     }
 }
 
@@ -7764,7 +7795,7 @@ function renderHydrantenTool(){
     const addDraftPoint = (Number.isFinite(addDraftLat) && Number.isFinite(addDraftLon))
         ? { lat: addDraftLat, lon: addDraftLon }
         : null;
-    const activeScopeLabel = getHydrantenScopeLabel(state.ui.loadScope || "nearby");
+    const activeScopeLabel = getHydrantenScopeLabel(state.ui.loadScope || "nearby", Number(state.ui.maxDistanceM) || HYDRANT_START_NEARBY_RADIUS_M);
 
     let html = `
     <div class="atem-panel">
@@ -7822,6 +7853,16 @@ function renderHydrantenTool(){
         <div class="atem-row-actions" style="margin-top:8px;">
             <button onclick="resetHydrantenMapView()">Auf Standort zentrieren</button>
         </div>
+        <details id="hydrantenHeaderLoadMenu" class="hydranten-header-menu" style="margin-top:8px;">
+            <summary>Weitere Hydranten laden</summary>
+            <div class="hydranten-header-menu-content">
+                <button onclick="loadHydrantenByScope('nearby')">Umkreis 400 m um Standort</button>
+                <button onclick="loadHydrantenByScope('mapview')">Aktuellen Kartenbereich laden</button>
+                <button onclick="loadHydrantenByScope('timmendorfer')">Gesamte Gemeinde Timmendorfer Strand</button>
+                <button onclick="loadHydrantenByScope('scharbeutz')">Gesamte Gemeinde Scharbeutz</button>
+                <button onclick="loadHydrantenByScope('ratekau')">Gesamte Gemeinde Ratekau</button>
+            </div>
+        </details>
         <div style="margin-top:8px;">${renderHydrantenMap()}</div>
     </div>
     `;
