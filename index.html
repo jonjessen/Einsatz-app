@@ -2809,6 +2809,19 @@ button:active {
     margin-top: 8px;
 }
 
+.social-release-approved {
+    border: 1px solid rgba(19, 124, 66, 0.38);
+    border-radius: 10px;
+    background: rgba(19, 124, 66, 0.16);
+    color: #0b7a40;
+    padding: 7px 10px;
+    font-weight: 700;
+}
+
+.social-top-actions {
+    margin-bottom: 10px;
+}
+
 .social-actions {
     display: flex;
     gap: 8px;
@@ -4530,6 +4543,9 @@ iframe {
             <button class="social-close" onclick="closeSocialOverlay()" aria-label="Social-Media Beitrag schließen">✕</button>
         </div>
         <div class="social-body">
+            <div class="social-actions social-top-actions">
+                <button onclick="startIncidentFromSocial()">🚨 Einsatz starten</button>
+            </div>
             <div class="social-form">
                 <div class="social-grid">
                     <div>
@@ -4585,8 +4601,8 @@ iframe {
             <div id="socialPreview" class="social-preview"></div>
 
             <div class="social-actions">
-                <button onclick="startIncidentFromSocial()">🚨 Einsatz starten</button>
                 <button onclick="copySocialPost()">📋 Kopieren</button>
+                <button onclick="endIncidentFromSocial()">⏹ Einsatz beenden</button>
                 <button onclick="saveSocialToEinsatzLog()">Für Einsatzhistorie speichern</button>
                 <button onclick="resetSocialPost()">Zurücksetzen</button>
                 <button onclick="closeSocialOverlay()">Schließen</button>
@@ -5539,7 +5555,7 @@ function isTrainingMode(){
     return !!trainingModeActive;
 }
 
-const APP_VERSION = "1.2";
+const APP_VERSION = "1.3";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 let appStatusMetaCache = null;
 
@@ -12105,9 +12121,10 @@ function renderSocialReleaseBlock(state){
     if (!block) return;
     const checks = (state && state.freigabe && state.freigabe.checks) ? state.freigabe.checks : {};
     const ready = isSocialFreigabeMoeglich(state);
-    const confirmedAt = state && state.freigabe && state.freigabe.confirmedAt
-        ? new Date(state.freigabe.confirmedAt).toLocaleString("de-DE")
-        : "noch nicht bestätigt";
+    if (ready){
+        block.innerHTML = `<div class="social-release-approved">Freigabe erteilt</div>`;
+        return;
+    }
     block.innerHTML = `
         <div class="social-release-title">Freigabe-Workflow (Datenschutz)</div>
         <label class="social-force-item"><input type="checkbox" ${checks.datenschutz ? "checked" : ""} onchange="updateSocialFreigabeCheck('datenschutz', this.checked)"><span>Datenschutz geprüft</span></label>
@@ -12118,7 +12135,7 @@ function renderSocialReleaseBlock(state){
             <button onclick="confirmSocialFreigabe()">Freigabe bestätigen</button>
             <button onclick="resetSocialFreigabe()">Freigabe zurücksetzen</button>
         </div>
-        <div class="social-release-status">${ready ? "Status: Freigegeben" : "Status: Nicht freigegeben"} · ${confirmedAt}</div>
+        <div class="social-release-status">Status: Nicht freigegeben</div>
     `;
 }
 
@@ -12215,6 +12232,15 @@ function startIncidentFromSocial(){
         syncActiveEinsatzPaketSnapshot("start_from_social");
     }
     showSocialHint("Einsatz gestartet. Eingaben sind jetzt freigeschaltet.", false);
+}
+
+function endIncidentFromSocial(){
+    if (!isIncidentEditingUnlocked()){
+        showSocialHint("Kein aktiver Einsatz.", true);
+        return;
+    }
+    toggleLageIncident();
+    showSocialHint("Einsatz beendet.", false);
 }
 
 function showSocialHint(message, isError){
