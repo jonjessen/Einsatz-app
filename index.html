@@ -5207,6 +5207,8 @@ iframe {
 
 <script src="gefahrgut_un_catalog.js"></script>
 <script src="gefahrgut_eri_map.js"></script>
+<script src="hydranten_scharbeutz.js"></script>
+<script src="hydranten_ratekau.js"></script>
 <script src="hydranten_timmendorfer_strand.js"></script>
 <script src="leaflet.js"></script>
 <script>
@@ -6478,18 +6480,25 @@ function getWeatherProtocolAttachment(){
 const HYDRANT_STORAGE_KEY = "hydrantenkarte_v1";
 const HYDRANT_DEFAULT_CENTER = { lat: 53.985, lon: 10.78, zoom: 13 };
 const HYDRANT_VIEW_MAX_DISTANCE_M = 30000;
+const HYDRANT_LOCATION_FOCUS_ZOOM = 19;
+const HYDRANT_LOCATION_FOCUS_RADIUS_M = 100;
 let lastHydrantenFocus = null;
-const HYDRANTEN_TIMMENDORFER_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_TIMMENDORFER_DATA))
-    ? window.HYDRANTEN_TIMMENDORFER_DATA
-    : [];
+const HYDRANTEN_TIMMENDORFER_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_TIMMENDORFER_DATA)) ? window.HYDRANTEN_TIMMENDORFER_DATA : [];
+const HYDRANTEN_SCHARBEUTZ_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_SCHARBEUTZ_DATA)) ? window.HYDRANTEN_SCHARBEUTZ_DATA : [];
+const HYDRANTEN_RATEKAU_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_RATEKAU_DATA)) ? window.HYDRANTEN_RATEKAU_DATA : [];
+const HYDRANTEN_SEEDED_SOURCE = [
+    ...HYDRANTEN_TIMMENDORFER_SOURCE,
+    ...HYDRANTEN_SCHARBEUTZ_SOURCE,
+    ...HYDRANTEN_RATEKAU_SOURCE
+];
 let hydrantenLeafletMap = null;
 let hydrantenLeafletLayer = null;
 let hydrantenLeafletUserMarker = null;
 let hydrantenLeafletView = null;
 
 function createDefaultHydrantenState(){
-    const seededHydrants = Array.isArray(HYDRANTEN_TIMMENDORFER_SOURCE)
-        ? HYDRANTEN_TIMMENDORFER_SOURCE.map((item)=>({ ...item }))
+    const seededHydrants = Array.isArray(HYDRANTEN_SEEDED_SOURCE)
+        ? HYDRANTEN_SEEDED_SOURCE.map((item)=>({ ...item }))
         : [];
     return {
         hydrants: seededHydrants,
@@ -6538,8 +6547,8 @@ function normalizeHydrantenState(raw){
     const base = createDefaultHydrantenState();
     const next = { ...base, ...(raw || {}) };
     next.hydrants = Array.isArray(next.hydrants) ? next.hydrants.map((item, idx)=>normalizeHydrantenItem(item, idx)) : [];
-    if (!next.hydrants.length && Array.isArray(HYDRANTEN_TIMMENDORFER_SOURCE) && HYDRANTEN_TIMMENDORFER_SOURCE.length){
-        next.hydrants = HYDRANTEN_TIMMENDORFER_SOURCE.map((item, idx)=>normalizeHydrantenItem(item, idx));
+    if (!next.hydrants.length && Array.isArray(HYDRANTEN_SEEDED_SOURCE) && HYDRANTEN_SEEDED_SOURCE.length){
+        next.hydrants = HYDRANTEN_SEEDED_SOURCE.map((item, idx)=>normalizeHydrantenItem(item, idx));
     }
     next.logs = Array.isArray(next.logs) ? next.logs : [];
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
@@ -6746,6 +6755,25 @@ function requestHydrantenLocation(){
         maximumAge: 30000,
         timeout: 10000
     });
+}
+
+function applyHydrantenLocationFocus(lat, lon){
+    const nLat = Number(lat);
+    const nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)) return;
+    hydrantenLeafletView = { lat: nLat, lon: nLon, zoom: HYDRANT_LOCATION_FOCUS_ZOOM };
+    patchHydrantenState((s)=>{
+        s.ui.addLat = "";
+        s.ui.addLon = "";
+        s.ui.nearbyOnly = true;
+        s.ui.maxDistanceM = HYDRANT_LOCATION_FOCUS_RADIUS_M;
+        s.lastKnownLocation = {
+            lat: nLat,
+            lon: nLon,
+            updatedAt: new Date().toISOString()
+        };
+    });
+    renderHydrantenTool();
 }
 
 function triggerHydrantenImport(){
@@ -6986,12 +7014,25 @@ function openHydrantenNavigation(lat, lon){
 }
 
 function resetHydrantenMapView(){
-    hydrantenLeafletView = null;
-    patchHydrantenState((s)=>{
-        s.ui.addLat = "";
-        s.ui.addLon = "";
+    const state = getHydrantenState();
+    const known = state && state.lastKnownLocation;
+    if (known && Number.isFinite(Number(known.lat)) && Number.isFinite(Number(known.lon))){
+        applyHydrantenLocationFocus(known.lat, known.lon);
+        return;
+    }
+    if (!navigator.geolocation){
+        alert("Standort konnte nicht ermittelt werden.");
+        return;
+    }
+    navigator.geolocation.getCurrentPosition((pos)=>{
+        applyHydrantenLocationFocus(pos.coords.latitude, pos.coords.longitude);
+    }, ()=>{
+        alert("Standort konnte nicht ermittelt werden.");
+    }, {
+        enableHighAccuracy: true,
+        maximumAge: 15000,
+        timeout: 10000
     });
-    renderHydrantenTool();
 }
 
 function renderHydrantenTool(){
@@ -7072,7 +7113,7 @@ function renderHydrantenTool(){
             <div class="hydrant-map-legend-item"><span class="hydrant-map-legend-dot" style="background:#1769ff;"></span>Eigener Standort</div>
         </div>
         <div class="atem-row-actions" style="margin-top:8px;">
-            <button onclick="resetHydrantenMapView()">Karte auf alle Hydranten setzen</button>
+            <button onclick="resetHydrantenMapView()">Auf Standort zentrieren</button>
         </div>
         <div style="margin-top:8px;">${renderHydrantenMap()}</div>
     </div>

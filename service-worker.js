@@ -1,4 +1,4 @@
-const CACHE_NAME = "ff360-app-v13";
+const CACHE_NAME = "ff360-app-v14";
 
 const urlsToCache = [
   "index.html",
@@ -13,6 +13,10 @@ const urlsToCache = [
   "gefahrgut_un_catalog.json",
   "gefahrgut_eri_map.js",
   "gefahrgut_eri_map.json",
+  "hydranten_scharbeutz.js",
+  "hydranten_scharbeutz.json",
+  "hydranten_ratekau.js",
+  "hydranten_ratekau.json",
   "hydranten_timmendorfer_strand.js",
   "hydranten_timmendorfer_strand.json",
   "leaflet.css",
