@@ -967,29 +967,31 @@ body.training-mode {
     height: 72px;
     border-radius: 50%;
     border: 2px solid var(--border);
-    display: grid;
-    place-items: center;
+    position: relative;
     background: radial-gradient(circle at 50% 40%, rgba(18, 52, 79, 0.1), rgba(18, 52, 79, 0.02));
 }
 
-.gps-compass-arrow {
-    width: 2px;
-    height: 26px;
-    background: #c9212d;
-    transform-origin: 50% 90%;
-    border-radius: 2px;
-    position: relative;
+.gps-compass-mark {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--secondary);
 }
 
-.gps-compass-arrow::before {
-    content: "";
+.gps-compass-mark.n { top: 4px; left: 50%; transform: translateX(-50%); color: #c9212d; }
+.gps-compass-mark.s { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.gps-compass-mark.o { right: 6px; top: 50%; transform: translateY(-50%); }
+.gps-compass-mark.w { left: 6px; top: 50%; transform: translateY(-50%); }
+
+.gps-compass-center {
     position: absolute;
-    top: -6px;
     left: 50%;
-    transform: translateX(-50%);
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 8px solid #c9212d;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #1f5f92;
+    transform: translate(-50%, -50%);
 }
 
 .fwdv-top > * {
@@ -2665,6 +2667,49 @@ button:active {
 .social-header h2 {
     margin: 0;
     font-size: 20px;
+}
+
+.hydranten-header-menu {
+    margin-left: auto;
+    position: relative;
+}
+
+.hydranten-header-menu > summary {
+    list-style: none;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--secondary);
+    background: rgba(18, 52, 79, 0.06);
+    white-space: nowrap;
+}
+
+.hydranten-header-menu > summary::-webkit-details-marker {
+    display: none;
+}
+
+.hydranten-header-menu-content {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 6;
+    width: min(290px, calc(100vw - 110px));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    box-shadow: 0 14px 24px rgba(7, 18, 30, 0.22);
+    padding: 8px;
+    display: grid;
+    gap: 6px;
+}
+
+.hydranten-header-menu-content button {
+    margin: 0;
+    width: 100%;
+    text-align: left;
 }
 
 .social-close {
@@ -4749,6 +4794,15 @@ iframe {
     <div class="social-modal">
         <div class="social-header">
             <h2 id="hydrantenTitle">Hydrantenkarte</h2>
+            <details id="hydrantenHeaderLoadMenu" class="hydranten-header-menu">
+                <summary>Weitere Hydranten laden</summary>
+                <div class="hydranten-header-menu-content">
+                    <button onclick="loadHydrantenByScope('nearby')">Umkreis 400 m um Standort</button>
+                    <button onclick="loadHydrantenByScope('timmendorfer')">Gesamte Gemeinde Timmendorfer Strand</button>
+                    <button onclick="loadHydrantenByScope('scharbeutz')">Gesamte Gemeinde Scharbeutz</button>
+                    <button onclick="loadHydrantenByScope('ratekau')">Gesamte Gemeinde Ratekau</button>
+                </div>
+            </details>
             <button class="social-close" onclick="closeHydrantenOverlay()" aria-label="Hydrantenkarte schließen">✕</button>
         </div>
         <div class="social-body" id="hydrantenBody"></div>
@@ -5201,35 +5255,51 @@ iframe {
             </div>
 
             <div class="lage-section">
-                <h4>🔥 Abschnitte aktiv · Einsatzstruktur</h4>
-                <div class="structure-toolbar">
-                    <button onclick="showStructureForm()">➕ Abschnitt hinzufügen</button>
-                    <button onclick="clearAllSections()">Alle löschen</button>
-                </div>
-                <div id="structureTotal" class="structure-total">Gesamtkräfte: 0</div>
-                <form id="structureForm" class="structure-form" onsubmit="submitSectionForm(event)">
-                    <label for="sectionNameInput">Abschnittsname</label>
-                    <input id="sectionNameInput" type="text" required maxlength="80" placeholder="z. B. Abschnitt Brandbekämpfung">
-                    <label for="sectionCountInput">Anzahl Kräfte</label>
-                    <input id="sectionCountInput" type="number" required min="0" step="1" placeholder="0">
-                    <label for="sectionStatusInput">Status</label>
-                    <select id="sectionStatusInput" required>
-                        <option value="laufend">🟢 läuft</option>
-                        <option value="kritisch">🟡 kritisch</option>
-                        <option value="eskaliert">🔴 eskaliert</option>
-                    </select>
-                    <div class="structure-form-actions">
-                        <button type="submit">Speichern</button>
-                        <button type="button" onclick="hideStructureForm()">Abbrechen</button>
+                <details>
+                    <summary><strong>Abschnitte</strong></summary>
+                    <div class="structure-toolbar" style="margin-top:8px;">
+                        <button onclick="showStructureForm()">➕ Abschnitt hinzufügen</button>
+                        <button onclick="clearAllSections()">Alle löschen</button>
                     </div>
-                </form>
-                <div id="structureList" class="structure-list" aria-live="polite"></div>
+                    <div id="structureTotal" class="structure-total">Gesamtkräfte: 0</div>
+                    <form id="structureForm" class="structure-form" onsubmit="submitSectionForm(event)">
+                        <label for="sectionNameInput">Abschnittsname</label>
+                        <input id="sectionNameInput" type="text" required maxlength="80" placeholder="z. B. Abschnitt Brandbekämpfung">
+                        <label for="sectionCountInput">Anzahl Kräfte</label>
+                        <input id="sectionCountInput" type="number" required min="0" step="1" placeholder="0">
+                        <label for="sectionStatusInput">Status</label>
+                        <select id="sectionStatusInput" required>
+                            <option value="laufend">🟢 läuft</option>
+                            <option value="kritisch">🟡 kritisch</option>
+                            <option value="eskaliert">🔴 eskaliert</option>
+                        </select>
+                        <div class="structure-form-actions">
+                            <button type="submit">Speichern</button>
+                            <button type="button" onclick="hideStructureForm()">Abbrechen</button>
+                        </div>
+                    </form>
+                    <div id="structureList" class="structure-list" aria-live="polite"></div>
+                </details>
             </div>
 
             <div class="lage-priority-switch">
                 <button id="lagePriorityGreen" onclick="setLagePriority('green')">🟢 stabil</button>
                 <button id="lagePriorityYellow" onclick="setLagePriority('yellow')">🟡 dynamisch</button>
                 <button id="lagePriorityRed" onclick="setLagePriority('red')">🔴 kritisch</button>
+            </div>
+
+            <div class="lage-section">
+                <h4>Zeiten / Ereignislog</h4>
+                <div class="lage-row">
+                    <input id="lageLogTime" type="time">
+                    <input id="lageLogText" type="text" placeholder="Ereignistext...">
+                    <button onclick="addLageLogEvent()">➕ Ereignis hinzufügen</button>
+                    <button onclick="adoptLatestLageLogIntoLagemeldung()">📝 Letztes Ereignis in Lagemeldung übernehmen</button>
+                </div>
+                <details style="margin-top:8px;">
+                    <summary><strong>Historie</strong></summary>
+                    <div id="lageLogList" class="lage-list" style="margin-top:8px;"></div>
+                </details>
             </div>
 
             <div class="lage-section">
@@ -5349,19 +5419,6 @@ iframe {
                 </details>
             </div>
 
-            <div class="lage-section">
-                <h4>Zeiten / Ereignislog</h4>
-                <div class="lage-row">
-                    <input id="lageLogTime" type="time">
-                    <input id="lageLogText" type="text" placeholder="Ereignistext...">
-                    <button onclick="addLageLogEvent()">➕ Ereignis hinzufügen</button>
-                </div>
-                <details style="margin-top:8px;">
-                    <summary><strong>Historie</strong></summary>
-                    <div id="lageLogList" class="lage-list" style="margin-top:8px;"></div>
-                </details>
-            </div>
-
             <div class="lage-actions">
                 <button onclick="copyLageSummary()">📋 Lage kopieren</button>
                 <button onclick="editLageSummary()">📝 Lagemeldung bearbeiten</button>
@@ -5397,8 +5454,8 @@ iframe {
 </div>
 <div id="swUpdateBanner" class="sw-update-banner" role="status" aria-live="polite">
     <div>
-        <strong>Neue Version verfügbar</strong>
-        <div id="swUpdateBannerText">Ein Update wurde geladen und kann jetzt aktiviert werden.</div>
+        <strong>Neue Funktion verfügbar</strong>
+        <div id="swUpdateBannerText">Eine neue Funktion wurde hinzugefügt. Update jetzt aktivieren.</div>
     </div>
     <div class="sw-update-actions">
         <button onclick="applyServiceWorkerUpdate()">Jetzt aktualisieren</button>
@@ -7032,14 +7089,21 @@ const HYDRANT_DEFAULT_CENTER = { lat: 53.985, lon: 10.78, zoom: 13 };
 const HYDRANT_VIEW_MAX_DISTANCE_M = 30000;
 const HYDRANT_LOCATION_FOCUS_ZOOM = 19;
 const HYDRANT_LOCATION_FOCUS_RADIUS_M = 100;
+const HYDRANT_START_NEARBY_RADIUS_M = 400;
 let lastHydrantenFocus = null;
 const HYDRANTEN_TIMMENDORFER_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_TIMMENDORFER_DATA)) ? window.HYDRANTEN_TIMMENDORFER_DATA : [];
 const HYDRANTEN_SCHARBEUTZ_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_SCHARBEUTZ_DATA)) ? window.HYDRANTEN_SCHARBEUTZ_DATA : [];
 const HYDRANTEN_RATEKAU_SOURCE = (typeof window !== "undefined" && Array.isArray(window.HYDRANTEN_RATEKAU_DATA)) ? window.HYDRANTEN_RATEKAU_DATA : [];
+
+function mapHydrantenSourceWithGemeinde(list, gemeinde){
+    const src = Array.isArray(list) ? list : [];
+    return src.map((item)=>({ ...(item || {}), gemeinde }));
+}
+
 const HYDRANTEN_SEEDED_SOURCE = [
-    ...HYDRANTEN_TIMMENDORFER_SOURCE,
-    ...HYDRANTEN_SCHARBEUTZ_SOURCE,
-    ...HYDRANTEN_RATEKAU_SOURCE
+    ...mapHydrantenSourceWithGemeinde(HYDRANTEN_TIMMENDORFER_SOURCE, "timmendorfer"),
+    ...mapHydrantenSourceWithGemeinde(HYDRANTEN_SCHARBEUTZ_SOURCE, "scharbeutz"),
+    ...mapHydrantenSourceWithGemeinde(HYDRANTEN_RATEKAU_SOURCE, "ratekau")
 ];
 let hydrantenLeafletMap = null;
 let hydrantenLeafletLayer = null;
@@ -7058,8 +7122,9 @@ function createDefaultHydrantenState(){
             search: "",
             statusFilter: "all",
             typeFilter: "all",
-            nearbyOnly: false,
-            maxDistanceM: 500,
+            nearbyOnly: true,
+            maxDistanceM: HYDRANT_START_NEARBY_RADIUS_M,
+            loadScope: "nearby",
             selectedId: "",
             addOpen: false,
             addName: "",
@@ -7086,6 +7151,7 @@ function normalizeHydrantenItem(raw, idx){
         lon: Number.isFinite(lon) ? lon : null,
         typ: String(item.typ || "Unbekannt"),
         nennweite: String(item.nennweite || ""),
+        gemeinde: String(item.gemeinde || ""),
         status: String(item.status || "unknown"),
         note: String(item.note || ""),
         statusUpdatedAt: String(item.statusUpdatedAt || ""),
@@ -7102,6 +7168,9 @@ function normalizeHydrantenState(raw){
     }
     next.logs = Array.isArray(next.logs) ? next.logs : [];
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
+    if (!["nearby", "timmendorfer", "scharbeutz", "ratekau"].includes(String(next.ui.loadScope || ""))){
+        next.ui.loadScope = "nearby";
+    }
     if (!next.lastKnownLocation || typeof next.lastKnownLocation !== "object"){
         next.lastKnownLocation = null;
     }
@@ -7159,6 +7228,67 @@ function formatHydDist(m){
     return `${(m / 1000).toFixed(2)} km`;
 }
 
+function getHydrantGemeindeKey(item){
+    const h = item && typeof item === "object" ? item : {};
+    const direct = String(h.gemeinde || "").trim().toLowerCase();
+    if (direct.includes("timm")) return "timmendorfer";
+    if (direct.includes("schar")) return "scharbeutz";
+    if (direct.includes("rate")) return "ratekau";
+    const id = String(h.id || "").toLowerCase();
+    if (id.startsWith("osm_ts_")) return "timmendorfer";
+    if (id.startsWith("osm_sch_")) return "scharbeutz";
+    if (id.startsWith("osm_rat_")) return "ratekau";
+    const addr = String(h.adresse || "").toLowerCase();
+    if (addr.includes("timmendorfer")) return "timmendorfer";
+    if (addr.includes("scharbeutz")) return "scharbeutz";
+    if (addr.includes("ratekau")) return "ratekau";
+    return "";
+}
+
+function getHydrantenScopeLabel(scope){
+    if (scope === "timmendorfer") return "Gesamte Gemeinde Timmendorfer Strand";
+    if (scope === "scharbeutz") return "Gesamte Gemeinde Scharbeutz";
+    if (scope === "ratekau") return "Gesamte Gemeinde Ratekau";
+    return `Umkreis ${HYDRANT_START_NEARBY_RADIUS_M} m um Standort`;
+}
+
+function closeHydrantenHeaderLoadMenu(){
+    const menu = document.getElementById("hydrantenHeaderLoadMenu");
+    if (menu && "open" in menu){
+        menu.open = false;
+    }
+}
+
+function setHydrantenLoadScope(scope, options = {}){
+    const nextScope = ["nearby", "timmendorfer", "scharbeutz", "ratekau"].includes(String(scope || "")) ? String(scope) : "nearby";
+    const opts = options && typeof options === "object" ? options : {};
+    const forceNearbyRadius = Number(opts.forceNearbyRadiusM);
+    patchHydrantenState((s)=>{
+        s.ui.loadScope = nextScope;
+        if (nextScope === "nearby"){
+            s.ui.nearbyOnly = true;
+            if (Number.isFinite(forceNearbyRadius) && forceNearbyRadius > 0){
+                s.ui.maxDistanceM = forceNearbyRadius;
+            } else if (!Number.isFinite(Number(s.ui.maxDistanceM)) || Number(s.ui.maxDistanceM) <= 0){
+                s.ui.maxDistanceM = HYDRANT_START_NEARBY_RADIUS_M;
+            }
+        } else {
+            s.ui.nearbyOnly = false;
+        }
+    });
+    hydrantenLeafletView = null;
+}
+
+function loadHydrantenByScope(scope){
+    setHydrantenLoadScope(scope);
+    closeHydrantenHeaderLoadMenu();
+    if (scope === "nearby"){
+        requestHydrantenLocation({ silentError: false, centerMap: true, applyNearbyStart: true });
+        return;
+    }
+    renderHydrantenTool();
+}
+
 function getHydrantenFiltered(state){
     const s = state || getHydrantenState();
     const q = String(s.ui.search || "").trim().toLowerCase();
@@ -7166,6 +7296,7 @@ function getHydrantenFiltered(state){
     const typeFilter = s.ui.typeFilter || "all";
     const nearbyOnly = !!s.ui.nearbyOnly;
     const maxDistanceM = Number(s.ui.maxDistanceM) || 500;
+    const loadScope = s.ui.loadScope || "nearby";
     const loc = s.lastKnownLocation;
 
     return s.hydrants
@@ -7173,9 +7304,15 @@ function getHydrantenFiltered(state){
             const distance = (loc && Number.isFinite(h.lat) && Number.isFinite(h.lon))
                 ? hydDistanceMeters(loc.lat, loc.lon, h.lat, h.lon)
                 : null;
-            return { ...h, distance };
+            const gemeinde = getHydrantGemeindeKey(h);
+            return { ...h, distance, gemeinde };
         })
         .filter((h)=>{
+            if (loadScope === "nearby"){
+                if (!loc || !Number.isFinite(h.distance) || h.distance > maxDistanceM) return false;
+            } else if (["timmendorfer", "scharbeutz", "ratekau"].includes(loadScope)){
+                if (h.gemeinde !== loadScope) return false;
+            }
             if (statusFilter !== "all" && h.status !== statusFilter) return false;
             if (typeFilter !== "all" && String(h.typ || "").toLowerCase() !== String(typeFilter).toLowerCase()) return false;
             if (nearbyOnly && Number.isFinite(h.distance) && h.distance > maxDistanceM) return false;
@@ -7305,12 +7442,16 @@ function requestHydrantenLocation(options = {}){
     const opts = options && typeof options === "object" ? options : {};
     const silentError = !!opts.silentError;
     const centerMap = !!opts.centerMap;
+    const applyNearbyStart = !!opts.applyNearbyStart;
     if (!navigator.geolocation){
         if (!silentError) alert("Geolocation wird auf diesem Gerät nicht unterstützt.");
         return;
     }
     navigator.geolocation.getCurrentPosition((pos)=>{
         updateHydrantenLiveLocation(pos.coords.latitude, pos.coords.longitude, centerMap);
+        if (applyNearbyStart){
+            setHydrantenLoadScope("nearby", { forceNearbyRadiusM: HYDRANT_START_NEARBY_RADIUS_M });
+        }
         renderHydrantenTool();
     }, ()=>{
         if (!silentError) alert("Standort konnte nicht ermittelt werden.");
@@ -7623,10 +7764,12 @@ function renderHydrantenTool(){
     const addDraftPoint = (Number.isFinite(addDraftLat) && Number.isFinite(addDraftLon))
         ? { lat: addDraftLat, lon: addDraftLon }
         : null;
+    const activeScopeLabel = getHydrantenScopeLabel(state.ui.loadScope || "nearby");
 
     let html = `
     <div class="atem-panel">
         <strong>Hydrantenkarte - Ersteinsatz</strong>
+        <div class="psu-meta" style="margin-top:6px;">Aktiver Ladebereich: ${escapeHtml(activeScopeLabel)}</div>
         ${firstActions.length ? `<div class="priority-box" style="margin-top:8px;">${firstActions.map((x)=>`• ${escapeHtml(x)}`).join("<br>")}</div>` : `<div class="lage-empty" style="margin-top:8px;">Noch keine Hydranten geladen.</div>`}
         <div class="atem-row-actions" style="margin-top:8px;">
             <button onclick="requestHydrantenLocation()">Standort aktualisieren</button>
@@ -7721,7 +7864,7 @@ function renderHydrantenTool(){
                 <option value="all" ${state.ui.typeFilter === "all" ? "selected" : ""}>Alle</option>
                 ${typeSet.map((t)=>`<option value="${escapeHtml(t)}" ${state.ui.typeFilter === t ? "selected" : ""}>${escapeHtml(t)}</option>`).join("")}
             </select></div>
-            <div><label>Nur in Nähe (m)</label><input type="number" min="50" step="50" value="${escapeHtml(String(state.ui.maxDistanceM || 500))}" oninput="setHydrantenUiField('maxDistanceM', Number(this.value)||500)"></div>
+            <div><label>Nur in Nähe (m)</label><input type="number" min="50" step="50" value="${escapeHtml(String(state.ui.maxDistanceM || HYDRANT_START_NEARBY_RADIUS_M))}" oninput="setHydrantenUiField('maxDistanceM', Number(this.value)||HYDRANT_START_NEARBY_RADIUS_M)"></div>
             <div class="atem-col-full"><label class="social-force-item"><input type="checkbox" ${state.ui.nearbyOnly ? "checked" : ""} onchange="setHydrantenUiField('nearbyOnly', this.checked)"> Nur Hydranten innerhalb Distanz</label></div>
         </div>
     </div>
@@ -7754,6 +7897,8 @@ function openHydrantenOverlay(){
     lastHydrantenFocus = document.activeElement;
     overlay.classList.add("show");
     document.body.style.overflow = "hidden";
+    closeHydrantenHeaderLoadMenu();
+    setHydrantenLoadScope("nearby", { forceNearbyRadiusM: HYDRANT_START_NEARBY_RADIUS_M });
     const known = getHydrantenState().lastKnownLocation;
     if (known && Number.isFinite(Number(known.lat)) && Number.isFinite(Number(known.lon))){
         hydrantenLeafletView = {
@@ -7763,7 +7908,7 @@ function openHydrantenOverlay(){
         };
     }
     renderHydrantenTool();
-    requestHydrantenLocation({ silentError: true, centerMap: true });
+    requestHydrantenLocation({ silentError: true, centerMap: true, applyNearbyStart: true });
     setTimeout(()=>{
         if (hydrantenLeafletMap) hydrantenLeafletMap.invalidateSize();
     }, 80);
@@ -7772,6 +7917,7 @@ function openHydrantenOverlay(){
 function closeHydrantenOverlay(){
     const overlay = document.getElementById("hydrantenOverlay");
     if (!overlay) return;
+    closeHydrantenHeaderLoadMenu();
     overlay.classList.remove("show");
     const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
@@ -7890,11 +8036,19 @@ function saveFavorites(items){
     appStorageSetItem(FAVORITES_STORAGE_KEY, JSON.stringify(items));
 }
 
+function canUseAppFavoriteForEntry(category, index){
+    const entry = data && data[category] ? data[category][Number(index)] : null;
+    if (!entry) return false;
+    return category === "brand" || category === "vu";
+}
+
 function isFavorite(category, index){
+    if (!canUseAppFavoriteForEntry(category, index)) return false;
     return getFavorites().some((fav)=>fav.category === category && Number(fav.index) === Number(index));
 }
 
 function toggleFavorite(category, index){
+    if (!canUseAppFavoriteForEntry(category, index)) return;
     const list = getFavorites();
     const matchIndex = list.findIndex((fav)=>fav.category === category && Number(fav.index) === Number(index));
     if (matchIndex >= 0){
@@ -7916,7 +8070,7 @@ function renderHomeFavorites(){
 
     const rawFavs = getFavorites();
     const validFavs = rawFavs.filter((fav)=>{
-        return data[fav.category] && data[fav.category][Number(fav.index)];
+        return canUseAppFavoriteForEntry(fav.category, Number(fav.index));
     });
     if (validFavs.length !== rawFavs.length){
         saveFavorites(validFavs);
@@ -9130,9 +9284,9 @@ function buildOneTapLeitstelleMessage(type = "lage"){
     const alarmstichwort = String(lage.alarmstichwort || "-").trim() || "-";
 
     if (type === "erst"){
-        return `Hier ${callsign} für Leitstelle, Erstmeldung ${timeStamp}: ${alarmstichwort}. Lagemeldung: ${lageText}. Personenlage: ${lageTpl.personen || "Unklar"}. Maßnahmen laufen: ${measures}. Aktueller Stand: ${statusText}. Nachforderungen: ${nachText}. Standort: ${gpsText}. Ende.`;
+        return `Hier ${callsign} für Leitstelle. Erstmeldung ${timeStamp}. Stichwort: ${alarmstichwort}. Lage: ${lageText}. Personen: ${lageTpl.personen || "Unklar"}. Maßnahmen: ${measures}. Stand: ${statusText}. Nachforderungen: ${nachText}. Standort: ${gpsText}. Ende.`;
     }
-    return `Hier ${callsign} für Leitstelle, Lagemeldung ${timeStamp}: ${alarmstichwort}. Aktueller Stand: ${statusText}. Abschnitte aktiv: ${resBoard.sections}. Maßnahmen laufen: ${measures}. Atemschutztrupps: ${resBoard.atemschutzTeams}, Notfallstatus: ${resBoard.atemschutzNotfall > 0 ? "auffällig" : "unauffällig"}. Nachforderungen: ${nachText}. Lagemeldung: ${lageText}. Standort: ${gpsText}. Ende.`;
+    return `Hier ${callsign} für Leitstelle. Lagemeldung ${timeStamp}. Stichwort: ${alarmstichwort}. Stand: ${statusText}. Abschnitte: ${resBoard.sections}. Maßnahmen: ${measures}. Atemschutz: ${resBoard.atemschutzTeams} Trupps, Status ${resBoard.atemschutzNotfall > 0 ? "auffällig" : "unauffällig"}. Nachforderungen: ${nachText}. Lage: ${lageText}. Standort: ${gpsText}. Ende.`;
 }
 
 function renderLageOneTapMessage(state){
@@ -9854,6 +10008,20 @@ function addLageLogEvent(){
     });
     textInput.value = "";
     timeInput.value = getNowTimeValue();
+    renderLageDashboard();
+}
+
+function adoptLatestLageLogIntoLagemeldung(){
+    const state = getLageState();
+    const log = Array.isArray(state.log) ? state.log : [];
+    const latest = log[0];
+    if (!latest || !String(latest.text || "").trim()) return;
+    const latestText = String(latest.text || "").replace(/^🟦 ÜBUNG \|\s*/u, "").trim();
+    if (!latestText) return;
+    patchLageState((s)=>{
+        const current = String(s.freeText || "").trim();
+        s.freeText = current ? `${current}\n• ${latestText}` : latestText;
+    });
     renderLageDashboard();
 }
 
@@ -22423,7 +22591,8 @@ function getEntrySearchBlob(einsatz){
 
 function showDetail(index){
     const einsatz = data[currentCategory][index];
-    const fav = isFavorite(currentCategory, index);
+    const canFav = canUseAppFavoriteForEntry(currentCategory, index);
+    const fav = canFav && isFavorite(currentCategory, index);
     const hasCustomBlocks = !!(einsatz.taktischeMuster || einsatz.fuehrungsunterstuetzung || einsatz.entscheidungMatrix);
     const backTarget = (einsatz.einsatzKraefteTool || einsatz.fwdv3Trainer) ? "goHome()" : `showCategory('${currentCategory}')`;
 
@@ -22431,7 +22600,7 @@ function showDetail(index){
                    <div class="card">
                        <div class="detail-title">
                            <h2>${einsatz.name}</h2>
-                           <button class="favorite-star" onclick="toggleFavoriteAndRefresh('${currentCategory}',${index})" aria-label="Favorit umschalten">${fav ? "⭐" : "☆"}</button>
+                           ${canFav ? `<button class="favorite-star" onclick="toggleFavoriteAndRefresh('${currentCategory}',${index})" aria-label="Favorit umschalten">${fav ? "⭐" : "☆"}</button>` : ""}
                        </div>`;
 
     // Struktur-Layout: wenn erkundung/massnahmen/lage vorhanden
@@ -22628,7 +22797,7 @@ function searchEinsatz(text){
         result += `<div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer</div>`;
     }
     matches.forEach((item)=>{
-        const star = item.fav ? "⭐ " : "";
+        const star = canUseAppFavoriteForEntry(item.cat, item.index) && item.fav ? "⭐ " : "";
         result += `<div class="card" onclick="openCategory('${item.cat}');setTimeout(()=>showDetail(${item.index}),200)">${star}${item.name}</div>`;
     });
 
@@ -23121,7 +23290,13 @@ function renderGpsTool(){
             <div><label>3-Wort-Adresse (intern)</label><div class="weather-value">${current ? escapeHtml(getInternalThreeWordAddress(current.lat, current.lon)) : "-"}</div></div>
             <div><label>Zuletzt aktualisiert</label><div class="weather-value">${current ? formatGpsTime(current.updatedAt) : "-"}</div></div>
             <div style="display:flex;align-items:center;gap:10px;">
-                <div class="gps-compass"><div id="gpsCompassArrow" class="gps-compass-arrow" style="transform: rotate(${Number.isFinite(heading) ? heading : 0}deg);"></div></div>
+                <div class="gps-compass" aria-hidden="true">
+                    <span class="gps-compass-mark n">N</span>
+                    <span class="gps-compass-mark o">O</span>
+                    <span class="gps-compass-mark s">S</span>
+                    <span class="gps-compass-mark w">W</span>
+                    <span class="gps-compass-center"></span>
+                </div>
                 <div>
                     <label>Kompass</label>
                     <div id="gpsCompassLabel" class="weather-value">${formatHeading(heading)}</div>
@@ -23194,11 +23369,7 @@ function renderGpsTool(){
 
 function renderGpsCompassOnly(){
     const heading = getGpsHeadingForDisplay(getGpsState());
-    const arrow = document.getElementById("gpsCompassArrow");
     const label = document.getElementById("gpsCompassLabel");
-    if (arrow){
-        arrow.style.transform = `rotate(${Number.isFinite(heading) ? heading : 0}deg)`;
-    }
     if (label){
         label.textContent = formatHeading(heading);
     }
