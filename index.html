@@ -2822,6 +2822,18 @@ button:active {
     overflow-wrap: anywhere;
 }
 
+.member-qual-option {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.member-qual-option input[type="checkbox"] {
+    margin: 0;
+}
+
 .social-preview {
     border: 1px solid var(--border);
     border-radius: 14px;
@@ -3979,13 +3991,15 @@ a {
     border-color: #277fbe;
 }
 
-.settings-training-archive-list {
+.settings-training-archive-list,
+.settings-incident-archive-list {
     margin-top: 8px;
     display: grid;
     gap: 8px;
 }
 
-.settings-training-archive-item {
+.settings-training-archive-item,
+.settings-incident-archive-item {
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 8px;
@@ -3993,7 +4007,8 @@ a {
     font-size: 13px;
 }
 
-.settings-training-archive-item strong {
+.settings-training-archive-item strong,
+.settings-incident-archive-item strong {
     display: block;
     margin-bottom: 2px;
 }
@@ -4453,6 +4468,7 @@ iframe {
             <div class="home-subtitle">Personal &amp; Betreuung</div>
             <div class="home-tools-grid">
                 <button onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</button>
+                <button onclick="openCategory('personal');setTimeout(()=>showDetail(0),200)">👥 Mitgliederverwaltung</button>
                 <button onclick="openEvakOverlay()">🏃 Evakuierungshelfer</button>
                 <button id="homePsuBtn" onclick="openPsuOverlay()">🧠 Nachsorge <span id="psuReminderBadge" class="psu-reminder-badge hidden">0</span></button>
             </div>
@@ -4533,6 +4549,15 @@ iframe {
                 <div id="settingsTrainingArchiveList" class="settings-training-archive-list"></div>
                 <div class="atem-row-actions" style="margin-top:8px;">
                     <button onclick="clearTrainingArchiveSessions()">Übungsarchiv leeren</button>
+                </div>
+            </div>
+            <div class="atem-panel">
+                <strong>Einsatzarchiv</strong>
+                <div class="psu-meta" style="margin-top:8px;">Archivierte Einsätze laden, um sie wieder als aktiven Einsatz in allen Modulen weiterzuführen.</div>
+                <div id="settingsIncidentArchiveList" class="settings-incident-archive-list"></div>
+                <div class="atem-row-actions" style="margin-top:8px;">
+                    <button onclick="archiveCurrentIncident()">Aktiven Einsatz als Snapshot archivieren</button>
+                    <button onclick="clearEinsatzArchive()">Einsatzarchiv leeren</button>
                 </div>
             </div>
             <div class="atem-panel">
@@ -5384,6 +5409,9 @@ iframe {
                                 <option value="HLF">HLF</option>
                                 <option value="RW">RW</option>
                                 <option value="GW-A">GW-A</option>
+                                <option value="weiterer Löschzug">weiterer Löschzug</option>
+                                <option value="RTW">RTW</option>
+                                <option value="NEF">NEF</option>
                                 <option value="SEG">SEG</option>
                                 <option value="THW">THW</option>
                                 <option value="Polizei">Polizei</option>
@@ -5391,6 +5419,10 @@ iframe {
                                 <option value="Schaum">Schaum</option>
                                 <option value="Sonstiges">Sonstiges</option>
                             </select>
+                        </div>
+                        <div>
+                            <label for="lageNachCount">Anzahl</label>
+                            <input id="lageNachCount" type="number" min="1" step="1" value="1" inputmode="numeric">
                         </div>
                         <div id="lageNachResourceOtherWrap" class="hidden">
                             <label for="lageNachResourceOther">Sonstiges (Freitext)</label>
@@ -6288,6 +6320,7 @@ function renderSettingsOverlay(){
         trainingBtn.textContent = isTrainingMode() ? "Übungsmodus deaktivieren" : "Übungsmodus aktivieren";
     }
     renderTrainingArchiveSettingsList();
+    renderEinsatzArchiveSettingsList();
     updateWeatherSettingsFields();
 }
 
@@ -7642,7 +7675,7 @@ function renderHydrantenLeafletMap(filtered, selectedId, location, addMode, draf
         zoomControl: true,
         preferCanvas: true
     });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 20,
         attribution: "&copy; OpenStreetMap"
     }).addTo(hydrantenLeafletMap);
@@ -8822,6 +8855,7 @@ const LAGE_CHECKLIST_CATEGORY_LABELS = {
     support: "Unterstützung",
     info: "Infos",
     kraefte: "Kräfte",
+    personal: "Personal",
     trainer: "Trainer",
     grundlagen: "Grundlagen"
 };
@@ -8927,8 +8961,12 @@ function renderLageChecklistSelect(selectId, selectedValue){
         html += `<option value="${escapeHtml(selectedId)}">Ausgewählte Checkliste nicht mehr verfügbar</option>`;
     }
 
-    select.innerHTML = html;
-    select.value = selectedId;
+    if (select.innerHTML !== html){
+        select.innerHTML = html;
+    }
+    if (document.activeElement !== select){
+        select.value = selectedId;
+    }
 }
 
 function renderLageChecklistPanel(state){
@@ -8946,7 +8984,8 @@ function renderLageChecklistPanel(state){
 
     const totalCount = sections.reduce((sum, section)=>sum + (Array.isArray(section.items) ? section.items.length : 0), 0);
     const doneCount = sections.reduce((sum, section)=>sum + (Array.isArray(section.items) ? section.items.filter((item)=>item && item.done).length : 0), 0);
-    let html = `<details class="lage-checklist-fold" open>`;
+    const shouldOpen = state.checklistPanelOpen !== false;
+    let html = `<details class="lage-checklist-fold"${shouldOpen ? " open" : ""} ontoggle="setLageChecklistPanelOpen(this.open)">`;
     html += `<summary>Aktive Checkliste (${doneCount}/${totalCount})</summary>`;
     html += `<div class="links-box"><strong>${escapeHtml(state.checklistTitle || "Checkliste")}</strong><br>${doneCount}/${totalCount} erledigt</div>`;
 
@@ -8990,7 +9029,8 @@ function getDefaultLageChecklistRuntimeState(){
         selectionId: "",
         title: "",
         sections: [],
-        infoBlocks: []
+        infoBlocks: [],
+        panelOpen: true
     };
 }
 
@@ -9004,7 +9044,15 @@ function getLageChecklistRuntimeState(){
     if (!lageChecklistRuntimeState || typeof lageChecklistRuntimeState !== "object"){
         resetLageChecklistRuntimeState();
     }
+    if (typeof lageChecklistRuntimeState.panelOpen !== "boolean"){
+        lageChecklistRuntimeState.panelOpen = true;
+    }
     return lageChecklistRuntimeState;
+}
+
+function setLageChecklistPanelOpen(isOpen){
+    const runtime = getLageChecklistRuntimeState();
+    runtime.panelOpen = !!isOpen;
 }
 
 function normalizeVerursacherBekanntValue(value){
@@ -9386,7 +9434,7 @@ function renderLageResourceMap(data){
     if (!lageResourceMap){
         mapEl.innerHTML = "";
         lageResourceMap = L.map(mapEl, { zoomControl: true, preferCanvas: true });
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 20,
             attribution: "&copy; OpenStreetMap"
         }).addTo(lageResourceMap);
@@ -9717,7 +9765,8 @@ function renderLageDashboard(){
     renderLageChecklistPanel({
         checklistTitle: checklistRuntime.title,
         checklistSections: checklistRuntime.sections,
-        checklistInfoBlocks: checklistRuntime.infoBlocks
+        checklistInfoBlocks: checklistRuntime.infoBlocks,
+        checklistPanelOpen: checklistRuntime.panelOpen
     });
     renderLageOneTapMessage(state);
     renderLageResourceBoard();
@@ -9865,6 +9914,7 @@ function updateLageChecklistSelection(value){
     }
     runtime.selectionId = selected.id;
     runtime.title = selected.title;
+    runtime.panelOpen = true;
     runtime.sections = (Array.isArray(selected.sections) ? selected.sections : []).map((section, sectionIndex)=>({
         key: String((section && section.key) || `section_${sectionIndex}`),
         title: String((section && section.title) || `Checkliste ${sectionIndex + 1}`),
@@ -10889,6 +10939,163 @@ function saveEinsatzArchive(items){
     appStorageSetItem(EINSATZ_ARCHIVE_STORAGE_KEY, JSON.stringify(Array.isArray(items) ? items : []));
 }
 
+function normalizeIncidentArchiveSnapshot(entry){
+    const raw = entry && entry.snapshot && typeof entry.snapshot === "object"
+        ? entry.snapshot
+        : (entry && typeof entry === "object" ? entry : {});
+    const safe = raw && typeof raw === "object" ? raw : {};
+    return {
+        generatedAt: safe.generatedAt || (entry && entry.archivedAt) || new Date().toISOString(),
+        mode: safe.mode || (entry && entry.mode) || (isTrainingMode() ? "ÜBUNG" : "REAL"),
+        incidentMeta: safe.incidentMeta && typeof safe.incidentMeta === "object" ? safe.incidentMeta : null,
+        lage: safe.lage && typeof safe.lage === "object" ? safe.lage : null,
+        sections: Array.isArray(safe.sections) ? safe.sections : [],
+        nachforderungen: Array.isArray(safe.nachforderungen) ? safe.nachforderungen : [],
+        social: safe.social && typeof safe.social === "object" ? safe.social : null,
+        einsatzLog: Array.isArray(safe.einsatzLog) ? safe.einsatzLog : [],
+        funk: safe.funk && typeof safe.funk === "object" ? safe.funk : null,
+        atemschutz: safe.atemschutz && typeof safe.atemschutz === "object" ? safe.atemschutz : null,
+        funkcheck: safe.funkcheck && typeof safe.funkcheck === "object" ? safe.funkcheck : null,
+        gefahrgut: safe.gefahrgut && typeof safe.gefahrgut === "object" ? safe.gefahrgut : null,
+        evak: safe.evak && typeof safe.evak === "object" ? safe.evak : null,
+        presse: safe.presse && typeof safe.presse === "object" ? safe.presse : null,
+        psu: safe.psu && typeof safe.psu === "object" ? safe.psu : null,
+        psuContacts: Array.isArray(safe.psuContacts) ? safe.psuContacts : [],
+        psuReminders: Array.isArray(safe.psuReminders) ? safe.psuReminders : []
+    };
+}
+
+function applyIncidentArchiveSnapshotAsActive(snapshot, entry){
+    const now = Date.now();
+    const nowIso = new Date(now).toISOString();
+    const safeSnapshot = normalizeIncidentArchiveSnapshot(snapshot);
+    runWithIncidentWriteBypass(()=>{
+        const lage = safeSnapshot.lage && typeof safeSnapshot.lage === "object"
+            ? { ...getDefaultLageState(), ...safeSnapshot.lage }
+            : getDefaultLageState();
+        let startedAtTs = Number(lage.startedAt);
+        if (!Number.isFinite(startedAtTs)){
+            const parsed = Date.parse(String(lage.startedAt || ""));
+            startedAtTs = Number.isFinite(parsed) ? parsed : now;
+        }
+        lage.startedAt = startedAtTs;
+        lage.endedAt = null;
+        lage.lastTickAt = now;
+        if (!String(lage.einsatznummer || "").trim()){
+            lage.einsatznummer = String((safeSnapshot.social && safeSnapshot.social.einsatznummer) || (entry && entry.einsatznummer) || "").trim();
+        }
+        saveLageState(lage);
+        saveSections(Array.isArray(safeSnapshot.sections) ? safeSnapshot.sections : []);
+        saveNachforderungen(Array.isArray(safeSnapshot.nachforderungen) ? safeSnapshot.nachforderungen : []);
+        saveSocialState(safeSnapshot.social && typeof safeSnapshot.social === "object" ? safeSnapshot.social : getSocialDefaultState());
+        saveEinsatzLog(Array.isArray(safeSnapshot.einsatzLog) ? safeSnapshot.einsatzLog : []);
+        saveFunkState(safeSnapshot.funk && typeof safeSnapshot.funk === "object" ? safeSnapshot.funk : getDefaultFunkState());
+        const funkHistory = safeSnapshot.funk && Array.isArray(safeSnapshot.funk.history) ? safeSnapshot.funk.history : [];
+        appStorageSetItem(FUNK_LOG_STORAGE_KEY, JSON.stringify(funkHistory.slice(0, 50)));
+
+        const atemDefault = (()=>{ const first = createDefaultAtemSession(); return { sessions: [first], activeId: first.id }; })();
+        appStorageSetItem(ATEMSCHUTZ_STORAGE_KEY, JSON.stringify(safeSnapshot.atemschutz && typeof safeSnapshot.atemschutz === "object" ? safeSnapshot.atemschutz : atemDefault));
+        const funkcheckDefault = (()=>{ const first = createFunkcheckSession(); return { sessions: [first], activeId: first.id }; })();
+        appStorageSetItem(FUNKCHECK_STORAGE_KEY, JSON.stringify(safeSnapshot.funkcheck && typeof safeSnapshot.funkcheck === "object" ? safeSnapshot.funkcheck : funkcheckDefault));
+        appStorageSetItem(GEFAHRGUT_STORAGE_KEY, JSON.stringify(safeSnapshot.gefahrgut && typeof safeSnapshot.gefahrgut === "object" ? safeSnapshot.gefahrgut : getDefaultGefahrgutState()));
+        const evakDefault = (()=>{ const first = createEvakSession(); return { sessions: [first], activeId: first.id }; })();
+        appStorageSetItem(EVAK_STORAGE_KEY, JSON.stringify(safeSnapshot.evak && typeof safeSnapshot.evak === "object" ? safeSnapshot.evak : evakDefault));
+        appStorageSetItem(PRESSE_STATE_KEY, JSON.stringify(safeSnapshot.presse && typeof safeSnapshot.presse === "object" ? safeSnapshot.presse : getDefaultPresseState()));
+        savePsuState(safeSnapshot.psu && typeof safeSnapshot.psu === "object" ? safeSnapshot.psu : getDefaultPsuState());
+        savePsuContacts(Array.isArray(safeSnapshot.psuContacts) ? safeSnapshot.psuContacts : []);
+        savePsuReminders(Array.isArray(safeSnapshot.psuReminders) ? safeSnapshot.psuReminders : []);
+
+        const incidentNumber = String(
+            (safeSnapshot.incidentMeta && safeSnapshot.incidentMeta.einsatznummer)
+            || (entry && entry.einsatznummer)
+            || getIncidentNumberKeyFromSocialState()
+            || ""
+        ).trim() || getIncidentNumberKeyFromSocialState();
+        const startedAtIso = new Date(startedAtTs).toISOString();
+        const paketState = getEinsatzPaketeState();
+        paketState.active = {
+            id: `incident_import_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+            einsatznummer: incidentNumber,
+            status: "active",
+            startedAt: startedAtIso,
+            updatedAt: nowIso,
+            lastReason: "archive_import",
+            snapshot: safeSnapshot
+        };
+        saveEinsatzPaketeState(paketState);
+    });
+
+    atemschutzState = null;
+    funkcheckState = null;
+    gefahrgutState = null;
+    evakState = null;
+    presseState = null;
+    resetLageChecklistRuntimeState();
+    syncActiveEinsatzPaketSnapshot("archive_import_loaded");
+    if (isLageOverlayOpen()) renderLageDashboard();
+    if (typeof renderStructureList === "function") renderStructureList();
+    if (typeof renderNachforderungen === "function") renderNachforderungen();
+    if (isSocialOverlayOpen()) renderSocialGenerator();
+    if (isFunkOverlayOpen()) renderFunkGenerator();
+    if (isAtemOverlayOpen()) renderAtemTool();
+    if (isGefahrgutOverlayOpen()) renderGefahrgutTool();
+    if (isEvakOverlayOpen()) renderEvakTool();
+    if (isPresseOverlayOpen()) renderPresseTool();
+    if (isPsuOverlayOpen()) renderPsuOverlay();
+}
+
+function loadEinsatzArchiveAsActive(id){
+    const archive = getEinsatzArchive();
+    const entry = archive.find((item)=>String(item && item.id) === String(id || ""));
+    if (!entry){
+        alert("Archiv-Einsatz nicht gefunden.");
+        return;
+    }
+    if (!confirm("Archiv-Einsatz als aktiven Einsatz laden? Aktuelle Einsatzdaten werden überschrieben.")) return;
+    applyIncidentArchiveSnapshotAsActive(entry, entry);
+    renderSettingsOverlay();
+    alert("Archiv-Einsatz wurde als aktiver Einsatz geladen.");
+}
+
+function deleteEinsatzArchiveEntry(id){
+    if (!confirm("Archiv-Eintrag wirklich löschen?")) return;
+    const next = getEinsatzArchive().filter((item)=>String((item && item.id) || "") !== String(id || ""));
+    saveEinsatzArchive(next);
+    renderEinsatzArchiveSettingsList();
+}
+
+function clearEinsatzArchive(){
+    if (!confirm("Einsatzarchiv wirklich komplett löschen?")) return;
+    saveEinsatzArchive([]);
+    renderEinsatzArchiveSettingsList();
+}
+
+function renderEinsatzArchiveSettingsList(){
+    const listEl = document.getElementById("settingsIncidentArchiveList");
+    if (!listEl) return;
+    const archive = getEinsatzArchive();
+    if (!archive.length){
+        listEl.innerHTML = `<div class="lage-empty">Noch keine Einsätze archiviert.</div>`;
+        return;
+    }
+    listEl.innerHTML = archive.slice(0, 40).map((entry)=>{
+        const snapshot = normalizeIncidentArchiveSnapshot(entry);
+        const archivedAt = entry && entry.archivedAt ? new Date(entry.archivedAt).toLocaleString("de-DE") : "-";
+        const nummer = String((entry && entry.einsatznummer) || (snapshot.incidentMeta && snapshot.incidentMeta.einsatznummer) || "").trim() || "-";
+        const stichwort = String((snapshot.social && snapshot.social.alarmstichwort) || (snapshot.lage && snapshot.lage.alarmstichwort) || "").trim() || "-";
+        const mode = String((entry && entry.mode) || snapshot.mode || "-");
+        const safeId = String((entry && entry.id) || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        return `<div class="settings-incident-archive-item">
+            <strong>Einsatz ${escapeHtml(nummer)}</strong>
+            <div>${escapeHtml(archivedAt)} · ${escapeHtml(mode)} · ${escapeHtml(stichwort)}</div>
+            <div class="atem-row-actions" style="margin-top:6px;">
+                <button onclick="loadEinsatzArchiveAsActive('${safeId}')">Als aktiven Einsatz laden</button>
+                <button onclick="deleteEinsatzArchiveEntry('${safeId}')">Löschen</button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
 function archiveCurrentIncident(){
     const active = getActiveEinsatzPaket();
     if (active && active.status === "active"){
@@ -10910,6 +11117,7 @@ function archiveCurrentIncident(){
                 ...(refreshed.snapshot || {})
             });
             saveEinsatzArchive(compatArchive.slice(0, 200));
+            if (isSettingsOverlayOpen()) renderEinsatzArchiveSettingsList();
             alert("Aktive Einsatzakte wurde als Zwischenstand archiviert.");
             return;
         }
@@ -10924,6 +11132,7 @@ function archiveCurrentIncident(){
         ...snapshot
     });
     saveEinsatzArchive(compatArchive.slice(0, 200));
+    if (isSettingsOverlayOpen()) renderEinsatzArchiveSettingsList();
     alert("Einsatzdetails wurden archiviert.");
 }
 
@@ -12490,10 +12699,12 @@ function renderAlarmstichwortSelect(selectId, selectedValue){
     if (select.innerHTML !== html){
         select.innerHTML = html;
     }
-    if (selected){
-        select.value = selected;
-    } else if (values.length){
-        select.value = values[0];
+    if (document.activeElement !== select){
+        if (selected){
+            select.value = selected;
+        } else if (values.length){
+            select.value = values[0];
+        }
     }
 }
 
@@ -18962,10 +19173,12 @@ function renderNachforderungen(){
     let html = "";
     list.forEach((item)=>{
         const status = getNachStatusData(item.status);
+        const count = Math.max(1, Number(item.count) || 1);
+        const resourceLabel = `${count}x ${item.resource}`;
         html += `
         <div class="nach-item">
             <div class="nach-item-top">
-                <strong>${item.resource}</strong>
+                <strong>${resourceLabel}</strong>
                 <button class="nach-status-btn ${status.cls}" onclick="cycleNachStatus('${item.id}')">${status.icon} ${status.text}</button>
             </div>
             <div>Uhrzeit: ${item.time}</div>
@@ -18985,6 +19198,7 @@ function addNachforderung(context = "lage"){
     const isLegacy = context === "legacy";
     const resourceSelect = document.getElementById(isLegacy ? "nachResource" : "lageNachResource");
     const otherInput = document.getElementById(isLegacy ? "nachResourceOther" : "lageNachResourceOther");
+    const countInput = document.getElementById(isLegacy ? "nachCount" : "lageNachCount");
     const reasonInput = document.getElementById(isLegacy ? "nachReason" : "lageNachReason");
     const sourceInput = document.getElementById(isLegacy ? "nachSource" : "lageNachSource");
     if (!resourceSelect || !reasonInput) return;
@@ -18992,6 +19206,7 @@ function addNachforderung(context = "lage"){
     const selected = resourceSelect.value;
     const resource = selected === "Sonstiges" ? (otherInput?.value || "").trim() : selected;
     if (!resource) return;
+    const count = Math.max(1, Number((countInput && countInput.value) || 1) || 1);
     const reason = (reasonInput.value || "").trim();
     const source = (sourceInput?.value || "").trim();
     const now = new Date();
@@ -19001,6 +19216,7 @@ function addNachforderung(context = "lage"){
     list.unshift({
         id: `nach_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
         resource,
+        count,
         reason,
         source,
         time,
@@ -19009,6 +19225,7 @@ function addNachforderung(context = "lage"){
     saveNachforderungen(list);
 
     if (otherInput) otherInput.value = "";
+    if (countInput) countInput.value = "1";
     reasonInput.value = "";
     if (sourceInput) sourceInput.value = "";
     resourceSelect.value = "DLK";
@@ -19021,7 +19238,8 @@ function pushNachforderungenToLageLog(){
     if (!list.length) return;
     const lines = list.map((item)=>{
         const status = getNachStatusData(item.status);
-        return `${item.time} ${item.resource} (${status.text})${item.reason ? ` - ${item.reason}` : ""}${item.source ? ` | Herkunft: ${item.source}` : ""}`;
+        const count = Math.max(1, Number(item.count) || 1);
+        return `${item.time} ${count}x ${item.resource} (${status.text})${item.reason ? ` - ${item.reason}` : ""}${item.source ? ` | Herkunft: ${item.source}` : ""}`;
     });
     const message = `Nachforderungen:\n${lines.join("\n")}`;
 
@@ -19671,6 +19889,20 @@ function renderPolKripoForm(){
 
 const EINSATZ_KRAEFTE_STORAGE_KEY = "einsatz_kraefte_funkrufnamen_v1";
 const EINSATZ_STATUS_OPTIONS = ["Alarmiert", "Ausgerückt", "Eingetroffen", "Frei"];
+const EINSATZ_MEMBER_QUAL_KEYS = ["agt", "dlk", "b", "gf", "ma", "ms", "zf", "tf", "drohne", "fuehrungsgruppe"];
+const EINSATZ_MEMBER_QUAL_LABELS = {
+    agt: "AGT",
+    dlk: "DLK",
+    b: "B",
+    gf: "GF",
+    ma: "MA",
+    ms: "MS",
+    zf: "ZF",
+    tf: "TF",
+    drohne: "Drohne",
+    fuehrungsgruppe: "Führungsgruppe"
+};
+const EINSATZ_MEMBER_LICENSE_OPTIONS = ["", "B", "BE", "C1", "C1E", "C", "CE"];
 const FUNKRUFNAMEN_FAHRZEUGE = [
     { id: "xlsx_2", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "GWF KdoW", fahrzeugtyp: "KdoW", funkrufname: "80/10/01", hinweis: "" },
     { id: "xlsx_3", gemeinde: "Scharbeutz", organisation: "FF Scharbeutz", fahrzeugBezeichnung: "HLF 20/20", fahrzeugtyp: "HLF", funkrufname: "80/48/02", hinweis: "" },
@@ -19714,6 +19946,65 @@ const FUNKRUFNAMEN_FAHRZEUGE = [
     { id: "xlsx_53", gemeinde: "DLRG Haffkrug Scharbeutz", organisation: "DLRG Haffkrug Scharbeutz", fahrzeugBezeichnung: "DLRG", fahrzeugtyp: "DLRG", funkrufname: "OH 80/01", hinweis: "" }
 ];
 
+function parseBoolish(value){
+    const s = String(value === undefined || value === null ? "" : value).trim().toLowerCase();
+    return ["1", "true", "ja", "yes", "x", "y"].includes(s);
+}
+
+function splitMemberName(fullName){
+    const text = String(fullName || "").trim().replace(/\s+/g, " ");
+    if (!text) return { vorname: "", nachname: "" };
+    const parts = text.split(" ");
+    if (parts.length === 1) return { vorname: parts[0], nachname: "" };
+    return { vorname: parts[0], nachname: parts.slice(1).join(" ") };
+}
+
+function getEinsatzMemberDisplayName(member){
+    const vorname = String(member && member.vorname ? member.vorname : "").trim();
+    const nachname = String(member && member.nachname ? member.nachname : "").trim();
+    const combined = `${vorname} ${nachname}`.trim();
+    if (combined) return combined;
+    return String(member && member.name ? member.name : "").trim();
+}
+
+function normalizeEinsatzMember(raw, idx){
+    const item = raw && typeof raw === "object" ? raw : {};
+    const split = splitMemberName(item.name || "");
+    const vorname = String(item.vorname || split.vorname || "").trim();
+    const nachname = String(item.nachname || split.nachname || "").trim();
+    const name = `${vorname} ${nachname}`.trim();
+    const qualsRaw = item.qualifications && typeof item.qualifications === "object" ? item.qualifications : {};
+    const qualifications = {};
+    EINSATZ_MEMBER_QUAL_KEYS.forEach((key)=>{
+        qualifications[key] = parseBoolish(qualsRaw[key] || item[key]);
+    });
+    if (parseBoolish(item.truppfuehrer)){
+        qualifications.tf = true;
+    }
+    return {
+        id: String(item.id || `member_${idx}_${Date.now().toString(36)}`),
+        vorname,
+        nachname,
+        name,
+        qualifications,
+        fuehrerschein: String(item.fuehrerschein || ""),
+        teilnahme: parseBoolish(item.teilnahme),
+        assignedVehicleId: String(item.assignedVehicleId || ""),
+        note: String(item.note || ""),
+        updatedAt: String(item.updatedAt || new Date().toISOString())
+    };
+}
+
+function isTimmendorferVehicle(item){
+    const org = String((item && item.organisation) || "").toLowerCase();
+    const gemeinde = String((item && item.gemeinde) || "").toLowerCase();
+    const funkruf = String((item && item.funkrufname) || "").toLowerCase();
+    if (funkruf.startsWith("89/")) return true;
+    if (org.includes("timmendorfer") || org.includes("niendorf") || org.includes("hemmelsdorf") || org.includes("groß timmendorf") || org.includes("gross timmendorf")) return true;
+    if (gemeinde.includes("timmendorfer") || gemeinde.includes("niendorf") || gemeinde.includes("hemmelsdorf") || gemeinde.includes("groß timmendorf") || gemeinde.includes("gross timmendorf")) return true;
+    return false;
+}
+
 function getEinsatzKraefteTodayIso(){
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -19733,12 +20024,14 @@ function createDefaultEinsatzKraefteState(){
             uhrzeit: getEinsatzKraefteNowTime()
         },
         selected: {},
+        members: [],
         customVehicles: [],
         vehicleOverrides: {},
         deletedVehicles: {},
         ui: {
             view: "selection",
             search: "",
+            memberSearch: "",
             groupBy: "gemeinde",
             expanded: {},
             generatorGemeinde: "",
@@ -19755,6 +20048,9 @@ function normalizeEinsatzKraefteState(raw){
     next.einsatz = { ...base.einsatz, ...((raw && raw.einsatz) || {}) };
     next.ui = { ...base.ui, ...((raw && raw.ui) || {}) };
     next.selected = typeof next.selected === "object" && next.selected ? next.selected : {};
+    next.members = Array.isArray(next.members)
+        ? next.members.map((member, idx)=>normalizeEinsatzMember(member, idx)).filter((member)=>!!getEinsatzMemberDisplayName(member))
+        : [];
     next.customVehicles = Array.isArray(next.customVehicles) ? next.customVehicles : [];
     next.vehicleOverrides = typeof next.vehicleOverrides === "object" && next.vehicleOverrides ? next.vehicleOverrides : {};
     next.deletedVehicles = typeof next.deletedVehicles === "object" && next.deletedVehicles ? next.deletedVehicles : {};
@@ -20044,7 +20340,7 @@ function saveEinsatzKraefteVehicleFromPopup(){
 }
 
 function getSortedFunkrufData(state){
-    return getEinsatzKraefteVehiclePool(state).slice().sort((a, b)=>{
+    return getEinsatzKraefteVehiclePool(state).filter(isTimmendorferVehicle).slice().sort((a, b)=>{
         const g = (a.organisation || a.gemeinde || "").localeCompare((b.organisation || b.gemeinde || ""), "de");
         if (g) return g;
         const t = (a.fahrzeugBezeichnung || "").localeCompare((b.fahrzeugBezeichnung || ""), "de");
@@ -20073,6 +20369,267 @@ function getEinsatzKraefteSelectedVehicles(state){
         return !!(row && row.selected);
     });
     return getSortedFunkrufData(state).filter((item)=>selectedIds.includes(item.id));
+}
+
+function setEinsatzKraefteMemberSearch(value){
+    patchEinsatzKraefteState((s)=>{ s.ui.memberSearch = String(value || ""); });
+    renderEinsatzMitgliederTool();
+    renderEinsatzKraefteTool();
+}
+
+function triggerEinsatzKraefteMemberImport(){
+    const input = document.getElementById("einsatzMemberImportInput");
+    if (input){
+        input.value = "";
+        input.click();
+    }
+}
+
+function resolveMemberVehicleIdByText(text, state){
+    const needle = String(text || "").trim().toLowerCase();
+    if (!needle) return "";
+    const vehicles = getSortedFunkrufData(state);
+    const exact = vehicles.find((v)=>{
+        return String(v.funkrufname || "").toLowerCase() === needle || String(v.fahrzeugBezeichnung || "").toLowerCase() === needle;
+    });
+    if (exact) return exact.id;
+    const partial = vehicles.find((v)=>{
+        const blob = `${v.fahrzeugBezeichnung || ""} ${v.fahrzeugtyp || ""} ${v.funkrufname || ""}`.toLowerCase();
+        return blob.includes(needle);
+    });
+    return partial ? partial.id : "";
+}
+
+function parseImportedMemberRows(rows, state){
+    const cleanRows = Array.isArray(rows) ? rows.filter((row)=>Array.isArray(row) && row.some((cell)=>String(cell || "").trim())) : [];
+    if (!cleanRows.length) return [];
+    const header = cleanRows[0].map((cell)=>String(cell || "").trim().toLowerCase());
+    const indexOf = (keys)=>{
+        for (let i = 0; i < header.length; i += 1){
+            const h = header[i].replace(/[\s_-]+/g, "");
+            if (keys.some((key)=>h === key || h.includes(key))){
+                return i;
+            }
+        }
+        return -1;
+    };
+    const iName = indexOf(["name", "mitglied", "einsatzkraft"]);
+    const iVorname = indexOf(["vorname", "firstname"]);
+    const iNachname = indexOf(["nachname", "lastname", "surname"]);
+    const iVehicle = indexOf(["fahrzeug", "auto", "funkrufname"]);
+    const iTeil = indexOf(["teilnahme", "einsatz"]);
+    const iFuehrerschein = indexOf(["fuehrerschein", "führerschein", "fs"]);
+    const iTrupp = indexOf(["truppfuehrer", "truppführer"]);
+    const iTf = indexOf(["tf"]);
+    const iAgt = indexOf(["agt"]);
+    const iDlk = indexOf(["dlk"]);
+    const iB = indexOf(["b"]);
+    const iGf = indexOf(["gf"]);
+    const iMa = indexOf(["ma"]);
+    const iMs = indexOf(["ms"]);
+    const iZf = indexOf(["zf"]);
+    const iDrohne = indexOf(["drohne"]);
+    const iFgrp = indexOf(["fuehrungsgruppe", "führungsgruppe"]);
+    const dataRows = cleanRows.slice(1);
+    return dataRows.map((row, idx)=>{
+        const vornameRaw = iVorname >= 0 ? String(row[iVorname] || "").trim() : "";
+        const nachnameRaw = iNachname >= 0 ? String(row[iNachname] || "").trim() : "";
+        const rawName = iName >= 0 ? String(row[iName] || "").trim() : String(row[0] || "").trim();
+        const split = splitMemberName(rawName);
+        const vorname = vornameRaw || split.vorname;
+        const nachname = nachnameRaw || split.nachname;
+        const display = `${vorname} ${nachname}`.trim() || rawName;
+        if (!display) return null;
+        const vehicleText = iVehicle >= 0 ? String(row[iVehicle] || "").trim() : "";
+        return normalizeEinsatzMember({
+            id: `member_import_${Date.now().toString(36)}_${idx}`,
+            vorname,
+            nachname,
+            name: display,
+            assignedVehicleId: resolveMemberVehicleIdByText(vehicleText, state),
+            teilnahme: iTeil >= 0 ? parseBoolish(row[iTeil]) : !!vehicleText,
+            fuehrerschein: iFuehrerschein >= 0 ? String(row[iFuehrerschein] || "").trim().toUpperCase() : "",
+            qualifications: {
+                agt: iAgt >= 0 ? parseBoolish(row[iAgt]) : false,
+                dlk: iDlk >= 0 ? parseBoolish(row[iDlk]) : false,
+                b: iB >= 0 ? parseBoolish(row[iB]) : false,
+                gf: iGf >= 0 ? parseBoolish(row[iGf]) : false,
+                ma: iMa >= 0 ? parseBoolish(row[iMa]) : false,
+                ms: iMs >= 0 ? parseBoolish(row[iMs]) : false,
+                zf: iZf >= 0 ? parseBoolish(row[iZf]) : false,
+                tf: (iTf >= 0 ? parseBoolish(row[iTf]) : false) || (iTrupp >= 0 ? parseBoolish(row[iTrupp]) : false),
+                drohne: iDrohne >= 0 ? parseBoolish(row[iDrohne]) : false,
+                fuehrungsgruppe: iFgrp >= 0 ? parseBoolish(row[iFgrp]) : false
+            }
+        }, idx);
+    }).filter(Boolean);
+}
+
+function parseDelimitedTextRows(text){
+    const raw = String(text || "").replace(/\r/g, "\n").split("\n").filter((line)=>line.trim());
+    if (!raw.length) return [];
+    const delimiter = raw[0].includes(";") ? ";" : (raw[0].includes("\t") ? "\t" : ",");
+    return raw.map((line)=>line.split(delimiter).map((cell)=>cell.trim()));
+}
+
+function mergeImportedMembers(existing, incoming){
+    const map = new Map();
+    (Array.isArray(existing) ? existing : []).forEach((member)=>{
+        map.set(getEinsatzMemberDisplayName(member).toLowerCase(), member);
+    });
+    (Array.isArray(incoming) ? incoming : []).forEach((member)=>{
+        const key = getEinsatzMemberDisplayName(member).toLowerCase();
+        if (!key) return;
+        map.set(key, member);
+    });
+    return Array.from(map.values());
+}
+
+async function handleEinsatzKraefteMemberImport(event){
+    const file = event && event.target && event.target.files && event.target.files[0];
+    if (!file) return;
+    const state = getEinsatzKraefteState();
+    const fileName = String(file.name || "").toLowerCase();
+    let rows = [];
+    if ((fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) && window.XLSX && typeof window.XLSX.read === "function"){
+        try {
+            const buffer = await file.arrayBuffer();
+            const wb = window.XLSX.read(buffer, { type: "array" });
+            const firstSheet = wb.SheetNames && wb.SheetNames[0] ? wb.SheetNames[0] : "";
+            const ws = firstSheet ? wb.Sheets[firstSheet] : null;
+            rows = ws ? window.XLSX.utils.sheet_to_json(ws, { header: 1 }) : [];
+        } catch {
+            rows = [];
+        }
+    } else {
+        const text = await file.text();
+        rows = parseDelimitedTextRows(text);
+    }
+    const imported = parseImportedMemberRows(rows, state);
+    if (!imported.length){
+        showEinsatzKraefteHint("Import fehlgeschlagen. Bitte CSV/Excel mit 'Name' oder 'Vorname'+'Nachname' verwenden.");
+        return;
+    }
+    patchEinsatzKraefteState((s)=>{
+        s.members = mergeImportedMembers(s.members, imported).slice(0, 600);
+    });
+    renderEinsatzMitgliederTool();
+    renderEinsatzKraefteTool();
+    showEinsatzKraefteHint(`${imported.length} Mitglieder importiert/aktualisiert.`);
+}
+
+function addEinsatzKraefteMemberManual(){
+    const vorname = String(document.getElementById("einsatzMemberVorname")?.value || "").trim();
+    const nachname = String(document.getElementById("einsatzMemberNachname")?.value || "").trim();
+    if (!vorname || !nachname){
+        showEinsatzKraefteHint("Bitte Vorname und Nachname angeben.");
+        return;
+    }
+    const displayName = `${vorname} ${nachname}`.trim();
+    const fuehrerschein = String(document.getElementById("einsatzMemberFuehrerschein")?.value || "").trim().toUpperCase();
+    const qualifications = {};
+    EINSATZ_MEMBER_QUAL_KEYS.forEach((key)=>{
+        qualifications[key] = !!document.getElementById(`einsatzMemberQual_${key}`)?.checked;
+    });
+    patchEinsatzKraefteState((s)=>{
+        if (!Array.isArray(s.members)) s.members = [];
+        s.members.unshift(normalizeEinsatzMember({
+            id: `member_manual_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`,
+            vorname,
+            nachname,
+            name: displayName,
+            qualifications,
+            fuehrerschein,
+            teilnahme: false,
+            assignedVehicleId: ""
+        }, s.members.length));
+        s.members = mergeImportedMembers([], s.members).slice(0, 600);
+    });
+    const idsToReset = ["einsatzMemberVorname", "einsatzMemberNachname", "einsatzMemberFuehrerschein"];
+    idsToReset.forEach((id)=>{ const el = document.getElementById(id); if (el) el.value = ""; });
+    EINSATZ_MEMBER_QUAL_KEYS.forEach((key)=>{
+        const el = document.getElementById(`einsatzMemberQual_${key}`);
+        if (el) el.checked = false;
+    });
+    renderEinsatzMitgliederTool();
+    renderEinsatzKraefteTool();
+    showEinsatzKraefteHint(`${displayName} hinzugefügt.`);
+}
+
+function removeEinsatzKraefteMember(id){
+    patchEinsatzKraefteState((s)=>{
+        s.members = (Array.isArray(s.members) ? s.members : []).filter((member)=>member.id !== id);
+    });
+    renderEinsatzMitgliederTool();
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteMemberTeilnahme(id, checked){
+    patchEinsatzKraefteState((s)=>{
+        const member = (s.members || []).find((m)=>m.id === id);
+        if (!member) return;
+        member.teilnahme = !!checked;
+        if (!member.teilnahme) member.assignedVehicleId = "";
+        member.updatedAt = new Date().toISOString();
+    });
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteMemberVehicle(id, vehicleId){
+    patchEinsatzKraefteState((s)=>{
+        const member = (s.members || []).find((m)=>m.id === id);
+        if (!member) return;
+        member.assignedVehicleId = String(vehicleId || "");
+        if (member.assignedVehicleId) member.teilnahme = true;
+        member.updatedAt = new Date().toISOString();
+    });
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteMemberNamePart(id, part, value){
+    const key = part === "nachname" ? "nachname" : "vorname";
+    patchEinsatzKraefteState((s)=>{
+        const member = (s.members || []).find((m)=>m.id === id);
+        if (!member) return;
+        member[key] = String(value || "").trim();
+        member.name = `${member.vorname || ""} ${member.nachname || ""}`.trim();
+        member.updatedAt = new Date().toISOString();
+    });
+    renderEinsatzMitgliederTool();
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteMemberLicense(id, value){
+    patchEinsatzKraefteState((s)=>{
+        const member = (s.members || []).find((m)=>m.id === id);
+        if (!member) return;
+        member.fuehrerschein = String(value || "").toUpperCase();
+        member.updatedAt = new Date().toISOString();
+    });
+    renderEinsatzMitgliederTool();
+    renderEinsatzKraefteTool();
+}
+
+function setEinsatzKraefteMemberQual(id, key, checked){
+    if (!EINSATZ_MEMBER_QUAL_KEYS.includes(key)) return;
+    patchEinsatzKraefteState((s)=>{
+        const member = (s.members || []).find((m)=>m.id === id);
+        if (!member) return;
+        if (!member.qualifications || typeof member.qualifications !== "object"){
+            member.qualifications = {};
+        }
+        member.qualifications[key] = !!checked;
+        member.updatedAt = new Date().toISOString();
+    });
+    renderEinsatzMitgliederTool();
+    renderEinsatzKraefteTool();
+}
+
+function getEinsatzMemberQualTags(member){
+    const quals = member && member.qualifications && typeof member.qualifications === "object" ? member.qualifications : {};
+    const tags = EINSATZ_MEMBER_QUAL_KEYS.filter((key)=>!!quals[key]).map((key)=>EINSATZ_MEMBER_QUAL_LABELS[key] || key.toUpperCase());
+    if (member && member.fuehrerschein) tags.push(`FS ${member.fuehrerschein}`);
+    return tags;
 }
 
 function getEinsatzTeilnahmeRowsHtml(){
@@ -20120,6 +20677,11 @@ function deleteEinsatzKraefteVehicle(id){
         if (s.selected && s.selected[vehicleId]){
             delete s.selected[vehicleId];
         }
+        (s.members || []).forEach((member)=>{
+            if (member.assignedVehicleId === vehicleId){
+                member.assignedVehicleId = "";
+            }
+        });
     });
     renderEinsatzKraefteTool();
     showEinsatzKraefteHint(`${vehicle.fahrzeugBezeichnung} wurde gelöscht.`);
@@ -20144,6 +20706,17 @@ function buildEinsatzKraefteExportText(state){
         const row = state.selected[item.id] || {};
         lines.push(`${item.organisation || item.gemeinde} - ${item.fahrzeugBezeichnung} - ${item.funkrufname} - ${row.status || "Alarmiert"}${item.hinweis ? ` (${item.hinweis})` : ""}`);
     });
+    const members = Array.isArray(state.members) ? state.members.filter((m)=>m.teilnahme) : [];
+    if (members.length){
+        const vehicles = getSortedFunkrufData(state);
+        lines.push("");
+        lines.push("Einsatzkräfte (Teilnahme/Fahrzeug):");
+        members.forEach((member)=>{
+            const assigned = vehicles.find((v)=>v.id === member.assignedVehicleId);
+            const tags = getEinsatzMemberQualTags(member);
+            lines.push(`- ${getEinsatzMemberDisplayName(member)} -> ${assigned ? `${assigned.fahrzeugBezeichnung} (${assigned.funkrufname})` : "-" }${tags.length ? ` | ${tags.join(", ")}` : ""}`);
+        });
+    }
     return lines.join("\n");
 }
 
@@ -20180,6 +20753,24 @@ function renderEinsatzKraefteSelection(state){
     const allVehicles = getSortedFunkrufData(state);
     const filtered = getEinsatzKraefteFilteredData(search, state);
     const selectedVehicles = getEinsatzKraefteSelectedVehicles(state);
+    const members = Array.isArray(state.members) ? state.members : [];
+    const memberSearchRaw = String(state.ui.memberSearch || "");
+    const memberSearch = memberSearchRaw.trim().toLowerCase();
+    const membersFiltered = members.filter((member)=>{
+        if (!memberSearch) return true;
+        const quals = getEinsatzMemberQualTags(member).join(" ").toLowerCase();
+        const assignedVehicle = allVehicles.find((v)=>v.id === member.assignedVehicleId);
+        const blob = `${getEinsatzMemberDisplayName(member)} ${quals} ${assignedVehicle ? `${assignedVehicle.fahrzeugBezeichnung} ${assignedVehicle.funkrufname}` : ""}`.toLowerCase();
+        return blob.includes(memberSearch);
+    });
+    const participatingMembers = members.filter((member)=>member.teilnahme);
+    const memberVehicleMap = {};
+    allVehicles.forEach((vehicle)=>{ memberVehicleMap[vehicle.id] = []; });
+    participatingMembers.forEach((member)=>{
+        if (member.assignedVehicleId && memberVehicleMap[member.assignedVehicleId]){
+            memberVehicleMap[member.assignedVehicleId].push(member);
+        }
+    });
     const groups = {};
     filtered.forEach((item)=>{
         const key = item.organisation || item.gemeinde || "Sonstige";
@@ -20223,8 +20814,8 @@ function renderEinsatzKraefteSelection(state){
     return `
       <div id="einsatzKraefteHint" class="social-hint hidden"></div>
       <div class="atem-panel">
-        <strong>Funkrufnamen & Fahrzeuge</strong>
-        <div class="psu-meta" style="margin-top:8px;">Schnelles Nachschlagen und Kopieren von Funkrufnamen im Einsatz.</div>
+        <strong>Funkrufnamen & Fahrzeuge (Timmendorfer Bereich)</strong>
+        <div class="psu-meta" style="margin-top:8px;">Für Teilnahme und Zuordnung werden nur Fahrzeuge aus Timmendorfer Strand genutzt.</div>
       </div>
 
       <div class="atem-panel">
@@ -20288,6 +20879,48 @@ function renderEinsatzKraefteSelection(state){
             <button onclick="openEinsatzKraefteAddVehiclePopup()">Neues Fahrzeug hinzufügen</button>
         </div>
       </div>
+
+      <div class="atem-panel">
+        <strong>Einsatzkräfte zuordnen</strong>
+        <div class="psu-meta" style="margin-top:8px;">Teilnahme markieren und Fahrzeugplatz zuweisen (nur Timmendorfer Fahrzeuge).</div>
+        <input type="text" value="${escapeHtml(memberSearchRaw)}" placeholder="Mitglied oder Funktion suchen..." oninput="setEinsatzKraefteMemberSearch(this.value)" style="margin-top:8px;">
+        <div class="phonebook-list" style="margin-top:8px;">
+            ${membersFiltered.length ? membersFiltered.map((member)=>{
+                const safeId = String(member.id).replace(/'/g, "\\'");
+                const assigned = allVehicles.find((v)=>v.id === member.assignedVehicleId);
+                const tags = getEinsatzMemberQualTags(member);
+                return `<div class="phonebook-item">
+                    <div class="phonebook-head">${escapeHtml(getEinsatzMemberDisplayName(member))}</div>
+                    <div class="phonebook-meta">${tags.length ? escapeHtml(tags.join(" · ")) : "Keine Qualifikation gesetzt"}${assigned ? ` · Fahrzeug: ${escapeHtml(assigned.fahrzeugBezeichnung)} (${escapeHtml(assigned.funkrufname)})` : ""}</div>
+                    <div class="ek-row" style="margin-top:8px;">
+                        <label><input type="checkbox" ${member.teilnahme ? "checked" : ""} onchange="setEinsatzKraefteMemberTeilnahme('${safeId}', this.checked)"> Nimmt teil</label>
+                        <label>Fahrzeug
+                            <select onchange="setEinsatzKraefteMemberVehicle('${safeId}', this.value)">
+                                <option value="">-</option>
+                                ${allVehicles.map((vehicle)=>`<option value="${escapeHtml(vehicle.id)}" ${member.assignedVehicleId === vehicle.id ? "selected" : ""}>${escapeHtml(vehicle.fahrzeugBezeichnung)} (${escapeHtml(vehicle.funkrufname)})</option>`).join("")}
+                            </select>
+                        </label>
+                    </div>
+                </div>`;
+            }).join("") : `<div class="lage-empty">Noch keine Mitglieder vorhanden.</div>`}
+        </div>
+      </div>
+
+      <div class="atem-panel">
+        <strong>Fahrzeugbesetzung (Einsatz)</strong>
+        <div class="psu-meta" style="margin-top:8px;">Teilnehmende Mitglieder je Fahrzeug.</div>
+        <div class="phonebook-list" style="margin-top:8px;">
+            ${allVehicles.map((vehicle)=>{
+                const membersOnVehicle = memberVehicleMap[vehicle.id] || [];
+                if (!membersOnVehicle.length) return "";
+                return `<div class="phonebook-item">
+                    <div class="phonebook-head">${escapeHtml(vehicle.fahrzeugBezeichnung)} · ${escapeHtml(vehicle.funkrufname)}</div>
+                    <div class="phonebook-meta">${escapeHtml(vehicle.organisation || vehicle.gemeinde)}</div>
+                    <div class="psu-meta" style="margin-top:6px;">${membersOnVehicle.map((member)=>escapeHtml(getEinsatzMemberDisplayName(member))).join(", ")}</div>
+                </div>`;
+            }).join("") || `<div class="lage-empty">Noch keine Fahrzeugzuordnung vorhanden.</div>`}
+        </div>
+      </div>
     `;
 }
 
@@ -20341,6 +20974,86 @@ function renderEinsatzKraefteTool(){
     if (!root) return;
     const state = getEinsatzKraefteState();
     root.innerHTML = renderEinsatzKraefteSelection(state);
+}
+
+function renderEinsatzMitgliederTool(){
+    const root = document.getElementById("einsatzMitgliederRoot");
+    if (!root) return;
+    const state = getEinsatzKraefteState();
+    const members = Array.isArray(state.members) ? state.members : [];
+    const searchRaw = String(state.ui.memberSearch || "");
+    const search = searchRaw.trim().toLowerCase();
+    const filtered = members.filter((member)=>{
+        if (!search) return true;
+        const quals = getEinsatzMemberQualTags(member).join(" ").toLowerCase();
+        const blob = `${getEinsatzMemberDisplayName(member)} ${quals}`.toLowerCase();
+        return blob.includes(search);
+    });
+    root.innerHTML = `
+      <div id="einsatzKraefteHint" class="social-hint hidden"></div>
+      <div class="atem-panel">
+        <strong>Mitgliederverwaltung</strong>
+        <div class="psu-meta" style="margin-top:8px;">Mitglieder manuell oder per Excel/CSV importieren.</div>
+        <div class="atem-grid" style="margin-top:8px;">
+            <div><label>Vorname*</label><input id="einsatzMemberVorname" type="text" placeholder="Vorname"></div>
+            <div><label>Nachname*</label><input id="einsatzMemberNachname" type="text" placeholder="Nachname"></div>
+            <div><label>Führerschein</label>
+                <select id="einsatzMemberFuehrerschein">
+                    ${EINSATZ_MEMBER_LICENSE_OPTIONS.map((opt)=>`<option value="${escapeHtml(opt)}">${opt ? escapeHtml(opt) : "-"}</option>`).join("")}
+                </select>
+            </div>
+            <div class="atem-col-full">
+                <div class="section-title" style="margin-top:2px;">Funktionen / Qualifikationen</div>
+                <div class="ek-row" style="margin-top:6px;">
+                    ${EINSATZ_MEMBER_QUAL_KEYS.map((key)=>`<label class="member-qual-option"><input id="einsatzMemberQual_${key}" type="checkbox"><span>${escapeHtml(EINSATZ_MEMBER_QUAL_LABELS[key] || key.toUpperCase())}</span></label>`).join("")}
+                </div>
+            </div>
+        </div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="addEinsatzKraefteMemberManual()">Mitglied hinzufügen</button>
+            <button onclick="triggerEinsatzKraefteMemberImport()">Excel/CSV importieren</button>
+        </div>
+        <input id="einsatzMemberImportInput" class="hidden" type="file" accept=".csv,.txt,.xlsx,.xls,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="handleEinsatzKraefteMemberImport(event)">
+      </div>
+      <div class="atem-panel">
+        <strong>Mitgliederliste</strong>
+        <input type="text" value="${escapeHtml(searchRaw)}" placeholder="Mitglied oder Funktion suchen..." oninput="setEinsatzKraefteMemberSearch(this.value)" style="margin-top:8px;">
+        <div class="phonebook-list" style="margin-top:8px;">
+            ${filtered.length ? filtered.map((member)=>{
+                const safeId = String(member.id).replace(/'/g, "\\'");
+                const tags = getEinsatzMemberQualTags(member);
+                return `<div class="phonebook-item">
+                    <div class="phonebook-head">${escapeHtml(getEinsatzMemberDisplayName(member))}</div>
+                    <div class="phonebook-meta">${tags.length ? escapeHtml(tags.join(" · ")) : "Keine Qualifikation gesetzt"}</div>
+                    <div class="ek-row" style="margin-top:8px;">
+                        <label>Vorname
+                            <input type="text" value="${escapeHtml(member.vorname || "")}" oninput="setEinsatzKraefteMemberNamePart('${safeId}','vorname',this.value)">
+                        </label>
+                        <label>Nachname
+                            <input type="text" value="${escapeHtml(member.nachname || "")}" oninput="setEinsatzKraefteMemberNamePart('${safeId}','nachname',this.value)">
+                        </label>
+                    </div>
+                    <div class="ek-row" style="margin-top:8px;">
+                        <label>Führerschein
+                            <select onchange="setEinsatzKraefteMemberLicense('${safeId}', this.value)">
+                                ${EINSATZ_MEMBER_LICENSE_OPTIONS.map((opt)=>`<option value="${escapeHtml(opt)}" ${String(member.fuehrerschein || "") === opt ? "selected" : ""}>${opt ? escapeHtml(opt) : "-"}</option>`).join("")}
+                            </select>
+                        </label>
+                    </div>
+                    <div class="ek-row" style="margin-top:6px;">
+                        ${EINSATZ_MEMBER_QUAL_KEYS.map((key)=>{
+                            const active = !!(member.qualifications && member.qualifications[key]);
+                            return `<label class="member-qual-option"><input type="checkbox" ${active ? "checked" : ""} onchange="setEinsatzKraefteMemberQual('${safeId}','${key}',this.checked)"><span>${escapeHtml(EINSATZ_MEMBER_QUAL_LABELS[key] || key.toUpperCase())}</span></label>`;
+                        }).join("")}
+                    </div>
+                    <div class="phonebook-actions" style="margin-top:8px;">
+                        <button class="phonebook-fav-btn" onclick="removeEinsatzKraefteMember('${safeId}')">Löschen</button>
+                    </div>
+                </div>`;
+            }).join("") : `<div class="lage-empty">Noch keine Mitglieder vorhanden.</div>`}
+        </div>
+      </div>
+    `;
 }
 
 const FWDV3_TRAINER_STORAGE_KEY = "fwdv3_trainer_state_v1";
@@ -22409,6 +23122,12 @@ const data = {
         content:`<div id="einsatzKraefteRoot"></div>`
     }],
 
+    personal:[{
+        name:"Mitgliederverwaltung",
+        einsatzMitgliederTool:true,
+        content:`<div id="einsatzMitgliederRoot"></div>`
+    }],
+
     trainer:[{
         name:"Grundlagen-Trainer",
         fwdv3Trainer:true,
@@ -22420,6 +23139,183 @@ const data = {
         checklist:["Szene sichern","Gefahrenlage prüfen","Rettungskette aktivieren","Dokumentation beginnen"]
     }]
 };
+
+const TASCHENBUCH_GENERIC_PATTERNS = [
+    /zufahrt/i,
+    /anfahrt/i,
+    /bereitstellungsraum/i,
+    /einweisung nachr[üu]ckender kr[äa]fte/i,
+    /presse/i,
+    /sofortmeldung/i,
+    /objektpl[äa]ne/i,
+    /dokumentation/i,
+    /betreuung/i,
+    /weg des geringsten widerstands/i
+];
+
+const TASCHENBUCH_CRITICAL_PATTERNS = {
+    erkundung: [
+        /menschen.*gefahr|personen.*gefahr|tier.*gefahr/i,
+        /ausbreitung|brandabschnitt|durchz[üu]ndung/i,
+        /einsturz|statik|tr[üu]mmerschatten|nagelplattenbinder/i,
+        /gas|explosion|druckbeh[äa]lter|acetylen/i,
+        /strom|spannung|oberleitung|freischalten|elektr/i,
+        /gefahrstoff|messung|windrichtung|dekon|r[üu]ckhaltung/i,
+        /alternative antriebe|airbag|rettungskarte/i,
+        /versch[üu]ttet|schacht|maschine|absturz/i
+    ],
+    massnahmen: [
+        /retten|sofortrettung|evaku/i,
+        /absperren|sichern|sicherheitstrupp|atemschutz/i,
+        /stabilisieren|abst[üu]tzen/i,
+        /k[üu]hlen|abschalten|freischalten|energie/i,
+        /dekon|messung|r[üu]ckhaltung/i,
+        /r[ie]egel|ausbreitung verhindern|brandbek[äa]mpfung/i
+    ],
+    lage: [
+        /lage stabil|unter kontrolle|ausbreitung/i,
+        /gefahr|explosion|einsturz|spannung|brandentwicklung/i,
+        /messwert|schadstoff|r[üu]ckhaltung|gew[äa]sser/i,
+        /evaku|warnung|nachforderung|manv|behandlungsplatz/i
+    ]
+};
+
+function uniqTrimmedList(items){
+    const seen = new Set();
+    const out = [];
+    (Array.isArray(items) ? items : []).forEach((item)=>{
+        const text = String(item || "").replace(/\s+/g, " ").trim();
+        if (!text) return;
+        const key = text.toLowerCase();
+        if (seen.has(key)) return;
+        seen.add(key);
+        out.push(text);
+    });
+    return out;
+}
+
+function scoreTaschenbuchItem(text, type){
+    let score = 0;
+    TASCHENBUCH_GENERIC_PATTERNS.forEach((pattern)=>{
+        if (pattern.test(text)) score -= 2;
+    });
+    const critical = TASCHENBUCH_CRITICAL_PATTERNS[type] || [];
+    critical.forEach((pattern)=>{
+        if (pattern.test(text)) score += 3;
+    });
+    if (/^siehe auch/i.test(text)) score -= 3;
+    if (text.length > 130) score -= 1;
+    return score;
+}
+
+function condenseTaschenbuchList(items, type){
+    const unique = uniqTrimmedList(items);
+    if (!unique.length) return [];
+    const scored = unique.map((text, index)=>({
+        text,
+        index,
+        score: scoreTaschenbuchItem(text, type)
+    }));
+    const preferred = scored.filter((item)=>item.score > 0);
+    const pool = preferred.length ? preferred : scored.filter((item)=>item.score > -2);
+    const sorted = pool.sort((a, b)=>(b.score - a.score) || (a.index - b.index));
+    const maxItems = type === "lage" ? 4 : 6;
+    const picked = sorted.slice(0, maxItems).sort((a, b)=>a.index - b.index).map((item)=>item.text);
+    if (picked.length >= 3) return picked;
+    return unique.slice(0, Math.min(unique.length, maxItems));
+}
+
+function applyTaschenbuchLageFocus(){
+    ["brand", "vu"].forEach((category)=>{
+        const list = Array.isArray(data[category]) ? data[category] : [];
+        list.forEach((entry)=>{
+            if (!entry || typeof entry !== "object") return;
+            if (Array.isArray(entry.erkundungChecklist)){
+                entry.erkundungChecklist = condenseTaschenbuchList(entry.erkundungChecklist, "erkundung");
+            }
+            if (Array.isArray(entry.massnahmenChecklist)){
+                entry.massnahmenChecklist = condenseTaschenbuchList(entry.massnahmenChecklist, "massnahmen");
+            }
+            if (Array.isArray(entry.lageChecklist)){
+                entry.lageChecklist = condenseTaschenbuchList(entry.lageChecklist, "lage");
+            }
+        });
+    });
+}
+
+applyTaschenbuchLageFocus();
+
+const BRAND_STANDARD_TASK_PATTERNS = [
+    /sicherheitstrupp/i,
+    /atemschutz[üu]berwachung/i,
+    /eigenschutz/i,
+    /sicherheit der eigenen kr[äa]fte|eigene kr[äa]fte sichern/i,
+    /bereitstellungsraum/i,
+    /einweisung nachr[üu]ckender kr[äa]fte/i,
+    /zufahrten?\s+frei|zufahrt\s+frei/i,
+    /presse|[öo]ffentlichkeitsarbeit/i,
+    /sofortmeldung/i,
+    /dokumentation/i,
+    /weitere beh[öo]rden erforderlich/i,
+    /ist der eigenschutz gew[äa]hrleistet/i
+];
+
+function isBrandStandardTask(text){
+    const line = String(text || "").trim();
+    if (!line) return true;
+    return BRAND_STANDARD_TASK_PATTERNS.some((pattern)=>pattern.test(line));
+}
+
+function removeBrandStandardTasks(){
+    const list = Array.isArray(data.brand) ? data.brand : [];
+    list.forEach((entry)=>{
+        if (!entry || typeof entry !== "object") return;
+        if (Array.isArray(entry.erkundungChecklist)){
+            entry.erkundungChecklist = entry.erkundungChecklist.filter((item)=>!isBrandStandardTask(item));
+        }
+        if (Array.isArray(entry.massnahmenChecklist)){
+            entry.massnahmenChecklist = entry.massnahmenChecklist.filter((item)=>!isBrandStandardTask(item));
+        }
+        if (Array.isArray(entry.lageChecklist)){
+            entry.lageChecklist = entry.lageChecklist.filter((item)=>!isBrandStandardTask(item));
+        }
+    });
+}
+
+removeBrandStandardTasks();
+
+const TASCHENBUCH_CROSS_REF_PATTERN = /siehe auch|verweis\s*:/i;
+
+function stripCrossReferencesFromContent(html){
+    let text = String(html || "");
+    text = text.replace(/<div class="links-box">\s*<strong>\s*Querverweise:\s*<\/strong>[\s\S]*?<\/div>/gi, "");
+    text = text.replace(/Siehe auch:[^<\n]*/gi, "");
+    text = text.replace(/\(\s*Verweis:[^)]+\)/gi, "");
+    return text;
+}
+
+function removeTaschenbuchCrossReferences(){
+    Object.keys(data || {}).forEach((category)=>{
+        const entries = Array.isArray(data[category]) ? data[category] : [];
+        entries.forEach((entry)=>{
+            if (!entry || typeof entry !== "object") return;
+            if (Array.isArray(entry.erkundungChecklist)){
+                entry.erkundungChecklist = entry.erkundungChecklist.filter((item)=>!TASCHENBUCH_CROSS_REF_PATTERN.test(String(item || "")));
+            }
+            if (Array.isArray(entry.massnahmenChecklist)){
+                entry.massnahmenChecklist = entry.massnahmenChecklist.filter((item)=>!TASCHENBUCH_CROSS_REF_PATTERN.test(String(item || "")));
+            }
+            if (Array.isArray(entry.lageChecklist)){
+                entry.lageChecklist = entry.lageChecklist.filter((item)=>!TASCHENBUCH_CROSS_REF_PATTERN.test(String(item || "")));
+            }
+            if (typeof entry.content === "string" && entry.content){
+                entry.content = stripCrossReferencesFromContent(entry.content);
+            }
+        });
+    });
+}
+
+removeTaschenbuchCrossReferences();
 
 function footerHtml(){
     const creatorLine = escapeHtml(getAppFooterCreatorText());
@@ -22650,7 +23546,7 @@ function showDetail(index){
     const canFav = canUseAppFavoriteForEntry(currentCategory, index);
     const fav = canFav && isFavorite(currentCategory, index);
     const hasCustomBlocks = !!(einsatz.taktischeMuster || einsatz.fuehrungsunterstuetzung || einsatz.entscheidungMatrix);
-    const backTarget = (einsatz.einsatzKraefteTool || einsatz.fwdv3Trainer) ? "goHome()" : `showCategory('${currentCategory}')`;
+    const backTarget = (einsatz.einsatzKraefteTool || einsatz.einsatzMitgliederTool || einsatz.fwdv3Trainer) ? "goHome()" : `showCategory('${currentCategory}')`;
 
     let content = `<button onclick="${backTarget}">⬅ Zurück</button>
                    <div class="card">
@@ -22753,6 +23649,9 @@ function showDetail(index){
     if (einsatz.einsatzKraefteTool){
         renderEinsatzKraefteTool();
     }
+    if (einsatz.einsatzMitgliederTool){
+        renderEinsatzMitgliederTool();
+    }
     if (einsatz.fwdv3Trainer){
         renderFwdv3Trainer();
     }
@@ -22847,6 +23746,10 @@ function searchEinsatz(text){
     const kraefteNeedle = "kraefte kräfte funkrufnamen funkrufname fahrzeuge fahrzeug einsatzkraefte einsatzkräfte";
     if (text.length > 0 && kraefteNeedle.includes(text)){
         result += `<div class="card" onclick="openCategory('kraefte');setTimeout(()=>showDetail(0),200)">🚒 Kräfte/Funkrufnamen</div>`;
+    }
+    const mitgliederNeedle = "mitglieder mitgliederverwaltung personal";
+    if (text.length > 0 && mitgliederNeedle.includes(text)){
+        result += `<div class="card" onclick="openCategory('personal');setTimeout(()=>showDetail(0),200)">👥 Mitgliederverwaltung</div>`;
     }
     const trainerNeedle = "grundlagen-trainer grundlagentrainer fwdv3 fwdv 3 sitzplatz rolle gruppenführer gruppenfuehrer maschinist angriffstrupp wassertrupp schlauchtrupp melder";
     if (text.length > 0 && trainerNeedle.includes(text)){
@@ -23289,7 +24192,7 @@ function renderGpsLeafletMap(state){
         gpsTargetMarker = null;
     }
     gpsMap = L.map(mapEl, { zoomControl: true, preferCanvas: true });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 20,
         attribution: "&copy; OpenStreetMap"
     }).addTo(gpsMap);

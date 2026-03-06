@@ -1,4 +1,4 @@
-const CACHE_NAME = "ff360-app-v22";
+const CACHE_NAME = "ff360-app-v23";
 
 const urlsToCache = [
   "index.html",
@@ -26,10 +26,62 @@ const urlsToCache = [
   "marker-shadow.png"
 ];
 
+const TIMMENDORFER_TILE_BOUNDS = {
+  north: 54.02,
+  south: 53.94,
+  west: 10.69,
+  east: 10.87
+};
+const TIMMENDORFER_TILE_ZOOMS = [12, 13, 14, 15];
+
+function lonToTileX(lon, zoom) {
+  return Math.floor(((lon + 180) / 360) * Math.pow(2, zoom));
+}
+
+function latToTileY(lat, zoom) {
+  const rad = (lat * Math.PI) / 180;
+  const n = Math.pow(2, zoom);
+  return Math.floor((1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * n);
+}
+
+function buildTimmendorferTileUrls() {
+  const urls = [];
+  TIMMENDORFER_TILE_ZOOMS.forEach((zoom) => {
+    const minX = lonToTileX(TIMMENDORFER_TILE_BOUNDS.west, zoom);
+    const maxX = lonToTileX(TIMMENDORFER_TILE_BOUNDS.east, zoom);
+    const minY = latToTileY(TIMMENDORFER_TILE_BOUNDS.north, zoom);
+    const maxY = latToTileY(TIMMENDORFER_TILE_BOUNDS.south, zoom);
+    for (let x = minX; x <= maxX; x += 1) {
+      for (let y = minY; y <= maxY; y += 1) {
+        urls.push(`https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`);
+      }
+    }
+  });
+  return urls;
+}
+
+async function precacheTimmendorferTiles(cache) {
+  const tileUrls = buildTimmendorferTileUrls();
+  await Promise.allSettled(tileUrls.map(async (url) => {
+    try {
+      const request = new Request(url, { mode: "no-cors" });
+      const response = await fetch(request);
+      if (response) {
+        await cache.put(request, response.clone());
+      }
+    } catch {
+      // Einzelne Tile-Fehler ignorieren; Rest soll trotzdem offline verfügbar sein.
+    }
+  }));
+}
+
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then(async (cache) => {
+        await cache.addAll(urlsToCache);
+        await precacheTimmendorferTiles(cache);
+      })
   );
 });
 
@@ -105,6 +157,10 @@ self.addEventListener("fetch", event => {
   }
 
   event.respondWith(
-    fetch(request).catch(() => caches.match(request))
+    fetch(request).catch(async () => {
+      const direct = await caches.match(request);
+      if (direct) return direct;
+      return caches.match(url.href);
+    })
   );
 });
