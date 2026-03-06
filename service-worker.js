@@ -1,4 +1,4 @@
-const CACHE_NAME = "ff360-app-v23";
+const CACHE_NAME = "ff360-app-v25";
 
 const urlsToCache = [
   "index.html",
@@ -19,6 +19,8 @@ const urlsToCache = [
   "hydranten_ratekau.json",
   "hydranten_timmendorfer_strand.js",
   "hydranten_timmendorfer_strand.json",
+  "fwdv3_roles_sh.json",
+  "munition.png",
   "leaflet.css",
   "leaflet.js",
   "marker-icon.png",
