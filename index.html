@@ -1142,6 +1142,32 @@ button:active {
     box-shadow: 0 12px 25px rgba(141, 17, 28, 0.35);
 }
 
+.training-quick-floating-btn {
+    position: fixed;
+    left: 16px;
+    bottom: calc(150px + env(safe-area-inset-bottom, 0px));
+    z-index: 1190;
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 1;
+    background: linear-gradient(135deg, #2f8fd7, #1f6ea9);
+    border-color: #1f6ea9;
+    color: #fff;
+    box-shadow: 0 12px 25px rgba(31, 110, 169, 0.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.training-quick-floating-btn.show {
+    display: flex;
+}
+
 .asu-quick-btn {
     position: fixed;
     left: 16px;
@@ -2741,6 +2767,12 @@ button:active {
     margin-bottom: 12px;
 }
 
+.social-form-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+}
+
 .social-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2930,6 +2962,335 @@ body.dark .member-qual-chip.active {
     padding: 10px 12px;
 }
 
+.legal-check-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.legal-check-grid > div {
+    min-width: 0;
+}
+
+.legal-factor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 10px;
+}
+
+.legal-factor-grid label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(18, 52, 79, 0.05);
+    font-size: 13px;
+}
+
+.legal-factor-grid input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.legal-result-block {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.legal-result-block:last-child {
+    margin-bottom: 0;
+}
+
+.legal-result-block h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+}
+
+.legal-result-list {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.legal-result-list li + li {
+    margin-top: 6px;
+}
+
+.legal-result-list li {
+    line-height: 1.35;
+}
+
+.legal-result-block--blue {
+    border-color: rgba(47, 143, 215, 0.42);
+    background: rgba(47, 143, 215, 0.12);
+}
+
+.legal-result-block--yellow {
+    border-color: rgba(204, 149, 16, 0.44);
+    background: rgba(250, 220, 127, 0.2);
+}
+
+.legal-result-block--red {
+    border-color: rgba(214, 55, 55, 0.4);
+    background: rgba(214, 55, 55, 0.13);
+}
+
+.legal-result-block--green {
+    border-color: rgba(19, 124, 66, 0.4);
+    background: rgba(19, 124, 66, 0.12);
+}
+
+.legal-result-warning {
+    border-color: rgba(214, 55, 55, 0.45);
+    background: rgba(214, 55, 55, 0.18);
+    padding: 10px;
+    border-radius: 12px;
+    margin: 10px 0;
+    color: #6b1010;
+}
+
+.legal-result-warning strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.legal-context-note {
+    border-radius: 12px;
+    border: 1px solid rgba(18, 52, 79, 0.22);
+    background: rgba(18, 52, 79, 0.05);
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.legal-context-note strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.legal-context-note-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.legal-evaluate-btn {
+    background: linear-gradient(135deg, #0b7a40, #0a5c31);
+    border-color: rgba(8, 76, 39, 0.6);
+    color: #fff;
+}
+
+.hvo-mode-toggle {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.hvo-mode-toggle button {
+    margin: 0;
+}
+
+.hvo-mode-btn-einsatz.active-yes {
+    background: linear-gradient(135deg, #bc1c1e, #8d111c);
+    border-color: #8d111c;
+    color: #fff;
+}
+
+.hvo-mode-btn-privat.active-yes {
+    background: linear-gradient(135deg, #1f5f92, #12344f);
+    border-color: #12344f;
+    color: #fff;
+}
+
+.hvo-mode-banner {
+    margin-bottom: 10px;
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid var(--border);
+}
+
+.hvo-mode-banner.einsatz {
+    border-color: rgba(188, 28, 30, 0.35);
+    background: rgba(188, 28, 30, 0.1);
+    color: #8d111c;
+}
+
+.hvo-mode-banner.privat {
+    border-color: rgba(31, 95, 146, 0.35);
+    background: rgba(31, 95, 146, 0.1);
+    color: #12344f;
+}
+
+.hvo-tab-grid,
+.hvo-quick-grid,
+.hvo-symptom-grid,
+.hvo-injury-grid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hvo-tab-grid button {
+    margin: 0;
+    padding: 10px;
+}
+
+.hvo-quick-grid button,
+.hvo-symptom-grid button,
+.hvo-injury-grid button {
+    margin: 0;
+    text-align: left;
+    min-height: 66px;
+}
+
+.hvo-critical {
+    border: 1px solid rgba(188, 28, 30, 0.45);
+    background: rgba(188, 28, 30, 0.14);
+    color: #7f0f11;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.hvo-warning {
+    border: 1px solid rgba(204, 149, 16, 0.44);
+    background: rgba(250, 220, 127, 0.2);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.hvo-stable {
+    border: 1px solid rgba(19, 124, 66, 0.4);
+    background: rgba(19, 124, 66, 0.12);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.hvo-assistant-step {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(18, 52, 79, 0.05);
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.hvo-yesno {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.hvo-yesno button {
+    margin: 0;
+    min-height: 54px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.hvo-yesno .hvo-yes {
+    background: linear-gradient(135deg, #0b7a40, #0a5c31);
+    border-color: #0a5c31;
+    color: #fff;
+}
+
+.hvo-yesno .hvo-no {
+    background: linear-gradient(135deg, #bc1c1e, #8d111c);
+    border-color: #8d111c;
+    color: #fff;
+}
+
+.hvo-cpr-main {
+    border: 1px solid rgba(188, 28, 30, 0.45);
+    background: rgba(188, 28, 30, 0.12);
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.hvo-cpr-main button {
+    width: 100%;
+    margin: 8px 0 0;
+    min-height: 62px;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.hvo-cpr-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.hvo-cpr-stat {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(18, 52, 79, 0.05);
+    padding: 8px;
+    text-align: center;
+}
+
+.hvo-cpr-stat strong {
+    display: block;
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.hvo-triage-list {
+    display: grid;
+    gap: 8px;
+}
+
+.hvo-triage-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(18, 52, 79, 0.04);
+    padding: 10px;
+}
+
+.hvo-triage-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: center;
+}
+
+.hvo-triage-status {
+    border-radius: 999px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.hvo-status-green { background: rgba(19, 124, 66, 0.16); color: #0b7a40; }
+.hvo-status-yellow { background: rgba(250, 220, 127, 0.32); color: #8a5f00; }
+.hvo-status-red { background: rgba(188, 28, 30, 0.14); color: #8d111c; }
+.hvo-status-black { background: rgba(8, 16, 24, 0.16); color: #1f2f3f; }
+
+.hvo-triage-status-row {
+    display: grid;
+    gap: 6px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 8px;
+}
+
+.hvo-triage-status-row button {
+    margin: 0;
+    padding: 8px 6px;
+    font-size: 12px;
+}
+
 .atem-overlay {
     position: fixed;
     inset: 0;
@@ -3085,6 +3446,52 @@ body.dark .member-qual-chip.active {
     background: rgba(19, 124, 66, 0.2);
     color: #0b7a40;
     box-shadow: none;
+}
+
+.drohne-flugbuch-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.drohne-flugbuch-grid .atem-col-full {
+    grid-column: 1 / -1;
+}
+
+.drohne-flugbuch-location-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: start;
+}
+
+.drohne-flugbuch-stepper {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.drohne-flugbuch-stepper button {
+    width: 42px;
+    margin: 0;
+    padding: 0;
+    font-weight: 700;
+}
+
+.drohne-flugbuch-stepper input {
+    width: 100%;
+    text-align: center;
+}
+
+.drohne-flugbuch-actions {
+    margin-top: 12px;
+}
+
+@media (max-width: 680px) {
+    .drohne-flugbuch-location-row {
+        grid-template-columns: 1fr;
+    }
 }
 
 .atem-row-actions button.active-no {
@@ -4002,23 +4409,6 @@ a {
     font-size: 14px;
 }
 
-.training-quick-off-wrap {
-    margin-top: 8px;
-}
-
-.training-quick-off-btn {
-    width: 100%;
-    margin: 0;
-    background: #2f8fd7;
-    border-color: #2f8fd7;
-    color: #fff;
-}
-
-.training-quick-off-btn:hover {
-    background: #277fbe;
-    border-color: #277fbe;
-}
-
 .settings-training-archive-list,
 .settings-incident-archive-list {
     margin-top: 8px;
@@ -4368,6 +4758,20 @@ iframe {
         min-width: 0 !important;
     }
 
+    .legal-check-grid,
+    .legal-factor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hvo-mode-toggle,
+    .hvo-tab-grid,
+    .hvo-quick-grid,
+    .hvo-symptom-grid,
+    .hvo-injury-grid,
+    .hvo-yesno {
+        grid-template-columns: 1fr;
+    }
+
     #socialDate,
     #socialTime {
         font-size: 13px;
@@ -4477,11 +4881,12 @@ iframe {
                 <button onclick="openLageOverlay()">📊 Einsatzlage</button>
                 <button onclick="openFunkOverlay()">📡 Funk</button>
                 <button onclick="openAtemOverlay()">🫁 Atemschutzüberwachung</button>
+                <button onclick="openHvoOverlay()">🩺 Medizinische Notfallhilfe</button>
+                <button onclick="openCategory('drohne')">🚁 Drohne</button>
                 <button onclick="openGefahrgutOverlay()">☣️ Gefahrgut</button>
                 <button onclick="openHydrantenOverlay()">💧 Hydrantenkarte</button>
                 <button onclick="openWeatherOverlay()">🌦️ EinsatzWetter</button>
             </div>
-            <div id="trainingQuickOffWrap" class="training-quick-off-wrap hidden"></div>
         </div>
         <div class="home-tool-group">
             <div class="home-subtitle">Lage &amp; Doku</div>
@@ -4490,6 +4895,7 @@ iframe {
                 <button onclick="openSocialOverlay()">📝 Social-Media Beitrag</button>
                 <button onclick="openPresseOverlay()">📰 Pressezentrale</button>
                 <button onclick="openGpsTool()">📍 Standort, Kompass &amp; QR</button>
+                <button onclick="openLegalCheck()">⚖️ Rechts-Check</button>
             </div>
         </div>
         <div class="home-tool-group">
@@ -4514,7 +4920,6 @@ iframe {
             <div class="card" onclick="openCategory('brand')">🔥 Brand</div>
             <div class="card" onclick="openCategory('vu')">🔧 Technische Hilfeleistung</div>
             <div class="card" onclick="openCategory('trainer');setTimeout(()=>showDetail(0),200)">📘 Grundlagen-Trainer</div>
-            <div class="card" onclick="openCategory('drohne')">🚁 Drohne</div>
         </div>
     </details>
     <div class="home-tool-group">
@@ -4704,7 +5109,7 @@ iframe {
         </div>
         <div class="social-body">
             <div class="social-actions social-top-actions">
-                <button onclick="startIncidentFromSocial()">🚨 Einsatz starten</button>
+                <button id="socialIncidentStartBtn" onclick="startIncidentFromSocial()">🚨 Einsatz starten</button>
             </div>
             <div class="social-form">
                 <div class="social-grid">
@@ -4762,7 +5167,7 @@ iframe {
 
             <div class="social-actions">
                 <button onclick="copySocialPost()">📋 Kopieren</button>
-                <button onclick="endIncidentFromSocial()">⏹ Einsatz beenden</button>
+                <button id="socialIncidentEndBtn" onclick="endIncidentFromSocial()">⏹ Einsatz beenden</button>
                 <button onclick="saveSocialToEinsatzLog()">Für Einsatzhistorie speichern</button>
                 <button onclick="resetSocialPost()">Zurücksetzen</button>
                 <button onclick="closeSocialOverlay()">Schließen</button>
@@ -4902,6 +5307,38 @@ iframe {
             <button class="social-close" onclick="closePresseOverlay()" aria-label="Pressezentrale schließen">✕</button>
         </div>
         <div class="social-body" id="presseBody"></div>
+    </div>
+</div>
+
+<div
+    id="legalCheckOverlay"
+    class="social-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="legalCheckTitle"
+    onclick="handleLegalCheckOverlayBackdrop(event)">
+    <div class="social-modal">
+        <div class="social-header">
+            <h2 id="legalCheckTitle">⚖️ Rechts-Check</h2>
+            <button class="social-close" onclick="closeLegalCheckOverlay()" aria-label="Rechts-Check schließen">✕</button>
+        </div>
+        <div class="social-body" id="legalCheckBody"></div>
+    </div>
+</div>
+
+<div
+    id="hvoOverlay"
+    class="social-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="hvoTitle"
+    onclick="handleHvoOverlayBackdrop(event)">
+    <div class="social-modal">
+        <div class="social-header">
+            <h2 id="hvoTitle">🩺 Medizinische Notfallhilfe</h2>
+            <button class="social-close" onclick="closeHvoOverlay()" aria-label="Medizinische Notfallhilfe schließen">✕</button>
+        </div>
+        <div class="social-body" id="hvoBody"></div>
     </div>
 </div>
 
@@ -5490,6 +5927,7 @@ iframe {
 
 <div class="container hidden" id="category"></div>
 <button id="asuQuickBtn" class="asu-quick-btn" onclick="openAtemOverlay()" aria-label="Atemschutzüberwachung öffnen">🫁 ASÜ <span id="asuQuickBadge" class="asu-quick-badge">0</span></button>
+<button id="trainingQuickFloatingBtn" class="training-quick-floating-btn" onclick="disableTrainingModeFromQuickButton()" aria-label="Übungsmodus beenden">🔵</button>
 <button id="dangerBtn" class="danger-btn" onclick="openDangerOverlay()" aria-label="Gefahrenübersicht öffnen">⚠️ Gefahren</button>
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" aria-label="Nach oben">↑</button>
 <div id="asuGlobalBanner" class="asu-global-banner" role="status" aria-live="assertive" onclick="openAtemOverlay()">
@@ -5634,6 +6072,7 @@ const SCOPED_STORAGE_BASE_KEYS = new Set([
     "funk_last_callsign",
     "funk_log",
     "nachforderungen",
+    "drohne_flugbuch_v1",
     "einsatz_archiv_v1",
     "einsatz_pakete_v1",
     "psu_contacts_v1",
@@ -5734,8 +6173,8 @@ function isTrainingMode(){
     return !!trainingModeActive;
 }
 
-const APP_VERSION = "1.6";
-const SERVICE_WORKER_SCRIPT_VERSION = "25";
+const APP_VERSION = "1.7";
+const SERVICE_WORKER_SCRIPT_VERSION = "26";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 const TRAINING_ARCHIVE_STORAGE_KEY = "ff360_training_archive_v1";
 let appStatusMetaCache = null;
@@ -6209,15 +6648,21 @@ function renderTrainingArchiveSettingsList(){
 }
 
 function renderTrainingQuickOffButton(){
-    const wrap = document.getElementById("trainingQuickOffWrap");
-    if (!wrap) return;
-    if (!isTrainingMode()){
-        wrap.classList.add("hidden");
-        wrap.innerHTML = "";
-        return;
+    const floatingBtn = document.getElementById("trainingQuickFloatingBtn");
+    if (floatingBtn){
+        floatingBtn.classList.toggle("show", isTrainingMode());
+        updateTrainingQuickFloatingButtonPosition();
     }
-    wrap.classList.remove("hidden");
-    wrap.innerHTML = `<button class="training-quick-off-btn" onclick="disableTrainingModeFromQuickButton()">🔵 Übungsmodus beenden</button>`;
+}
+
+function updateTrainingQuickFloatingButtonPosition(){
+    const trainingBtn = document.getElementById("trainingQuickFloatingBtn");
+    if (!trainingBtn) return;
+    const asuBtn = document.getElementById("asuQuickBtn");
+    const asuVisible = !!(asuBtn && asuBtn.classList.contains("show"));
+    trainingBtn.style.bottom = asuVisible
+        ? "calc(134px + env(safe-area-inset-bottom, 0px))"
+        : "calc(72px + env(safe-area-inset-bottom, 0px))";
 }
 
 function updateTrainingModeUi(){
@@ -6537,6 +6982,15 @@ function formatWindValue(valueKmh, unit){
     return `${Math.round(num)} km/h`;
 }
 
+function formatWindDirection(valueDeg){
+    const num = Number(valueDeg);
+    if (!Number.isFinite(num)) return "-";
+    const normalized = ((num % 360) + 360) % 360;
+    const dirs16 = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+    const idx = Math.round(normalized / 22.5) % 16;
+    return `${Math.round(normalized)}° ${dirs16[idx]}`;
+}
+
 function weatherLevel(value, warn, critical, lowerIsWorse){
     const num = Number(value);
     if (!Number.isFinite(num)) return "ok";
@@ -6792,7 +7246,7 @@ function renderWeatherDashboard(){
     <div class="atem-panel"><strong>Wetterhinweise</strong><div style="margin-top:8px;">${renderWeatherHintsBlock(hints)}</div></div>
 
     <div class="weather-grid">
-        <div class="weather-card"><h5>${weatherSeverityDot(windLevel)}Wind</h5><div class="weather-value">${c ? `${formatWindValue(c.windKmh, unit)} / ${Math.round(c.windDir)}°` : "-"}</div><div class="weather-sub">Mittelwind</div></div>
+        <div class="weather-card"><h5>${weatherSeverityDot(windLevel)}Wind</h5><div class="weather-value">${c ? `${formatWindValue(c.windKmh, unit)} / ${formatWindDirection(c.windDir)}` : "-"}</div><div class="weather-sub">Mittelwind</div></div>
         <div class="weather-card"><h5>${weatherSeverityDot(gustLevel)}Böen</h5><div class="weather-value">${c ? formatWindValue(c.gustKmh, unit) : "-"}</div><div class="weather-sub">Spitzen</div></div>
         <div class="weather-card"><h5>${weatherSeverityDot(c && c.precipitation > 0 ? "warn" : "ok")}Niederschlag</h5><div class="weather-value">${c ? `${c.precipitation.toFixed(1)} mm/h (${c.precipitationLabel})` : "-"}</div><div class="weather-sub weather-sparkline">${data ? data.trends.precipitationSparkline : "—"}</div></div>
         <div class="weather-card"><h5>${weatherSeverityDot(glatteLevel)}Temperatur</h5><div class="weather-value">${c ? `${Math.round(c.temperature)}°C` : "-"}</div><div class="weather-sub">Gefühlt: ${c ? `${Math.round(c.apparent)}°C` : "-"}</div></div>
@@ -7049,7 +7503,7 @@ function closeWeatherOverlay(){
     const overlay = document.getElementById("weatherOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isDroneWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isDroneWeatherOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastWeatherFocus && typeof lastWeatherFocus.focus === "function"){
         lastWeatherFocus.focus();
@@ -7081,7 +7535,7 @@ function closeDroneWeatherOverlay(){
     const overlay = document.getElementById("droneWeatherOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastDroneWeatherFocus && typeof lastDroneWeatherFocus.focus === "function"){
         lastDroneWeatherFocus.focus();
@@ -7127,6 +7581,1375 @@ document.addEventListener("keydown", (event)=>{
     }
     trapFocusInWeatherOverlay(event);
 });
+
+document.addEventListener("keydown", (event)=>{
+    if (!isLegalCheckOverlayOpen()) return;
+    if (event.key === "Escape"){
+        closeLegalCheckOverlay();
+        return;
+    }
+    trapFocusInLegalCheckOverlay(event);
+});
+
+document.addEventListener("keydown", (event)=>{
+    if (!isHvoOverlayOpen()) return;
+    if (event.key === "Escape"){
+        closeHvoOverlay();
+        return;
+    }
+    trapFocusInHvoOverlay(event);
+});
+
+function openLegalCheck(){
+    const overlay = document.getElementById("legalCheckOverlay");
+    if (!overlay) return;
+    lastLegalCheckFocus = document.activeElement;
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    renderLegalCheck();
+}
+
+function closeLegalCheckOverlay(){
+    const overlay = document.getElementById("legalCheckOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen() || isLegalCheckOverlayOpen() || isGpsOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    if (lastLegalCheckFocus && typeof lastLegalCheckFocus.focus === "function"){
+        lastLegalCheckFocus.focus();
+    }
+}
+
+function handleLegalCheckOverlayBackdrop(event){
+    if (event.target && event.target.id === "legalCheckOverlay") closeLegalCheckOverlay();
+}
+
+function isLegalCheckOverlayOpen(){
+    const overlay = document.getElementById("legalCheckOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function trapFocusInLegalCheckOverlay(event){
+    if (event.key !== "Tab" || !isLegalCheckOverlayOpen()) return;
+    const overlay = document.getElementById("legalCheckOverlay");
+    if (!overlay) return;
+    const focusable = overlay.querySelectorAll("button, [href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])");
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first){
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && document.activeElement === last){
+        event.preventDefault();
+        first.focus();
+    }
+}
+
+function openHvoOverlay(){
+    const overlay = document.getElementById("hvoOverlay");
+    if (!overlay) return;
+    lastHvoFocus = document.activeElement;
+    overlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+    renderHvoModule();
+}
+
+function closeHvoOverlay(){
+    const overlay = document.getElementById("hvoOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("show");
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen() || isLegalCheckOverlayOpen() || isGpsOverlayOpen() || isHvoOverlayOpen();
+    document.body.style.overflow = keepLocked ? "hidden" : "";
+    hvoStopRuntime();
+    if (lastHvoFocus && typeof lastHvoFocus.focus === "function"){
+        lastHvoFocus.focus();
+    }
+}
+
+function handleHvoOverlayBackdrop(event){
+    if (event.target && event.target.id === "hvoOverlay") closeHvoOverlay();
+}
+
+function isHvoOverlayOpen(){
+    const overlay = document.getElementById("hvoOverlay");
+    return !!overlay && overlay.classList.contains("show");
+}
+
+function trapFocusInHvoOverlay(event){
+    if (event.key !== "Tab" || !isHvoOverlayOpen()) return;
+    const overlay = document.getElementById("hvoOverlay");
+    if (!overlay) return;
+    const focusable = overlay.querySelectorAll("button, [href], input, select, textarea, summary, [tabindex]:not([tabindex='-1'])");
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first){
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && document.activeElement === last){
+        event.preventDefault();
+        first.focus();
+    }
+}
+
+function collectLegalCheckInputs(){
+    const checked = (id)=>{
+        const el = document.getElementById(id);
+        return !!(el && el.checked);
+    };
+    const value = (id, fallback = "")=>{
+        const el = document.getElementById(id);
+        return el && typeof el.value === "string" ? el.value : fallback;
+    };
+    const selectedDanger = value("legalDangerType", "unklar");
+    const dangerType = ["unklar", "abstrakte", "konkrete", "anschein", "putativ", "verzug", "allgemeine"].includes(selectedDanger) ? selectedDanger : "unklar";
+    const includeIncidentContext = checked("lcUseActiveIncident");
+    const contextRaw = {
+        active: value("legalIncidentActive") === "1",
+        number: value("legalIncidentNumber", ""),
+        name: value("legalIncidentName", ""),
+        location: value("legalIncidentLocation", "")
+    };
+    return {
+        role: value("legalRole", LEGAL_GUIDE_DATA.roles[0] || "Feuerwehr / Gefahrenabwehr"),
+        questionType: value("legalQuestionType", LEGAL_GUIDE_DATA.questionTypes[0] || "Darf ich eingreifen?"),
+        dangerType,
+        context: {
+            useInAssessment: includeIncidentContext,
+            incident: contextRaw
+        },
+        factors: {
+            acuteLifeThreatening: checked("lcAcuteLife"),
+            noTime: checked("lcNoTime"),
+            homeAffected: checked("lcHomeInvolved"),
+            bodilyHarm: checked("lcBodyHarm"),
+            personalFreedom: checked("lcFreedomConcern"),
+            citizenRefuses: checked("lcCitizenRefuses"),
+            milderAlternativePossible: checked("lcMilderAlternative"),
+            doctorNotAvailable: checked("lcDoctorNotAvailable"),
+            ownRisk: checked("lcOwnRisk")
+        },
+        description: value("legalDescription", "").trim()
+    };
+}
+
+function getActiveLegalContext(){
+    const fallback = {
+        active: false,
+        source: "",
+        number: "",
+        name: "",
+        location: ""
+    };
+    try {
+        if (typeof getActiveEinsatzPaket === "function"){
+            const activePaket = getActiveEinsatzPaket();
+            if (activePaket && activePaket.status === "active"){
+                const snap = activePaket.snapshot && typeof activePaket.snapshot === "object" ? activePaket.snapshot : null;
+                const lage = snap && snap.lage && typeof snap.lage === "object" ? snap.lage : null;
+                const social = snap && snap.social && typeof snap.social === "object" ? snap.social : null;
+                const name = String((social && social.einsatzart) || (lage && lage.alarmstichwort) || "Einsatz");
+                const location = String((social && social.location) || (lage && lage.einsatzort) || "");
+                return {
+                    ...fallback,
+                    active: true,
+                    source: "Einsatzpaket",
+                    number: String(activePaket.einsatznummer || ""),
+                    name,
+                    location,
+                    startedAt: Date.parse(activePaket.startedAt || "")
+                };
+            }
+        }
+        if (typeof asuGetActiveIncident === "function"){
+            const active = asuGetActiveIncident();
+            if (active && typeof active === "object"){
+                const startedAt = Number(active.startedAt);
+                const endedAt = Number(active.endedAt);
+                if (Number.isFinite(startedAt) && !Number.isFinite(endedAt)){
+                    return {
+                        ...fallback,
+                        active: true,
+                        source: "Atemschutz Einsatz",
+                        number: String(active.number || ""),
+                        name: String(active.name || ""),
+                        location: String(active.location || ""),
+                        startedAt
+                    };
+                }
+            }
+        }
+    } catch {
+        // best effort only
+    }
+    return fallback;
+}
+
+function buildLegalContextLabel(context){
+    if (!context || !context.active){
+        return "Kein aktiver Einsatz erkannt.";
+    }
+    const startedTs = Number(context.startedAt);
+    const started = Number.isFinite(startedTs) ? `, gestartet ${new Date(startedTs).toLocaleString("de-DE")}` : "";
+    const name = context.name ? context.name : "Einsatz";
+    const number = context.number ? `#${context.number}` : "ohne Nummer";
+    const location = context.location ? `, Einsatzort ${context.location}` : "";
+    const source = context.source ? ` (${context.source})` : "";
+    return `${name} ${number}${location}${started}${source}`;
+}
+
+function persistLegalCheckDraft(){
+    try {
+        const scenario = collectLegalCheckInputs();
+        appStorageSetItem(LEGAL_CHECK_STORAGE_KEY, JSON.stringify(scenario));
+    } catch {
+        // best effort only
+    }
+}
+
+function resetLegalCheckDraft(){
+    appStorageRemoveItem(LEGAL_CHECK_STORAGE_KEY);
+    renderLegalCheckOverlay();
+}
+
+function applyLegalQuickPreset(type){
+    const setChecked = (id, on)=>{
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.checked = !!on;
+    };
+    if (type === "wohnung"){
+        setChecked("lcHomeInvolved", true);
+        setChecked("lcNoTime", true);
+        setChecked("lcMilderAlternative", false);
+        const qEl = document.getElementById("legalQuestionType");
+        if (qEl) qEl.value = "Ist ein Betreten einer Wohnung denkbar?";
+        const dEl = document.getElementById("legalDangerType");
+        if (dEl) dEl.value = "verzug";
+    } else if (type === "rettung"){
+        setChecked("lcAcuteLife", true);
+        setChecked("lcBodyHarm", true);
+        setChecked("lcDoctorNotAvailable", true);
+        setChecked("lcOwnRisk", false);
+        const qEl = document.getElementById("legalQuestionType");
+        if (qEl) qEl.value = "Ist ein Handeln über § 34 StGB denkbar?";
+        const dEl = document.getElementById("legalDangerType");
+        if (dEl) dEl.value = "konkrete";
+    } else if (type === "zwang"){
+        setChecked("lcCitizenRefuses", true);
+        setChecked("lcNoTime", true);
+        setChecked("lcMilderAlternative", false);
+        const qEl = document.getElementById("legalQuestionType");
+        if (qEl) qEl.value = "Ist unmittelbarer Zwang denkbar?";
+        const dEl = document.getElementById("legalDangerType");
+        if (dEl) dEl.value = "konkrete";
+    }
+    persistLegalCheckDraft();
+}
+
+function applyLegalContextToDescription(){
+    const descriptionEl = document.getElementById("legalDescription");
+    if (!descriptionEl) return;
+    const scenario = collectLegalCheckInputs();
+    const incident = scenario.context && scenario.context.incident ? scenario.context.incident : null;
+    if (!incident || !incident.active){
+        if (typeof showSocialHint === "function"){
+            showSocialHint("Kein aktiver Einsatzkontext gefunden.", true);
+        } else if (typeof alert === "function"){
+            alert("Kein aktiver Einsatzkontext gefunden.");
+        }
+        return;
+    }
+    const parts = [];
+    if (incident.name) parts.push(`Lage: ${incident.name}`);
+    if (incident.number) parts.push(`Einsatznummer: ${incident.number}`);
+    if (incident.location) parts.push(`Ort: ${incident.location}`);
+    descriptionEl.value = parts.join(" | ");
+    persistLegalCheckDraft();
+}
+
+function legalResultToneClass(type){
+    if (type === "warn") return "yellow";
+    if (type === "danger") return "red";
+    if (type === "ok") return "green";
+    return "blue";
+}
+
+function legalResultBlock({ title, type, lines }){
+    const list = Array.isArray(lines) ? lines.filter(Boolean) : [];
+    if (!list.length) return "";
+    return `<div class="legal-result-block legal-result-block--${legalResultToneClass(type)}">
+        <h3>${escapeHtml(title)}</h3>
+        <ul class="legal-result-list">${list.map((line)=>`<li>${escapeHtml(String(line))}</li>`).join("")}</ul>
+    </div>`;
+}
+
+function evaluateLegalScenario(input){
+    const scenario = input || {};
+    const factors = scenario.factors || {};
+    const scenarioContext = scenario.context || {};
+    const hasActiveIncident = !!(scenarioContext.useInAssessment && scenarioContext.incident && scenarioContext.incident.active);
+    const danger = LEGAL_GUIDE_DATA.dangerLevels[scenario.dangerType] || LEGAL_GUIDE_DATA.dangerLevels.unklar;
+    const rights = new Set();
+    if (factors.bodilyHarm || factors.acuteLifeThreatening) rights.add("Art. 2 GG (Leben, Gesundheit, Freiheit der Person)");
+    if (factors.homeAffected) rights.add("Art. 13 GG (Wohnung ist unverletzlich)");
+    if (factors.acuteLifeThreatening || factors.citizenRefuses || factors.ownRisk || factors.doctorNotAvailable || scenario.questionType === "Ist ein Betreten einer Wohnung denkbar?"){
+        rights.add("Art. 19 GG (Eingriffe nur auf Basis eines Gesetzes, Zitiergebot)");
+    }
+
+    let riskScore = 1;
+    if (factors.acuteLifeThreatening) riskScore += 3;
+    if (factors.bodilyHarm) riskScore += 1;
+    if (factors.homeAffected) riskScore += 1;
+    if (factors.citizenRefuses) riskScore += 2;
+    if (factors.noTime) riskScore += 1;
+    if (factors.milderAlternativePossible) riskScore -= 1;
+    if (factors.doctorNotAvailable) riskScore += 1;
+    if (scenario.dangerType === "verzug") riskScore += 1;
+    if (scenario.dangerType === "putativ") riskScore += 1;
+    if (scenario.dangerType === "anschein") riskScore += 1;
+    if (scenario.dangerType === "konkrete") riskScore += 2;
+
+    let shortAssessment = "";
+    if (riskScore <= 2){
+        shortAssessment = "Nach den Eingaben ist kein klares Eingriffsniveau erkennbar. In der Regel ist zunächst Lageklärung, Rückfrage bei Führung und Dokumentation nötig, bevor eine belastbare Maßnahmeplanung möglich ist.";
+    } else if (riskScore <= 4){
+        shortAssessment = "Es liegen mögliche Eingriffsgründe vor; die Maßnahme kann nur unter überprüfbarer Rechtsgrundlage und mit Verhältnismäßigkeitsprüfung erfolgen.";
+    } else if (hasActiveIncident && factors.noTime){
+        shortAssessment = "Im aktiven Einsatz mit möglicher Eilbedürftigkeit: Eingriff nur bei gesicherter Rechtsgrundlage, Führungskontext und sauberer Dokumentation.";
+    } else if (factors.milderAlternativePossible){
+        shortAssessment = "Die Lage spricht für Handlungsbedarf, aber ein milderes Mittel ist als Option gesetzt. Eine härtere Maßnahme wäre ohne vorherige Prüfung erhöhten Risikos ausgesetzt.";
+    } else {
+        shortAssessment = "Es liegt eher eine akute Lage vor, in der ein Eingriff prinzipiell eher vertretbar sein kann – aber nur nach gesetzlicher Grundlage, dokumentierter Eilbedürftigkeit und Führungslinie.";
+    }
+
+    const principleChecks = [];
+    const interventionBasis = scenario.questionType !== "Welche Rechte des Bürgers sind betroffen?" || factors.bodilyHarm || factors.acuteLifeThreatening || factors.homeAffected || factors.citizenRefuses;
+    principleChecks.push({
+        label: "Vorrang des Gesetzes",
+        type: interventionBasis ? "warn" : "blue",
+        value: interventionBasis
+            ? "Eine Maßnahmenwirkung hat nur dann Bestand, wenn eine einschlägige Rechtsgrundlage erkennbar ist."
+            : "Derzeit kein klarer Eingriffskontext erkennbar."
+    });
+    principleChecks.push({
+        label: "Vorbehalt des Gesetzes",
+        type: interventionBasis ? "warn" : "blue",
+        value: "Ein Eingriff bedarf einer gesetzlichen Ermächtigungsgrundlage; pauschale Annahmen ohne klare Grundlage sind zu vermeiden."
+    });
+    if (interventionBasis){
+        principleChecks.push({
+            label: "Verwaltungsakt / Allgemeinverfügung",
+            type: "blue",
+            value: "Bei behördlichen Maßnahmen ist regelmäßig ein rechtlicher Akt nach Maßgabe von § 35 VwVfG (Verwaltungsakt) bzw. ggf. Allgemeinverfügung relevant."
+        });
+    }
+    const goodFit = !factors.milderAlternativePossible || scenario.dangerType === "verzug" || factors.acuteLifeThreatening;
+    principleChecks.push({
+        label: "Geeignetheit",
+        type: goodFit ? "green" : "yellow",
+        value: "Die Maßnahme muss geeignet sein, die Gefahrensituation tatsächlich zu steuern; reine Maßnahmen ohne Wirkung sind nicht geeignet."
+    });
+    principleChecks.push({
+        label: "mildestes Mittel",
+        type: factors.milderAlternativePossible ? "yellow" : "green",
+        value: factors.milderAlternativePossible
+            ? "Ein milderes Mittel ist als prüfbar gesetzt; stärkere Mittel erhöhen die Eingriffsintensität."
+            : "Bisher sind keine klaren milderen Alternativen dokumentiert."
+    });
+    principleChecks.push({
+        label: "Übermaßverbot",
+        type: (riskScore >= 6 || factors.homeAffected) ? "danger" : "blue",
+        value: "Das Risiko der Maßnahme darf den abzuwehrenden Nachteil nicht unverhältnismäßig übersteigen."
+    });
+    principleChecks.push({
+        label: "Gleichbehandlung",
+        type: "blue",
+        value: "Gleichgelagerte Fälle sollten konsistent geführt und begründet dokumentiert werden."
+    });
+
+    const options = [];
+    options.push("gesetzliche Grundlage prüfen und bei Unsicherheit Führung einbinden");
+    options.push("milderes Mittel vorgehen lassen, wenn es den Zweck gleichwertig erreicht");
+    options.push("Gefahrenanzeichen und Zeitpunkt/Nachweise im Log festhalten");
+    if (factors.homeAffected) options.push("bei Wohnungsthema besonders auf Verhältnismäßigkeit, Verfahrensart und Dokumentation achten");
+    if (scenario.dangerType === "verzug" || factors.noTime) options.push("bei Eilbedürftigkeit die Gründe für schnelles Handeln sauber dokumentieren");
+    if (factors.citizenRefuses) options.push("bei Verweigerung nur im klaren Vollstreckungskontext und mit Führungsfreigabe eskalieren");
+    if (hasActiveIncident) options.push("Einsatzbeteiligte kurz im Lageverlauf mit Führungsfreigabe und Auslösegrund vermerken.");
+    options.push("Zwang nur als letztes Mittel; Rückholbarkeit und Entwirkung prüfen");
+
+    const specialBlocks = [];
+    if (factors.acuteLifeThreatening || factors.doctorNotAvailable){
+        specialBlocks.push("§ 34 StGB kann bei gegenwärtiger Gefahr relevant werden, wenn eine tatbestandsmäßige Maßnahme ohne Erlaubnis erforderlich sein könnte, um höhere Rechtsgüter zu schützen.");
+        specialBlocks.push("Notkompetenz: Nicht-Ärzte können in akuter Lebensgefahr erforderliche, beherrschte Maßnahmen durchführen, wenn kein Arzt rechtzeitig verfügbar ist.");
+        specialBlocks.push("Ausübung muss nötig, verhältnismäßig und fachlich beherrschbar bleiben.");
+    }
+    if (factors.ownRisk){
+        specialBlocks.push("Hilfeleistungspflicht gilt nur, wenn sie zumutbar ist; erhebliche Eigengefährdung kann den Rahmen der Pflicht begrenzen.");
+    }
+
+    const warningRows = [];
+    if (scenario.dangerType === "putativ") warningRows.push(LEGAL_GUIDE_DATA.warningPutativ);
+    if (scenario.dangerType === "anschein") warningRows.push(LEGAL_GUIDE_DATA.warningAnschein);
+    if (scenario.dangerType === "verzug") warningRows.push(LEGAL_GUIDE_DATA.warningUrgent);
+    if (hasActiveIncident) warningRows.push("Einsatzbezogene Entscheidungen nur im Abstimmungsrahmen der Führung treffen; Zeitdruck ersetzt keine Rechtsgrundlage.");
+    if (factors.citizenRefuses && factors.noTime) warningRows.push("Bürgerverweigerung plus Dringlichkeit erhöht das Konfliktrisiko; Vollstreckung nur mit Führungsentscheidung.");
+    if (factors.citizenRefuses && interventionBasis) warningRows.push("Wenn Zwang in Betracht kommt: nur in behördlichem Vollstreckungskontext und nach klarer Dokumentation der Rechtsgrundlage als letztes Mittel.");
+    if (factors.milderAlternativePossible && !factors.acuteLifeThreatening) warningRows.push("Wenn ein milderes Mittel möglich ist, ist die harte Maßnahme in der Regel problematisch.");
+
+    const htmlBlocks = [];
+    const incidentLabel = scenarioContext.incident && scenarioContext.incident.active
+        ? buildLegalContextLabel(scenarioContext.incident)
+        : "";
+    htmlBlocks.push(`<div class="social-hint">${LEGAL_GUIDE_DATA.legalNotice}</div>`);
+    if (hasActiveIncident && incidentLabel){
+        htmlBlocks.push(`<div class="legal-result-block legal-result-block--blue"><h3>Einsatzkontext</h3><ul class=\"legal-result-list\"><li>${escapeHtml(incidentLabel)}</li></ul></div>`);
+    } else {
+        htmlBlocks.push(`<div class="legal-result-block legal-result-block--yellow"><h3>Einsatzkontext</h3><p>Kein aktiver Einsatz verknüpft. Vor dem Einsatzfall kann der Check trotzdem als Leitfaden genutzt werden.</p></div>`);
+    }
+    if (scenario.description){
+        htmlBlocks.push(`<div class="legal-result-block legal-result-block--blue"><h3>Kontext</h3><p>${escapeHtml(scenario.description)}</p></div>`);
+    }
+    htmlBlocks.push(`<div class="legal-result-block legal-result-block--blue"><h3>A. Kurzeinschätzung</h3><p>${escapeHtml(shortAssessment)}</p></div>`);
+    if (rights.size){
+        htmlBlocks.push(`<div class="legal-result-block legal-result-block--blue"><h3>B. Betroffene Rechte / Schutzbereiche</h3><ul class=\"legal-result-list\">${Array.from(rights).map((right)=>`<li>${escapeHtml(right)}</li>`).join("")}</ul></div>`);
+    }
+    htmlBlocks.push(`<div class="legal-result-block legal-result-block--blue"><h3>C. Darf der Staat / die Behörde eingreifen?</h3><ul class=\"legal-result-list\">${principleChecks.map((entry)=>`<li><strong>${escapeHtml(entry.label)}:</strong> ${escapeHtml(entry.value)}</li>`).join("")}</ul></div>`);
+    htmlBlocks.push(`<div class="legal-result-block legal-result-block--yellow"><h3>D. Gefahreneinordnung</h3><p><strong>${escapeHtml(danger.title)}:</strong> ${escapeHtml(danger.description)}</p>${warningRows.length ? `<div class=\"legal-result-warning\"><strong>Warnung</strong>${warningRows.map((w)=>`<div>${escapeHtml(w)}</div>`).join("")}</div>` : ""}</div>`);
+    htmlBlocks.push(legalResultBlock({ title: "E. Mögliche Handlungsoptionen", type: "green", lines: options }));
+    if (hasActiveIncident){
+        htmlBlocks.push(legalResultBlock({
+            title: "F. Einsatznahe Dokumentation",
+            type: "blue",
+            lines: [
+                "Maßnahme, Uhrzeit und Entscheidung kurz im Lage-Log notieren.",
+                "Führungsentscheidung bzw. Rückkopplung im Einsatzzeitfenster festhalten."
+            ]
+        }));
+    }
+    if (specialBlocks.length){
+        htmlBlocks.push(`<div class=\"legal-result-block legal-result-block--blue\"><h3>G. Sonderblock Rettungsdienst / Notfall</h3><ul class=\"legal-result-list\">${specialBlocks.map((line)=>`<li>${escapeHtml(line)}</li>`).join("")}</ul></div>`);
+    }
+    htmlBlocks.push(`<div class=\"legal-result-warning\"><strong>Keine Rechtsentscheidung</strong> ${escapeHtml(LEGAL_GUIDE_DATA.legalNotice)}</div>`);
+    return htmlBlocks.join("");
+}
+
+function renderLegalCheckOverlay(){
+    const root = document.getElementById("legalCheckBody");
+    if (!root) return;
+    const incidentContext = getActiveLegalContext();
+    const contextActive = !!incidentContext.active;
+    const roleOptions = LEGAL_GUIDE_DATA.roles.map((role)=>`<option>${escapeHtml(role)}</option>`).join("");
+    const questionOptions = LEGAL_GUIDE_DATA.questionTypes.map((q)=>`<option>${escapeHtml(q)}</option>`).join("");
+    const dangerOptions = [
+        ["unklar", "Unklar"],
+        ["abstrakte", "Abstrakte Gefahr"],
+        ["konkrete", "Konkrete Gefahr"],
+        ["anschein", "Anscheinsgefahr"],
+        ["putativ", "Putativgefahr"],
+        ["verzug", "Gefahr im Verzug"]
+    ]
+        .map(([value, label])=>`<option value=\"${escapeHtml(value)}\">${escapeHtml(label)}</option>`)
+        .join("");
+    const resultHtml = `<p class="social-hint">${LEGAL_GUIDE_DATA.legalNotice}</p>`;
+    root.innerHTML = `
+        <div class="legal-context-note">
+            <strong>Einsatzkontext</strong>
+            <div class="legal-context-note-grid">
+                <div>${contextActive ? `Aktiver Einsatz: ${escapeHtml(buildLegalContextLabel(incidentContext))}` : "Kein aktiver Einsatz im Einsatzmodul gefunden."}</div>
+                <label><input id="lcUseActiveIncident" type="checkbox" ${contextActive ? "checked" : ""} ${contextActive ? "" : "disabled"}> Aktiven Einsatz in die Einschätzung einbeziehen</label>
+            </div>
+        </div>
+        <input id="legalIncidentActive" type="hidden" value="${contextActive ? "1" : "0"}">
+        <input id="legalIncidentName" type="hidden" value="${escapeHtml(incidentContext.name || "")}">
+        <input id="legalIncidentNumber" type="hidden" value="${escapeHtml(incidentContext.number || "")}">
+        <input id="legalIncidentLocation" type="hidden" value="${escapeHtml(incidentContext.location || "")}">
+        <div class="legal-check-grid">
+            <div>
+                <label for="legalRole">Rollen-/Lagenbezug</label>
+                <select id="legalRole">${roleOptions}</select>
+            </div>
+            <div>
+                <label for="legalQuestionType">Fragetyp</label>
+                <select id="legalQuestionType">${questionOptions}</select>
+            </div>
+            <div>
+                <label for="legalDangerType">Gefahrenlage</label>
+                <select id="legalDangerType">${dangerOptions}</select>
+            </div>
+            <div>
+                <label for="legalDescription">Lage kurz beschreiben</label>
+                <textarea id="legalDescription" placeholder="Kurzlage, Anlass, beobachtbare Tatsachen..."></textarea>
+            </div>
+        </div>
+        <div class="social-form">
+            <details>
+                <summary><strong>Preset-Beispiele</strong></summary>
+                <p class="social-hint" style="margin-top:8px;">
+                    Wähle ein Beispiel, um typische Faktoren schnell zu setzen. Danach Lagetext und Bewertung bei Bedarf anpassen.
+                </p>
+                <ul class="legal-result-list" style="margin-bottom:8px;">
+                    <li><strong>Wohnung / Gefahr im Verzug:</strong> Starke Rauchentwicklung aus einer verschlossenen Wohnung, Bewohner reagieren nicht, laute Hilferufe aus dem Inneren.</li>
+                    <li><strong>Rettung akut / § 34 StGB:</strong> Reanimationspflichtige Person, Notarzt noch mehrere Minuten entfernt, sofortige lebensrettende Maßnahmen durch qualifiziertes Personal erforderlich.</li>
+                    <li><strong>Verweigerung / möglicher Zwang:</strong> Person blockiert trotz klarer Anordnung den Rettungsweg in einer konkret gefährdeten Lage; mildere Mittel wurden versucht und reichen nicht aus.</li>
+                </ul>
+                <div class="social-actions">
+                    <button onclick="applyLegalQuickPreset('wohnung')">Wohnung / Verzug setzen</button>
+                    <button onclick="applyLegalQuickPreset('rettung')">Rettung akut setzen</button>
+                    <button onclick="applyLegalQuickPreset('zwang')">Verweigerung / Zwang setzen</button>
+                </div>
+            </details>
+        </div>
+        <div class="social-form">
+            <div class="social-form-title">Lagefaktoren</div>
+            <p class="social-hint" style="margin:6px 0 10px;">
+                Praxischeck: erst akute Gefahr und Zeitdruck bewerten, dann Eingriffsintensität und mögliche mildere Alternative prüfen.
+            </p>
+            <div class="legal-factor-grid">
+                <label><input id="lcAcuteLife" type="checkbox"> Akute Lebensgefahr</label>
+                <label><input id="lcNoTime" type="checkbox"> Sofortentscheidung nötig (Gefahr im Verzug)</label>
+                <label><input id="lcDoctorNotAvailable" type="checkbox"> Arzt/Notarzt nicht rechtzeitig verfügbar</label>
+                <label><input id="lcHomeInvolved" type="checkbox"> Wohnung betroffen (Betreten/Eingriff in Art. 13 GG)</label>
+                <label><input id="lcBodyHarm" type="checkbox"> Eingriff in körperliche Unversehrtheit möglich</label>
+                <label><input id="lcFreedomConcern" type="checkbox"> Freiheitsbeschränkung möglich (z. B. Festhalten)</label>
+                <label><input id="lcCitizenRefuses" type="checkbox"> Betroffener verweigert Mitwirkung/Anordnung</label>
+                <label><input id="lcMilderAlternative" type="checkbox"> Milderes Mittel ist realistisch verfügbar</label>
+                <label><input id="lcOwnRisk" type="checkbox"> Erhebliche Eigengefährdung für Einsatzkräfte</label>
+            </div>
+        </div>
+        <div class="social-actions">
+            <button onclick="applyLegalContextToDescription()">Einsatzlage übernehmen</button>
+            <button onclick="resetLegalCheckDraft()">Zurücksetzen</button>
+            <button class="legal-evaluate-btn" onclick="renderLegalCheckResult()">Rechtliche Einordnung anzeigen</button>
+        </div>
+        <div id="legalCheckResult">${resultHtml}</div>
+    `;
+    const savedRole = appStorageGetItem(LEGAL_CHECK_STORAGE_KEY);
+    try {
+        const parsed = savedRole ? JSON.parse(savedRole) : null;
+        const roleEl = document.getElementById("legalRole");
+        const qEl = document.getElementById("legalQuestionType");
+        const dEl = document.getElementById("legalDangerType");
+        const descEl = document.getElementById("legalDescription");
+        const useCtxEl = document.getElementById("lcUseActiveIncident");
+        const incidentActiveEl = document.getElementById("legalIncidentActive");
+        const incidentNameEl = document.getElementById("legalIncidentName");
+        const incidentNumberEl = document.getElementById("legalIncidentNumber");
+        const incidentLocationEl = document.getElementById("legalIncidentLocation");
+        const saved = typeof parsed === "object" && parsed !== null ? parsed : null;
+        if (saved && roleEl) roleEl.value = (typeof saved.role === "string" && saved.role) ? saved.role : roleEl.value;
+        if (saved && qEl) qEl.value = (typeof saved.questionType === "string" && saved.questionType) ? saved.questionType : qEl.value;
+        if (saved && dEl) dEl.value = (typeof saved.dangerType === "string" && saved.dangerType) ? saved.dangerType : dEl.value;
+        if (saved && descEl) descEl.value = typeof saved.description === "string" ? saved.description : "";
+        if (saved && useCtxEl && !useCtxEl.disabled && saved.context) useCtxEl.checked = !!saved.context.useInAssessment;
+        if (saved && incidentActiveEl && saved.context && saved.context.incident) incidentActiveEl.value = saved.context.incident.active ? "1" : "0";
+        if (saved && incidentNameEl && saved.context && saved.context.incident && typeof saved.context.incident.name === "string") incidentNameEl.value = saved.context.incident.name;
+        if (saved && incidentNumberEl && saved.context && saved.context.incident && typeof saved.context.incident.number === "string") incidentNumberEl.value = saved.context.incident.number;
+        if (saved && incidentLocationEl && saved.context && saved.context.incident && typeof saved.context.incident.location === "string") incidentLocationEl.value = saved.context.incident.location;
+        const factors = saved && saved.factors && typeof saved.factors === "object" ? saved.factors : null;
+        if (factors){
+            const map = {
+                lcAcuteLife: "acuteLifeThreatening",
+                lcNoTime: "noTime",
+                lcHomeInvolved: "homeAffected",
+                lcBodyHarm: "bodilyHarm",
+                lcFreedomConcern: "personalFreedom",
+                lcCitizenRefuses: "citizenRefuses",
+                lcMilderAlternative: "milderAlternativePossible",
+                lcDoctorNotAvailable: "doctorNotAvailable",
+                lcOwnRisk: "ownRisk"
+            };
+            Object.keys(map).forEach((id)=>{
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.checked = !!factors[map[id]];
+            });
+        }
+    } catch {
+        // best effort only
+    }
+    const inputs = root.querySelectorAll("input, select, textarea");
+    inputs.forEach((el)=>{
+        const eventName = (el.tagName === "SELECT" || (el.type && el.type.toLowerCase() === "checkbox")) ? "change" : "input";
+        el.addEventListener(eventName, persistLegalCheckDraft);
+    });
+}
+
+function renderLegalCheck(){
+    renderLegalCheckOverlay();
+}
+
+function renderLegalCheckResult(){
+    const root = document.getElementById("legalCheckBody");
+    if (!root) return;
+    const scenario = collectLegalCheckInputs();
+    const summary = evaluateLegalScenario(scenario);
+    appStorageSetItem(LEGAL_CHECK_STORAGE_KEY, JSON.stringify(scenario));
+    const resultEl = document.getElementById("legalCheckResult");
+    if (resultEl) resultEl.innerHTML = summary;
+    if (root.querySelector && root.querySelector("#legalCheckResult")) return;
+    root.innerHTML = summary;
+}
+
+const HVO_VIEW_ORDER = ["start", "assistant", "cpr", "injury", "symptom", "notruf", "triage"];
+const HVO_ASSISTANT_PROMPTS = {
+    reagiert: "Reagiert die Person auf Ansprache und vorsichtiges Rütteln?",
+    atmetNormal: "Atmet die Person normal?",
+    starkeBlutung: "Liegt eine starke Blutung vor?",
+    brustschmerz: "Besteht starker Brustschmerz / Druck auf der Brust?",
+    laehmung: "Gibt es Lähmung oder Sprachstörung (FAST auffällig)?",
+    atemnot: "Hat die Person deutliche Atemnot?",
+    krampf: "Hat die Person aktuell einen Krampfanfall?",
+    allergie: "Zeichen einer schweren Allergie (Schwellung, Atemnot, Kreislauf)?",
+    unterzucker: "Verdacht auf Unterzuckerung (Zittern, Schweiß, Verwirrtheit)?"
+};
+const HVO_TRIAGE_META = {
+    green: { label: "GRÜN - leicht verletzt", cls: "hvo-status-green" },
+    yellow: { label: "GELB - mittelschwer", cls: "hvo-status-yellow" },
+    red: { label: "ROT - kritisch", cls: "hvo-status-red" },
+    black: { label: "SCHWARZ - keine Lebenszeichen", cls: "hvo-status-black" }
+};
+const HVO_INJURY_GUIDE = {
+    blutung: {
+        title: "Starke Blutung",
+        level: "red",
+        actions: ["Drücke sofort direkt auf die Wunde.", "Lege, wenn möglich, einen Druckverband an.", "Rufe 112 und halte den Druck dauerhaft.", "Schütze die Person vor Auskühlung."]
+    },
+    offene: {
+        title: "Offene Verletzung",
+        level: "yellow",
+        actions: ["Wunde möglichst keimarm abdecken.", "Blutung mit Druck kontrollieren.", "Keine Fremdkörper entfernen.", "112 bei tiefer/ausgedehnter Verletzung oder starker Blutung."]
+    },
+    fraktur: {
+        title: "Frakturverdacht",
+        level: "yellow",
+        actions: ["Betroffene Region ruhigstellen.", "Nicht unnötig bewegen.", "Durchblutung, Motorik und Gefühl prüfen.", "112 bei Fehlstellung, starken Schmerzen oder Mehrfachverletzung."]
+    },
+    verbrennung: {
+        title: "Verbrennung",
+        level: "yellow",
+        actions: ["Kleine Verbrennung kurz mit handwarmem Wasser kühlen.", "Klebende Kleidung nicht abziehen.", "Steril oder sauber abdecken.", "112 bei größeren Flächen, Gesicht, Atemwegen oder Kindern."]
+    },
+    schock: {
+        title: "Schockzeichen",
+        level: "red",
+        actions: ["112 sofort absetzen.", "Person flach lagern, warm halten, beruhigen.", "Atmung und Bewusstsein eng überwachen.", "Bei Bewusstlosigkeit mit normaler Atmung stabile Seitenlage."]
+    },
+    bewusstlos: {
+        title: "Bewusstlos verletzte Person",
+        level: "red",
+        actions: ["Reaktion prüfen, Hilfe rufen.", "Atmung prüfen.", "Bei normaler Atmung stabile Seitenlage.", "Bei fehlender normaler Atmung sofort Reanimation starten."]
+    }
+};
+const HVO_SYMPTOM_GUIDE = {
+    brustschmerz: { title: "Verdacht Herzinfarkt", level: "red", actions: ["112 sofort rufen.", "Person mit erhöhtem Oberkörper lagern.", "Beruhigen und nicht alleine lassen.", "Atmung beobachten, bei Ausfall sofort reanimieren."] },
+    atemnot: { title: "Akute Atemnot", level: "red", actions: ["112 sofort rufen.", "Aufrechte Position erleichtern.", "Enge Kleidung lösen, beruhigend sprechen.", "Bei Bewusstlosigkeit Atmung prüfen und handeln."] },
+    laehmung: { title: "Verdacht Schlaganfall", level: "red", actions: ["FAST prüfen, Uhrzeit merken.", "112 sofort rufen.", "Nicht essen oder trinken lassen.", "Bewusstsein/Atmung überwachen."] },
+    sprachstoerung: { title: "Verdacht Schlaganfall", level: "red", actions: ["Zeitpunkt merken.", "112 sofort rufen.", "Person beruhigen und beobachten.", "Bei Verschlechterung sofort Rückmeldung an Leitstelle."] },
+    schwindel: { title: "Kreislaufproblem", level: "yellow", actions: ["Sicher hinsetzen/lagern.", "Engmaschig beobachten.", "Bei Brustschmerz, Lähmung oder Bewusstseinsstörung sofort 112."] },
+    krampf: { title: "Epileptischer Anfall", level: "yellow", actions: ["Umgebung sichern, Kopf schützen.", "Nichts in den Mund stecken.", "Nach dem Anfall Atmung prüfen.", "112 bei erstem Anfall, langer Dauer oder Verletzung."] },
+    ausschlag: { title: "Verdacht Anaphylaxie", level: "red", actions: ["112 sofort rufen.", "Bei vorhandenem Notfallset Hilfe bei Anwendung.", "Atemweg/Atmung beobachten.", "Bei Atemstillstand sofort reanimieren."] },
+    unterzucker: { title: "Verdacht Hypoglykämie", level: "yellow", actions: ["Bei wacher Person schnell Zucker geben.", "Bei Bewusstseinsstörung nichts oral geben.", "112 bei fehlender Besserung oder Bewusstseinsstörung."] },
+    bewusstseinsstoerung: { title: "Bewusstseinsstörung", level: "red", actions: ["Ansprechen und Atmung prüfen.", "112 sofort rufen.", "Bei normaler Atmung stabile Seitenlage.", "Bei fehlender normaler Atmung reanimieren."] }
+};
+let hvoCprTicker = null;
+let hvoMetronomeTimer = null;
+let hvoAudioCtx = null;
+let hvoLastHint = "";
+let hvoLastHintType = "info";
+
+function getDefaultHvoState(){
+    return {
+        mode: "einsatz",
+        view: "start",
+        navOpen: true,
+        assistant: {
+            active: false,
+            step: "reagiert",
+            answers: {},
+            result: null
+        },
+        cpr: {
+            running: false,
+            startedAt: 0,
+            elapsedSec: 0,
+            cycles: 0,
+            metronome: true,
+            bpm: 110,
+            voicePrepared: false,
+            vibrationPrepared: false
+        },
+        injury: { type: "blutung", pickerOpen: true },
+        symptom: { selected: "", pickerOpen: true },
+        notruf: { where: "", what: "", count: "1", injuries: "", callback: "", coords: "" },
+        triage: { nameDraft: "", patients: [] }
+    };
+}
+
+function getHvoState(){
+    try {
+        const raw = appStorageGetItem(HVO_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        const base = getDefaultHvoState();
+        const state = { ...base, ...(parsed || {}) };
+        state.assistant = { ...base.assistant, ...((state && state.assistant) || {}) };
+        state.assistant.answers = (state.assistant.answers && typeof state.assistant.answers === "object") ? state.assistant.answers : {};
+        state.cpr = { ...base.cpr, ...((state && state.cpr) || {}) };
+        state.injury = { ...base.injury, ...((state && state.injury) || {}) };
+        state.symptom = { ...base.symptom, ...((state && state.symptom) || {}) };
+        state.notruf = { ...base.notruf, ...((state && state.notruf) || {}) };
+        state.triage = { ...base.triage, ...((state && state.triage) || {}) };
+        if (!Array.isArray(state.triage.patients)) state.triage.patients = [];
+        if (!HVO_VIEW_ORDER.includes(state.view)) state.view = "start";
+        if (state.mode !== "privat" && state.mode !== "einsatz") state.mode = "einsatz";
+        return state;
+    } catch {
+        return getDefaultHvoState();
+    }
+}
+
+function saveHvoState(nextState){
+    appStorageSetItem(HVO_STORAGE_KEY, JSON.stringify(nextState || getDefaultHvoState()));
+}
+
+function patchHvoState(mutator){
+    const state = getHvoState();
+    mutator(state);
+    saveHvoState(state);
+    return state;
+}
+
+function hvoShowHint(message, type = "info"){
+    hvoLastHint = String(message || "");
+    hvoLastHintType = type || "info";
+    renderHvoModule();
+}
+
+function hvoSetMode(mode){
+    patchHvoState((state)=>{
+        state.mode = mode === "privat" ? "privat" : "einsatz";
+        if (state.mode === "privat" && state.view === "triage"){
+            state.view = "start";
+        }
+    });
+    renderHvoModule();
+}
+
+function hvoSetView(view){
+    patchHvoState((state)=>{
+        const next = HVO_VIEW_ORDER.includes(view) ? view : "start";
+        if (state.mode === "privat" && next === "triage"){
+            state.view = "start";
+            state.navOpen = false;
+            return;
+        }
+        state.view = next;
+        state.navOpen = false;
+    });
+    renderHvoModule();
+}
+
+function hvoSetNavOpen(open){
+    patchHvoState((state)=>{
+        state.navOpen = !!open;
+    });
+}
+
+function hvoResetAssistant(){
+    patchHvoState((state)=>{
+        state.assistant = { active: true, step: "reagiert", answers: {}, result: null };
+        state.view = "assistant";
+    });
+    renderHvoModule();
+}
+
+function hvoQuickStart(caseKey){
+    if (caseKey === "reanimation"){
+        patchHvoState((state)=>{ state.view = "cpr"; });
+        renderHvoModule();
+        return;
+    }
+    if (caseKey === "blutung"){
+        patchHvoState((state)=>{ state.injury.type = "blutung"; state.view = "injury"; });
+        renderHvoModule();
+        return;
+    }
+    if (caseKey === "verkehrsunfall"){
+        patchHvoState((state)=>{ state.view = state.mode === "einsatz" ? "triage" : "assistant"; });
+        renderHvoModule();
+        return;
+    }
+    if (caseKey === "schnell"){
+        hvoResetAssistant();
+        return;
+    }
+    const symptomMap = {
+        herzinfarkt: "brustschmerz",
+        schlaganfall: "laehmung",
+        atemnot: "atemnot",
+        krampf: "krampf",
+        allergie: "ausschlag",
+        vergiftung: "bewusstseinsstoerung"
+    };
+    if (caseKey === "bewusstlos"){
+        patchHvoState((state)=>{
+            state.assistant = { active: true, step: "atmetNormal", answers: { reagiert: false }, result: null };
+            state.view = "assistant";
+        });
+        renderHvoModule();
+        return;
+    }
+    const symptom = symptomMap[caseKey];
+    if (symptom){
+        patchHvoState((state)=>{ state.symptom.selected = symptom; state.view = "symptom"; });
+        renderHvoModule();
+        return;
+    }
+    hvoResetAssistant();
+}
+
+function hvoEvaluateAssistantResult(answers){
+    if (answers.reagiert === false && answers.atmetNormal === false){
+        return { level: "critical", title: "Keine normale Atmung", actions: ["112 rufen oder rufen lassen.", "Sofort mit Herzdruckmassage beginnen.", "Fest und schnell in der Mitte des Brustkorbs drücken.", "AED einsetzen, sobald verfügbar."], jump: "cpr" };
+    }
+    if (answers.reagiert === false && answers.atmetNormal === true){
+        return { level: "warning", title: "Bewusstlos mit Atmung", actions: ["Stabile Seitenlage herstellen.", "Atmung fortlaufend kontrollieren.", "112 informieren oder Rückmeldung aktualisieren.", "Wärmeerhalt sicherstellen."] };
+    }
+    if (answers.starkeBlutung === true){
+        return { level: "critical", title: "Starke Blutung", actions: ["Sofort direkten Druck auf die Wunde.", "Druckverband anlegen.", "112 rufen.", "Druck halten und auf Schockzeichen achten."] };
+    }
+    if (answers.brustschmerz === true){
+        return { level: "critical", title: "Verdacht Herzinfarkt", actions: ["Sofort 112 rufen.", "Person mit erhöhtem Oberkörper lagern.", "Beruhigen und eng überwachen.", "Bei Atemstillstand sofort reanimieren."] };
+    }
+    if (answers.laehmung === true){
+        return { level: "critical", title: "Verdacht Schlaganfall", actions: ["FAST positiv: sofort 112.", "Zeitpunkt des Symptombeginns merken.", "Nichts essen oder trinken lassen.", "Bewusstsein und Atmung überwachen."] };
+    }
+    if (answers.atemnot === true){
+        return { level: "critical", title: "Akute Atemnot", actions: ["112 sofort rufen.", "Aufrechte Position unterstützen.", "Beruhigen und enge Kleidung lösen.", "Atmung eng kontrollieren."] };
+    }
+    if (answers.allergie === true){
+        return { level: "critical", title: "Schwere Allergische Reaktion", actions: ["112 sofort rufen.", "Notfallmedikament unterstützen, wenn vorhanden.", "Atemweg/Atmung überwachen.", "Bei Atemstillstand reanimieren."] };
+    }
+    if (answers.krampf === true){
+        return { level: "warning", title: "Krampfanfall", actions: ["Umgebung sichern und Kopf schützen.", "Nichts in den Mund stecken.", "Dauer beobachten.", "112 bei langem oder erstem Anfall."] };
+    }
+    if (answers.unterzucker === true){
+        return { level: "warning", title: "Unterzuckerungsverdacht", actions: ["Bei wacher Person Zucker geben.", "Bei Bewusstseinsstörung nichts oral geben.", "Bei fehlender Besserung 112 rufen.", "Bewusstsein und Atmung kontrollieren."] };
+    }
+    return null;
+}
+
+function hvoResolveAssistantStep(state){
+    const step = state.assistant.step;
+    const answers = state.assistant.answers || {};
+    if (step === "reagiert"){
+        return answers.reagiert === false ? "atmetNormal" : "starkeBlutung";
+    }
+    if (step === "atmetNormal"){
+        return null;
+    }
+    const order = ["starkeBlutung", "brustschmerz", "laehmung", "atemnot", "krampf", "allergie", "unterzucker"];
+    const idx = order.indexOf(step);
+    if (idx < 0) return null;
+    return order[idx + 1] || null;
+}
+
+function hvoAnswerAssistant(value){
+    patchHvoState((state)=>{
+        if (!state.assistant || !state.assistant.active){
+            state.assistant = { active: true, step: "reagiert", answers: {}, result: null };
+        }
+        const step = state.assistant.step || "reagiert";
+        state.assistant.answers[step] = !!value;
+        const result = hvoEvaluateAssistantResult(state.assistant.answers);
+        if (result){
+            state.assistant.result = result;
+            state.assistant.active = false;
+            if (result.jump === "cpr"){
+                state.view = "cpr";
+            }
+            return;
+        }
+        const nextStep = hvoResolveAssistantStep(state);
+        if (!nextStep){
+            state.assistant.result = {
+                level: "stable",
+                title: "Keine klare Akutwarnung erkannt",
+                actions: ["Person weiter beobachten.", "Bei Verschlechterung sofort 112.", "ABCDE erneut prüfen.", "Lage kurz dokumentieren."]
+            };
+            state.assistant.active = false;
+            return;
+        }
+        state.assistant.step = nextStep;
+    });
+    renderHvoModule();
+}
+
+function hvoSetInjuryType(type){
+    patchHvoState((state)=>{
+        state.injury.type = HVO_INJURY_GUIDE[type] ? type : "blutung";
+        state.injury.pickerOpen = false;
+    });
+    renderHvoModule();
+}
+
+function hvoSetInjuryPickerOpen(open){
+    patchHvoState((state)=>{
+        state.injury.pickerOpen = !!open;
+    });
+}
+
+function hvoSetSymptom(symptom){
+    patchHvoState((state)=>{
+        state.symptom.selected = HVO_SYMPTOM_GUIDE[symptom] ? symptom : "";
+        state.symptom.pickerOpen = false;
+    });
+    renderHvoModule();
+}
+
+function hvoSetSymptomPickerOpen(open){
+    patchHvoState((state)=>{
+        state.symptom.pickerOpen = !!open;
+    });
+}
+
+function hvoUpdateNotrufField(field, value){
+    patchHvoState((state)=>{
+        if (!state.notruf || typeof state.notruf !== "object") state.notruf = getDefaultHvoState().notruf;
+        state.notruf[field] = String(value || "");
+    });
+}
+
+function hvoCaptureLocation(){
+    if (!navigator.geolocation){
+        hvoShowHint("Standortzugriff nicht verfügbar.", "error");
+        return;
+    }
+    navigator.geolocation.getCurrentPosition((pos)=>{
+        const lat = Number(pos.coords.latitude);
+        const lon = Number(pos.coords.longitude);
+        patchHvoState((state)=>{
+            state.notruf.coords = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+            if (!String(state.notruf.where || "").trim()){
+                state.notruf.where = `Koordinaten ${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+            }
+        });
+        hvoShowHint("Standort übernommen.", "ok");
+    }, ()=>{
+        hvoShowHint("Standort konnte nicht gelesen werden.", "error");
+    }, { enableHighAccuracy: true, timeout: 6000, maximumAge: 10000 });
+}
+
+function hvoBuildNotrufText(state){
+    const s = state || getHvoState();
+    const n = s.notruf || {};
+    return [
+        "112 Notruf - Übergabe",
+        `Wo: ${String(n.where || "-").trim() || "-"}`,
+        `Was: ${String(n.what || "-").trim() || "-"}`,
+        `Wie viele: ${String(n.count || "-").trim() || "-"}`,
+        `Welche Verletzungen/Symptome: ${String(n.injuries || "-").trim() || "-"}`,
+        `Rückruf: ${String(n.callback || "-").trim() || "-"}`,
+        `Koordinaten: ${String(n.coords || "-").trim() || "-"}`,
+        "Warten auf Rückfragen."
+    ].join("\n");
+}
+
+function hvoCopyNotrufText(){
+    const text = hvoBuildNotrufText(getHvoState());
+    copyTextToClipboard(text).then((ok)=>{
+        hvoShowHint(ok ? "Notruf-Text kopiert." : "Kopieren fehlgeschlagen.", ok ? "ok" : "error");
+    });
+}
+
+function hvoAddPatient(){
+    patchHvoState((state)=>{
+        const name = String((state.triage && state.triage.nameDraft) || "").trim();
+        state.triage.patients.unshift({
+            id: `p_${Date.now()}_${Math.floor(Math.random() * 999)}`,
+            name: name || `Patient ${state.triage.patients.length + 1}`,
+            status: "yellow",
+            note: "",
+            ts: Date.now()
+        });
+        state.triage.nameDraft = "";
+    });
+    renderHvoModule();
+}
+
+function hvoUpdatePatientDraft(value){
+    patchHvoState((state)=>{ state.triage.nameDraft = String(value || ""); });
+}
+
+function hvoSetPatientStatus(id, status){
+    patchHvoState((state)=>{
+        const item = (state.triage.patients || []).find((p)=>p.id === id);
+        if (!item) return;
+        item.status = HVO_TRIAGE_META[status] ? status : item.status;
+    });
+    renderHvoModule();
+}
+
+function hvoSetPatientNote(id, value){
+    patchHvoState((state)=>{
+        const item = (state.triage.patients || []).find((p)=>p.id === id);
+        if (!item) return;
+        item.note = String(value || "");
+    });
+}
+
+function hvoRemovePatient(id){
+    patchHvoState((state)=>{
+        state.triage.patients = (state.triage.patients || []).filter((p)=>p.id !== id);
+    });
+    renderHvoModule();
+}
+
+function hvoGetCprElapsedSec(state){
+    const cpr = (state && state.cpr) || getDefaultHvoState().cpr;
+    if (!cpr.running) return Number(cpr.elapsedSec) || 0;
+    const started = Number(cpr.startedAt) || Date.now();
+    return Math.max(0, Math.floor((Date.now() - started) / 1000));
+}
+
+function hvoFormatDuration(sec){
+    const total = Math.max(0, Number(sec) || 0);
+    const mm = String(Math.floor(total / 60)).padStart(2, "0");
+    const ss = String(total % 60).padStart(2, "0");
+    return `${mm}:${ss}`;
+}
+
+function hvoUpdateCprDom(){
+    if (!isHvoOverlayOpen()) return;
+    const state = getHvoState();
+    const elapsedEl = document.getElementById("hvoCprElapsed");
+    const cycleEl = document.getElementById("hvoCprCycles");
+    const ratioEl = document.getElementById("hvoCprRatio");
+    if (elapsedEl) elapsedEl.textContent = hvoFormatDuration(hvoGetCprElapsedSec(state));
+    if (cycleEl) cycleEl.textContent = String(Number(state.cpr.cycles) || 0);
+    if (ratioEl) ratioEl.textContent = "30:2";
+}
+
+function hvoPlayMetronomeTick(){
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        if (!hvoAudioCtx) hvoAudioCtx = new AudioCtx();
+        if (hvoAudioCtx.state === "suspended") hvoAudioCtx.resume();
+        const osc = hvoAudioCtx.createOscillator();
+        const gain = hvoAudioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.value = 900;
+        gain.gain.value = 0.02;
+        osc.connect(gain);
+        gain.connect(hvoAudioCtx.destination);
+        const now = hvoAudioCtx.currentTime;
+        osc.start(now);
+        osc.stop(now + 0.06);
+    } catch {
+        // ignore audio issues
+    }
+}
+
+function hvoStartMetronome(){
+    hvoStopMetronome();
+    const state = getHvoState();
+    const bpm = Math.max(100, Math.min(120, Number(state.cpr.bpm) || 110));
+    const interval = Math.round(60000 / bpm);
+    hvoPlayMetronomeTick();
+    hvoMetronomeTimer = setInterval(hvoPlayMetronomeTick, interval);
+}
+
+function hvoStopMetronome(){
+    clearInterval(hvoMetronomeTimer);
+    hvoMetronomeTimer = null;
+}
+
+function hvoStartRuntime(){
+    clearInterval(hvoCprTicker);
+    hvoCprTicker = setInterval(hvoUpdateCprDom, 1000);
+}
+
+function hvoStopRuntime(){
+    clearInterval(hvoCprTicker);
+    hvoCprTicker = null;
+    hvoStopMetronome();
+}
+
+function hvoStartCpr(){
+    patchHvoState((state)=>{
+        const elapsed = Math.max(0, Number(state.cpr.elapsedSec) || 0);
+        state.cpr.running = true;
+        state.cpr.startedAt = Date.now() - elapsed * 1000;
+    });
+    const state = getHvoState();
+    if (state.cpr.metronome) hvoStartMetronome();
+    hvoStartRuntime();
+    hvoUpdateCprDom();
+    renderHvoModule();
+}
+
+function hvoStopCpr(){
+    patchHvoState((state)=>{
+        state.cpr.elapsedSec = hvoGetCprElapsedSec(state);
+        state.cpr.running = false;
+    });
+    hvoStopRuntime();
+    renderHvoModule();
+}
+
+function hvoResetCpr(){
+    patchHvoState((state)=>{
+        state.cpr.running = false;
+        state.cpr.startedAt = 0;
+        state.cpr.elapsedSec = 0;
+        state.cpr.cycles = 0;
+    });
+    hvoStopRuntime();
+    renderHvoModule();
+}
+
+function hvoToggleCprFlag(flag){
+    patchHvoState((state)=>{
+        state.cpr[flag] = !state.cpr[flag];
+    });
+    const state = getHvoState();
+    if (flag === "metronome"){
+        if (state.cpr.running && state.cpr.metronome) hvoStartMetronome();
+        if (!state.cpr.metronome) hvoStopMetronome();
+    }
+    renderHvoModule();
+}
+
+function hvoAddCprCycle(){
+    patchHvoState((state)=>{
+        state.cpr.cycles = Math.max(0, Number(state.cpr.cycles) || 0) + 1;
+    });
+    hvoUpdateCprDom();
+    renderHvoModule();
+}
+
+function hvoRenderAssistant(state){
+    const assistant = state.assistant || {};
+    const result = assistant.result;
+    if (result){
+        const cls = result.level === "critical" ? "hvo-critical" : result.level === "warning" ? "hvo-warning" : "hvo-stable";
+        const actions = (result.actions || []).map((line)=>`<li>${escapeHtml(line)}</li>`).join("");
+        return `<div class="${cls}"><strong>${escapeHtml(result.title || "Ergebnis")}</strong></div>
+            <div class="hvo-assistant-step"><ul class="legal-result-list">${actions}</ul></div>
+            <div class="social-actions">
+                <button onclick="hvoResetAssistant()">Assistent neu starten</button>
+                ${result.jump === "cpr" ? `<button onclick="hvoSetView('cpr')">Zum Reanimationsmodus</button>` : ""}
+            </div>`;
+    }
+    if (!assistant.active) return `<div class="lage-empty">Assistent bereit.</div>`;
+    const step = assistant.step || "reagiert";
+    const prompt = HVO_ASSISTANT_PROMPTS[step] || "Frage";
+    return `<div class="hvo-assistant-step">
+        <strong>${escapeHtml(prompt)}</strong>
+        <div class="psu-meta" style="margin-top:6px;">Antwort direkt auswählen. Nach wenigen Schritten folgt eine konkrete Maßnahme.</div>
+    </div>
+    <div class="hvo-yesno">
+        <button class="hvo-yes" onclick="hvoAnswerAssistant(true)">Ja</button>
+        <button class="hvo-no" onclick="hvoAnswerAssistant(false)">Nein</button>
+    </div>`;
+}
+
+function hvoRenderCpr(state){
+    const cpr = state.cpr || getDefaultHvoState().cpr;
+    return `<div class="hvo-cpr-main">
+        <strong>Keine normale Atmung: jetzt sofort handeln.</strong>
+        <div style="margin-top:6px;">Drücke fest und schnell in der Mitte des Brustkorbs.</div>
+        <button onclick="${cpr.running ? "hvoStopCpr()" : "hvoStartCpr()"}">${cpr.running ? "⏸ Reanimation pausieren" : "▶ Reanimation starten"}</button>
+    </div>
+    <div class="hvo-cpr-stats">
+        <div class="hvo-cpr-stat">Zeit<strong id="hvoCprElapsed">${escapeHtml(hvoFormatDuration(hvoGetCprElapsedSec(state)))}</strong></div>
+        <div class="hvo-cpr-stat">Zyklen<strong id="hvoCprCycles">${escapeHtml(String(Number(cpr.cycles) || 0))}</strong></div>
+        <div class="hvo-cpr-stat">Rhythmus<strong id="hvoCprRatio">30:2</strong></div>
+    </div>
+    <div class="social-actions">
+        <button onclick="hvoAddCprCycle()">Zyklus +1 (30:2)</button>
+        <button onclick="hvoToggleCprFlag('metronome')">${cpr.metronome ? "Metronom AUS" : "Metronom EIN"} (100-120)</button>
+        <button onclick="hvoToggleCprFlag('voicePrepared')">Sprachführung: ${cpr.voicePrepared ? "bereit" : "vorbereiten"}</button>
+        <button onclick="hvoToggleCprFlag('vibrationPrepared')">Vibration: ${cpr.vibrationPrepared ? "bereit" : "vorbereiten"}</button>
+        <button onclick="hvoResetCpr()">CPR zurücksetzen</button>
+    </div>
+    <div class="hvo-warning"><strong>AED-Hinweis:</strong> AED sofort holen lassen und Anweisungen des Geräts exakt befolgen.</div>`;
+}
+
+function hvoRenderInjury(state){
+    const type = (state.injury && state.injury.type) || "blutung";
+    const pickerOpen = state.injury && state.injury.pickerOpen !== false;
+    const guide = HVO_INJURY_GUIDE[type] || HVO_INJURY_GUIDE.blutung;
+    const cls = guide.level === "red" ? "hvo-critical" : "hvo-warning";
+    const actions = (guide.actions || []).map((line)=>`<li>${escapeHtml(line)}</li>`).join("");
+    return `<details class="social-form" ${pickerOpen ? "open" : ""} ontoggle="hvoSetInjuryPickerOpen(this.open)">
+        <summary><strong>Verletzung auswählen</strong></summary>
+        <div class="hvo-injury-grid" style="margin-top:8px;">
+            <button onclick="hvoSetInjuryType('blutung')">Starke Blutung</button>
+            <button onclick="hvoSetInjuryType('offene')">Offene Verletzung</button>
+            <button onclick="hvoSetInjuryType('fraktur')">Frakturverdacht</button>
+            <button onclick="hvoSetInjuryType('verbrennung')">Verbrennung</button>
+            <button onclick="hvoSetInjuryType('schock')">Schockzeichen</button>
+            <button onclick="hvoSetInjuryType('bewusstlos')">Bewusstlose verletzte Person</button>
+        </div>
+    </details>
+    <div class="${cls}" style="margin-top:10px;"><strong>${escapeHtml(guide.title)}</strong></div>
+    <div class="hvo-assistant-step"><ul class="legal-result-list">${actions}</ul></div>`;
+}
+
+function hvoRenderSymptom(state){
+    const selected = (state.symptom && state.symptom.selected) || "";
+    const pickerOpen = state.symptom && state.symptom.pickerOpen !== false;
+    const guide = HVO_SYMPTOM_GUIDE[selected] || null;
+    const actions = guide ? (guide.actions || []).map((line)=>`<li>${escapeHtml(line)}</li>`).join("") : "";
+    const cls = !guide ? "hvo-warning" : guide.level === "red" ? "hvo-critical" : "hvo-warning";
+    return `<details class="social-form" ${pickerOpen ? "open" : ""} ontoggle="hvoSetSymptomPickerOpen(this.open)">
+        <summary><strong>Symptom auswählen</strong></summary>
+        <div class="hvo-symptom-grid" style="margin-top:8px;">
+            <button onclick="hvoSetSymptom('brustschmerz')">Brustschmerz</button>
+            <button onclick="hvoSetSymptom('atemnot')">Atemnot</button>
+            <button onclick="hvoSetSymptom('laehmung')">Lähmung</button>
+            <button onclick="hvoSetSymptom('sprachstoerung')">Sprachstörung</button>
+            <button onclick="hvoSetSymptom('schwindel')">Schwindel</button>
+            <button onclick="hvoSetSymptom('krampf')">Krampf</button>
+            <button onclick="hvoSetSymptom('ausschlag')">Hautausschlag / Schwellung</button>
+            <button onclick="hvoSetSymptom('unterzucker')">Unterzuckerungsverdacht</button>
+            <button onclick="hvoSetSymptom('bewusstseinsstoerung')">Bewusstseinsstörung</button>
+        </div>
+    </details>
+    <div class="${cls}" style="margin-top:10px;"><strong>${escapeHtml(guide ? guide.title : "Symptom auswählen")}</strong></div>
+    ${guide ? `<div class="hvo-assistant-step"><ul class="legal-result-list">${actions}</ul></div>` : `<div class="psu-meta">Tippe ein Symptom an. Du erhältst sofort eine klare Handlungsfolge.</div>`}`;
+}
+
+function hvoRenderNotruf(state){
+    const n = state.notruf || {};
+    const quickText = hvoBuildNotrufText(state);
+    return `<div class="social-form">
+        <div class="social-grid">
+            <div class="social-col-full"><label>Wo ist es passiert?</label><input type="text" value="${escapeHtml(n.where || "")}" oninput="hvoUpdateNotrufField('where', this.value)"></div>
+            <div class="social-col-full"><label>Was ist passiert?</label><input type="text" value="${escapeHtml(n.what || "")}" oninput="hvoUpdateNotrufField('what', this.value)"></div>
+            <div><label>Wie viele Verletzte?</label><input type="text" value="${escapeHtml(n.count || "")}" oninput="hvoUpdateNotrufField('count', this.value)"></div>
+            <div><label>Rückrufnummer</label><input type="text" value="${escapeHtml(n.callback || "")}" oninput="hvoUpdateNotrufField('callback', this.value)"></div>
+            <div class="social-col-full"><label>Welche Verletzungen / Symptome?</label><textarea oninput="hvoUpdateNotrufField('injuries', this.value)">${escapeHtml(n.injuries || "")}</textarea></div>
+            <div class="social-col-full"><label>Koordinaten / Standort</label><input type="text" value="${escapeHtml(n.coords || "")}" oninput="hvoUpdateNotrufField('coords', this.value)"></div>
+        </div>
+    </div>
+    <div class="social-actions">
+        <button onclick="window.location.href='tel:112'">📞 112 anrufen</button>
+        <button onclick="hvoCaptureLocation()">📍 Standort übernehmen</button>
+        <button onclick="hvoCopyNotrufText()">📋 Notruftext kopieren</button>
+    </div>
+    <div class="hvo-assistant-step" style="margin-top:8px;white-space:pre-wrap;">${escapeHtml(quickText)}</div>`;
+}
+
+function hvoRenderTriage(state){
+    if (state.mode !== "einsatz"){
+        return `<div class="hvo-warning">Mini-Triage ist nur im Einsatzmodus aktiv.</div>`;
+    }
+    const patients = Array.isArray(state.triage.patients) ? state.triage.patients : [];
+    const counts = { green: 0, yellow: 0, red: 0, black: 0 };
+    patients.forEach((p)=>{ if (counts[p.status] !== undefined) counts[p.status] += 1; });
+    return `<div class="social-form">
+        <div class="social-grid">
+            <div><label>Patient hinzufügen</label><input type="text" value="${escapeHtml(state.triage.nameDraft || "")}" placeholder="Name / Nummer" oninput="hvoUpdatePatientDraft(this.value)"></div>
+            <div style="align-self:end;"><button style="margin:0;" onclick="hvoAddPatient()">Patient hinzufügen</button></div>
+        </div>
+    </div>
+    <div class="social-actions" style="margin-bottom:8px;">
+        <button>🟢 ${counts.green}</button>
+        <button>🟡 ${counts.yellow}</button>
+        <button>🔴 ${counts.red}</button>
+        <button>⚫ ${counts.black}</button>
+    </div>
+    <div class="hvo-triage-list">
+        ${patients.length ? patients.map((item)=>{
+            const meta = HVO_TRIAGE_META[item.status] || HVO_TRIAGE_META.yellow;
+            return `<div class="hvo-triage-item">
+                <div class="hvo-triage-head"><strong>${escapeHtml(item.name || "Patient")}</strong><span class="hvo-triage-status ${meta.cls}">${escapeHtml(meta.label)}</span></div>
+                <div class="hvo-triage-status-row">
+                    <button onclick="hvoSetPatientStatus('${item.id}','green')">GRÜN</button>
+                    <button onclick="hvoSetPatientStatus('${item.id}','yellow')">GELB</button>
+                    <button onclick="hvoSetPatientStatus('${item.id}','red')">ROT</button>
+                    <button onclick="hvoSetPatientStatus('${item.id}','black')">SCHWARZ</button>
+                </div>
+                <textarea style="margin-top:8px;" placeholder="Kurze Notiz" oninput="hvoSetPatientNote('${item.id}', this.value)">${escapeHtml(item.note || "")}</textarea>
+                <div class="social-actions" style="margin-top:6px;"><button onclick="hvoRemovePatient('${item.id}')">Entfernen</button></div>
+            </div>`;
+        }).join("") : `<div class="lage-empty">Noch keine Patienten erfasst.</div>`}
+    </div>`;
+}
+
+function renderHvoModule(){
+    const root = document.getElementById("hvoBody");
+    if (!root) return;
+    const state = getHvoState();
+    const modeInfo = state.mode === "einsatz"
+        ? "Einsatzmodus: strukturierte, schnelle Entscheidungswege mit Mini-Triage."
+        : "Privatmodus: einfache Sprache und klare Schritt-für-Schritt-Führung.";
+    const modeBannerClass = state.mode === "einsatz" ? "einsatz" : "privat";
+    const navOpen = state.navOpen !== false;
+    const hintHtml = hvoLastHint
+        ? `<div class="social-hint" style="border-color:${hvoLastHintType === "error" ? "rgba(188, 28, 30, 0.35)" : "rgba(19, 124, 66, 0.4)"};background:${hvoLastHintType === "error" ? "rgba(188, 28, 30, 0.11)" : "rgba(19, 124, 66, 0.14)"};color:${hvoLastHintType === "error" ? "#a11416" : "#0b7a40"};">${escapeHtml(hvoLastHint)}</div>`
+        : "";
+    const quickButtons = `<div class="hvo-quick-grid">
+        <button onclick="hvoQuickStart('schnell')">Schnelle Lageeinschätzung</button>
+        <button onclick="hvoQuickStart('bewusstlos')">Bewusstlose Person</button>
+        <button onclick="hvoQuickStart('reanimation')">Keine Atmung / Reanimation</button>
+        <button onclick="hvoQuickStart('blutung')">Starke Blutung</button>
+        <button onclick="hvoQuickStart('herzinfarkt')">Herzinfarkt</button>
+        <button onclick="hvoQuickStart('schlaganfall')">Schlaganfall</button>
+        <button onclick="hvoQuickStart('atemnot')">Atemnot</button>
+        <button onclick="hvoQuickStart('krampf')">Krampfanfall</button>
+        <button onclick="hvoQuickStart('allergie')">Allergische Reaktion / Anaphylaxie</button>
+        <button onclick="hvoSetView('injury');hvoSetInjuryType('verbrennung')">Verbrennung</button>
+        <button onclick="hvoQuickStart('vergiftung')">Vergiftung</button>
+        <button onclick="hvoQuickStart('verkehrsunfall')">Verkehrsunfall</button>
+    </div>`;
+    let bodyHtml = "";
+    if (state.view === "start"){
+        bodyHtml = `<div class="social-form"><strong>Sofortmaßnahmen</strong><div class="psu-meta" style="margin-top:6px;">Erkennen -> Entscheiden -> Handeln. In maximal wenigen Eingaben zur ersten Maßnahme.</div></div>${quickButtons}`;
+    } else if (state.view === "assistant"){
+        bodyHtml = `<div class="social-form"><strong>Interaktiver Erste-Hilfe-Assistent</strong><div class="psu-meta" style="margin-top:6px;">Klare Ja/Nein-Führung für schnelle Entscheidungen unter Zeitdruck.</div></div>${hvoRenderAssistant(state)}`;
+    } else if (state.view === "cpr"){
+        bodyHtml = `<div class="social-form"><strong>Reanimationsmodus</strong><div class="psu-meta" style="margin-top:6px;">CPR-Führung mit Zeit, 30:2, Metronom und AED-Hinweis.</div></div>${hvoRenderCpr(state)}`;
+    } else if (state.view === "injury"){
+        bodyHtml = `<div class="social-form"><strong>Verletzungsassistent</strong></div>${hvoRenderInjury(state)}`;
+    } else if (state.view === "symptom"){
+        bodyHtml = `<div class="social-form"><strong>Symptom-Assistent</strong></div>${hvoRenderSymptom(state)}`;
+    } else if (state.view === "notruf"){
+        bodyHtml = `<div class="social-form"><strong>Notruf-Assistenz (112)</strong><div class="psu-meta" style="margin-top:6px;">Wo? Was? Wie viele? Welche Symptome? Warten auf Rückfragen.</div></div>${hvoRenderNotruf(state)}`;
+    } else if (state.view === "triage"){
+        bodyHtml = `<div class="social-form"><strong>Einsatzmodus - Mini-Triage</strong></div>${hvoRenderTriage(state)}`;
+    }
+    root.innerHTML = `
+        ${hintHtml}
+        <div class="hvo-mode-toggle">
+            <button class="hvo-mode-btn-einsatz ${state.mode === "einsatz" ? "active-yes" : ""}" onclick="hvoSetMode('einsatz')">Einsatzmodus</button>
+            <button class="hvo-mode-btn-privat ${state.mode === "privat" ? "active-yes" : ""}" onclick="hvoSetMode('privat')">Privatmodus</button>
+        </div>
+        <div class="hvo-mode-banner ${modeBannerClass}">${escapeHtml(modeInfo)}</div>
+        <details class="social-form" ${navOpen ? "open" : ""} ontoggle="hvoSetNavOpen(this.open)">
+            <summary><strong>Bereich auswählen</strong></summary>
+            <div class="hvo-tab-grid" style="margin-top:8px;">
+                <button class="${state.view === "start" ? "active-yes" : ""}" onclick="hvoSetView('start')">Start</button>
+                <button class="${state.view === "assistant" ? "active-yes" : ""}" onclick="hvoSetView('assistant')">Assistent</button>
+                <button class="${state.view === "cpr" ? "active-yes" : ""}" onclick="hvoSetView('cpr')">Reanimation</button>
+                <button class="${state.view === "injury" ? "active-yes" : ""}" onclick="hvoSetView('injury')">Verletzung</button>
+                <button class="${state.view === "symptom" ? "active-yes" : ""}" onclick="hvoSetView('symptom')">Symptome</button>
+                <button class="${state.view === "notruf" ? "active-yes" : ""}" onclick="hvoSetView('notruf')">Notruf 112</button>
+                <button class="${state.view === "triage" ? "active-yes" : ""}" onclick="hvoSetView('triage')">Mini-Triage</button>
+            </div>
+        </details>
+        ${bodyHtml}
+    `;
+    if (state.cpr.running){
+        hvoStartRuntime();
+        if (state.cpr.metronome && !hvoMetronomeTimer) hvoStartMetronome();
+    }
+    hvoUpdateCprDom();
+}
 
 function getWeatherProtocolAttachment(){
     const state = getWeatherState();
@@ -8037,7 +9860,7 @@ function closeHydrantenOverlay(){
     if (!overlay) return;
     closeHydrantenHeaderLoadMenu();
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastHydrantenFocus && typeof lastHydrantenFocus.focus === "function"){
         lastHydrantenFocus.focus();
@@ -8094,7 +9917,7 @@ function closeSettingsOverlay(){
     const overlay = document.getElementById("settingsOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastSettingsFocus && typeof lastSettingsFocus.focus === "function"){
         lastSettingsFocus.focus();
@@ -8231,7 +10054,11 @@ const EINSATZ_PAKETE_STORAGE_KEY = "einsatz_pakete_v1";
 const PSU_CONTACTS_STORAGE_KEY = "psu_contacts_v1";
 const PSU_REMINDERS_STORAGE_KEY = "psu_reminders_v1";
 const PSU_STATE_STORAGE_KEY = "psu_state_v1";
+const DRONEN_FLUGBUCH_STORAGE_KEY = "drohne_flugbuch_v1";
+const DRONEN_FLUGBUCH_PERSONEN_STORAGE_KEY = "drohne_flugbuch_personen_v1";
 const WEATHER_STORAGE_KEY = "weather_module_v1";
+const LEGAL_CHECK_STORAGE_KEY = "legal_check_state_v1";
+const HVO_STORAGE_KEY = "hvo_module_v1";
 const LAGE_PHOTO_MAX_COUNT = 8;
 let lastDangerFocus = null;
 let lastStructureFocus = null;
@@ -8248,6 +10075,8 @@ let lastPsuFocus = null;
 let lastSettingsFocus = null;
 let lastWeatherFocus = null;
 let lastDroneWeatherFocus = null;
+let lastLegalCheckFocus = null;
+let lastHvoFocus = null;
 let editSectionId = null;
 let lageTimerId = null;
 let lageResourceMap = null;
@@ -8255,6 +10084,70 @@ let lageResourceMarker = null;
 let lageResourceMapKey = "";
 let psuReminderTickerId = null;
 let funkHelperReminderTimer = null;
+
+const LEGAL_GUIDE_DATA = Object.freeze({
+    roles: [
+        "Feuerwehr / Gefahrenabwehr",
+        "Rettungsdienst",
+        "Allgemeine Einsatzlage"
+    ],
+    questionTypes: [
+        "Darf ich eingreifen?",
+        "Welche Rechte des Bürgers sind betroffen?",
+        "Ist ein Betreten einer Wohnung denkbar?",
+        "Liegt Gefahr im Verzug vor?",
+        "Ist unmittelbarer Zwang denkbar?",
+        "Ist ein Handeln über § 34 StGB denkbar?",
+        "Besteht Hilfeleistungspflicht?"
+    ],
+    dangerLevels: {
+        unklar: {
+            title: "Unklar",
+            description: "Die Lage ist noch nicht ausreichend verifiziert; ein Eingriff sollte nur nach zusätzlicher Lageklärung erfolgen."
+        },
+        allgemeine: {
+            title: "Allgemeine Gefahr",
+            description: "Es liegen allgemeine Hinweise auf ein Risikoszenario vor. Für einen Eingriff muss geprüft werden, ob ein konkreter Bezug zur Lage besteht."
+        },
+        abstrakte: {
+            title: "Abstrakte Gefahr",
+            description: "Typische Gefahrensymptome liegen vor, ein sicherer individueller Bezug zur konkreten Gefährdung ist aber noch nicht nachgewiesen."
+        },
+        konkrete: {
+            title: "Konkrete Gefahr",
+            description: "Eine konkrete Gefährdungslage ist anhand der Anzeichen nachvollziehbar und kann einen Eingriff eher tragen."
+        },
+        anschein: {
+            title: "Anscheinsgefahr",
+            description: "Objektive Anhaltspunkte sprechen für Gefahr; nachträglich kann sich herausstellen, dass keine echte Gefahr bestand."
+        },
+        putativ: {
+            title: "Putativgefahr",
+            description: "Die Gefahrannahme kann auf einer Fehlinterpretation beruhen. Lagebewertung und Dokumentation sind besonders kritisch."
+        },
+        verzug: {
+            title: "Gefahr im Verzug",
+            description: "Ein Abwarten kann den Zweck vereiteln; Eilbedürftigkeit und Entscheidungsgrundlage sind besonders zu dokumentieren."
+        }
+    },
+    principles: [
+        "Vorrang des Gesetzes",
+        "Vorbehalt des Gesetzes",
+        "Geeignetheit",
+        "mildestes Mittel",
+        "Übermaßverbot",
+        "Gleichbehandlung"
+    ],
+    legalNotice: "Nur Lern- und Orientierungshilfe. Keine Rechtsberatung. Maßgeblich sind Gesetz, Landesrecht, Dienstanweisungen, SOPs und Vorgesetztenentscheidung.",
+    warningAnschein: "objektive Anhaltspunkte lagen vor; nachträglich kann sich herausstellen, dass keine echte Gefahr bestand",
+    warningPutativ: "bloß irrtümliche Gefahrannahme kann rechtlich problematisch sein; Lageeinschätzung besonders sorgfältig dokumentieren",
+    warningUrgent: "Aufschub könnte den Zweck vereiteln; Eilbedürftigkeit besonders dokumentieren",
+    legalPrinciplesText: {
+        art2: ["körperliche Unversehrtheit", "Leben und Gesundheit", "persönliche Freiheit"],
+        art13: ["Wohnung und abgeschlossene Räume"],
+        art19: ["Eingriffe in Grundrechte nur auf Grundlage eines allgemeinen Gesetzes"]
+    }
+});
 
 // Datenbasis für die dynamische Gefahrenübersicht.
 const dangerCatalog = [
@@ -8600,7 +10493,7 @@ function closeDangerOverlay(){
     const overlay = document.getElementById("dangerOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastDangerFocus && typeof lastDangerFocus.focus === "function"){
         lastDangerFocus.focus();
@@ -8825,7 +10718,7 @@ function closeStructureOverlay(){
     if (!overlay) return;
     overlay.classList.remove("show");
     hideStructureForm();
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastStructureFocus && typeof lastStructureFocus.focus === "function"){
         lastStructureFocus.focus();
@@ -10547,6 +12440,7 @@ function resetAllIncidentModulesForNextStart(){
 
         presseState = getDefaultPresseState();
         savePresseState();
+        saveDrohneFlugbuchState(getDefaultDrohneFlugbuchState());
 
         savePsuState(getDefaultPsuState());
         savePsuContacts([]);
@@ -10629,6 +12523,7 @@ function getIncidentReportSnapshot(){
         evak: typeof getEvakState === "function" ? getEvakState() : null,
         presse: typeof getPresseState === "function" ? getPresseState() : null,
         psu: typeof getPsuState === "function" ? getPsuState() : null,
+        drohneFlugbuch: getDrohneFlugbuchState(),
         psuContacts: typeof getPsuContacts === "function" ? getPsuContacts() : [],
         psuReminders: typeof getPsuReminders === "function" ? getPsuReminders() : []
     };
@@ -10989,6 +12884,9 @@ function normalizeIncidentArchiveSnapshot(entry){
         evak: safe.evak && typeof safe.evak === "object" ? safe.evak : null,
         presse: safe.presse && typeof safe.presse === "object" ? safe.presse : null,
         psu: safe.psu && typeof safe.psu === "object" ? safe.psu : null,
+        drohneFlugbuch: safe.drohneFlugbuch && typeof safe.drohneFlugbuch === "object"
+            ? safe.drohneFlugbuch
+            : null,
         psuContacts: Array.isArray(safe.psuContacts) ? safe.psuContacts : [],
         psuReminders: Array.isArray(safe.psuReminders) ? safe.psuReminders : []
     };
@@ -11031,6 +12929,9 @@ function applyIncidentArchiveSnapshotAsActive(snapshot, entry){
         appStorageSetItem(EVAK_STORAGE_KEY, JSON.stringify(safeSnapshot.evak && typeof safeSnapshot.evak === "object" ? safeSnapshot.evak : evakDefault));
         appStorageSetItem(PRESSE_STATE_KEY, JSON.stringify(safeSnapshot.presse && typeof safeSnapshot.presse === "object" ? safeSnapshot.presse : getDefaultPresseState()));
         savePsuState(safeSnapshot.psu && typeof safeSnapshot.psu === "object" ? safeSnapshot.psu : getDefaultPsuState());
+        saveDrohneFlugbuchState(safeSnapshot.drohneFlugbuch && typeof safeSnapshot.drohneFlugbuch === "object"
+            ? safeSnapshot.drohneFlugbuch
+            : getDefaultDrohneFlugbuchState());
         savePsuContacts(Array.isArray(safeSnapshot.psuContacts) ? safeSnapshot.psuContacts : []);
         savePsuReminders(Array.isArray(safeSnapshot.psuReminders) ? safeSnapshot.psuReminders : []);
 
@@ -11229,7 +13130,7 @@ function closeLageOverlay(){
     if (!overlay) return;
     overlay.classList.remove("show");
     hideStructureForm();
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lageTimerId){
         clearInterval(lageTimerId);
@@ -11472,7 +13373,7 @@ function closePsuOverlay(){
     const overlay = document.getElementById("psuOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastPsuFocus && typeof lastPsuFocus.focus === "function"){
         lastPsuFocus.focus();
@@ -12924,6 +14825,21 @@ function renderSocialGenerator(){
     renderSocialForces();
     renderSocialReleaseBlock(state);
     renderSocialPreview();
+    syncSocialIncidentButtons();
+}
+
+function syncSocialIncidentButtons(){
+    const startBtn = document.getElementById("socialIncidentStartBtn");
+    const endBtn = document.getElementById("socialIncidentEndBtn");
+    const active = isIncidentEditingUnlocked();
+    if (startBtn){
+        startBtn.textContent = active ? "✅ Einsatz aktiv" : "🚨 Einsatz starten";
+        startBtn.disabled = active;
+        startBtn.style.opacity = active ? "0.85" : "";
+    }
+    if (endBtn){
+        endBtn.style.display = active ? "" : "none";
+    }
 }
 
 function invalidateSocialFreigabeOnContentChange(state){
@@ -13004,21 +14920,25 @@ function resetSocialFreigabe(){
 function startIncidentFromSocial(){
     if (isIncidentEditingUnlocked()){
         showSocialHint("Einsatz läuft bereits.", false);
+        syncSocialIncidentButtons();
         return;
     }
     toggleLageIncident();
     if (typeof syncActiveEinsatzPaketSnapshot === "function"){
         syncActiveEinsatzPaketSnapshot("start_from_social");
     }
+    syncSocialIncidentButtons();
     showSocialHint("Einsatz gestartet. Eingaben sind jetzt freigeschaltet.", false);
 }
 
 function endIncidentFromSocial(){
     if (!isIncidentEditingUnlocked()){
         showSocialHint("Kein aktiver Einsatz.", true);
+        syncSocialIncidentButtons();
         return;
     }
     toggleLageIncident();
+    syncSocialIncidentButtons();
     showSocialHint("Einsatz beendet.", false);
 }
 
@@ -13251,7 +15171,7 @@ function closeSocialOverlay(){
     const overlay = document.getElementById("socialOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastSocialFocus && typeof lastSocialFocus.focus === "function"){
         lastSocialFocus.focus();
@@ -13525,7 +15445,7 @@ function closeEinsatzOverlay(){
     const overlay = document.getElementById("einsatzOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastEinsatzFocus && typeof lastEinsatzFocus.focus === "function"){
         lastEinsatzFocus.focus();
@@ -14519,7 +16439,7 @@ function closeAtemOverlayASU2(){
     const overlay = document.getElementById("atemOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastAtemFocus && typeof lastAtemFocus.focus === "function"){
         lastAtemFocus.focus();
@@ -15963,6 +17883,7 @@ function asuUpdateGlobalAlarmUi(){
         quickBtn.classList.toggle("show", monitorActive);
         quickBtn.classList.toggle("alarm", asuGlobalAlarmState.alarmActive);
     }
+    updateTrainingQuickFloatingButtonPosition();
     if (quickBadge){
         quickBadge.textContent = asuGlobalAlarmState.alarmActive
             ? String(asuGlobalAlarmState.activeTeamIds.length || "!")
@@ -16533,7 +18454,7 @@ function closeAtemOverlay(){
     asuDismissPressurePrompt();
     asuCloseWaypointPrompt();
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (!keepLocked){
         asuStopTickers();
@@ -17295,7 +19216,7 @@ function openGefahrgutOverlay(){
 function closeGefahrgutOverlay(){
     const o = document.getElementById("gefahrgutOverlay"); if (!o) return;
     o.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isEvakOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isEvakOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastGefahrgutFocus && typeof lastGefahrgutFocus.focus === "function") lastGefahrgutFocus.focus();
 }
@@ -18797,7 +20718,7 @@ function closePresseOverlay(){
     const o = document.getElementById("presseOverlay");
     if (!o) return;
     o.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastPresseFocus && typeof lastPresseFocus.focus === "function") lastPresseFocus.focus();
 }
@@ -19080,7 +21001,7 @@ function closeFunkOverlay(){
     const overlay = document.getElementById("funkOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lastFunkFocus && typeof lastFunkFocus.focus === "function"){
         lastFunkFocus.focus();
@@ -23068,6 +24989,113 @@ const data = {
         ]
     },
     {
+        name:"Flugbuch",
+        drohneFlugbuchTool:true,
+        content:`<div class="psu-meta">Hier werden kurze Flug- und Einsatznotizen zu Drohnenflügen dokumentiert.</div>
+        <div class="atem-panel">
+            <strong>Flugbuch-Eintrag erfassen</strong>
+            <div id="drohneFlugbuchForm" class="drohne-flugbuch-grid">
+                <div class="atem-col-full">
+                    <label>Pilot</label>
+                    <select id="drohneFlugbuchPilotSelect">
+                        <option value="">Person auswählen ...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Luftraumbeobachter</label>
+                    <select id="drohneFlugbuchLRBSelect">
+                        <option value="">Person auswählen ...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Bildauswerter</label>
+                    <select id="drohneFlugbuchBASelect">
+                        <option value="">Person auswählen ...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Startzeit</label>
+                    <input id="drohneFlugbuchTime" type="datetime-local">
+                </div>
+                <div>
+                    <label>Landung</label>
+                    <input id="drohneFlugbuchLandung" type="datetime-local">
+                </div>
+                <div>
+                    <label>Einsatz / Zweck</label>
+                    <input id="drohneFlugbuchEinsatz" type="text" placeholder="z. B. Brandschadenslage, Personensuche">
+                </div>
+                <div>
+                    <label>Anzahl Starts</label>
+                    <div class="drohne-flugbuch-stepper">
+                        <button type="button" onclick="changeDrohneFlugbuchStarts(-1)">-</button>
+                        <input id="drohneFlugbuchStarts" type="number" min="1" step="1" inputmode="numeric" value="1">
+                        <button type="button" onclick="changeDrohneFlugbuchStarts(1)">+</button>
+                    </div>
+                </div>
+                <div>
+                    <label>Unfall</label>
+                    <select id="drohneFlugbuchUnfall">
+                        <option value="nein">Nein</option>
+                        <option value="ja">Ja</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Flugart</label>
+                    <select id="drohneFlugbuchFlugart">
+                        <option value="einsatz">Einsatz</option>
+                        <option value="uebung">Übung</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Unterschrift Pilot</label>
+                    <input id="drohneFlugbuchUnterschrift" type="text" placeholder="Pilot Name / Zeichen">
+                </div>
+                <div class="atem-col-full">
+                    <label>Standort</label>
+                    <div class="drohne-flugbuch-location-row">
+                        <input id="drohneFlugbuchStandort" type="text" placeholder="z. B. Brandstelle / Koordinaten">
+                        <button type="button" onclick="setDrohneFlugbuchStandortFromCurrent()">Aktuelle Adresse übernehmen</button>
+                    </div>
+                </div>
+                <div class="atem-col-full">
+                    <label>Notiz</label>
+                    <textarea id="drohneFlugbuchNotiz" rows="3" placeholder="Ablauf, Beobachtungen, Hinweise für Einsatzleitung"></textarea>
+                </div>
+                <div class="atem-row-actions drohne-flugbuch-actions">
+                    <button onclick="addDrohneFlugbuchEintrag()">Eintrag hinzufügen</button>
+                </div>
+            </div>
+        </div>
+        <div class="atem-panel">
+            <strong>Flugbuch-Einträge</strong>
+            <div id="drohneFlugbuchListe" class="settings-incident-archive-list" style="margin-top:8px;"></div>
+            <div class="atem-row-actions drohne-flugbuch-actions">
+                <button onclick="setAllDrohneFlugbuchSelection(true)">Alle auswählen</button>
+                <button onclick="setAllDrohneFlugbuchSelection(false)">Auswahl aufheben</button>
+                <button onclick="exportDrohneFlugbuchPdf()">Auswahl als PDF speichern</button>
+                <button onclick="clearDrohneFlugbuchEintraege()">Flugbuch leeren</button>
+            </div>
+        </div>
+        <div class="atem-panel" style="margin-top:12px;">
+            <strong>Flugbuch-Personen</strong>
+            <div class="atem-grid" style="margin-top:8px;">
+                <div>
+                    <label for="settingsDrohnePersonVorname">Vorname</label>
+                    <input id="settingsDrohnePersonVorname" type="text" maxlength="120" placeholder="z. B. Max">
+                </div>
+                <div>
+                    <label for="settingsDrohnePersonNachname">Nachname</label>
+                    <input id="settingsDrohnePersonNachname" type="text" maxlength="160" placeholder="z. B. Mustermann">
+                </div>
+                <div class="atem-col-full atem-row-actions">
+                    <button onclick="addDrohneFlugbuchPersonFromSettings()">Person hinzufügen</button>
+                </div>
+            </div>
+            <div id="settingsDrohnePersonenList"></div>
+        </div>`
+    },
+    {
         name:"DrohnenWetter-Check",
         content:`
         <div class="atem-row-actions">
@@ -23573,6 +25601,540 @@ function evaluateDrohneMatrix(baseId){
     }
 }
 
+function getNowDateTimeLocalValue(){
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hour = String(now.getHours()).padStart(2, "0");
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hour}:${minute}`;
+}
+
+function getDefaultDrohneFlugbuchPersonenState(){
+    return [];
+}
+
+function normalizeDrohneFlugbuchPerson(person){
+    const source = person && typeof person === "object" ? person : {};
+    return {
+        id: String(source.id || `drohne_person_${Date.now()}_${Math.floor(Math.random() * 1000)}`),
+        vorname: String(source.vorname || "").trim(),
+        nachname: String(source.nachname || "").trim()
+    };
+}
+
+function normalizeDrohneFlugbuchPersonenState(raw){
+    const source = Array.isArray(raw) ? raw : [];
+    return source
+        .map((person)=>normalizeDrohneFlugbuchPerson(person))
+        .filter((person)=>person.vorname || person.nachname)
+        .map((person)=>({
+            ...person,
+            fullName: `${person.vorname} ${person.nachname}`.trim()
+        }))
+        .sort((a, b)=> {
+            const left = `${a.nachname} ${a.vorname}`.toLowerCase();
+            const right = `${b.nachname} ${b.vorname}`.toLowerCase();
+            if (left < right) return -1;
+            if (left > right) return 1;
+            return 0;
+        });
+}
+
+function getDrohneFlugbuchPersonenState(){
+    try {
+        const raw = localStorage.getItem(DRONEN_FLUGBUCH_PERSONEN_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return normalizeDrohneFlugbuchPersonenState(parsed);
+    } catch {
+        return getDefaultDrohneFlugbuchPersonenState();
+    }
+}
+
+function saveDrohneFlugbuchPersonenState(list){
+    const safe = normalizeDrohneFlugbuchPersonenState(list);
+    localStorage.setItem(DRONEN_FLUGBUCH_PERSONEN_STORAGE_KEY, JSON.stringify(safe));
+    return safe;
+}
+
+function getDrohneFlugbuchPersonenOptions(){
+    return getDrohneFlugbuchPersonenState().map((person)=>person.fullName).filter(Boolean);
+}
+
+function getDrohneFlugbuchPersonName(person){
+    const normalized = normalizeDrohneFlugbuchPerson(person);
+    return `${normalized.vorname} ${normalized.nachname}`.trim();
+}
+
+function addDrohneFlugbuchPersonFromSettings(){
+    const vornameInput = document.getElementById("settingsDrohnePersonVorname");
+    const nachnameInput = document.getElementById("settingsDrohnePersonNachname");
+    const vorname = vornameInput ? String(vornameInput.value || "").trim() : "";
+    const nachname = nachnameInput ? String(nachnameInput.value || "").trim() : "";
+
+    if (!vorname && !nachname){
+        alert("Bitte Vorname oder Nachname eingeben.");
+        return;
+    }
+
+    const next = getDrohneFlugbuchPersonenState();
+    const fullName = `${vorname} ${nachname}`.trim().toLowerCase();
+    const exists = next.some((person)=>`${person.vorname} ${person.nachname}`.trim().toLowerCase() === fullName);
+    if (exists){
+        alert("Person ist bereits vorhanden.");
+        return;
+    }
+    next.push({
+        id: `drohne_person_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        vorname,
+        nachname
+    });
+    saveDrohneFlugbuchPersonenState(next);
+    if (vornameInput) vornameInput.value = "";
+    if (nachnameInput) nachnameInput.value = "";
+    renderDrohneFlugbuchPersonenSettings();
+    if (typeof renderDrohneFlugbuchTool === "function"){
+        renderDrohneFlugbuchTool();
+    }
+}
+
+function removeDrohneFlugbuchPerson(personId){
+    if (!confirm("Person wirklich entfernen?")) return;
+    const next = getDrohneFlugbuchPersonenState().filter((person)=>String(person.id) !== String(personId));
+    saveDrohneFlugbuchPersonenState(next);
+    renderDrohneFlugbuchPersonenSettings();
+    if (typeof renderDrohneFlugbuchTool === "function"){
+        renderDrohneFlugbuchTool();
+    }
+}
+
+function renderDrohneFlugbuchPersonenSettings(){
+    const listEl = document.getElementById("settingsDrohnePersonenList");
+    if (!listEl) return;
+    const persons = getDrohneFlugbuchPersonenState();
+    if (!persons.length){
+        listEl.innerHTML = `<div class="lage-empty">Keine Personen gespeichert.</div>`;
+        return;
+    }
+
+    listEl.innerHTML = persons.map((person)=>{
+        const safeId = String(person.id).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        return `<div class="settings-incident-archive-item">
+            <strong>${escapeHtml(getDrohneFlugbuchPersonName(person))}</strong>
+            <div class="atem-row-actions" style="margin-top:6px;">
+                <button onclick="removeDrohneFlugbuchPerson('${safeId}')">Entfernen</button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+function buildDrohneFlugbuchPersonSelectOptions(persons){
+    const list = Array.isArray(persons) ? persons : [];
+    const options = [
+        `<option value="">Person auswählen ...</option>`,
+        ...list.map((person)=>`<option value="${escapeHtml(person)}">${escapeHtml(person)}</option>`)
+    ];
+    return options.join("");
+}
+
+function renderDrohneFlugbuchPersonSelectors(){
+    const personen = getDrohneFlugbuchPersonenOptions();
+    const optionHtml = buildDrohneFlugbuchPersonSelectOptions(personen);
+    const entries = [
+        { selectId: "drohneFlugbuchPilotSelect" },
+        { selectId: "drohneFlugbuchLRBSelect" },
+        { selectId: "drohneFlugbuchBASelect" }
+    ];
+
+    entries.forEach(({ selectId })=>{
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        select.innerHTML = optionHtml;
+        select.value = "";
+    });
+}
+
+function changeDrohneFlugbuchStarts(delta){
+    const startsInput = document.getElementById("drohneFlugbuchStarts");
+    if (!startsInput) return;
+    const current = Number(startsInput.value);
+    const next = Number.isFinite(current) ? Math.floor(current) + Number(delta) : 1;
+    startsInput.value = String(Math.max(1, next));
+}
+
+function getDefaultDrohneFlugbuchState(){
+    return { entries: [] };
+}
+
+function normalizeDrohneFlugbuchState(raw){
+    const source = raw && typeof raw === "object" ? raw : {};
+    const entries = Array.isArray(source.entries) ? source.entries : [];
+    return {
+        entries: entries
+            .map((entry)=>{
+                const normalized = entry && typeof entry === "object" ? entry : {};
+                return {
+                    id: String(normalized.id || `drone_fb_${Date.now()}_${Math.floor(Math.random() * 1000)}`),
+                    pilot: String(normalized.pilot || "").trim(),
+                    lrb: String(normalized.lrb || "").trim(),
+                    ba: String(normalized.ba || "").trim(),
+                    time: String(normalized.time || getNowDateTimeLocalValue()),
+                    landung: String(normalized.landung || "").trim(),
+                    standort: String(normalized.standort || "").trim(),
+                    einsatz: String(normalized.einsatz || "").trim(),
+                    starts: Number.isFinite(Number(normalized.starts)) ? Math.max(1, Math.floor(Number(normalized.starts))) : 1,
+                    unfall: normalized.unfall === "ja" ? "ja" : "nein",
+                    flugart: normalized.flugart === "uebung" ? "uebung" : "einsatz",
+                    unterschrift: String(normalized.unterschrift || "").trim(),
+                    notiz: String(normalized.notiz || "").trim()
+                };
+            })
+            .filter((entry)=>entry.time || entry.landung || entry.einsatz || entry.notiz || entry.standort || entry.pilot || entry.lrb || entry.ba)
+            .sort((a, b)=>Date.parse(b.time) - Date.parse(a.time))
+            .slice(0, 200)
+    };
+}
+
+function getDrohneFlugbuchState(){
+    try {
+        const raw = appStorageGetItem(DRONEN_FLUGBUCH_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        return normalizeDrohneFlugbuchState(parsed && parsed.state ? parsed.state : parsed);
+    } catch {
+        return getDefaultDrohneFlugbuchState();
+    }
+}
+
+function saveDrohneFlugbuchState(state){
+    const safe = normalizeDrohneFlugbuchState(state || getDefaultDrohneFlugbuchState());
+    appStorageSetItem(DRONEN_FLUGBUCH_STORAGE_KEY, JSON.stringify(safe));
+    return safe;
+}
+
+async function resolveDrohneFlugbuchAddress(lat, lon){
+    const nLat = Number(lat);
+    const nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)){
+        throw new Error("Ungültige Koordinaten.");
+    }
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(nLat)}&lon=${encodeURIComponent(nLon)}&zoom=18&addressdetails=1&accept-language=de`;
+    const controller = new AbortController();
+    const timeout = setTimeout(()=>controller.abort(), 9000);
+    try {
+        const response = await fetch(url, {
+            cache: "no-store",
+            signal: controller.signal,
+            headers: { "Accept": "application/json", "Accept-Language": "de-DE,de;q=0.9" }
+        });
+        if (!response.ok){
+            throw new Error(`Reverse Geocoding nicht verfügbar (${response.status}).`);
+        }
+        const data = await response.json();
+        const address = data && data.address ? data.address : {};
+        const road = String(address.road || "").trim();
+        const house = String(address.house_number || "").trim();
+        const suburb = String(address.suburb || address.neighbourhood || address.quarter || "").trim();
+        const locality = String(address.city || address.town || address.village || address.hamlet || address.municipality || "").trim();
+        const postcode = String(address.postcode || "").trim();
+        const district = String(address.county || address.borough || "").trim();
+        const state = String(address.state || "").trim();
+        const parts = [
+            [road, house].filter(Boolean).join(" "),
+            suburb,
+            locality,
+            postcode,
+            district,
+            state
+        ].filter(Boolean).filter((value, idx, arr)=>arr.indexOf(value) === idx);
+
+        if (parts.length){
+            return parts.join(", ");
+        }
+        if (String(data.display_name || "").trim()){
+            return String(data.display_name).split(",").slice(0, 4).join(", ").trim();
+        }
+        return "";
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
+function setDrohneFlugbuchStandortFromCurrent(){
+    const input = document.getElementById("drohneFlugbuchStandort");
+    if (!input){
+        return;
+    }
+    if (!navigator.geolocation){
+        alert("Geolocation wird von diesem Browser nicht unterstützt.");
+        return;
+    }
+
+    input.value = "Aktuelle Position wird ermittelt...";
+    navigator.geolocation.getCurrentPosition((pos)=>{
+        const lat = Number(pos && pos.coords && pos.coords.latitude);
+        const lon = Number(pos && pos.coords && pos.coords.longitude);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)){
+            input.value = "";
+            alert("Standort konnte nicht gelesen werden.");
+            return;
+        }
+        const fallback = `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+        (async ()=>{
+            try {
+                const address = await resolveDrohneFlugbuchAddress(lat, lon);
+                input.value = address || fallback;
+            } catch {
+                input.value = fallback;
+            }
+        })();
+    }, ()=>{
+        input.value = "";
+        alert("Standortabfrage fehlgeschlagen.");
+    }, {
+        enableHighAccuracy: false,
+        timeout: 10000
+    });
+}
+
+function formatDrohneFlugbuchTime(value){
+    const ts = Date.parse(String(value || ""));
+    if (!Number.isFinite(ts)) return "-";
+    return new Date(ts).toLocaleString("de-DE");
+}
+
+function formatDrohneFlugbuchDateInput(value){
+    const ts = Date.parse(String(value || ""));
+    if (!Number.isFinite(ts)) return "-";
+    return new Date(ts).toLocaleString("de-DE");
+}
+
+const drohneFlugbuchSelection = new Set();
+
+function toggleDrohneFlugbuchSelection(entryId, isChecked){
+    const id = String(entryId || "");
+    if (!id) return;
+    if (isChecked){
+        drohneFlugbuchSelection.add(id);
+    } else {
+        drohneFlugbuchSelection.delete(id);
+    }
+}
+
+function setAllDrohneFlugbuchSelection(checked){
+    const state = getDrohneFlugbuchState();
+    if (checked){
+        state.entries.forEach((entry)=>{
+            if (entry && entry.id){
+                drohneFlugbuchSelection.add(String(entry.id));
+            }
+        });
+    } else {
+        drohneFlugbuchSelection.clear();
+    }
+    renderDrohneFlugbuchTool();
+}
+
+function exportDrohneFlugbuchPdf(){
+    const state = getDrohneFlugbuchState();
+    const selectedEntries = state.entries.filter((entry)=>drohneFlugbuchSelection.has(String(entry && entry.id)));
+    if (!selectedEntries.length){
+        alert("Bitte zuerst Flüge für den Export auswählen.");
+        return;
+    }
+    const datePart = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
+    const timePart = getNowTimeValue().replace(":", "");
+    const filename = `Drohnen_Flugbuch_${datePart}_${timePart}.pdf`;
+
+    const rows = selectedEntries.length
+        ? selectedEntries.map((entry)=>`<tr>
+            <td style="padding:6px 8px;border:1px solid #bbb;white-space:nowrap;">${escapeHtml(formatDrohneFlugbuchDateInput(entry.time))}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;white-space:nowrap;">${escapeHtml(formatDrohneFlugbuchDateInput(entry.landung))}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.pilot || "-")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.lrb || "-")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.ba || "-")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.standort || "-")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(entry.einsatz || "-")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;white-space:nowrap;text-align:right;">${escapeHtml(String(entry.starts || 1))}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;white-space:nowrap;">${escapeHtml(entry.unfall === "ja" ? "Ja" : "Nein")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;white-space:nowrap;">${escapeHtml(entry.flugart === "uebung" ? "Übung" : "Einsatz")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;white-space:nowrap;">${escapeHtml(entry.unterschrift || "-")}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;white-space:pre-wrap;">${escapeHtml(entry.notiz || "-")}</td>
+        </tr>`).join("")
+        : `<tr><td colspan="12" style="padding:8px;border:1px solid #bbb;">Keine Einträge erfasst.</td></tr>`;
+
+    const w = window.open("", "_blank");
+    if (!w){
+        alert("Popup blockiert. Bitte Popup-Freigabe aktivieren.");
+        return;
+    }
+
+    const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(filename)}</title>
+    <style>
+    @page { size: A4; margin: 12mm; }
+    body { font-family: Arial, sans-serif; color:#111; font-size:11px; }
+    .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .logo { width:90px; height:auto; object-fit:contain; }
+    h1 { margin:0; font-size:22px; }
+    .sub { margin-top:4px; font-size:13px; color:#444; }
+    .meta { margin: 8px 0; font-size: 11px; color:#555; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { border:1px solid #bbb; padding:6px 8px; vertical-align:top; }
+    thead { background: #f3f3f3; }
+    </style></head><body>
+    <div class="head"><div><h1>Drohnen-Flugbuch</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div>
+    <div class="meta">Export: ${new Date().toLocaleString("de-DE")} · Datei: ${escapeHtml(filename)} · Modus: ${isTrainingMode() ? "ÜBUNG" : "REAL"}</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Startzeit</th>
+                <th>Landung</th>
+                <th>Pilot</th>
+                        <th>Luftraumbeobachter</th>
+                        <th>Bildauswerter</th>
+                <th>Standort</th>
+                <th>Einsatz / Zweck</th>
+                <th>Starts</th>
+                <th>Unfall</th>
+                <th>Flugart</th>
+                <th>Unterschrift Pilot</th>
+                <th>Notiz</th>
+            </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:10px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
+    <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+}
+
+function renderDrohneFlugbuchTool(){
+    renderDrohneFlugbuchPersonenSettings();
+    const state = getDrohneFlugbuchState();
+    renderDrohneFlugbuchPersonSelectors();
+
+    const availableIds = new Set(state.entries.map((entry)=>String(entry && entry.id ? entry.id : "")));
+    Array.from(drohneFlugbuchSelection).forEach((id)=>{
+        if (!availableIds.has(id)){
+            drohneFlugbuchSelection.delete(id);
+        }
+    });
+
+    const timeInput = document.getElementById("drohneFlugbuchTime");
+    if (timeInput && !timeInput.value){
+        timeInput.value = getNowDateTimeLocalValue();
+    }
+    const startsInput = document.getElementById("drohneFlugbuchStarts");
+    if (startsInput && !startsInput.value){
+        startsInput.value = "1";
+    }
+
+    const container = document.getElementById("drohneFlugbuchListe");
+    if (!container) return;
+
+    if (!state.entries.length){
+        container.innerHTML = `<div class="lage-empty">Noch keine Flugbuch-Einträge.</div>`;
+        return;
+    }
+
+    container.innerHTML = state.entries.map((entry)=>{
+        const safeId = entry.id.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        return `<div class="settings-incident-archive-item">
+            <label>
+                <input type="checkbox" ${drohneFlugbuchSelection.has(String(entry.id)) ? "checked" : ""} onchange="toggleDrohneFlugbuchSelection('${safeId}', this.checked)">
+                Export-Auswahl
+            </label>
+            <strong>${escapeHtml(formatDrohneFlugbuchTime(entry.time))} – Pilot: ${escapeHtml(entry.pilot || "-")}</strong>
+            <div>Startzeit: ${escapeHtml(formatDrohneFlugbuchTime(entry.time))} | Landung: ${escapeHtml(formatDrohneFlugbuchTime(entry.landung))}</div>
+            <div>${escapeHtml(entry.einsatz || "Drohneinsatz")}</div>
+            <div>Luftraumbeobachter: ${escapeHtml(entry.lrb || "-")} · Bildauswerter: ${escapeHtml(entry.ba || "-")} · Standort: ${escapeHtml(entry.standort || "-")}</div>
+            <div>Anzahl Starts: ${escapeHtml(String(entry.starts || 1))} · Unfall: ${escapeHtml(entry.unfall || "nein")} · Flugart: ${escapeHtml(entry.flugart || "einsatz")} · Unterschrift Pilot: ${escapeHtml(entry.unterschrift || "-")}</div>
+            <div style="margin-top:4px;white-space:pre-wrap;">${escapeHtml(entry.notiz || "-")}</div>
+            <div class="atem-row-actions" style="margin-top:6px;">
+                <button onclick="deleteDrohneFlugbuchEintrag('${safeId}')">Eintrag löschen</button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+function clearDrohneFlugbuchEintraege(){
+    if (!confirm("Alle Flugbuch-Einträge löschen?")) return;
+    saveDrohneFlugbuchState(getDefaultDrohneFlugbuchState());
+    drohneFlugbuchSelection.clear();
+    renderDrohneFlugbuchTool();
+}
+
+function addDrohneFlugbuchEintrag(){
+    const pilotSelect = document.getElementById("drohneFlugbuchPilotSelect");
+    const lrbSelect = document.getElementById("drohneFlugbuchLRBSelect");
+    const baSelect = document.getElementById("drohneFlugbuchBASelect");
+    const timeInput = document.getElementById("drohneFlugbuchTime");
+    const landungInput = document.getElementById("drohneFlugbuchLandung");
+    const standortInput = document.getElementById("drohneFlugbuchStandort");
+    const einsatzInput = document.getElementById("drohneFlugbuchEinsatz");
+    const startsInput = document.getElementById("drohneFlugbuchStarts");
+    const unfallInput = document.getElementById("drohneFlugbuchUnfall");
+    const flugartInput = document.getElementById("drohneFlugbuchFlugart");
+    const unterschriftInput = document.getElementById("drohneFlugbuchUnterschrift");
+    const notizInput = document.getElementById("drohneFlugbuchNotiz");
+
+    const pilot = pilotSelect ? String(pilotSelect.value || "").trim() : "";
+    const lrb = lrbSelect ? String(lrbSelect.value || "").trim() : "";
+    const ba = baSelect ? String(baSelect.value || "").trim() : "";
+    const time = timeInput ? timeInput.value : "";
+    const landung = landungInput ? landungInput.value : "";
+    const standort = standortInput ? String(standortInput.value || "").trim() : "";
+    const einsatz = einsatzInput ? String(einsatzInput.value || "").trim() : "";
+    const starts = Number(startsInput && startsInput.value ? Number(startsInput.value) : 1);
+    const unfall = unfallInput ? String(unfallInput.value || "nein") : "nein";
+    const flugart = flugartInput ? String(flugartInput.value || "einsatz") : "einsatz";
+    const unterschrift = unterschriftInput ? String(unterschriftInput.value || "").trim() : "";
+    const notiz = notizInput ? String(notizInput.value || "").trim() : "";
+    if (!einsatz && !notiz && !pilot && !lrb && !ba && !standort && !landung && !unterschrift){
+        alert("Bitte mindestens eine relevante Flugbuchangabe ausfüllen.");
+        return;
+    }
+    const startsValue = Number.isFinite(starts) ? Math.max(1, Math.floor(starts)) : 1;
+
+    const state = getDrohneFlugbuchState();
+    state.entries.unshift({
+        id: `drone_fb_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        pilot,
+        lrb,
+        ba,
+        time,
+        landung,
+        standort,
+        einsatz,
+        starts: startsValue,
+        unfall: unfall === "ja" ? "ja" : "nein",
+        flugart: flugart === "uebung" ? "uebung" : "einsatz",
+        unterschrift,
+        notiz
+    });
+    saveDrohneFlugbuchState(state);
+    if (pilotSelect) pilotSelect.value = "";
+    if (lrbSelect) lrbSelect.value = "";
+    if (baSelect) baSelect.value = "";
+    if (einsatzInput) einsatzInput.value = "";
+    if (standortInput) standortInput.value = "";
+    if (startsInput) startsInput.value = "1";
+    if (notizInput) notizInput.value = "";
+    if (unterschriftInput) unterschriftInput.value = "";
+    renderDrohneFlugbuchTool();
+}
+
+function deleteDrohneFlugbuchEintrag(entryId){
+    const state = getDrohneFlugbuchState();
+    drohneFlugbuchSelection.delete(String(entryId || ""));
+    const next = state.entries.filter((entry)=>entry.id !== String(entryId));
+    saveDrohneFlugbuchState({ entries: next });
+    renderDrohneFlugbuchTool();
+}
+
 function collectEntrySearchText(value, bucket){
     if (value == null) return;
     if (typeof value === "string"){
@@ -23707,6 +26269,9 @@ function showDetail(index){
     }
     if (einsatz.fwdv3Trainer){
         renderFwdv3Trainer();
+    }
+    if (einsatz.drohneFlugbuchTool){
+        renderDrohneFlugbuchTool();
     }
 }
 
@@ -24051,11 +26616,7 @@ function formatGpsTime(iso){
 }
 
 function formatHeading(deg){
-    const n = Number(deg);
-    if (!Number.isFinite(n)) return "-";
-    const dirs = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
-    const idx = Math.round((((n % 360) + 360) % 360) / 45) % 8;
-    return `${Math.round(n)}° ${dirs[idx]}`;
+    return formatWindDirection(deg);
 }
 
 function getScreenOrientationAngle(){
@@ -24478,7 +27039,7 @@ function closeGpsOverlay(){
     const overlay = document.getElementById("gpsOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
-    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen();
+    const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isWeatherOverlayOpen() || isDroneWeatherOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (gpsLastFocus && typeof gpsLastFocus.focus === "function") gpsLastFocus.focus();
 }
