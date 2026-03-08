@@ -2184,6 +2184,67 @@ button:active {
     overflow: hidden;
 }
 
+.lage-map-toolbar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.lage-map-toolbar button {
+    margin: 0;
+    width: 100%;
+    padding: 10px 8px;
+    box-shadow: none;
+    font-size: 13px;
+}
+
+.lage-map-toolbar button.active {
+    outline: 2px solid var(--primary);
+}
+
+.lage-map-meta {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.lage-map-canvas {
+    margin-top: 10px;
+    min-height: 290px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.lage-map-symbol {
+    width: 34px;
+    height: 34px;
+    display: block;
+}
+
+.lage-map-popup-title {
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.lage-map-popup-meta {
+    font-size: 12px;
+    color: #44566b;
+    margin-bottom: 8px;
+}
+
+.lage-map-popup-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.lage-map-popup-actions button {
+    width: auto;
+    margin: 0;
+    padding: 7px 9px;
+    font-size: 12px;
+}
+
 .lage-row {
     display: flex;
     gap: 8px;
@@ -4285,6 +4346,32 @@ a {
     color: var(--text-muted);
 }
 
+.footer-brand-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.footer-app-emoji {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.footer-brand-separator {
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.footer-ff-logo {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: #fff;
+}
+
 #searchResults .card {
     border-left-color: var(--primary);
 }
@@ -4708,6 +4795,10 @@ iframe {
         grid-template-columns: 1fr;
     }
 
+    .lage-map-toolbar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .gg-un-grid {
         grid-template-columns: 1fr;
     }
@@ -4934,6 +5025,11 @@ iframe {
     <div class="footer">
         <img src="logoapp.png" alt="FF 360 Logo">
         <div>
+            <div class="footer-brand-inline">
+                <span class="footer-app-emoji">📱</span>
+                <span id="homeFooterLogoSep" class="footer-brand-separator hidden">|</span>
+                <img id="homeFooterFfLogo" class="footer-ff-logo hidden" src="" alt="Feuerwehr-Logo">
+            </div>
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
             <span id="homeCreatorLine">Erstellt durch Jonas Jessen.</span>
         </div>
@@ -4970,6 +5066,17 @@ iframe {
             </div>
             <div class="atem-panel">
                 <strong>App</strong>
+                <div style="margin-top:8px;">
+                    <label for="settingsFfLogoInput">Feuerwehr-Logo (optional)</label>
+                    <input id="settingsFfLogoInput" type="file" accept="image/*" onchange="updateCreatorFfLogoFromFile(event)">
+                    <div class="psu-meta" style="margin-top:6px;">Wird im Footer und auf Export-Formularen zusätzlich zum App-Logo angezeigt.</div>
+                    <div id="settingsFfLogoPreviewWrap" class="hidden" style="margin-top:8px;">
+                        <img id="settingsFfLogoPreview" src="" alt="Feuerwehr-Logo Vorschau" style="max-width:120px;max-height:120px;border:1px solid var(--border);border-radius:8px;padding:4px;background:#fff;">
+                        <div class="atem-row-actions" style="margin-top:8px;">
+                            <button onclick="clearCreatorFfLogo()">Feuerwehr-Logo entfernen</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="atem-row-actions" style="margin-top:8px;">
                     <button id="settingsDarkModeBtn" onclick="toggleDarkModeFromSettings()">Dark Mode umschalten</button>
                     <button id="settingsTrainingModeBtn" onclick="toggleTrainingModeFromSettings()">Übungsmodus umschalten</button>
@@ -5648,6 +5755,28 @@ iframe {
             </div>
 
             <div class="lage-section">
+                <details ontoggle="handleLageTacticalMapToggle(this.open)">
+                    <summary><strong>🗺️ Einsatz-Lagekarte</strong></summary>
+                    <div class="lage-map-toolbar" style="margin-top:8px;">
+                        <button id="lageMapToolVehicleBtn" onclick="setLageMapTool('vehicle')">🚒 Fahrzeug</button>
+                        <button id="lageMapToolCrewBtn" onclick="setLageMapTool('crew')">🔺 Trupp</button>
+                        <button id="lageMapToolHazardBtn" onclick="setLageMapTool('hazard')">⚠️ Gefahr</button>
+                        <button id="lageMapToolWaterBtn" onclick="setLageMapTool('water')">💧 Wasser</button>
+                        <button id="lageMapToolLineBtn" onclick="setLageMapTool('line')">📏 Linie</button>
+                        <button id="lageMapToolAreaBtn" onclick="setLageMapTool('area')">⬛ Bereich</button>
+                        <button id="lageMapToolEditBtn" onclick="setLageMapTool('edit')">✏️ Bearbeiten</button>
+                        <button id="lageMapToolDeleteBtn" onclick="setLageMapTool('delete')">🗑 Löschen</button>
+                        <button onclick="finishLageMapDrawing()">✅ Fertig</button>
+                        <button onclick="cancelLageMapDrawing()">↩️ Abbrechen</button>
+                        <button onclick="centerLageMapToIncidentGps()">🎯 Zentrieren</button>
+                        <button onclick="exportLageMapImage()">📸 Export</button>
+                    </div>
+                    <div id="lageMapHint" class="lage-map-meta">Wähle ein Werkzeug und tippe in die Karte.</div>
+                    <div id="lageMapCanvas" class="lage-map-canvas"></div>
+                </details>
+            </div>
+
+            <div class="lage-section">
                 <h4>Bilderdokumentation</h4>
                 <div class="lage-row">
                     <button onclick="triggerLagePhotoUploadCamera()">📷 Foto aufnehmen</button>
@@ -6051,6 +6180,8 @@ let currentCategory = null;
 const FAVORITES_STORAGE_KEY = "einsatz_favoriten";
 const APP_MODE_STORAGE_KEY = "app_mode_v1";
 const CREATOR_PROFILE_STORAGE_KEY = "ff360_creator_profile_v1";
+const CREATOR_FF_LOGO_MAX_EDGE = 720;
+const CREATOR_FF_LOGO_MAX_FILE_BYTES = 6 * 1024 * 1024;
 const SCOPED_STORAGE_BASE_KEYS = new Set([
     "einsatz_favoriten",
     "aaaabceeee_open",
@@ -6719,7 +6850,7 @@ function toggleDarkMode(){
 }
 
 function getDefaultCreatorProfile(){
-    return { name: "", feuerwehr: "" };
+    return { name: "", feuerwehr: "", ffLogoDataUrl: "" };
 }
 
 function getCreatorProfile(){
@@ -6729,7 +6860,8 @@ function getCreatorProfile(){
         const base = getDefaultCreatorProfile();
         return {
             name: String((parsed && parsed.name) || base.name || "").trim(),
-            feuerwehr: String((parsed && parsed.feuerwehr) || base.feuerwehr || "").trim()
+            feuerwehr: String((parsed && parsed.feuerwehr) || base.feuerwehr || "").trim(),
+            ffLogoDataUrl: String((parsed && parsed.ffLogoDataUrl) || "").trim()
         };
     } catch {
         return getDefaultCreatorProfile();
@@ -6739,9 +6871,113 @@ function getCreatorProfile(){
 function saveCreatorProfile(profile){
     const next = {
         name: String((profile && profile.name) || "").trim(),
-        feuerwehr: String((profile && profile.feuerwehr) || "").trim()
+        feuerwehr: String((profile && profile.feuerwehr) || "").trim(),
+        ffLogoDataUrl: String((profile && profile.ffLogoDataUrl) || "").trim()
     };
     localStorage.setItem(CREATOR_PROFILE_STORAGE_KEY, JSON.stringify(next));
+}
+
+function getCreatorFfLogoDataUrl(){
+    const profile = getCreatorProfile();
+    return profile.ffLogoDataUrl || "";
+}
+
+function getExportHeaderLogoHtml(){
+    const ffLogo = getCreatorFfLogoDataUrl();
+    if (!ffLogo){
+        return `<img class="logo" src="logoapp.png" alt="FF 360 Logo">`;
+    }
+    return `<div class="logo-group"><img class="logo" src="logoapp.png" alt="FF 360 Logo"><img class="logo ff-logo" src="${escapeHtml(ffLogo)}" alt="Feuerwehr-Logo"></div>`;
+}
+
+function getInlineExportLogoStyle(){
+    return `.logo-group{display:flex;align-items:flex-start;gap:10px;}`;
+}
+
+function renderCreatorFfLogoPreview(){
+    const profile = getCreatorProfile();
+    const previewWrap = document.getElementById("settingsFfLogoPreviewWrap");
+    const previewImg = document.getElementById("settingsFfLogoPreview");
+    const homeLogo = document.getElementById("homeFooterFfLogo");
+    const homeSep = document.getElementById("homeFooterLogoSep");
+    const hasLogo = !!profile.ffLogoDataUrl;
+    if (previewWrap){
+        previewWrap.classList.toggle("hidden", !hasLogo);
+    }
+    if (previewImg){
+        previewImg.src = hasLogo ? profile.ffLogoDataUrl : "";
+    }
+    if (homeLogo){
+        homeLogo.classList.toggle("hidden", !hasLogo);
+        homeLogo.src = hasLogo ? profile.ffLogoDataUrl : "";
+    }
+    if (homeSep){
+        homeSep.classList.toggle("hidden", !hasLogo);
+    }
+}
+
+function resizeImageDataUrl(file){
+    return new Promise((resolve, reject)=>{
+        if (!file){
+            reject(new Error("Keine Datei ausgewählt."));
+            return;
+        }
+        if (file.size > CREATOR_FF_LOGO_MAX_FILE_BYTES){
+            reject(new Error("Datei zu groß. Bitte ein kleineres Logo wählen."));
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = ()=>{
+            const dataUrl = String(reader.result || "");
+            const img = new Image();
+            img.onload = ()=>{
+                const maxEdge = CREATOR_FF_LOGO_MAX_EDGE;
+                const width = Number(img.naturalWidth) || 1;
+                const height = Number(img.naturalHeight) || 1;
+                const scale = Math.min(1, maxEdge / Math.max(width, height));
+                const targetW = Math.max(1, Math.round(width * scale));
+                const targetH = Math.max(1, Math.round(height * scale));
+                const canvas = document.createElement("canvas");
+                canvas.width = targetW;
+                canvas.height = targetH;
+                const ctx = canvas.getContext("2d");
+                if (!ctx){
+                    resolve(dataUrl);
+                    return;
+                }
+                ctx.drawImage(img, 0, 0, targetW, targetH);
+                resolve(canvas.toDataURL("image/png"));
+            };
+            img.onerror = ()=>reject(new Error("Bild konnte nicht gelesen werden."));
+            img.src = dataUrl;
+        };
+        reader.onerror = ()=>reject(new Error("Datei konnte nicht gelesen werden."));
+        reader.readAsDataURL(file);
+    });
+}
+
+async function updateCreatorFfLogoFromFile(event){
+    const input = event && event.target;
+    const file = input && input.files && input.files[0] ? input.files[0] : null;
+    if (!file) return;
+    try {
+        const resizedDataUrl = await resizeImageDataUrl(file);
+        const profile = getCreatorProfile();
+        profile.ffLogoDataUrl = resizedDataUrl;
+        saveCreatorProfile(profile);
+        renderCreatorFfLogoPreview();
+    } catch (error){
+        alert(error && error.message ? error.message : "Logo konnte nicht gespeichert werden.");
+    } finally {
+        if (input) input.value = "";
+    }
+}
+
+function clearCreatorFfLogo(){
+    const profile = getCreatorProfile();
+    profile.ffLogoDataUrl = "";
+    saveCreatorProfile(profile);
+    renderCreatorFfLogoPreview();
 }
 
 function getAppFooterCreatorText(){
@@ -6764,6 +7000,7 @@ function renderCreatorFooterLine(){
     if (el){
         el.textContent = getAppFooterCreatorText();
     }
+    renderCreatorFfLogoPreview();
 }
 
 function updateCreatorProfileField(field, value){
@@ -6793,6 +7030,7 @@ function renderSettingsOverlay(){
     if (trainingBtn){
         trainingBtn.textContent = isTrainingMode() ? "Übungsmodus deaktivieren" : "Übungsmodus aktivieren";
     }
+    renderCreatorFfLogoPreview();
     renderTrainingArchiveSettingsList();
     renderEinsatzArchiveSettingsList();
     updateWeatherSettingsFields();
@@ -9646,6 +9884,44 @@ function openHydrantenNavigation(lat, lon){
     if (!w) window.location.href = url;
 }
 
+function deriveLageMapWaterSymbolFromHydrant(hydrant){
+    const typ = String((hydrant && hydrant.typ) || "").toLowerCase();
+    if (typ.includes("unterflur")) return "unterflur";
+    if (typ.includes("gewässer") || typ.includes("gewaesser") || typ.includes("teich") || typ.includes("see")) return "gewaesser";
+    if (typ.includes("löschwasser") || typ.includes("loeschwasser")) return "loeschwasser";
+    return "ueberflur";
+}
+
+function addHydrantToLageMap(hydrantId){
+    const state = getHydrantenState();
+    const h = (state.hydrants || []).find((x)=>String(x.id) === String(hydrantId || ""));
+    if (!h){
+        alert("Hydrant nicht gefunden.");
+        return;
+    }
+    const lat = Number(h.lat);
+    const lng = Number(h.lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)){
+        alert("Hydrant hat keine gültigen Koordinaten.");
+        return;
+    }
+    if (!requireLageIncidentForMapWrite()) return;
+    const mapId = `hydrant_${String(h.id || "").replace(/[^a-zA-Z0-9_-]/g, "_")}`;
+    upsertLageMapItem({
+        id: mapId,
+        kind: "water",
+        symbol: deriveLageMapWaterSymbolFromHydrant(h),
+        name: String(h.name || h.id || "Hydrant"),
+        callsign: "",
+        status: getHydrantStatusLabel(h.status),
+        note: [h.adresse || "", h.note || ""].filter(Boolean).join(" | "),
+        assignment: "",
+        lat,
+        lng
+    });
+    alert("Hydrant in die Einsatz-Lagekarte übernommen.");
+}
+
 function resetHydrantenMapView(){
     const state = getHydrantenState();
     const known = state && state.lastKnownLocation;
@@ -9782,7 +10058,7 @@ function renderHydrantenTool(){
                 <label>Notiz</label>
                 <textarea oninput="updateHydrantenNote('${String(selected.id).replace(/'/g, "\\'")}', this.value)">${escapeHtml(selected.note || "")}</textarea>
             </div>
-            ${Number.isFinite(selected.lat) && Number.isFinite(selected.lon) ? `<div class="atem-row-actions" style="margin-top:8px;"><button onclick="openHydrantenNavigation(${selected.lat}, ${selected.lon})">Zum Hydranten navigieren</button></div>` : ""}
+            ${Number.isFinite(selected.lat) && Number.isFinite(selected.lon) ? `<div class="atem-row-actions" style="margin-top:8px;"><button onclick="openHydrantenNavigation(${selected.lat}, ${selected.lon})">Zum Hydranten navigieren</button><button onclick="addHydrantToLageMap('${String(selected.id).replace(/'/g, "\\'")}')">In Lagekarte übernehmen</button></div>` : ""}
             <div class="atem-row-actions" style="margin-top:8px;">
                 <button onclick="clearHydrantenSelection()">Diesen Hydranten nicht mehr auswählen</button>
             </div>
@@ -9820,7 +10096,10 @@ function renderHydrantenTool(){
             html += `<div class="hydrant-item ${active ? "trainer-info-box" : ""}">
                 <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
                     <strong>${escapeHtml(h.name || h.id)}</strong>
-                    <button style="width:auto;margin:0;" onclick="selectHydrantById('${String(h.id).replace(/'/g, "\\'")}')">Auswählen</button>
+                    <div style="display:flex;gap:6px;">
+                        <button style="width:auto;margin:0;" onclick="selectHydrantById('${String(h.id).replace(/'/g, "\\'")}')">Auswählen</button>
+                        <button style="width:auto;margin:0;" onclick="addHydrantToLageMap('${String(h.id).replace(/'/g, "\\'")}')">In Lagekarte</button>
+                    </div>
                 </div>
                 <div class="psu-meta">${escapeHtml(h.adresse || "-")} · ${escapeHtml(h.typ || "Unbekannt")}${h.nennweite ? ` · DN ${escapeHtml(h.nennweite)}` : ""}${Number.isFinite(h.distance) ? ` · ${escapeHtml(formatHydDist(h.distance))}` : ""}</div>
             </div>`;
@@ -10082,6 +10361,14 @@ let lageTimerId = null;
 let lageResourceMap = null;
 let lageResourceMarker = null;
 let lageResourceMapKey = "";
+const LAGE_MAP_STATE_VERSION = 1;
+let lageTacticalMap = null;
+let lageTacticalLayer = null;
+let lageTacticalTempLayer = null;
+let lageTacticalRuntimeTool = "none";
+let lageTacticalTempPoints = [];
+let lageTacticalTempGeometryType = "";
+let lageTacticalRenderKey = "";
 let psuReminderTickerId = null;
 let funkHelperReminderTimer = null;
 
@@ -11028,6 +11315,71 @@ function buildVerursacherCompactText(info){
     return parts.join(" | ") || "-";
 }
 
+function createDefaultLageMapState(){
+    return {
+        version: LAGE_MAP_STATE_VERSION,
+        updatedAt: "",
+        center: null,
+        items: [],
+        drawings: []
+    };
+}
+
+function normalizeLageMapState(raw){
+    const base = createDefaultLageMapState();
+    const input = raw && typeof raw === "object" ? raw : {};
+    const normalizeCoord = (lat, lng)=>{
+        const nLat = Number(lat);
+        const nLng = Number(lng);
+        if (!Number.isFinite(nLat) || !Number.isFinite(nLng)) return null;
+        if (Math.abs(nLat) > 90 || Math.abs(nLng) > 180) return null;
+        return { lat: nLat, lng: nLng };
+    };
+    const centerRaw = input.center && typeof input.center === "object" ? input.center : null;
+    const centerNorm = centerRaw ? normalizeCoord(centerRaw.lat, centerRaw.lng) : null;
+    const center = centerNorm
+        ? { ...centerNorm, zoom: Math.max(13, Math.min(20, Number(centerRaw.zoom) || 17)) }
+        : null;
+    const normItem = (item, idx)=>{
+        const src = item && typeof item === "object" ? item : {};
+        const coord = normalizeCoord(src.lat, src.lng);
+        if (!coord) return null;
+        return {
+            id: String(src.id || `lm_item_${idx}_${Date.now().toString(36)}`),
+            kind: String(src.kind || "marker"),
+            symbol: String(src.symbol || ""),
+            name: String(src.name || ""),
+            callsign: String(src.callsign || ""),
+            status: String(src.status || ""),
+            note: String(src.note || ""),
+            assignment: String(src.assignment || ""),
+            lat: coord.lat,
+            lng: coord.lng
+        };
+    };
+    const normDrawing = (item, idx)=>{
+        const src = item && typeof item === "object" ? item : {};
+        const geojson = src.geojson && typeof src.geojson === "object" ? src.geojson : null;
+        if (!geojson || !geojson.type) return null;
+        return {
+            id: String(src.id || `lm_draw_${idx}_${Date.now().toString(36)}`),
+            kind: String(src.kind || "drawing"),
+            label: String(src.label || ""),
+            note: String(src.note || ""),
+            color: String(src.color || ""),
+            geojson
+        };
+    };
+    return {
+        ...base,
+        ...input,
+        version: LAGE_MAP_STATE_VERSION,
+        center,
+        items: Array.isArray(input.items) ? input.items.map(normItem).filter(Boolean).slice(0, 600) : [],
+        drawings: Array.isArray(input.drawings) ? input.drawings.map(normDrawing).filter(Boolean).slice(0, 600) : []
+    };
+}
+
 function getDefaultLageState(){
     return {
         startedAt: null,
@@ -11068,6 +11420,7 @@ function getDefaultLageState(){
         oneTapMessageGeneratedAt: "",
         requests: [],
         photos: [],
+        lageMap: createDefaultLageMapState(),
         log: []
     };
 }
@@ -11111,6 +11464,7 @@ function getLageState(){
             verursacher: normalizeVerursacherInfo((parsed && parsed.verursacher) || defaults.verursacher),
             requests: Array.isArray(parsed && parsed.requests) ? parsed.requests : [],
             photos: normalizedPhotos,
+            lageMap: normalizeLageMapState((parsed && parsed.lageMap) || defaults.lageMap),
             log: normalizedLog
         };
     } catch {
@@ -11692,6 +12046,7 @@ function renderLageDashboard(){
     });
     renderLageOneTapMessage(state);
     renderLageResourceBoard();
+    renderLageTacticalMap(state);
 
     const logTimeInput = document.getElementById("lageLogTime");
     if (logTimeInput && !logTimeInput.value){
@@ -11706,6 +12061,548 @@ function handleLageResourceBoardToggle(isOpen){
             lageResourceMap.invalidateSize();
         }
     }, 90);
+}
+
+const LAGE_MAP_SYMBOL_META = Object.freeze({
+    vehicle: {
+        lf: { label: "LF", color: "#c9212d" },
+        tlf: { label: "TLF", color: "#af1b26" },
+        dlk: { label: "DLK", color: "#8e1220" },
+        rtw: { label: "RTW", color: "#1769ff" },
+        polizei: { label: "POL", color: "#2f3a47" },
+        el: { label: "EL", color: "#5f2db3" }
+    },
+    crew: {
+        angriff: { label: "AT", color: "#c34f00" },
+        wasser: { label: "WT", color: "#1769ff" },
+        schlauch: { label: "ST", color: "#137c42" },
+        sicherheit: { label: "SiT", color: "#7f8a00" },
+        rettung: { label: "RT", color: "#7a2f9f" }
+    },
+    hazard: {
+        brand: { label: "Brand", color: "#c9212d" },
+        gefahrstoff: { label: "GGS", color: "#5a3f26" },
+        strom: { label: "Strom", color: "#f0a400" },
+        einsturz: { label: "Einst.", color: "#6b5a4d" },
+        absperrung: { label: "Abs.", color: "#2f3a47" },
+        sammelstelle: { label: "Samm.", color: "#137c42" },
+        bereitstellung: { label: "BR", color: "#1769ff" }
+    },
+    water: {
+        ueberflur: { label: "H", color: "#1769ff" },
+        unterflur: { label: "UH", color: "#0a4ab2" },
+        gewaesser: { label: "GW", color: "#007a8a" },
+        loeschwasser: { label: "LWB", color: "#4f70bf" }
+    }
+});
+
+const LAGE_MAP_DRAW_STYLE = Object.freeze({
+    schlauchleitung: "#1769ff",
+    angriffsweg: "#c9212d",
+    rueckzugsweg: "#137c42",
+    sperrgrenze: "#2f3a47",
+    brandbekaempfung: "#c9212d",
+    wasserversorgung: "#1769ff",
+    rettung: "#137c42",
+    bereitstellung: "#f0a400",
+    gefahrgut: "#d66a00",
+    gefahrenbereich: "#c9212d"
+});
+
+function isLageIncidentActive(state){
+    const s = state && typeof state === "object" ? state : getLageState();
+    return !!s.startedAt && !s.endedAt;
+}
+
+function requireLageIncidentForMapWrite(){
+    if (isLageIncidentActive()) return true;
+    alert("Lagekarte kann nur bei aktivem Einsatz bearbeitet werden.");
+    return false;
+}
+
+function getLageMapStateFromLageState(state){
+    const s = state && typeof state === "object" ? state : getLageState();
+    return normalizeLageMapState(s.lageMap);
+}
+
+function patchLageMapState(mutator){
+    if (!requireLageIncidentForMapWrite()) return false;
+    patchLageState((state)=>{
+        const next = normalizeLageMapState(state.lageMap);
+        mutator(next);
+        next.updatedAt = new Date().toISOString();
+        state.lageMap = next;
+    });
+    return true;
+}
+
+function createLageMapSymbolIcon(kind, symbol){
+    const kindMeta = LAGE_MAP_SYMBOL_META[kind] || {};
+    const meta = kindMeta[symbol] || { label: "?", color: "#2f3a47" };
+    const textColor = "#ffffff";
+    const svg = `
+<svg class="lage-map-symbol" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<circle cx="19" cy="19" r="16" fill="${meta.color}" stroke="#ffffff" stroke-width="2"/>
+<text x="19" y="22" text-anchor="middle" font-size="9" font-weight="700" fill="${textColor}" font-family="Arial, sans-serif">${meta.label}</text>
+</svg>`;
+    return L.divIcon({
+        className: "lage-map-icon-wrap",
+        html: svg,
+        iconSize: [38, 38],
+        iconAnchor: [19, 19],
+        popupAnchor: [0, -18]
+    });
+}
+
+function getLageMapToolButtonMap(){
+    return {
+        vehicle: "lageMapToolVehicleBtn",
+        crew: "lageMapToolCrewBtn",
+        hazard: "lageMapToolHazardBtn",
+        water: "lageMapToolWaterBtn",
+        line: "lageMapToolLineBtn",
+        area: "lageMapToolAreaBtn",
+        edit: "lageMapToolEditBtn",
+        delete: "lageMapToolDeleteBtn"
+    };
+}
+
+function updateLageMapToolButtons(){
+    const map = getLageMapToolButtonMap();
+    Object.keys(map).forEach((tool)=>{
+        const el = document.getElementById(map[tool]);
+        if (!el) return;
+        el.classList.toggle("active", lageTacticalRuntimeTool === tool);
+    });
+}
+
+function setLageMapHint(text){
+    const hint = document.getElementById("lageMapHint");
+    if (hint) hint.textContent = text || "Wähle ein Werkzeug und tippe in die Karte.";
+}
+
+function setLageMapTool(tool){
+    const next = String(tool || "");
+    const allowed = new Set(["vehicle", "crew", "hazard", "water", "line", "area", "edit", "delete"]);
+    if (!allowed.has(next)){
+        lageTacticalRuntimeTool = "none";
+        updateLageMapToolButtons();
+        setLageMapHint("Werkzeug beendet.");
+        return;
+    }
+    if (!requireLageIncidentForMapWrite()) return;
+    lageTacticalRuntimeTool = next;
+    cancelLageMapDrawing();
+    updateLageMapToolButtons();
+    if (next === "line"){
+        setLageMapHint("Linie: Punkte durch Tippen setzen, dann 'Fertig'.");
+    } else if (next === "area"){
+        setLageMapHint("Bereich: Punkte durch Tippen setzen, dann 'Fertig'.");
+    } else if (next === "delete"){
+        setLageMapHint("Löschen: Objekt antippen.");
+    } else if (next === "edit"){
+        setLageMapHint("Bearbeiten: Objekt antippen.");
+    } else {
+        setLageMapHint("Punkt durch Antippen der Karte setzen.");
+    }
+}
+
+function getLageMapNextId(prefix){
+    return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+}
+
+function upsertLageMapItem(item){
+    const safe = item && typeof item === "object" ? item : null;
+    if (!safe) return;
+    patchLageMapState((mapState)=>{
+        mapState.items = Array.isArray(mapState.items) ? mapState.items : [];
+        const idx = mapState.items.findIndex((x)=>x.id === safe.id);
+        if (idx >= 0) mapState.items[idx] = safe;
+        else mapState.items.unshift(safe);
+    });
+    if (isLageOverlayOpen()) renderLageDashboard();
+}
+
+function removeLageMapItem(id){
+    if (!id) return;
+    patchLageMapState((mapState)=>{
+        mapState.items = (mapState.items || []).filter((x)=>x.id !== id);
+    });
+    if (isLageOverlayOpen()) renderLageDashboard();
+}
+
+function upsertLageMapDrawing(drawing){
+    const safe = drawing && typeof drawing === "object" ? drawing : null;
+    if (!safe) return;
+    patchLageMapState((mapState)=>{
+        mapState.drawings = Array.isArray(mapState.drawings) ? mapState.drawings : [];
+        const idx = mapState.drawings.findIndex((x)=>x.id === safe.id);
+        if (idx >= 0) mapState.drawings[idx] = safe;
+        else mapState.drawings.unshift(safe);
+    });
+    if (isLageOverlayOpen()) renderLageDashboard();
+}
+
+function removeLageMapDrawing(id){
+    if (!id) return;
+    patchLageMapState((mapState)=>{
+        mapState.drawings = (mapState.drawings || []).filter((x)=>x.id !== id);
+    });
+    if (isLageOverlayOpen()) renderLageDashboard();
+}
+
+function openLageMapItemEditor(id){
+    const state = getLageState();
+    const mapState = getLageMapStateFromLageState(state);
+    const renderKey = `${mapState.updatedAt || ""}|${(mapState.items || []).length}|${(mapState.drawings || []).length}`;
+    const item = (mapState.items || []).find((x)=>x.id === id);
+    if (!item) return;
+    if (!requireLageIncidentForMapWrite()) return;
+    const name = prompt("Name", item.name || "");
+    if (name === null) return;
+    const status = prompt("Status", item.status || "");
+    if (status === null) return;
+    const note = prompt("Notiz", item.note || "");
+    if (note === null) return;
+    upsertLageMapItem({
+        ...item,
+        name: String(name || "").trim(),
+        status: String(status || "").trim(),
+        note: String(note || "").trim()
+    });
+}
+
+function openLageMapDrawingEditor(id){
+    const mapState = getLageMapStateFromLageState(getLageState());
+    const drawing = (mapState.drawings || []).find((x)=>x.id === id);
+    if (!drawing) return;
+    if (!requireLageIncidentForMapWrite()) return;
+    const label = prompt("Bezeichnung", drawing.label || "");
+    if (label === null) return;
+    const note = prompt("Notiz", drawing.note || "");
+    if (note === null) return;
+    upsertLageMapDrawing({
+        ...drawing,
+        label: String(label || "").trim(),
+        note: String(note || "").trim()
+    });
+}
+
+function createLageMapPointFromTool(tool, latlng){
+    const lat = Number(latlng && latlng.lat);
+    const lng = Number(latlng && latlng.lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    if (!requireLageIncidentForMapWrite()) return null;
+    let symbol = "";
+    let status = "";
+    let name = "";
+    let callsign = "";
+    let assignment = "";
+    if (tool === "vehicle"){
+        symbol = prompt("Fahrzeugtyp (lf/tlf/dlk/rtw/polizei/el)", "lf") || "lf";
+        name = prompt("Fahrzeugname", "LF 10") || "";
+        callsign = prompt("Funkrufname", "") || "";
+        status = prompt("Status (Anfahrt/Bereitstellung/Im Einsatz/Außer Betrieb)", "Im Einsatz") || "";
+    } else if (tool === "crew"){
+        symbol = prompt("Trupptyp (angriff/wasser/schlauch/sicherheit/rettung)", "angriff") || "angriff";
+        name = prompt("Truppname", "") || "";
+        status = prompt("Auftrag", "") || "";
+        assignment = prompt("PA (ja/nein)", "nein") || "";
+    } else if (tool === "hazard"){
+        symbol = prompt("Gefahrenart (brand/gefahrstoff/strom/einsturz/absperrung/sammelstelle/bereitstellung)", "brand") || "brand";
+        name = prompt("Beschreibung", "") || "";
+        status = prompt("Priorität (niedrig/mittel/hoch)", "mittel") || "";
+    } else if (tool === "water"){
+        symbol = prompt("Wasserentnahme (ueberflur/unterflur/gewaesser/loeschwasser)", "ueberflur") || "ueberflur";
+        name = prompt("Bezeichnung", "") || "";
+        status = prompt("Ergiebigkeit (optional)", "") || "";
+    } else {
+        return null;
+    }
+    return {
+        id: getLageMapNextId(tool),
+        kind: tool,
+        symbol: String(symbol || "").trim().toLowerCase(),
+        name: String(name || "").trim(),
+        callsign: String(callsign || "").trim(),
+        status: String(status || "").trim(),
+        note: "",
+        assignment: String(assignment || "").trim(),
+        lat,
+        lng
+    };
+}
+
+function buildLageMapItemPopup(item){
+    const title = item.name || item.callsign || item.symbol || "Objekt";
+    return `<div class="lage-map-popup-title">${escapeHtml(title)}</div>
+        <div class="lage-map-popup-meta">${escapeHtml(item.status || "-")}${item.note ? ` · ${escapeHtml(item.note)}` : ""}</div>
+        <div class="lage-map-popup-actions">
+            <button onclick="openLageMapItemEditor('${String(item.id).replace(/'/g, "\\'")}')">Bearbeiten</button>
+            <button onclick="removeLageMapItem('${String(item.id).replace(/'/g, "\\'")}')">Löschen</button>
+        </div>`;
+}
+
+function buildLageMapDrawingPopup(drawing){
+    const title = drawing.label || drawing.kind || "Zeichnung";
+    return `<div class="lage-map-popup-title">${escapeHtml(title)}</div>
+        <div class="lage-map-popup-meta">${escapeHtml(drawing.note || "-")}</div>
+        <div class="lage-map-popup-actions">
+            <button onclick="openLageMapDrawingEditor('${String(drawing.id).replace(/'/g, "\\'")}')">Bearbeiten</button>
+            <button onclick="removeLageMapDrawing('${String(drawing.id).replace(/'/g, "\\'")}')">Löschen</button>
+        </div>`;
+}
+
+function cancelLageMapDrawing(){
+    lageTacticalTempPoints = [];
+    lageTacticalTempGeometryType = "";
+    if (lageTacticalTempLayer){
+        try { lageTacticalTempLayer.clearLayers(); } catch {}
+    }
+}
+
+function finishLageMapDrawing(){
+    if (!requireLageIncidentForMapWrite()) return;
+    if (!lageTacticalTempPoints.length || !lageTacticalTempGeometryType){
+        setLageMapHint("Keine aktive Zeichnung.");
+        return;
+    }
+    if (lageTacticalTempGeometryType === "line"){
+        if (lageTacticalTempPoints.length < 2){
+            setLageMapHint("Für Linie mindestens 2 Punkte.");
+            return;
+        }
+        const kind = (prompt("Linientyp (schlauchleitung/angriffsweg/rueckzugsweg/sperrgrenze)", "schlauchleitung") || "schlauchleitung").toLowerCase();
+        const label = prompt("Bezeichnung", kind) || kind;
+        const note = prompt("Notiz", "") || "";
+        const color = LAGE_MAP_DRAW_STYLE[kind] || "#1769ff";
+        const feature = {
+            type: "Feature",
+            geometry: { type: "LineString", coordinates: lageTacticalTempPoints.map((p)=>[p.lng, p.lat]) },
+            properties: { color, kind }
+        };
+        upsertLageMapDrawing({ id: getLageMapNextId("line"), kind, label, note, color, geojson: feature });
+    } else if (lageTacticalTempGeometryType === "area"){
+        if (lageTacticalTempPoints.length < 3){
+            setLageMapHint("Für Bereich mindestens 3 Punkte.");
+            return;
+        }
+        const kind = (prompt("Bereichstyp (brandbekaempfung/wasserversorgung/rettung/bereitstellung/gefahrgut/gefahrenbereich)", "brandbekaempfung") || "brandbekaempfung").toLowerCase();
+        const label = prompt("Abschnitt/Bezeichnung", kind) || kind;
+        const note = prompt("Abschnittsleiter/Aufgabe", "") || "";
+        const color = LAGE_MAP_DRAW_STYLE[kind] || "#c9212d";
+        const coords = lageTacticalTempPoints.map((p)=>[p.lng, p.lat]);
+        coords.push([lageTacticalTempPoints[0].lng, lageTacticalTempPoints[0].lat]);
+        const feature = {
+            type: "Feature",
+            geometry: { type: "Polygon", coordinates: [coords] },
+            properties: { color, kind }
+        };
+        upsertLageMapDrawing({ id: getLageMapNextId("area"), kind, label, note, color, geojson: feature });
+    }
+    cancelLageMapDrawing();
+    setLageMapHint("Zeichnung gespeichert.");
+}
+
+function centerLageMapToIncidentGps(){
+    const gps = parseLageGpsCoordinates(getLageState().gpsText);
+    if (!gps || !lageTacticalMap){
+        alert("Keine GPS-Position in der Einsatzlage vorhanden.");
+        return;
+    }
+    lageTacticalMap.setView([gps.lat, gps.lon], 17);
+}
+
+function applyLageMapDeleteOrEdit(layerType, id){
+    if (lageTacticalRuntimeTool === "delete"){
+        if (layerType === "item") removeLageMapItem(id);
+        if (layerType === "drawing") removeLageMapDrawing(id);
+        return true;
+    }
+    if (lageTacticalRuntimeTool === "edit"){
+        if (layerType === "item") openLageMapItemEditor(id);
+        if (layerType === "drawing") openLageMapDrawingEditor(id);
+        return true;
+    }
+    return false;
+}
+
+function renderLageTacticalMap(state){
+    const mapEl = document.getElementById("lageMapCanvas");
+    if (!mapEl) return;
+    if (typeof window.L === "undefined"){
+        mapEl.innerHTML = `<div class="lage-empty" style="padding:12px;">Kartenmodul konnte nicht geladen werden.</div>`;
+        return;
+    }
+    const gps = parseLageGpsCoordinates(state.gpsText);
+    if (!gps && !lageTacticalMap){
+        mapEl.innerHTML = `<div class="lage-empty" style="margin:0;">Für die Lagekarte zuerst GPS in Einsatzlage setzen.</div>`;
+        return;
+    }
+    if (!lageTacticalMap){
+        mapEl.innerHTML = "";
+        lageTacticalMap = L.map(mapEl, { zoomControl: true, preferCanvas: true });
+        lageTacticalRenderKey = "";
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 20,
+            attribution: "&copy; OpenStreetMap"
+        }).addTo(lageTacticalMap);
+        lageTacticalLayer = L.layerGroup().addTo(lageTacticalMap);
+        lageTacticalTempLayer = L.layerGroup().addTo(lageTacticalMap);
+        const initial = gps ? [gps.lat, gps.lon] : [53.985, 10.78];
+        lageTacticalMap.setView(initial, 17);
+        lageTacticalMap.on("moveend zoomend", ()=>{
+            if (!isLageIncidentActive()) return;
+            const c = lageTacticalMap.getCenter();
+            patchLageMapState((mapState)=>{
+                mapState.center = { lat: c.lat, lng: c.lng, zoom: lageTacticalMap.getZoom() };
+            });
+        });
+        lageTacticalMap.on("click", (event)=>{
+            if (!event || !event.latlng) return;
+            const tool = lageTacticalRuntimeTool;
+            if (tool === "vehicle" || tool === "crew" || tool === "hazard" || tool === "water"){
+                const item = createLageMapPointFromTool(tool, event.latlng);
+                if (!item) return;
+                upsertLageMapItem(item);
+                setLageMapHint("Punkt gesetzt.");
+                return;
+            }
+            if (tool === "line" || tool === "area"){
+                if (!requireLageIncidentForMapWrite()) return;
+                const point = { lat: Number(event.latlng.lat), lng: Number(event.latlng.lng) };
+                if (!Number.isFinite(point.lat) || !Number.isFinite(point.lng)) return;
+                if (!lageTacticalTempGeometryType){
+                    lageTacticalTempGeometryType = tool;
+                    lageTacticalTempPoints = [];
+                }
+                if (lageTacticalTempGeometryType !== tool){
+                    cancelLageMapDrawing();
+                    lageTacticalTempGeometryType = tool;
+                }
+                lageTacticalTempPoints.push(point);
+                if (lageTacticalTempLayer){
+                    lageTacticalTempLayer.clearLayers();
+                    if (tool === "line" && lageTacticalTempPoints.length > 1){
+                        L.polyline(lageTacticalTempPoints.map((p)=>[p.lat, p.lng]), { color: "#1769ff", weight: 3, dashArray: "6 4" }).addTo(lageTacticalTempLayer);
+                    }
+                    if (tool === "area" && lageTacticalTempPoints.length > 1){
+                        L.polygon(lageTacticalTempPoints.map((p)=>[p.lat, p.lng]), { color: "#c9212d", weight: 2, fillOpacity: 0.12, dashArray: "4 4" }).addTo(lageTacticalTempLayer);
+                    }
+                }
+                setLageMapHint(`${lageTacticalTempPoints.length} Punkt(e) gesetzt. Mit 'Fertig' speichern.`);
+            }
+        });
+    }
+
+    const mapState = getLageMapStateFromLageState(state);
+    if (mapState.center && Number.isFinite(mapState.center.lat) && Number.isFinite(mapState.center.lng)){
+        const c = lageTacticalMap.getCenter();
+        const z = lageTacticalMap.getZoom();
+        if (Math.abs(c.lat - mapState.center.lat) > 0.00001 || Math.abs(c.lng - mapState.center.lng) > 0.00001 || z !== mapState.center.zoom){
+            lageTacticalMap.setView([mapState.center.lat, mapState.center.lng], mapState.center.zoom || 17);
+        }
+    } else if (gps){
+        const c = lageTacticalMap.getCenter();
+        if (Math.abs(c.lat - gps.lat) > 0.0005 || Math.abs(c.lng - gps.lon) > 0.0005){
+            lageTacticalMap.setView([gps.lat, gps.lon], 17);
+        }
+    }
+
+    if (lageTacticalLayer && renderKey !== lageTacticalRenderKey){
+        lageTacticalLayer.clearLayers();
+        (mapState.items || []).forEach((item)=>{
+            const marker = L.marker([item.lat, item.lng], {
+                icon: createLageMapSymbolIcon(item.kind, item.symbol),
+                draggable: true
+            }).addTo(lageTacticalLayer);
+            marker.on("dragend", ()=>{
+                const ll = marker.getLatLng();
+                upsertLageMapItem({ ...item, lat: ll.lat, lng: ll.lng });
+            });
+            marker.on("click", ()=>{
+                if (applyLageMapDeleteOrEdit("item", item.id)) return;
+                marker.bindPopup(buildLageMapItemPopup(item)).openPopup();
+            });
+        });
+        (mapState.drawings || []).forEach((drawing)=>{
+            const gj = drawing.geojson;
+            let layer = null;
+            if (gj && gj.geometry && gj.geometry.type === "LineString"){
+                const coords = (gj.geometry.coordinates || []).map((c)=>[Number(c[1]), Number(c[0])]).filter((c)=>Number.isFinite(c[0]) && Number.isFinite(c[1]));
+                layer = L.polyline(coords, { color: drawing.color || gj.properties?.color || "#1769ff", weight: 3 });
+            } else if (gj && gj.geometry && gj.geometry.type === "Polygon"){
+                const ring = Array.isArray(gj.geometry.coordinates) && Array.isArray(gj.geometry.coordinates[0]) ? gj.geometry.coordinates[0] : [];
+                const coords = ring.map((c)=>[Number(c[1]), Number(c[0])]).filter((c)=>Number.isFinite(c[0]) && Number.isFinite(c[1]));
+                layer = L.polygon(coords, { color: drawing.color || gj.properties?.color || "#c9212d", weight: 2, fillOpacity: 0.2 });
+            } else if (gj && gj.geometry && gj.geometry.type === "Point" && Number(gj.properties && gj.properties.radiusMeters) > 0){
+                const radius = Number(gj.properties.radiusMeters);
+                const lat = Number(gj.geometry.coordinates[1]);
+                const lng = Number(gj.geometry.coordinates[0]);
+                layer = L.circle([lat, lng], { radius, color: drawing.color || gj.properties?.color || "#c9212d", weight: 2, fillOpacity: 0.12 });
+            }
+            if (!layer) return;
+            layer.addTo(lageTacticalLayer);
+            layer.on("click", ()=>{
+                if (applyLageMapDeleteOrEdit("drawing", drawing.id)) return;
+                layer.bindPopup(buildLageMapDrawingPopup(drawing)).openPopup();
+            });
+        });
+        lageTacticalRenderKey = renderKey;
+    }
+    updateLageMapToolButtons();
+    window.setTimeout(()=>{
+        if (lageTacticalMap) lageTacticalMap.invalidateSize();
+    }, 0);
+}
+
+function handleLageTacticalMapToggle(isOpen){
+    if (!isOpen) return;
+    window.setTimeout(()=>{
+        if (lageTacticalMap){
+            lageTacticalMap.invalidateSize();
+        } else if (isLageOverlayOpen()){
+            renderLageDashboard();
+        }
+    }, 90);
+}
+
+function exportLageMapImage(){
+    const mapEl = document.getElementById("lageMapCanvas");
+    if (!mapEl) return;
+    const doCapture = ()=>{
+        if (typeof window.html2canvas !== "function"){
+            alert("Screenshot-Funktion auf diesem Gerät nicht verfügbar.");
+            return;
+        }
+        window.html2canvas(mapEl, { backgroundColor: "#ffffff", useCORS: true }).then((canvas)=>{
+            const url = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+            a.href = url;
+            a.download = `Lagekarte_${ts}.png`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }).catch(()=>{
+            alert("Screenshot konnte nicht erstellt werden.");
+        });
+    };
+    if (typeof window.html2canvas === "function"){
+        doCapture();
+        return;
+    }
+    const scriptId = "html2canvas-cdn-loader";
+    if (document.getElementById(scriptId)){
+        setTimeout(doCapture, 200);
+        return;
+    }
+    const s = document.createElement("script");
+    s.id = scriptId;
+    s.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+    s.onload = doCapture;
+    s.onerror = ()=>alert("Export-Bibliothek konnte nicht geladen werden.");
+    document.head.appendChild(s);
 }
 
 function setLageStatusUi(elementId, isOk){
@@ -12255,6 +13152,7 @@ function exportLagePdf(){
     body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
     .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
     .logo { width:90px; height:auto; object-fit:contain; }
+    ${getInlineExportLogoStyle()}
     h1 { margin:0; font-size:22px; }
     .sub { margin-top:4px; font-size:13px; color:#444; }
     .section { margin-top:10px; page-break-inside: avoid; }
@@ -12262,7 +13160,7 @@ function exportLagePdf(){
     th, td { border:1px solid #bbb; padding:6px 8px; vertical-align:top; }
     .meta { margin: 8px 0; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><div><h1>Einsatzlage</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div>
+    <div class="head"><div><h1>Einsatzlage</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div>${getExportHeaderLogoHtml()}</div>
     <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
 
     <div class="section">
@@ -12272,6 +13170,7 @@ function exportLagePdf(){
         <tr><th>Einsatznummer</th><td>${escapeHtml(state.einsatznummer || "-")}</td><th>Leitstellen-Nr.</th><td>${escapeHtml(state.leitstelleEinsatznummer || "-")}</td></tr>
         <tr><th>Alarmstichwort</th><td>${escapeHtml(alarmstichwort)}</td><th>Modus</th><td>${isTrainingMode() ? "ÜBUNG" : "REAL"}</td></tr>
         <tr><th>Priorität</th><td>${escapeHtml(state.priority || "yellow")}</td><th>GPS</th><td>${escapeHtml(state.gpsText || "-")}</td></tr>
+        <tr><th>Lagekarte Objekte</th><td>${escapeHtml(String((state.lageMap && Array.isArray(state.lageMap.items) ? state.lageMap.items.length : 0)))}</td><th>Lagekarte Zeichnungen</th><td>${escapeHtml(String((state.lageMap && Array.isArray(state.lageMap.drawings) ? state.lageMap.drawings.length : 0)))}</td></tr>
         <tr><th>Kräfte</th><td>${escapeHtml(String(Number(state.counters.personnel) || 0))}</td><th>Fahrzeuge</th><td>${escapeHtml(String(Number(state.counters.vehicles) || 0))}</td></tr>
         <tr><th>PA im Einsatz</th><td>${escapeHtml(String(Number(state.counters.pa) || 0))}</td><th>Abschnitte aktiv</th><td>${escapeHtml(String(sectionsValue))}</td></tr>
       </table>
@@ -12752,6 +13651,8 @@ function exportIncidentFinalReportPdf(){
         { label: "Dauer", value: formatDuration(Number(lage.durationRunning) || 0) },
         { label: "Priorität", value: lage.priority || "-" },
         { label: "GPS", value: lage.gpsText || "-" },
+        { label: "Lagekarte Objekte", value: String(Array.isArray(lage.lageMap && lage.lageMap.items) ? lage.lageMap.items.length : 0) },
+        { label: "Lagekarte Zeichnungen", value: String(Array.isArray(lage.lageMap && lage.lageMap.drawings) ? lage.lageMap.drawings.length : 0) },
         { label: "Kräfte", value: String(Number(lage.counters.personnel) || 0) },
         { label: "Fahrzeuge", value: String(Number(lage.counters.vehicles) || 0) },
         { label: "PA im Einsatz", value: String(Number(lage.counters.pa) || 0) },
@@ -12813,6 +13714,7 @@ function exportIncidentFinalReportPdf(){
     body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
     .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
     .logo { width:90px; height:auto; object-fit:contain; }
+    ${getInlineExportLogoStyle()}
     h1 { margin:0; font-size:22px; }
     h2 { margin: 0; font-size: 15px; }
     .sub { margin-top:4px; font-size:13px; color:#444; }
@@ -12822,7 +13724,7 @@ function exportIncidentFinalReportPdf(){
     .meta { margin: 8px 0; font-size: 11px; color:#555; }
     .block { border: 1px solid #bbb; border-radius: 8px; padding: 8px; margin-top: 6px; white-space: pre-wrap; }
     </style></head><body>
-    <div class="head"><div><h1>Einsatz-Abschlussbericht</h1><div class="sub">FF 360° · Vollständiger Abschlussbericht</div></div><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div>
+    <div class="head"><div><h1>Einsatz-Abschlussbericht</h1><div class="sub">FF 360° · Vollständiger Abschlussbericht</div></div>${getExportHeaderLogoHtml()}</div>
     <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
 
     <div class="section"><h2>1) Einsatzübersicht</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(reportRows)}</tbody></table></div>
@@ -13130,6 +14032,9 @@ function closeLageOverlay(){
     if (!overlay) return;
     overlay.classList.remove("show");
     hideStructureForm();
+    cancelLageMapDrawing();
+    lageTacticalRuntimeTool = "none";
+    updateLageMapToolButtons();
     const keepLocked = isDangerOverlayOpen() || isStructureOverlayOpen() || isLageOverlayOpen() || isFunkOverlayOpen() || isNachforderungOverlayOpen() || isSocialOverlayOpen() || isEinsatzOverlayOpen() || isAtemOverlayOpen() || isFunkcheckOverlayOpen() || isGefahrgutOverlayOpen() || isHydrantenOverlayOpen() || isEvakOverlayOpen() || isPresseOverlayOpen() || isPsuOverlayOpen() || isSettingsOverlayOpen() || isLegalCheckOverlayOpen();
     document.body.style.overflow = keepLocked ? "hidden" : "";
     if (lageTimerId){
@@ -13744,8 +14649,8 @@ function exportPsuFeedbackPdf(){
         return;
     }
     const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
-    <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}</style>
-    </head><body><div class="head"><h1>PSU Feedback-Protokoll</h1><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div><pre>${escapeHtml(text)}</pre>
+    <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}${getInlineExportLogoStyle()}</style>
+    </head><body><div class="head"><h1>PSU Feedback-Protokoll</h1>${getExportHeaderLogoHtml()}</div><pre>${escapeHtml(text)}</pre>
     <div style="margin-top:8px;font-size:11px;color:#555;">Export: ${new Date().toLocaleString("de-DE")} | ${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
     w.document.open();
@@ -15040,12 +15945,13 @@ function exportSocialEinsatzprotokollPdf(){
     body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
     .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
     .logo { width:90px; height:auto; object-fit:contain; }
+    ${getInlineExportLogoStyle()}
     h1 { margin:0; font-size:22px; }
     .sub { margin-top:4px; font-size:13px; color:#444; }
     pre { white-space: pre-wrap; line-height: 1.4; }
     .meta { margin: 10px 0; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><div><h1>FF 360°</h1><div class="sub">Unterstützung im Einsatzdienst</div></div><img class="logo" src="logoff.png" alt="Feuerwehr-Logo"></div>
+    <div class="head"><div><h1>FF 360°</h1><div class="sub">Unterstützung im Einsatzdienst</div></div>${getExportHeaderLogoHtml()}</div>
     <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
     <pre>${escapeHtml(text)}</pre>
     <div style="margin-top:8px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
@@ -18323,12 +19229,13 @@ function asuExportIncidentPdf(){
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:#111; }
     .head { display:flex; align-items:center; gap:12px; margin:0 0 10px; }
     .head img { width:56px; height:56px; object-fit:contain; }
+    ${getInlineExportLogoStyle()}
     h1 { font-size: 18px; margin: 0; }
     .meta { font-size: 12px; color:#444; margin-bottom: 12px; }
     pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.35; }
     .footer { margin-top: 10px; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><img src="logoapp.png" alt="FF 360 Logo"><h1>Atemschutz-Protokoll</h1></div>
+    <div class="head">${getExportHeaderLogoHtml()}<h1>Atemschutz-Protokoll</h1></div>
     <div class="meta">Datei: ${escapeHtml(base)}.pdf</div>
     <pre>${escapeHtml(text)}</pre>
     <div class="footer">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
@@ -18540,6 +19447,12 @@ let funkcheckState = null;
 let funkcheckSaveTimer = null;
 let gefahrgutState = null;
 let gefahrgutSaveTimer = null;
+const gefahrgutUiState = {
+    folds: {
+        sofort: false,
+        absperren: false
+    }
+};
 let evakState = null;
 let evakSaveTimer = null;
 
@@ -19204,6 +20117,8 @@ function openGefahrgutOverlay(){
     if (!requireActiveIncidentOrRoute()) return;
     const o = document.getElementById("gefahrgutOverlay"); if (!o) return;
     lastGefahrgutFocus = document.activeElement;
+    gefahrgutUiState.folds.sofort = false;
+    gefahrgutUiState.folds.absperren = false;
     ensureGefahrgutState();
     o.classList.add("show");
     document.body.style.overflow = "hidden";
@@ -19495,13 +20410,29 @@ function pushGefahrgutNachforderung(resource, reason, sourceOptional){
     renderGefahrgutTool();
 }
 
-function renderGefahrgutChecklist(prefix, title, items){
-    let html = `<div class="atem-panel"><strong>${title}</strong>`;
+function setGefahrgutFoldOpen(key, isOpen){
+    if (!key) return;
+    gefahrgutUiState.folds[key] = !!isOpen;
+}
+
+function renderGefahrgutChecklist(prefix, title, items, options = {}){
+    const foldKey = options.foldKey || "";
+    const collapsible = !!options.collapsible;
+    const isOpen = foldKey ? !!gefahrgutUiState.folds[foldKey] : false;
+    let html = `<div class="atem-panel">`;
+    if (collapsible && foldKey){
+        html += `<details ${isOpen ? "open" : ""} ontoggle="setGefahrgutFoldOpen('${foldKey}', this.open)"><summary><strong>${title}</strong></summary>`;
+    } else {
+        html += `<strong>${title}</strong>`;
+    }
     items.forEach((item, idx)=>{
         const key = `${prefix}_${idx}`;
         const checked = !!(gefahrgutState.checks && gefahrgutState.checks[key]);
         html += `<label class="social-force-item" style="margin-top:6px;"><input type="checkbox" ${checked ? "checked" : ""} onchange="toggleGefahrgutCheck('${key}')">${item}</label>`;
     });
+    if (collapsible && foldKey){
+        html += `</details>`;
+    }
     html += `</div>`;
     return html;
 }
@@ -19620,8 +20551,8 @@ function renderGefahrgutTool(){
         ${scenario.label}
     </div>`;
 
-    html += renderGefahrgutChecklist("sofort", "Sofortmaßnahmen", scenario.sofort);
-    html += renderGefahrgutChecklist("absperren", "Absperren & Sichern", scenario.absperren);
+    html += renderGefahrgutChecklist("sofort", "Sofortmaßnahmen", scenario.sofort, { collapsible: true, foldKey: "sofort" });
+    html += renderGefahrgutChecklist("absperren", "Absperren & Sichern", scenario.absperren, { collapsible: true, foldKey: "absperren" });
 
     html += `<div class="links-box">
         <strong>Meldung an Leitstelle / EL</strong><br>
@@ -19948,12 +20879,13 @@ function exportEvakPdf(){
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; color:#111; }
     .head { display:flex; align-items:center; gap:12px; margin:0 0 10px; }
     .head img { width:56px; height:56px; object-fit:contain; }
+    ${getInlineExportLogoStyle()}
     h1 { font-size: 18px; margin: 0; }
     .meta { font-size: 12px; color:#444; margin-bottom: 12px; }
     pre { white-space: pre-wrap; word-break: break-word; font-size: 11px; line-height: 1.35; }
     .footer { margin-top: 10px; font-size: 11px; color:#555; }
     </style></head><body>
-    <div class="head"><img src="logoapp.png" alt="FF 360 Logo"><h1>Evakuierungs-Protokoll</h1></div>
+    <div class="head">${getExportHeaderLogoHtml()}<h1>Evakuierungs-Protokoll</h1></div>
     <div class="meta">Datei: ${escapeHtml(title)}.pdf</div>
     <pre>${escapeHtml(text)}</pre>
     <div class="footer">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
@@ -21534,6 +22466,15 @@ function savePolKripoArchive(list){
     appStorageSetItem(POL_KRIPO_ARCHIVE_STORAGE_KEY, JSON.stringify(Array.isArray(list) ? list : []));
 }
 
+function trySavePolKripoArchive(list){
+    try {
+        savePolKripoArchive(list);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 function patchPolKripoState(mutator){
     const state = getPolKripoState();
     mutator(state);
@@ -21628,7 +22569,18 @@ function archivePolKripoCurrent(){
         archivedAt: new Date().toISOString()
     });
     archive.unshift(entry);
-    savePolKripoArchive(archive.slice(0, 200));
+    const trimmed = archive.slice(0, 200);
+    if (!trySavePolKripoArchive(trimmed)){
+        const fallback = trimmed.map((item, idx)=>{
+            if (idx !== 0) return item;
+            return { ...item, fotoDataUrl: "", fotoName: "" };
+        });
+        if (!trySavePolKripoArchive(fallback)){
+            alert("Archivspeicherung fehlgeschlagen. Bitte weniger große Bilder im Archiv halten.");
+            return;
+        }
+        alert("Archiv gespeichert. Hinweis: Das Foto wurde wegen Speichergrenze nicht archiviert.");
+    }
     renderPolKripoForm();
 }
 
@@ -21685,6 +22637,7 @@ function exportPolKripoPdf(){
     body { font-family: Arial, sans-serif; color:#111; font-size:12px; }
     .header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
     .logo { width:90px; height:auto; object-fit:contain; }
+    ${getInlineExportLogoStyle()}
     h1 { margin:0; font-size:22px; }
     h2 { margin:3px 0 10px; font-size:16px; font-weight:700; }
     .warn { border:1px solid #b11; color:#8d111c; font-weight:700; padding:6px 8px; border-radius:6px; margin:8px 0 10px; }
@@ -21698,7 +22651,7 @@ function exportPolKripoPdf(){
         <h1>Abfragebogen an die POL / Kripo</h1>
         <h2>-Personensucheinsätze-</h2>
       </div>
-      <img class="logo" src="logoff.png" alt="Feuerwehr-Logo">
+      ${getExportHeaderLogoHtml()}
     </div>
     <div class="warn">Aktuelles Foto !!!</div>
 
@@ -22290,13 +23243,17 @@ function saveEinsatzKraefteVehicleFromPopup(){
 }
 
 function getSortedFunkrufData(state){
-    return getEinsatzKraefteVehiclePool(state).filter(isTimmendorferVehicle).slice().sort((a, b)=>{
+    return getEinsatzKraefteVehiclePool(state).slice().sort((a, b)=>{
         const g = (a.organisation || a.gemeinde || "").localeCompare((b.organisation || b.gemeinde || ""), "de");
         if (g) return g;
         const t = (a.fahrzeugBezeichnung || "").localeCompare((b.fahrzeugBezeichnung || ""), "de");
         if (t) return t;
         return (a.funkrufname || "").localeCompare((b.funkrufname || ""), "de");
     });
+}
+
+function getAssignableMemberVehicles(state){
+    return getSortedFunkrufData(state).filter(isTimmendorferVehicle);
 }
 
 function getEinsatzKraefteFilteredData(search, state){
@@ -22357,7 +23314,7 @@ function triggerEinsatzKraefteMemberImport(){
 function resolveMemberVehicleIdByText(text, state){
     const needle = String(text || "").trim().toLowerCase();
     if (!needle) return "";
-    const vehicles = getSortedFunkrufData(state);
+    const vehicles = getAssignableMemberVehicles(state);
     const exact = vehicles.find((v)=>{
         return String(v.funkrufname || "").toLowerCase() === needle || String(v.fahrzeugBezeichnung || "").toLowerCase() === needle;
     });
@@ -22546,10 +23503,18 @@ function setEinsatzKraefteMemberTeilnahme(id, checked){
 }
 
 function setEinsatzKraefteMemberVehicle(id, vehicleId){
+    const selectedId = String(vehicleId || "");
     patchEinsatzKraefteState((s)=>{
         const member = (s.members || []).find((m)=>m.id === id);
         if (!member) return;
-        member.assignedVehicleId = String(vehicleId || "");
+        if (selectedId){
+            const allowedIds = new Set(getAssignableMemberVehicles(s).map((v)=>v.id));
+            if (!allowedIds.has(selectedId)){
+                showEinsatzKraefteHint("Personal kann nur Timmendorfer Fahrzeugen zugewiesen werden.");
+                return;
+            }
+        }
+        member.assignedVehicleId = selectedId;
         if (member.assignedVehicleId) member.teilnahme = true;
         member.updatedAt = new Date().toISOString();
     });
@@ -22709,8 +23674,8 @@ function exportEinsatzKraeftePdf(){
     const w = window.open("", "_blank");
     if (!w) return;
     const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>${escapeHtml(file)}</title>
-    <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}</style>
-    </head><body><div class="head"><h1>Einsatzübersicht Kräfte/Funkrufnamen</h1><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div><pre>${escapeHtml(text)}</pre>
+    <style>@page{size:A4;margin:12mm;}body{font-family:Arial,sans-serif;font-size:12px;color:#111;}h1{margin:0 0 8px;}pre{white-space:pre-wrap;line-height:1.35;} .head{display:flex;justify-content:space-between;align-items:flex-start;} .logo{width:90px;height:auto;}${getInlineExportLogoStyle()}</style>
+    </head><body><div class="head"><h1>Einsatzübersicht Kräfte/Funkrufnamen</h1>${getExportHeaderLogoHtml()}</div><pre>${escapeHtml(text)}</pre>
     <div style="margin-top:8px;font-size:11px;color:#555;">Export: ${new Date().toLocaleString("de-DE")} | ${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
     w.document.open();
@@ -22721,6 +23686,7 @@ function exportEinsatzKraeftePdf(){
 function renderEinsatzKraefteSelection(state){
     const search = state.ui.search || "";
     const allVehicles = getSortedFunkrufData(state);
+    const assignableVehicles = getAssignableMemberVehicles(state);
     const filtered = getEinsatzKraefteFilteredData(search, state);
     const selectedVehicles = getEinsatzKraefteSelectedVehicles(state);
     const members = Array.isArray(state.members) ? state.members : [];
@@ -22784,12 +23750,12 @@ function renderEinsatzKraefteSelection(state){
     return `
       <div id="einsatzKraefteHint" class="social-hint hidden"></div>
       <div class="atem-panel">
-        <strong>Funkrufnamen & Fahrzeuge (Timmendorfer Bereich)</strong>
-        <div class="psu-meta" style="margin-top:8px;">Für Teilnahme und Zuordnung werden nur Fahrzeuge aus Timmendorfer Strand genutzt.</div>
+        <strong>Funkrufnamen & Fahrzeuge</strong>
+        <div class="psu-meta" style="margin-top:8px;">Für Teilnahme und Zuordnung stehen alle hinterlegten Fahrzeuge zur Verfügung.</div>
       </div>
 
       <div class="atem-panel">
-        <strong>Fahrzeugübersicht nach Gemeinde</strong>
+        <strong>Fahrzeugübersicht</strong>
         <div style="margin-top:8px;">${groupHtml || `<div class="lage-empty">Keine Ergebnisse.</div>`}</div>
       </div>
 
@@ -22858,6 +23824,10 @@ function renderEinsatzKraefteSelection(state){
             ${membersFiltered.length ? membersFiltered.map((member)=>{
                 const safeId = String(member.id).replace(/'/g, "\\'");
                 const assigned = allVehicles.find((v)=>v.id === member.assignedVehicleId);
+                const assignedNotAssignable = !!(assigned && !isTimmendorferVehicle(assigned));
+                const assignedNotAssignableOption = assignedNotAssignable
+                    ? `<option value="${escapeHtml(assigned.id)}" selected>${escapeHtml(`${assigned.fahrzeugBezeichnung} (${assigned.funkrufname})`)} (nicht zuweisbar)</option>`
+                    : "";
                 const tags = getEinsatzMemberQualTags(member);
                 return `<div class="phonebook-item">
                     <div class="phonebook-head">${escapeHtml(getEinsatzMemberDisplayName(member))}</div>
@@ -22867,7 +23837,8 @@ function renderEinsatzKraefteSelection(state){
                         <label>Fahrzeug
                             <select onchange="setEinsatzKraefteMemberVehicle('${safeId}', this.value)">
                                 <option value="">-</option>
-                                ${allVehicles.map((vehicle)=>`<option value="${escapeHtml(vehicle.id)}" ${member.assignedVehicleId === vehicle.id ? "selected" : ""}>${escapeHtml(vehicle.fahrzeugBezeichnung)} (${escapeHtml(vehicle.funkrufname)})</option>`).join("")}
+                                ${assignedNotAssignableOption}
+                                ${assignableVehicles.map((vehicle)=>`<option value="${escapeHtml(vehicle.id)}" ${member.assignedVehicleId === vehicle.id ? "selected" : ""}>${escapeHtml(vehicle.fahrzeugBezeichnung)} (${escapeHtml(vehicle.funkrufname)})</option>`).join("")}
                             </select>
                         </label>
                     </div>
@@ -25398,12 +26369,31 @@ function removeTaschenbuchCrossReferences(){
 
 removeTaschenbuchCrossReferences();
 
+function removeDrohneStrategyModules(){
+    if (!data || !Array.isArray(data.drohne)) return;
+    data.drohne = data.drohne.filter((entry)=>{
+        if (!entry || typeof entry !== "object") return false;
+        const name = String(entry.name || "");
+        if (entry.taktischeMuster || entry.fuehrungsunterstuetzung) return false;
+        if (/Taktische Einsatzmuster/i.test(name)) return false;
+        if (/F[üu]hrungsunterst[üu]tzung durch Drohne/i.test(name)) return false;
+        return true;
+    });
+}
+
+removeDrohneStrategyModules();
+
 function footerHtml(){
     const creatorLine = escapeHtml(getAppFooterCreatorText());
+    const ffLogo = getCreatorFfLogoDataUrl();
     return `
     <div class="footer">
         <img src="logoapp.png" alt="FF 360 Logo">
         <div>
+            <div class="footer-brand-inline">
+                <span class="footer-app-emoji">📱</span>
+                ${ffLogo ? `<span class="footer-brand-separator">|</span><img class="footer-ff-logo" src="${escapeHtml(ffLogo)}" alt="Feuerwehr-Logo">` : ""}
+            </div>
             Diese App dient nur als Unterstützung und ersetzt keine offizielle Ausbildung oder Dienstanweisung.<br>
             ${creatorLine}
         </div>
@@ -25976,6 +26966,7 @@ function exportDrohneFlugbuchPdf(){
     body { font-family: Arial, sans-serif; color:#111; font-size:11px; }
     .head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
     .logo { width:90px; height:auto; object-fit:contain; }
+    ${getInlineExportLogoStyle()}
     h1 { margin:0; font-size:22px; }
     .sub { margin-top:4px; font-size:13px; color:#444; }
     .meta { margin: 8px 0; font-size: 11px; color:#555; }
@@ -25983,7 +26974,7 @@ function exportDrohneFlugbuchPdf(){
     th, td { border:1px solid #bbb; padding:6px 8px; vertical-align:top; }
     thead { background: #f3f3f3; }
     </style></head><body>
-    <div class="head"><div><h1>Drohnen-Flugbuch</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div><img class="logo" src="logoapp.png" alt="FF 360 Logo"></div>
+    <div class="head"><div><h1>Drohnen-Flugbuch</h1><div class="sub">FF 360° · Unterstützung im Einsatzdienst</div></div>${getExportHeaderLogoHtml()}</div>
     <div class="meta">Export: ${new Date().toLocaleString("de-DE")} · Datei: ${escapeHtml(filename)} · Modus: ${isTrainingMode() ? "ÜBUNG" : "REAL"}</div>
     <table>
         <thead>
@@ -26160,7 +27151,7 @@ function showDetail(index){
     const einsatz = data[currentCategory][index];
     const canFav = canUseAppFavoriteForEntry(currentCategory, index);
     const fav = canFav && isFavorite(currentCategory, index);
-    const hasCustomBlocks = !!(einsatz.taktischeMuster || einsatz.fuehrungsunterstuetzung || einsatz.entscheidungMatrix);
+    const hasCustomBlocks = !!einsatz.entscheidungMatrix;
     const backTarget = (einsatz.einsatzKraefteTool || einsatz.einsatzMitgliederTool || einsatz.fwdv3Trainer) ? "goHome()" : `showCategory('${currentCategory}')`;
 
     let content = `<button onclick="${backTarget}">⬅ Zurück</button>
@@ -26231,14 +27222,6 @@ function showDetail(index){
     }
 
     if (hasCustomBlocks){
-        if (einsatz.taktischeMuster){
-            content += renderTaktischeMusterBlock(einsatz.taktischeMuster);
-        }
-
-        if (einsatz.fuehrungsunterstuetzung){
-            content += renderFuehrungsunterstuetzungBlock(einsatz.fuehrungsunterstuetzung);
-        }
-
         if (einsatz.entscheidungMatrix){
             content += renderEntscheidungMatrixBlock(
                 einsatz.entscheidungMatrix,
@@ -26532,6 +27515,9 @@ let gpsLastFocus = null;
 let gpsCompassListenerAttached = false;
 let gpsCompassEnabled = false;
 let gpsNorthLockHeadingDeg = null;
+let gpsQrScannerStream = null;
+let gpsQrScannerRunning = false;
+let gpsQrScanRafId = 0;
 
 function createDefaultGpsState(){
     return {
@@ -26683,6 +27669,230 @@ function getMapLinks(lat, lon){
         google: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coord)}`,
         apple: `https://maps.apple.com/?ll=${encodeURIComponent(coord)}&q=${encodeURIComponent(coord)}`
     };
+}
+
+function normalizeGpsLatLonPair(lat, lon){
+    let nLat = Number(lat);
+    let nLon = Number(lon);
+    if (!Number.isFinite(nLat) || !Number.isFinite(nLon)) return null;
+    if (Math.abs(nLat) > 90 && Math.abs(nLon) <= 90){
+        const swap = nLat;
+        nLat = nLon;
+        nLon = swap;
+    }
+    if (Math.abs(nLat) > 90 || Math.abs(nLon) > 180) return null;
+    return { lat: nLat, lon: nLon };
+}
+
+function parseGpsLatLonString(text){
+    const raw = String(text || "");
+    const match = raw.match(/(-?\d{1,3}(?:[.,]\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:[.,]\d+)?)/);
+    if (!match) return null;
+    const a = String(match[1] || "").replace(",", ".");
+    const b = String(match[2] || "").replace(",", ".");
+    return normalizeGpsLatLonPair(a, b);
+}
+
+function parseGpsPointFromQrContent(content){
+    const raw = String(content || "").trim();
+    if (!raw) return null;
+
+    if (/^geo:/i.test(raw)){
+        const geoPart = raw.slice(4).split("?")[0];
+        const parsedGeo = parseGpsLatLonString(geoPart);
+        if (parsedGeo) return parsedGeo;
+    }
+
+    try {
+        const url = new URL(raw);
+        const p = url.searchParams;
+        const pairKeys = ["ll", "q", "query", "daddr", "saddr", "destination", "where1"];
+        for (const key of pairKeys){
+            const v = p.get(key);
+            const parsed = parseGpsLatLonString(v || "");
+            if (parsed) return parsed;
+        }
+        const mlat = p.get("mlat");
+        const mlon = p.get("mlon");
+        const parsedM = normalizeGpsLatLonPair(mlat, mlon);
+        if (parsedM) return parsedM;
+
+        const pathAt = String(url.pathname || "").match(/@(-?\d{1,3}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)/);
+        if (pathAt){
+            const parsedAt = normalizeGpsLatLonPair(pathAt[1], pathAt[2]);
+            if (parsedAt) return parsedAt;
+        }
+    } catch {}
+
+    return parseGpsLatLonString(raw);
+}
+
+function attachGpsQrStreamToVideo(){
+    const panel = document.getElementById("gpsQrScannerPanel");
+    const video = document.getElementById("gpsQrScannerVideo");
+    if (!panel || !video) return;
+    if (gpsQrScannerRunning && gpsQrScannerStream){
+        panel.classList.remove("hidden");
+        if (video.srcObject !== gpsQrScannerStream){
+            video.srcObject = gpsQrScannerStream;
+        }
+        video.play().catch(()=>{});
+    } else {
+        panel.classList.add("hidden");
+        if (video.srcObject){
+            video.srcObject = null;
+        }
+    }
+}
+
+function stopGpsQrScanner(){
+    gpsQrScannerRunning = false;
+    if (gpsQrScanRafId){
+        cancelAnimationFrame(gpsQrScanRafId);
+        gpsQrScanRafId = 0;
+    }
+    if (gpsQrScannerStream){
+        gpsQrScannerStream.getTracks().forEach((track)=>{
+            try { track.stop(); } catch {}
+        });
+        gpsQrScannerStream = null;
+    }
+    attachGpsQrStreamToVideo();
+}
+
+function triggerGpsQrImageInput(){
+    const input = document.getElementById("gpsQrImageInput");
+    if (!input) return;
+    input.value = "";
+    input.click();
+}
+
+function applyGpsQrScanContent(rawValue){
+    const parsed = parseGpsPointFromQrContent(rawValue);
+    if (!parsed){
+        alert("QR-Code erkannt, aber keine Koordinaten gefunden.");
+        return false;
+    }
+    stopGpsQrScanner();
+    setGpsTarget(parsed.lat, parsed.lon, "QR-Punkt");
+    return true;
+}
+
+async function startGpsQrScanner(){
+    if (typeof window.BarcodeDetector === "undefined"){
+        triggerGpsQrImageInput();
+        return;
+    }
+    if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== "function"){
+        triggerGpsQrImageInput();
+        return;
+    }
+
+    stopGpsQrScanner();
+    let detector = null;
+    try {
+        detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+    } catch {
+        try {
+            detector = new window.BarcodeDetector();
+        } catch {
+            detector = null;
+        }
+    }
+    if (!detector){
+        triggerGpsQrImageInput();
+        return;
+    }
+
+    try {
+        gpsQrScannerStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: "environment" } },
+            audio: false
+        });
+    } catch {
+        alert("Kamera für QR-Scan nicht verfügbar.");
+        return;
+    }
+
+    gpsQrScannerRunning = true;
+    attachGpsQrStreamToVideo();
+    const video = document.getElementById("gpsQrScannerVideo");
+    if (!video){
+        stopGpsQrScanner();
+        return;
+    }
+    video.play().catch(()=>{});
+
+    const scanLoop = ()=>{
+        if (!gpsQrScannerRunning) return;
+        detector.detect(video).then((codes)=>{
+            if (!gpsQrScannerRunning) return;
+            if (Array.isArray(codes) && codes.length){
+                const rawValue = String(codes[0].rawValue || "").trim();
+                if (rawValue){
+                    const ok = applyGpsQrScanContent(rawValue);
+                    if (!ok) stopGpsQrScanner();
+                    return;
+                }
+            }
+            gpsQrScanRafId = requestAnimationFrame(scanLoop);
+        }).catch(()=>{
+            gpsQrScanRafId = requestAnimationFrame(scanLoop);
+        });
+    };
+    gpsQrScanRafId = requestAnimationFrame(scanLoop);
+}
+
+async function handleGpsQrImageUpload(event){
+    const file = event && event.target && event.target.files && event.target.files[0];
+    if (!file) return;
+    if (typeof window.BarcodeDetector === "undefined"){
+        alert("QR-Scan aus Bild wird auf diesem Gerät nicht unterstützt.");
+        return;
+    }
+    let detector = null;
+    try {
+        detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+    } catch {
+        try {
+            detector = new window.BarcodeDetector();
+        } catch {
+            detector = null;
+        }
+    }
+    if (!detector){
+        alert("QR-Scanner konnte nicht gestartet werden.");
+        return;
+    }
+    try {
+        const bitmap = await createImageBitmap(file);
+        const canvas = document.createElement("canvas");
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx){
+            alert("Bild konnte nicht verarbeitet werden.");
+            return;
+        }
+        ctx.drawImage(bitmap, 0, 0);
+        const codes = await detector.detect(canvas);
+        if (!Array.isArray(codes) || !codes.length){
+            alert("Kein QR-Code im Bild gefunden.");
+            return;
+        }
+        const rawValue = String(codes[0].rawValue || "").trim();
+        if (!rawValue){
+            alert("QR-Code konnte nicht gelesen werden.");
+            return;
+        }
+        applyGpsQrScanContent(rawValue);
+    } catch {
+        alert("QR-Code konnte aus dem Bild nicht ausgelesen werden.");
+    } finally {
+        if (event && event.target){
+            event.target.value = "";
+        }
+    }
 }
 
 function buildQrUrl(content){
@@ -26902,6 +28112,16 @@ function renderGpsTool(){
     <div class="atem-panel">
         <strong>QR-Code Übergabe</strong>
         <div class="psu-meta" style="margin-top:6px;">QR verweist auf ${target ? "gesetzten Punkt" : "aktuelle Position"}.</div>
+        <div class="atem-row-actions" style="margin-top:8px;">
+            <button onclick="startGpsQrScanner()">QR-Code scannen</button>
+            <button onclick="triggerGpsQrImageInput()">QR aus Bild lesen</button>
+            <button onclick="stopGpsQrScanner()">Scanner stoppen</button>
+        </div>
+        <input id="gpsQrImageInput" type="file" accept="image/*" capture="environment" onchange="handleGpsQrImageUpload(event)" class="hidden">
+        <div id="gpsQrScannerPanel" class="hidden" style="margin-top:8px;">
+            <video id="gpsQrScannerVideo" playsinline autoplay muted style="width:100%;border-radius:10px;border:1px solid var(--border);background:#000;max-height:240px;"></video>
+            <div class="psu-meta" style="margin-top:6px;">Kamera auf den QR-Code richten.</div>
+        </div>
         ${point ? `
         <div class="gps-qr-grid" style="margin-top:8px;">
             <div class="gps-qr-card">
@@ -26938,6 +28158,7 @@ function renderGpsTool(){
     `;
 
     renderGpsLeafletMap(state);
+    attachGpsQrStreamToVideo();
 }
 
 function renderGpsCompassOnly(){
@@ -27036,6 +28257,7 @@ function openGpsOverlay(){
 }
 
 function closeGpsOverlay(){
+    stopGpsQrScanner();
     const overlay = document.getElementById("gpsOverlay");
     if (!overlay) return;
     overlay.classList.remove("show");
