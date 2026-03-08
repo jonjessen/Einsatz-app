@@ -2245,6 +2245,32 @@ button:active {
     font-size: 12px;
 }
 
+.lage-map-vehicle-picker-list {
+    max-height: 46vh;
+    overflow: auto;
+    margin-top: 8px;
+    display: grid;
+    gap: 8px;
+}
+
+.lage-map-vehicle-picker-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.lage-map-vehicle-picker-item button {
+    width: auto;
+    margin: 0;
+    padding: 7px 10px;
+    font-size: 12px;
+}
+
 .lage-row {
     display: flex;
     gap: 8px;
@@ -6137,6 +6163,28 @@ iframe {
         <div class="asu2-popup-actions">
             <button id="einsatzKraefteVehiclePopupSaveBtn" onclick="saveEinsatzKraefteVehicleFromPopup()">Speichern</button>
             <button onclick="closeEinsatzKraefteAddVehiclePopup()">Abbrechen</button>
+        </div>
+    </div>
+</div>
+
+<div id="lageMapVehiclePickerPopup" class="asu2-popup-overlay" onclick="if(event.target&&event.target.id==='lageMapVehiclePickerPopup'){closeLageMapVehiclePicker()}">
+    <div class="asu2-popup">
+        <h4>Fahrzeug für Lagekarte</h4>
+        <p>Fahrzeug aus Kräfte/Funkrufnamen auswählen.</p>
+        <input id="lageMapVehiclePickerSearch" type="text" placeholder="Suche nach Fahrzeug, Funkrufname, Organisation..." oninput="setLageMapVehiclePickerQuery(this.value)">
+        <div style="margin-top:8px;">
+            <label>Status</label>
+            <select id="lageMapVehiclePickerStatus">
+                <option>Im Einsatz</option>
+                <option>Anfahrt</option>
+                <option>Bereitstellung</option>
+                <option>Außer Betrieb</option>
+            </select>
+        </div>
+        <div id="lageMapVehiclePickerList" class="lage-map-vehicle-picker-list"></div>
+        <div class="asu2-popup-actions">
+            <button onclick="createLageMapVehicleManualFromPicker()">Manuell anlegen</button>
+            <button onclick="closeLageMapVehiclePicker()">Abbrechen</button>
         </div>
     </div>
 </div>
@@ -10377,6 +10425,12 @@ let lageTacticalRuntimeTool = "none";
 let lageTacticalTempPoints = [];
 let lageTacticalTempGeometryType = "";
 let lageTacticalRenderKey = "";
+let lageMapVehiclePickerState = {
+    open: false,
+    lat: null,
+    lng: null,
+    query: ""
+};
 let psuReminderTickerId = null;
 let funkHelperReminderTimer = null;
 
@@ -12282,16 +12336,126 @@ function openLageMapItemEditor(id){
     });
 }
 
-function chooseLageVehicleFromCatalog(){
-    if (typeof getSortedFunkrufData !== "function" || typeof getEinsatzKraefteState !== "function") return null;
+function getLageVehicleCatalog(){
+    if (typeof getSortedFunkrufData !== "function" || typeof getEinsatzKraefteState !== "function") return [];
     const list = getSortedFunkrufData(getEinsatzKraefteState());
-    if (!Array.isArray(list) || !list.length) return null;
-    const top = list.slice(0, 25);
-    const optionsText = top.map((v, i)=>`${i + 1}: ${v.fahrzeugBezeichnung} (${v.funkrufname})`).join("\n");
-    const answer = prompt(`Fahrzeug wählen (1-${top.length})\n${optionsText}`, "1");
-    if (answer === null) return null;
-    const idx = Math.max(1, Math.min(top.length, Number(answer) || 1)) - 1;
-    return top[idx] || null;
+    return Array.isArray(list) ? list : [];
+}
+
+function setLageMapVehiclePickerQuery(value){
+    lageMapVehiclePickerState.query = String(value || "");
+    renderLageMapVehiclePicker();
+}
+
+function closeLageMapVehiclePicker(){
+    const popup = document.getElementById("lageMapVehiclePickerPopup");
+    if (popup) popup.classList.remove("show");
+    lageMapVehiclePickerState = { open: false, lat: null, lng: null, query: "" };
+}
+
+function openLageMapVehiclePicker(lat, lng){
+    if (!requireLageIncidentForMapWrite()) return;
+    const popup = document.getElementById("lageMapVehiclePickerPopup");
+    if (!popup) return;
+    lageMapVehiclePickerState = {
+        open: true,
+        lat: Number(lat),
+        lng: Number(lng),
+        query: ""
+    };
+    popup.classList.add("show");
+    const search = document.getElementById("lageMapVehiclePickerSearch");
+    if (search){
+        search.value = "";
+        setTimeout(()=>search.focus(), 30);
+    }
+    const statusEl = document.getElementById("lageMapVehiclePickerStatus");
+    if (statusEl) statusEl.value = "Im Einsatz";
+    renderLageMapVehiclePicker();
+}
+
+function getLageVehicleSymbolFromType(vehicleType){
+    const typeText = String(vehicleType || "").toLowerCase();
+    if (typeText.includes("dlk")) return "dlk";
+    if (typeText.includes("tlf")) return "tlf";
+    if (typeText.includes("rtw")) return "rtw";
+    if (typeText.includes("pol")) return "polizei";
+    if (typeText.includes("elw") || typeText.includes("el")) return "el";
+    return "lf";
+}
+
+function createLageMapVehicleFromSelection(vehicle){
+    const src = vehicle && typeof vehicle === "object" ? vehicle : null;
+    if (!src) return;
+    const lat = Number(lageMapVehiclePickerState.lat);
+    const lng = Number(lageMapVehiclePickerState.lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    const status = String(document.getElementById("lageMapVehiclePickerStatus")?.value || "Im Einsatz");
+    upsertLageMapItem({
+        id: getLageMapNextId("vehicle"),
+        kind: "vehicle",
+        symbol: getLageVehicleSymbolFromType(src.fahrzeugtyp),
+        name: String(src.fahrzeugBezeichnung || "").trim(),
+        callsign: String(src.funkrufname || "").trim(),
+        status,
+        note: String(src.organisation || src.gemeinde || "").trim(),
+        assignment: "",
+        lat,
+        lng
+    });
+    closeLageMapVehiclePicker();
+    setLageMapHint("Fahrzeug gesetzt.");
+}
+
+function createLageMapVehicleManualFromPicker(){
+    const lat = Number(lageMapVehiclePickerState.lat);
+    const lng = Number(lageMapVehiclePickerState.lng);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    closeLageMapVehiclePicker();
+    const symbol = prompt("Fahrzeugtyp (lf/tlf/dlk/rtw/polizei/el)", "lf") || "lf";
+    const name = prompt("Fahrzeugname", "LF 10") || "";
+    const callsign = prompt("Funkrufname", "") || "";
+    const status = prompt("Status (Anfahrt/Bereitstellung/Im Einsatz/Außer Betrieb)", "Im Einsatz") || "";
+    upsertLageMapItem({
+        id: getLageMapNextId("vehicle"),
+        kind: "vehicle",
+        symbol: String(symbol || "").trim().toLowerCase(),
+        name: String(name || "").trim(),
+        callsign: String(callsign || "").trim(),
+        status: String(status || "").trim(),
+        note: "",
+        assignment: "",
+        lat,
+        lng
+    });
+    setLageMapHint("Fahrzeug gesetzt.");
+}
+
+function renderLageMapVehiclePicker(){
+    const listEl = document.getElementById("lageMapVehiclePickerList");
+    if (!listEl) return;
+    const query = String(lageMapVehiclePickerState.query || "").trim().toLowerCase();
+    const list = getLageVehicleCatalog().filter((v)=>{
+        if (!query) return true;
+        const hay = `${v.fahrzeugBezeichnung || ""} ${v.funkrufname || ""} ${v.organisation || ""} ${v.gemeinde || ""} ${v.fahrzeugtyp || ""}`.toLowerCase();
+        return hay.includes(query);
+    });
+    if (!list.length){
+        listEl.innerHTML = `<div class="lage-empty">Keine Fahrzeuge gefunden.</div>`;
+        return;
+    }
+    listEl.innerHTML = list.map((v)=>{
+        const label = `${v.fahrzeugBezeichnung || "-"} (${v.funkrufname || "-"})`;
+        const meta = `${v.organisation || v.gemeinde || "-"}${v.fahrzeugtyp ? ` · ${v.fahrzeugtyp}` : ""}`;
+        const payload = encodeURIComponent(JSON.stringify(v));
+        return `<div class="lage-map-vehicle-picker-item">
+            <div>
+                <div><strong>${escapeHtml(label)}</strong></div>
+                <div class="psu-meta">${escapeHtml(meta)}</div>
+            </div>
+            <button onclick="createLageMapVehicleFromSelection(JSON.parse(decodeURIComponent('${payload}')))">Übernehmen</button>
+        </div>`;
+    }).join("");
 }
 
 function openLageMapDrawingEditor(id){
@@ -12321,21 +12485,7 @@ function createLageMapPointFromTool(tool, latlng){
     let callsign = "";
     let assignment = "";
     if (tool === "vehicle"){
-        const selectedVehicle = chooseLageVehicleFromCatalog();
-        if (selectedVehicle){
-            const typeText = String(selectedVehicle.fahrzeugtyp || "").toLowerCase();
-            if (typeText.includes("dlk")) symbol = "dlk";
-            else if (typeText.includes("tlf")) symbol = "tlf";
-            else if (typeText.includes("rtw")) symbol = "rtw";
-            else symbol = "lf";
-            name = String(selectedVehicle.fahrzeugBezeichnung || "");
-            callsign = String(selectedVehicle.funkrufname || "");
-        } else {
-            symbol = prompt("Fahrzeugtyp (lf/tlf/dlk/rtw/polizei/el)", "lf") || "lf";
-            name = prompt("Fahrzeugname", "LF 10") || "";
-            callsign = prompt("Funkrufname", "") || "";
-        }
-        status = prompt("Status (Anfahrt/Bereitstellung/Im Einsatz/Außer Betrieb)", "Im Einsatz") || "";
+        return null;
     } else if (tool === "crew"){
         symbol = prompt("Trupptyp (angriff/wasser/schlauch/sicherheit/rettung)", "angriff") || "angriff";
         name = prompt("Truppname", "") || "";
@@ -12502,6 +12652,10 @@ function renderLageTacticalMap(state){
         lageTacticalMap.on("click", (event)=>{
             if (!event || !event.latlng) return;
             const tool = lageTacticalRuntimeTool;
+            if (tool === "vehicle"){
+                openLageMapVehiclePicker(event.latlng.lat, event.latlng.lng);
+                return;
+            }
             if (tool === "vehicle" || tool === "crew" || tool === "hazard" || tool === "water"){
                 const item = createLageMapPointFromTool(tool, event.latlng);
                 if (!item) return;
@@ -14106,6 +14260,7 @@ function openLageOverlay(){
 function closeLageOverlay(){
     const overlay = document.getElementById("lageOverlay");
     if (!overlay) return;
+    closeLageMapVehiclePicker();
     overlay.classList.remove("show");
     hideStructureForm();
     cancelLageMapDrawing();
