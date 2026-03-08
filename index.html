@@ -5762,6 +5762,7 @@ iframe {
                         <button id="lageMapToolCrewBtn" onclick="setLageMapTool('crew')">🔺 Trupp</button>
                         <button id="lageMapToolHazardBtn" onclick="setLageMapTool('hazard')">⚠️ Gefahr</button>
                         <button id="lageMapToolWaterBtn" onclick="setLageMapTool('water')">💧 Wasser</button>
+                        <button id="lageMapToolRadiusBtn" onclick="setLageMapTool('radius')">⭕ Radius</button>
                         <button id="lageMapToolLineBtn" onclick="setLageMapTool('line')">📏 Linie</button>
                         <button id="lageMapToolAreaBtn" onclick="setLageMapTool('area')">⬛ Bereich</button>
                         <button id="lageMapToolEditBtn" onclick="setLageMapTool('edit')">✏️ Bearbeiten</button>
@@ -9919,6 +9920,13 @@ function addHydrantToLageMap(hydrantId){
         lat,
         lng
     });
+    if (isLageOverlayOpen() && lageTacticalMap){
+        lageTacticalMap.setView([lat, lng], Math.max(16, Number(lageTacticalMap.getZoom()) || 16));
+    } else {
+        patchLageMapState((mapState)=>{
+            mapState.center = { lat, lng, zoom: 17 };
+        });
+    }
     alert("Hydrant in die Einsatz-Lagekarte übernommen.");
 }
 
@@ -12160,6 +12168,7 @@ function getLageMapToolButtonMap(){
         crew: "lageMapToolCrewBtn",
         hazard: "lageMapToolHazardBtn",
         water: "lageMapToolWaterBtn",
+        radius: "lageMapToolRadiusBtn",
         line: "lageMapToolLineBtn",
         area: "lageMapToolAreaBtn",
         edit: "lageMapToolEditBtn",
@@ -12183,7 +12192,7 @@ function setLageMapHint(text){
 
 function setLageMapTool(tool){
     const next = String(tool || "");
-    const allowed = new Set(["vehicle", "crew", "hazard", "water", "line", "area", "edit", "delete"]);
+    const allowed = new Set(["vehicle", "crew", "hazard", "water", "radius", "line", "area", "edit", "delete"]);
     if (!allowed.has(next)){
         lageTacticalRuntimeTool = "none";
         updateLageMapToolButtons();
@@ -12198,6 +12207,8 @@ function setLageMapTool(tool){
         setLageMapHint("Linie: Punkte durch Tippen setzen, dann 'Fertig'.");
     } else if (next === "area"){
         setLageMapHint("Bereich: Punkte durch Tippen setzen, dann 'Fertig'.");
+    } else if (next === "radius"){
+        setLageMapHint("Radius: Punkt antippen, dann Meter eingeben.");
     } else if (next === "delete"){
         setLageMapHint("Löschen: Objekt antippen.");
     } else if (next === "edit"){
@@ -12254,7 +12265,6 @@ function removeLageMapDrawing(id){
 function openLageMapItemEditor(id){
     const state = getLageState();
     const mapState = getLageMapStateFromLageState(state);
-    const renderKey = `${mapState.updatedAt || ""}|${(mapState.items || []).length}|${(mapState.drawings || []).length}`;
     const item = (mapState.items || []).find((x)=>x.id === id);
     if (!item) return;
     if (!requireLageIncidentForMapWrite()) return;
@@ -12270,6 +12280,18 @@ function openLageMapItemEditor(id){
         status: String(status || "").trim(),
         note: String(note || "").trim()
     });
+}
+
+function chooseLageVehicleFromCatalog(){
+    if (typeof getSortedFunkrufData !== "function" || typeof getEinsatzKraefteState !== "function") return null;
+    const list = getSortedFunkrufData(getEinsatzKraefteState());
+    if (!Array.isArray(list) || !list.length) return null;
+    const top = list.slice(0, 25);
+    const optionsText = top.map((v, i)=>`${i + 1}: ${v.fahrzeugBezeichnung} (${v.funkrufname})`).join("\n");
+    const answer = prompt(`Fahrzeug wählen (1-${top.length})\n${optionsText}`, "1");
+    if (answer === null) return null;
+    const idx = Math.max(1, Math.min(top.length, Number(answer) || 1)) - 1;
+    return top[idx] || null;
 }
 
 function openLageMapDrawingEditor(id){
@@ -12299,9 +12321,20 @@ function createLageMapPointFromTool(tool, latlng){
     let callsign = "";
     let assignment = "";
     if (tool === "vehicle"){
-        symbol = prompt("Fahrzeugtyp (lf/tlf/dlk/rtw/polizei/el)", "lf") || "lf";
-        name = prompt("Fahrzeugname", "LF 10") || "";
-        callsign = prompt("Funkrufname", "") || "";
+        const selectedVehicle = chooseLageVehicleFromCatalog();
+        if (selectedVehicle){
+            const typeText = String(selectedVehicle.fahrzeugtyp || "").toLowerCase();
+            if (typeText.includes("dlk")) symbol = "dlk";
+            else if (typeText.includes("tlf")) symbol = "tlf";
+            else if (typeText.includes("rtw")) symbol = "rtw";
+            else symbol = "lf";
+            name = String(selectedVehicle.fahrzeugBezeichnung || "");
+            callsign = String(selectedVehicle.funkrufname || "");
+        } else {
+            symbol = prompt("Fahrzeugtyp (lf/tlf/dlk/rtw/polizei/el)", "lf") || "lf";
+            name = prompt("Fahrzeugname", "LF 10") || "";
+            callsign = prompt("Funkrufname", "") || "";
+        }
         status = prompt("Status (Anfahrt/Bereitstellung/Im Einsatz/Außer Betrieb)", "Im Einsatz") || "";
     } else if (tool === "crew"){
         symbol = prompt("Trupptyp (angriff/wasser/schlauch/sicherheit/rettung)", "angriff") || "angriff";
@@ -12435,7 +12468,12 @@ function renderLageTacticalMap(state){
         return;
     }
     const gps = parseLageGpsCoordinates(state.gpsText);
-    if (!gps && !lageTacticalMap){
+    const mapState = getLageMapStateFromLageState(state);
+    const firstItem = Array.isArray(mapState.items) && mapState.items.length ? mapState.items[0] : null;
+    const fallbackCenter = firstItem && Number.isFinite(firstItem.lat) && Number.isFinite(firstItem.lng)
+        ? { lat: Number(firstItem.lat), lng: Number(firstItem.lng), zoom: 17 }
+        : (mapState.center && Number.isFinite(mapState.center.lat) && Number.isFinite(mapState.center.lng) ? mapState.center : null);
+    if (!gps && !fallbackCenter && !lageTacticalMap){
         mapEl.innerHTML = `<div class="lage-empty" style="margin:0;">Für die Lagekarte zuerst GPS in Einsatzlage setzen.</div>`;
         return;
     }
@@ -12449,8 +12487,11 @@ function renderLageTacticalMap(state){
         }).addTo(lageTacticalMap);
         lageTacticalLayer = L.layerGroup().addTo(lageTacticalMap);
         lageTacticalTempLayer = L.layerGroup().addTo(lageTacticalMap);
-        const initial = gps ? [gps.lat, gps.lon] : [53.985, 10.78];
-        lageTacticalMap.setView(initial, 17);
+        const initial = fallbackCenter
+            ? [fallbackCenter.lat, fallbackCenter.lng]
+            : (gps ? [gps.lat, gps.lon] : [53.985, 10.78]);
+        const initialZoom = fallbackCenter && Number.isFinite(fallbackCenter.zoom) ? fallbackCenter.zoom : 17;
+        lageTacticalMap.setView(initial, initialZoom);
         lageTacticalMap.on("moveend zoomend", ()=>{
             if (!isLageIncidentActive()) return;
             const c = lageTacticalMap.getCenter();
@@ -12466,6 +12507,41 @@ function renderLageTacticalMap(state){
                 if (!item) return;
                 upsertLageMapItem(item);
                 setLageMapHint("Punkt gesetzt.");
+                return;
+            }
+            if (tool === "radius"){
+                if (!requireLageIncidentForMapWrite()) return;
+                const radiusRaw = prompt("Radius in Metern", "50");
+                if (radiusRaw === null) return;
+                const radiusMeters = Math.max(1, Number(radiusRaw) || 0);
+                if (!Number.isFinite(radiusMeters) || radiusMeters <= 0){
+                    alert("Ungültiger Radius.");
+                    return;
+                }
+                const label = prompt("Bezeichnung", `Radius ${radiusMeters} m`) || `Radius ${radiusMeters} m`;
+                const note = prompt("Notiz", "") || "";
+                const color = "#c9212d";
+                const feature = {
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: [Number(event.latlng.lng), Number(event.latlng.lat)]
+                    },
+                    properties: {
+                        color,
+                        kind: "radiuszone",
+                        radiusMeters
+                    }
+                };
+                upsertLageMapDrawing({
+                    id: getLageMapNextId("radius"),
+                    kind: "radiuszone",
+                    label: String(label || "").trim(),
+                    note: String(note || "").trim(),
+                    color,
+                    geojson: feature
+                });
+                setLageMapHint(`Radius ${Math.round(radiusMeters)} m gesetzt.`);
                 return;
             }
             if (tool === "line" || tool === "area"){
@@ -12495,7 +12571,7 @@ function renderLageTacticalMap(state){
         });
     }
 
-    const mapState = getLageMapStateFromLageState(state);
+    const renderKey = `${mapState.updatedAt || ""}|${(mapState.items || []).length}|${(mapState.drawings || []).length}`;
     if (mapState.center && Number.isFinite(mapState.center.lat) && Number.isFinite(mapState.center.lng)){
         const c = lageTacticalMap.getCenter();
         const z = lageTacticalMap.getZoom();
