@@ -4544,6 +4544,44 @@ a {
     margin-bottom: 2px;
 }
 
+.settings-help-controls {
+    display: grid;
+    gap: 8px;
+}
+
+.settings-help-list {
+    margin-top: 8px;
+    display: grid;
+    gap: 8px;
+}
+
+.settings-help-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px;
+    background: var(--card);
+}
+
+.settings-help-item summary {
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.settings-help-item ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 4px;
+}
+
+.settings-help-watch {
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background: rgba(255, 196, 0, 0.12);
+}
+
 .backup-tip {
     margin-top: 8px;
     font-size: 12px;
@@ -5125,6 +5163,15 @@ iframe {
                     <button onclick="archiveCurrentIncident()">Aktiven Einsatz als Snapshot archivieren</button>
                     <button onclick="clearEinsatzArchive()">Einsatzarchiv leeren</button>
                 </div>
+            </div>
+            <div class="atem-panel">
+                <strong>Hilfe</strong>
+                <div class="psu-meta" style="margin-top:8px;">Kurzanleitungen pro Modul. Eigene Notizen werden lokal gespeichert.</div>
+                <div class="settings-help-controls" style="margin-top:8px;">
+                    <input id="settingsHelpSearch" type="text" placeholder="Modul suchen..." oninput="setSettingsHelpSearch(this.value)">
+                    <button onclick="resetSettingsHelpNotes()">Eigene Hilfe-Notizen löschen</button>
+                </div>
+                <div id="settingsHelpList" class="settings-help-list"></div>
             </div>
             <div class="atem-panel">
                 <strong>Wetter</strong>
@@ -6229,6 +6276,7 @@ let currentCategory = null;
 const FAVORITES_STORAGE_KEY = "einsatz_favoriten";
 const APP_MODE_STORAGE_KEY = "app_mode_v1";
 const CREATOR_PROFILE_STORAGE_KEY = "ff360_creator_profile_v1";
+const SETTINGS_HELP_STORAGE_KEY = "ff360_settings_help_v1";
 const CREATOR_FF_LOGO_MAX_EDGE = 720;
 const CREATOR_FF_LOGO_MAX_FILE_BYTES = 6 * 1024 * 1024;
 const SCOPED_STORAGE_BASE_KEYS = new Set([
@@ -7063,6 +7111,381 @@ function updateCreatorProfileField(field, value){
     }
 }
 
+const SETTINGS_HELP_MODULES = [
+    {
+        id: "einsatzlage",
+        title: "Einsatzlage",
+        intro: "Start/Ende eines Einsatzes, Lagebild, Ereignislog und Lagemeldung an Leitstelle.",
+        steps: [
+            "Einsatz starten, Einsatzdaten oben prüfen und laufend pflegen.",
+            "Lagemeldung strukturiert ausfüllen und vor Versand gegenlesen.",
+            "Zeiten/Ereignisse sauber fortführen und Einsatz erst am Ende beenden."
+        ]
+    },
+    {
+        id: "lagekarte",
+        title: "Einsatz-Lagekarte",
+        intro: "Taktische Darstellung in der Einsatzlage mit Fahrzeugen, Trupps, Gefahren und Bereichen.",
+        steps: [
+            "Im Lage-Overlay den Bereich Einsatz-Lagekarte öffnen.",
+            "Objekt-Typ über Toolbar wählen und Punkt/Fläche auf der Karte setzen.",
+            "Objekte antippen, Daten nachführen und Kartenstand im Einsatz aktuell halten."
+        ]
+    },
+    {
+        id: "hydrantenkarte",
+        title: "Hydrantenkarte",
+        intro: "Hydranten im Umkreis, im Kartenbereich oder nach Gemeinde laden.",
+        steps: [
+            "Karte öffnen und auf Standort zentrieren.",
+            "Weitere Hydranten laden aufklappen und passende Ladeoption wählen.",
+            "Hydrant antippen für Navigation oder Übernahme in die Lagekarte."
+        ]
+    },
+    {
+        id: "gefahrgut",
+        title: "Gefahrgut",
+        intro: "UN-/ERI-gestützte Erstmaßnahmen und Absperrhinweise mit checkbaren Punkten.",
+        steps: [
+            "Stoff suchen und Karteintrag prüfen.",
+            "Sofortmaßnahmen und Absperren/Sichern schrittweise abarbeiten.",
+            "Wichtige Daten in Lage/Log dokumentieren."
+        ]
+    },
+    {
+        id: "funk",
+        title: "Funk",
+        intro: "Funkmeldungen strukturiert erzeugen, protokollieren und sauber übergeben.",
+        steps: [
+            "Funkrufname und Kanal prüfen.",
+            "Meldung über Generator erstellen und senden.",
+            "Ereignisse im Funklog nachhalten."
+        ]
+    },
+    {
+        id: "social",
+        title: "Social-Media-Bericht",
+        intro: "Lagegerechte Entwürfe für Öffentlichkeit mit klarer Freigabelogik.",
+        steps: [
+            "Einsatzbezug wählen und Kernfakten eintragen.",
+            "Entwurf kurz und neutral halten.",
+            "Vor Nutzung mit Lageabteilung/Führung abstimmen."
+        ]
+    },
+    {
+        id: "atemschutz",
+        title: "Atemschutzüberwachung",
+        intro: "Truppzeiten, Status und Rückmeldungen überwachen.",
+        steps: [
+            "Trupp anlegen und Einsatzstart setzen.",
+            "Rückmeldezeiten/Status laufend aktualisieren.",
+            "Nach Einsatzende Trupp sauber abschließen."
+        ]
+    },
+    {
+        id: "evakuierung",
+        title: "Evakuierung",
+        intro: "Evakuierungsabschnitte, Sammelstellen und Rückmeldungen führen.",
+        steps: [
+            "Abschnitte und Einheiten anlegen.",
+            "Status je Abschnitt fortlaufend anpassen.",
+            "Ergebnisse für Abschlussbericht bereitstellen."
+        ]
+    },
+    {
+        id: "presse",
+        title: "Presse",
+        intro: "Pressetext und Kernbotschaften für Einsatzkommunikation vorbereiten.",
+        steps: [
+            "Einsatzart und bestätigte Fakten eintragen.",
+            "Kurztext sachlich formulieren.",
+            "Freigabeprozess beachten und finale Version exportieren."
+        ]
+    },
+    {
+        id: "polkripo",
+        title: "Abfragebogen POL/Kripo",
+        intro: "Strukturierte Erfassung relevanter Daten inkl. Archiv/PDF.",
+        steps: [
+            "Formular vollständig ausfüllen.",
+            "Foto und Hinweise ergänzen.",
+            "In Archiv speichern und bei Bedarf als PDF exportieren."
+        ]
+    },
+    {
+        id: "kraefte",
+        title: "Kräfte/Funkrufnamen",
+        intro: "Fahrzeuge auswählen, Status pflegen und Einsatzübersicht erzeugen.",
+        steps: [
+            "Beteiligte Fahrzeuge markieren.",
+            "Status pro Fahrzeug aktuell halten.",
+            "Übersicht für Weitergabe/Protokoll nutzen."
+        ]
+    },
+    {
+        id: "mitglieder",
+        title: "Mitgliederverwaltung",
+        intro: "Personalstammdaten und Qualifikationen pflegen, Teilnahme zuweisen.",
+        steps: [
+            "Mitglieder manuell oder per Import anlegen.",
+            "Qualifikationen/Führerschein je Person pflegen.",
+            "Teilnahme und Fahrzeugzuordnung pro Einsatz setzen."
+        ]
+    },
+    {
+        id: "drohne",
+        title: "Drohne / Flugbuch",
+        intro: "Drohneneinsätze dokumentieren und Einträge exportieren.",
+        steps: [
+            "Flugdaten mit Pilot, Beobachter und Auswerter erfassen.",
+            "Starts, Zeit und Standort vollständig dokumentieren.",
+            "Gewünschte Flüge auswählen und als PDF exportieren."
+        ]
+    },
+    {
+        id: "kompassgps",
+        title: "Kompass / GPS",
+        intro: "Richtung, Gradzahl und Punktdarstellung inklusive QR-Zielpunkt.",
+        steps: [
+            "Kompass öffnen und Gradzahl mit Himmelsrichtung ablesen.",
+            "Bei Bedarf QR-Code mit Koordinaten scannen.",
+            "Zielpunkt auf Karte prüfen und übernehmen."
+        ]
+    },
+    {
+        id: "medizin",
+        title: "Medizinische Notfallhilfe",
+        intro: "Sofortmaßnahmen-Assistent für typische Notfallbilder im Privat- und Einsatzmodus.",
+        steps: [
+            "Passenden Einstieg wählen (z. B. Reanimation, Blutung, Atemnot).",
+            "Ja/Nein-Führung Schritt für Schritt abarbeiten.",
+            "Notruf und Maßnahmen parallel dokumentieren."
+        ]
+    },
+    {
+        id: "rechtshilfe",
+        title: "Rechts-Check / Rechtshilfe",
+        intro: "Regelbasierte Orientierung zu Eingriffsvoraussetzungen und Grenzen.",
+        steps: [
+            "Lagebezug, Fragetyp und Gefahrentyp auswählen.",
+            "Lagefaktoren setzen und Kurzlage ergänzen.",
+            "Einordnung als Lernhilfe lesen und Vorgaben/SOPs beachten."
+        ]
+    },
+    {
+        id: "wetter",
+        title: "Wetter",
+        intro: "Einsatzwetter mit Grenzwerten für Betrieb und Drohne.",
+        steps: [
+            "Standort und Einheit prüfen.",
+            "Warn-/Kritisch-Schwellen in Einstellungen pflegen.",
+            "Entscheidungen anhand aktueller Werte treffen."
+        ]
+    },
+    {
+        id: "archivebackup",
+        title: "Archive & Backup",
+        intro: "Einsatz-/Übungsarchiv sowie Export/Import der App-Daten.",
+        steps: [
+            "Einsatzstände regelmäßig archivieren.",
+            "Backup als Datei exportieren.",
+            "Bei Bedarf über Import wiederherstellen (Modus wählen)."
+        ]
+    }
+];
+
+const SETTINGS_HELP_WATCH_BY_MODULE = {
+    einsatzlage: [
+        "Startzeit, Einsatzstichwort und Ort immer zuerst plausibel prüfen.",
+        "Lagemeldung kurz, konkret und ohne Widersprüche halten.",
+        "Einsatz erst beenden, wenn alle Teilmodule abgeschlossen sind."
+    ],
+    lagekarte: [
+        "Symbole nur setzen, wenn Position sicher ist; sonst als Hinweis kennzeichnen.",
+        "Abschnitte/Farben konsequent einheitlich verwenden.",
+        "Vor Übergabe an nächste Führungskraft Karte kurz bereinigen und aktualisieren."
+    ],
+    hydrantenkarte: [
+        "Hydrantendaten vor Ort verifizieren (Zugang, Zustand, Entfernung).",
+        "Bei Auswahl eines einzelnen Hydranten danach wieder Gesamtansicht herstellen.",
+        "Übernommene Hydranten in der Lagekarte auf Plausibilität prüfen."
+    ],
+    gefahrgut: [
+        "Immer Stoffidentität zuerst absichern (UN/Bezeichnung/Kennzeichnung).",
+        "Absperrung und Windrichtung früh festlegen.",
+        "Unklare Stofflage deutlich dokumentieren und eskalieren."
+    ],
+    funk: [
+        "Kurze, standardisierte Meldungen ohne Nebensätze.",
+        "Rückmeldungen zeitnah bestätigen.",
+        "Kanäle/Wechsel sauber dokumentieren."
+    ],
+    social: [
+        "Nur bestätigte Fakten veröffentlichen.",
+        "Keine Personen- oder Ermittlungsdetails nennen.",
+        "Freigabeweg vor Veröffentlichung einhalten."
+    ],
+    atemschutz: [
+        "Statuswechsel sofort pflegen (Einsatz, Pause, Rückkehr).",
+        "Überfälligkeiten nicht quittieren, sondern aktiv bearbeiten.",
+        "Truppdaten vollständig abschließen vor Einsatzende."
+    ],
+    evakuierung: [
+        "Sammelstellen und Abschnittsgrenzen klar trennen.",
+        "Status offen/laufend/abgeschlossen konsequent pflegen.",
+        "Besondere Personenbedarfe (medizinisch, mobilität) notieren."
+    ],
+    presse: [
+        "Wirkung nach außen bedenken: neutral, sachlich, knapp.",
+        "Keine Spekulationen oder Schuldzuweisungen formulieren.",
+        "Zeitangaben und Zahlen vor Export nochmal prüfen."
+    ],
+    polkripo: [
+        "Formularfelder vollständig und lesbar ausfüllen.",
+        "Zeitpunkte und Beobachtungen trennen (Fakt vs. Annahme).",
+        "Archivspeicherung direkt nach Abschluss durchführen."
+    ],
+    kraefte: [
+        "Fahrzeugstatus nur mit belastbarer Lageinformation ändern.",
+        "Doppelte oder veraltete Einträge vermeiden.",
+        "Für Lagemeldungen nur aktuelle Kräfteübersicht nutzen."
+    ],
+    mitglieder: [
+        "Namen einheitlich (Vorname/Nachname) pflegen, keine Kürzel-Mischformen.",
+        "Qualifikationen nur bei sicherem Nachweis setzen.",
+        "Fahrzeugzuweisung nur für tatsächlich teilnehmende Personen setzen."
+    ],
+    drohne: [
+        "Flugzeiten und Starts direkt erfassen, nicht nachtragen.",
+        "Pilot/Beobachter/Bildauswerter korrekt auswählen.",
+        "Vor Export Auswahl der Flüge kontrollieren."
+    ],
+    kompassgps: [
+        "Kompasswerte nur außerhalb starker Metall-/Störquellen bewerten.",
+        "QR-Zielpunkte auf Plausibilität (Ort/Einheit) prüfen.",
+        "Bei Abweichungen Gradzahl + Himmelsrichtung gemeinsam kommunizieren."
+    ],
+    medizin: [
+        "Lebensrettende Sofortmaßnahmen priorisieren.",
+        "Bei Verschlechterung sofort zum kritischeren Pfad wechseln.",
+        "Notruf früh auslösen, nicht bis zum Ende warten."
+    ],
+    rechtshilfe: [
+        "Nur als Orientierung nutzen, keine verbindliche Rechtsentscheidung.",
+        "Eingriffe und Gründe knapp, nachvollziehbar dokumentieren.",
+        "Immer Landesrecht, SOP und Führungsentscheidung beachten."
+    ],
+    wetter: [
+        "Grenzwerte an lokale Vorgaben anpassen.",
+        "Warnungen im Kontext der Lage bewerten (Böen, Sicht, Temperatur).",
+        "Bei Drohnenbetrieb konservativ entscheiden."
+    ],
+    archivebackup: [
+        "Vor Import/Überschreiben immer aktuelles Backup ziehen.",
+        "Importmodus bewusst wählen (Merge vs. Überschreiben).",
+        "Nach Import kurz Kernmodule auf Plausibilität prüfen."
+    ]
+};
+
+function createDefaultSettingsHelpState(){
+    return {
+        search: "",
+        notes: {},
+        open: {}
+    };
+}
+
+function normalizeSettingsHelpState(raw){
+    const state = raw && typeof raw === "object" ? raw : {};
+    return {
+        search: String(state.search || ""),
+        notes: state.notes && typeof state.notes === "object" ? state.notes : {},
+        open: state.open && typeof state.open === "object" ? state.open : {}
+    };
+}
+
+function getSettingsHelpState(){
+    try {
+        const raw = localStorage.getItem(SETTINGS_HELP_STORAGE_KEY);
+        return normalizeSettingsHelpState(raw ? JSON.parse(raw) : null);
+    } catch {
+        return createDefaultSettingsHelpState();
+    }
+}
+
+function saveSettingsHelpState(state){
+    const next = normalizeSettingsHelpState(state);
+    localStorage.setItem(SETTINGS_HELP_STORAGE_KEY, JSON.stringify(next));
+}
+
+function patchSettingsHelpState(mutator){
+    const state = getSettingsHelpState();
+    mutator(state);
+    saveSettingsHelpState(state);
+    return state;
+}
+
+function setSettingsHelpSearch(value){
+    patchSettingsHelpState((s)=>{ s.search = String(value || ""); });
+    renderSettingsHelpModule();
+}
+
+function setSettingsHelpOpen(id, open){
+    patchSettingsHelpState((s)=>{
+        s.open[id] = !!open;
+    });
+}
+
+function setSettingsHelpNote(id, value){
+    patchSettingsHelpState((s)=>{
+        s.notes[id] = String(value || "");
+    });
+}
+
+function resetSettingsHelpNotes(){
+    if (!confirm("Eigene Hilfe-Notizen wirklich löschen?")) return;
+    patchSettingsHelpState((s)=>{ s.notes = {}; });
+    renderSettingsHelpModule();
+}
+
+function renderSettingsHelpModule(){
+    const listEl = document.getElementById("settingsHelpList");
+    const searchInput = document.getElementById("settingsHelpSearch");
+    if (!listEl) return;
+    const state = getSettingsHelpState();
+    const needle = String(state.search || "").trim().toLowerCase();
+    if (searchInput && document.activeElement !== searchInput){
+        searchInput.value = state.search || "";
+    }
+    const filtered = SETTINGS_HELP_MODULES.filter((entry)=>{
+        if (!needle) return true;
+        const blob = `${entry.title} ${entry.intro} ${(entry.steps || []).join(" ")}`.toLowerCase();
+        return blob.includes(needle);
+    });
+    if (!filtered.length){
+        listEl.innerHTML = `<div class="settings-incident-archive-item">Keine Anleitung gefunden.</div>`;
+        return;
+    }
+    listEl.innerHTML = filtered.map((entry)=>{
+        const isOpen = state.open[entry.id] === true;
+        const note = String(state.notes[entry.id] || "");
+        const steps = Array.isArray(entry.steps) ? entry.steps : [];
+        const watchPoints = Array.isArray(entry.watchPoints) && entry.watchPoints.length
+            ? entry.watchPoints
+            : (SETTINGS_HELP_WATCH_BY_MODULE[entry.id] || []);
+        return `
+        <details class="settings-help-item" ${isOpen ? "open" : ""} ontoggle="setSettingsHelpOpen('${escapeHtml(entry.id)}', this.open)">
+            <summary>${escapeHtml(entry.title)}</summary>
+            <div class="psu-meta" style="margin-top:8px;">${escapeHtml(entry.intro || "")}</div>
+            <div class="section-title" style="margin-top:8px;">Anleitung</div>
+            <ul>${steps.map((step)=>`<li>${escapeHtml(step)}</li>`).join("")}</ul>
+            ${watchPoints.length ? `<div class="settings-help-watch"><strong>Worauf achten</strong><ul>${watchPoints.map((point)=>`<li>${escapeHtml(point)}</li>`).join("")}</ul></div>` : ""}
+            <label style="margin-top:8px;display:block;">Eigene Notiz</label>
+            <textarea rows="2" placeholder="z. B. lokale Besonderheiten / Ansprechpartner" oninput="setSettingsHelpNote('${escapeHtml(entry.id)}', this.value)">${escapeHtml(note)}</textarea>
+        </details>`;
+    }).join("");
+}
+
 function renderSettingsOverlay(){
     const profile = getCreatorProfile();
     const nameInput = document.getElementById("settingsCreatorName");
@@ -7083,6 +7506,7 @@ function renderSettingsOverlay(){
     renderTrainingArchiveSettingsList();
     renderEinsatzArchiveSettingsList();
     updateWeatherSettingsFields();
+    renderSettingsHelpModule();
 }
 
 function toggleDarkModeFromSettings(){
@@ -13340,6 +13764,9 @@ function removeLagePhoto(id){
 
 function exportLagePdf(){
     const state = getLageState();
+    const hvoState = typeof getHvoState === "function" ? getHvoState() : null;
+    const hvoTriageRows = getHvoTriageSummaryRows(hvoState);
+    const hvoTriagePatientRows = renderHvoTriagePatientRows(hvoState);
     const datePart = (new Date()).toISOString().slice(0, 10).replace(/-/g, "");
     const timePart = getNowTimeValue().replace(":", "");
     const file = `Einsatzlage_${datePart}_${timePart}.pdf`;
@@ -13411,6 +13838,14 @@ function exportLagePdf(){
       <div style="margin-top:6px;white-space:pre-wrap;">${escapeHtml(summary)}</div>
       ${state.freeText ? `<div style="margin-top:6px;white-space:pre-wrap;"><strong>Freitext:</strong> ${escapeHtml(state.freeText)}</div>` : ""}
     </div>
+    ${hvoTriageRows.length ? `<div class="section">
+      <strong>Mini-Triage (Einsatzmodus)</strong>
+      <table style="margin-top:6px;"><tbody>${renderReportRowsTable(hvoTriageRows)}</tbody></table>
+      <table style="margin-top:6px;">
+        <thead><tr><th>Patient</th><th>Status</th><th>Notiz</th></tr></thead>
+        <tbody>${hvoTriagePatientRows}</tbody>
+      </table>
+    </div>` : ""}
     ${showVerursacherSection ? `<div class="section">
       <strong>Verursacherangaben</strong>
       <table style="margin-top:6px;">
@@ -13569,6 +14004,7 @@ function resetAllIncidentModulesForNextStart(){
 
         presseState = getDefaultPresseState();
         savePresseState();
+        saveHvoState(getDefaultHvoState());
         saveDrohneFlugbuchState(getDefaultDrohneFlugbuchState());
 
         savePsuState(getDefaultPsuState());
@@ -13587,6 +14023,7 @@ function resetAllIncidentModulesForNextStart(){
     if (typeof renderEvakTool === "function" && isEvakOverlayOpen()) renderEvakTool();
     if (typeof renderPresseTool === "function" && isPresseOverlayOpen()) renderPresseTool();
     if (typeof renderPsuOverlay === "function" && isPsuOverlayOpen()) renderPsuOverlay();
+    if (typeof renderHvoOverlay === "function" && isHvoOverlayOpen()) renderHvoOverlay();
 }
 
 function finalizeActiveEinsatzPaket(options = {}){
@@ -13652,6 +14089,8 @@ function getIncidentReportSnapshot(){
         evak: typeof getEvakState === "function" ? getEvakState() : null,
         presse: typeof getPresseState === "function" ? getPresseState() : null,
         psu: typeof getPsuState === "function" ? getPsuState() : null,
+        hvo: typeof getHvoState === "function" ? getHvoState() : null,
+        weather: typeof getWeatherState === "function" ? getWeatherState() : null,
         drohneFlugbuch: getDrohneFlugbuchState(),
         psuContacts: typeof getPsuContacts === "function" ? getPsuContacts() : [],
         psuReminders: typeof getPsuReminders === "function" ? getPsuReminders() : []
@@ -13699,6 +14138,82 @@ function getAtemschutzReportRows(atemschutz){
     ];
 }
 
+function getHvoTriageSummaryRows(hvo){
+    const state = hvo && typeof hvo === "object" ? hvo : null;
+    const triage = state && state.triage && typeof state.triage === "object" ? state.triage : null;
+    const patients = Array.isArray(triage && triage.patients) ? triage.patients.filter((item)=>item && typeof item === "object") : [];
+    if (!state || state.mode !== "einsatz" || !patients.length){
+        return [];
+    }
+    const counts = { green: 0, yellow: 0, red: 0, black: 0 };
+    patients.forEach((item)=>{
+        const status = String(item.status || "green").toLowerCase();
+        if (counts[status] !== undefined){
+            counts[status] += 1;
+        } else {
+            counts.green += 1;
+        }
+    });
+    return [
+        { label: "Patienten gesamt", value: String(patients.length) },
+        { label: "GRÜN", value: String(counts.green) },
+        { label: "GELB", value: String(counts.yellow) },
+        { label: "ROT", value: String(counts.red) },
+        { label: "SCHWARZ", value: String(counts.black) }
+    ];
+}
+
+function renderHvoTriagePatientRows(hvo){
+    const state = hvo && typeof hvo === "object" ? hvo : null;
+    const triage = state && state.triage && typeof state.triage === "object" ? state.triage : null;
+    const patients = Array.isArray(triage && triage.patients) ? triage.patients.filter((item)=>item && typeof item === "object") : [];
+    if (!state || state.mode !== "einsatz" || !patients.length){
+        return "";
+    }
+    const statusLabel = {
+        green: "GRÜN",
+        yellow: "GELB",
+        red: "ROT",
+        black: "SCHWARZ"
+    };
+    return patients.slice(0, 40).map((item, index)=>{
+        const name = String(item.name || "").trim() || `Patient ${index + 1}`;
+        const statusKey = String(item.status || "green").toLowerCase();
+        const status = statusLabel[statusKey] || "GRÜN";
+        const note = String(item.note || "").trim() || "-";
+        return `<tr>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(name)}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(status)}</td>
+            <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(note)}</td>
+        </tr>`;
+    }).join("");
+}
+
+function getWeatherReportRows(weather){
+    const state = weather && typeof weather === "object" ? weather : null;
+    if (!state){
+        return [{ label: "Wetter", value: "Keine Wetterdaten vorhanden" }];
+    }
+    const location = normalizeWeatherLocation(state.selectedLocation || (state.settings && state.settings.defaultLocation) || null, { name: "Ort", lat: 0, lon: 0 });
+    const data = state.lastData && typeof state.lastData === "object" ? state.lastData : null;
+    if (!data || !data.current){
+        return [
+            { label: "Ort", value: location.name || "-" },
+            { label: "Wetterdaten", value: "Keine aktuellen Wetterdaten erfasst" }
+        ];
+    }
+    const c = data.current || {};
+    return [
+        { label: "Ort", value: (data.location && data.location.name) || location.name || "-" },
+        { label: "Stand", value: formatWeatherTimestamp(state.lastUpdatedAt || data.nowIso || "") },
+        { label: "Temperatur", value: `${Math.round(Number(c.temperature) || 0)}°C (gefühlt ${Math.round(Number(c.apparent) || 0)}°C)` },
+        { label: "Wind", value: formatWindValue(Number(c.windKmh) || 0, "kmh") },
+        { label: "Böen", value: formatWindValue(Number(c.gustKmh) || 0, "kmh") },
+        { label: "Windrichtung", value: formatWindDirection(Number(c.windDir) || 0) },
+        { label: "Niederschlag", value: `${Number(c.precipitation || 0).toFixed(1)} mm/h` }
+    ];
+}
+
 function renderReportRowsTable(rows){
     if (!Array.isArray(rows) || !rows.length){
         return `<tr><td style="padding:6px 8px;border:1px solid #bbb;" colspan="2">Keine Daten</td></tr>`;
@@ -13741,6 +14256,45 @@ function hasMeaningfulPsuData(psu, contacts, reminders){
     if (Array.isArray(contacts) && contacts.length) return true;
     if (Array.isArray(reminders) && reminders.length) return true;
     return false;
+}
+
+function hasMeaningfulAtemschutzData(atemschutz){
+    if (!atemschutz || typeof atemschutz !== "object") return false;
+    const incident = atemschutz.activeIncident || (Array.isArray(atemschutz.archive) ? atemschutz.archive[0] : null);
+    if (!incident || typeof incident !== "object") return false;
+    const teams = Array.isArray(incident.teams) ? incident.teams : [];
+    const logs = Array.isArray(incident.logs) ? incident.logs : [];
+    if (teams.length || logs.length) return true;
+    if (String(incident.name || "").trim()) return true;
+    if (String(incident.number || "").trim()) return true;
+    if (String(incident.location || "").trim()) return true;
+    if (incident.startedAt || incident.endedAt) return true;
+    return false;
+}
+
+function promptFinalReportSectionSelection(options){
+    const safeOptions = Array.isArray(options) ? options.filter((item)=>item && item.key && item.label) : [];
+    if (!safeOptions.length) return new Set();
+    const defaultSelection = safeOptions.map((_, idx)=>String(idx + 1)).join(",");
+    const lines = safeOptions.map((item, idx)=>`${idx + 1}) ${item.label}`);
+    const input = prompt(
+        `Abschlussbericht: Welche Bereiche sollen angezeigt werden?\nNummern mit Komma trennen (z. B. 1,2,4)\n\n${lines.join("\n")}`,
+        defaultSelection
+    );
+    if (input === null) return null;
+    const numbers = String(input || "")
+        .split(/[,\s;]+/)
+        .map((part)=>Number(part))
+        .filter((num)=>Number.isInteger(num) && num >= 1 && num <= safeOptions.length);
+    const selected = new Set();
+    if (!numbers.length){
+        safeOptions.forEach((item)=>selected.add(item.key));
+        return selected;
+    }
+    numbers.forEach((num)=>{
+        selected.add(safeOptions[num - 1].key);
+    });
+    return selected;
 }
 
 function hasAnyTruthyValue(obj){
@@ -13802,6 +14356,45 @@ function hasMeaningfulPresseData(presse){
     return false;
 }
 
+function hasMeaningfulFunkData(funk){
+    if (!funk || typeof funk !== "object") return false;
+    const defaults = getDefaultFunkState();
+    if (Array.isArray(funk.history) && funk.history.length > 0) return true;
+    if (String(getActiveCallsign(funk) || "").trim() && String(getActiveCallsign(funk) || "").trim() !== String(getActiveCallsign(defaults) || "").trim()){
+        return true;
+    }
+    const templates = funk.templates && typeof funk.templates === "object" ? funk.templates : {};
+    const same = (a, b)=>String(a || "").trim() === String(b || "").trim();
+
+    const lage = templates.lage || {};
+    if (!same(lage.ort, defaults.templates.lage.ort)) return true;
+    if (!same(lage.lageText, defaults.templates.lage.lageText)) return true;
+    if (!same(lage.personen, defaults.templates.lage.personen)) return true;
+    if (Array.isArray(lage.measures) && lage.measures.length > 0) return true;
+
+    const erst = templates.erst || {};
+    if (!same(erst.objektart, defaults.templates.erst.objektart)) return true;
+    if (!same(erst.stichwort, defaults.templates.erst.stichwort)) return true;
+    if (!same(erst.kraefte, defaults.templates.erst.kraefte)) return true;
+    if (!same(erst.gefahren, defaults.templates.erst.gefahren)) return true;
+
+    const nach = templates.nach || {};
+    if (!same(nach.ressource, defaults.templates.nach.ressource)) return true;
+    if (!same(nach.ressourceFree, defaults.templates.nach.ressourceFree)) return true;
+    if (!same(nach.grund, defaults.templates.nach.grund)) return true;
+    if (!same(nach.dringlichkeit, defaults.templates.nach.dringlichkeit)) return true;
+
+    const kontrolle = templates.kontrolle || {};
+    if (!same(kontrolle.status, defaults.templates.kontrolle.status)) return true;
+    if (!same(kontrolle.vorgehen, defaults.templates.kontrolle.vorgehen)) return true;
+
+    const ende = templates.ende || {};
+    if (!same(ende.fahrzeugFrei, defaults.templates.ende.fahrzeugFrei)) return true;
+    if (!same(ende.doku, defaults.templates.ende.doku)) return true;
+
+    return false;
+}
+
 function getSocialReportRows(social){
     const state = social || {};
     const rows = [];
@@ -13845,6 +14438,8 @@ function exportIncidentFinalReportPdf(){
     const gefahrgut = snapshot.gefahrgut || {};
     const evak = snapshot.evak || {};
     const presse = snapshot.presse || {};
+    const hvo = snapshot.hvo || {};
+    const weather = snapshot.weather || {};
     const lageVerursacher = normalizeVerursacherInfo(lage.verursacher);
     const sectionsAuto = getActiveSectionsCountForLage();
     const sectionsValue = sectionsAuto !== null ? sectionsAuto : (Number(lage.counters.sectionsManual) || 0);
@@ -13925,12 +14520,46 @@ function exportIncidentFinalReportPdf(){
         { label: "PSU Kontakte", value: String(Array.isArray(snapshot.psuContacts) ? snapshot.psuContacts.length : 0) },
         { label: "PSU Reminder", value: String(Array.isArray(snapshot.psuReminders) ? snapshot.psuReminders.length : 0) }
     ];
+    const weatherRows = getWeatherReportRows(weather);
+    const hvoTriageRows = getHvoTriageSummaryRows(hvo);
+    const hvoTriagePatientRows = renderHvoTriagePatientRows(hvo);
+    const showHvoTriage = hvoTriageRows.length > 0;
     const showFunkcheck = hasMeaningfulFunkcheckData(snapshot.funkcheck);
+    const showAtemschutz = hasMeaningfulAtemschutzData(snapshot.atemschutz);
     const showPsu = hasMeaningfulPsuData(psu, snapshot.psuContacts, snapshot.psuReminders);
     const showGefahrgut = hasMeaningfulGefahrgutData(gefahrgut);
     const showEvak = hasMeaningfulEvakData(evak);
     const showPresse = hasMeaningfulPresseData(presse);
     const showVerursacherSection = hasVerursacherInfo(lageVerursacher);
+    const showSectionsBlock = sections.length > 0;
+    const showNachforderungenBlock = nachforderungen.length > 0;
+    const showLageLogBlock = (lage.log || []).length > 0;
+    const showSocialBlock = socialRows.length > 0;
+    const showFunkBlock = hasMeaningfulFunkData(snapshot.funk);
+
+    const selectableSections = [
+        { key: "overview", label: "Einsatzübersicht" },
+        { key: "lage", label: "Lagezusammenfassung" }
+    ];
+    if (showSectionsBlock) selectableSections.push({ key: "sections", label: "Abschnitte" });
+    if (showNachforderungenBlock) selectableSections.push({ key: "nachforderungen", label: "Nachforderungen" });
+    if (showLageLogBlock) selectableSections.push({ key: "lagelog", label: "Lage-Ereignislog" });
+    if (showSocialBlock) selectableSections.push({ key: "social", label: "Social-Media-Bericht" });
+    if (showVerursacherSection) selectableSections.push({ key: "verursacher", label: "Verursacherangaben" });
+    if (showFunkBlock) selectableSections.push({ key: "funk", label: "Funk" });
+    if (showAtemschutz) selectableSections.push({ key: "atemschutz", label: "Atemschutzüberwachung" });
+    if (showHvoTriage) selectableSections.push({ key: "triage", label: "Mini-Triage" });
+    if (showFunkcheck) selectableSections.push({ key: "funkcheck", label: "Funk-Check" });
+    if (showGefahrgut) selectableSections.push({ key: "gefahrgut", label: "Gefahrgut" });
+    if (showEvak) selectableSections.push({ key: "evak", label: "Evakuierung" });
+    if (showPresse) selectableSections.push({ key: "presse", label: "Presse" });
+    if (showPsu) selectableSections.push({ key: "psu", label: "PSU" });
+    selectableSections.push({ key: "weather", label: "Wetter" });
+
+    const selectedSections = promptFinalReportSectionSelection(selectableSections);
+    if (selectedSections === null){
+        return;
+    }
 
     const w = window.open("", "_blank");
     if (!w){
@@ -13957,22 +14586,24 @@ function exportIncidentFinalReportPdf(){
     <div class="head"><div><h1>Einsatz-Abschlussbericht</h1><div class="sub">FF 360° · Vollständiger Abschlussbericht</div></div>${getExportHeaderLogoHtml()}</div>
     <div class="meta">Export: ${new Date().toLocaleString("de-DE")} | Datei: ${escapeHtml(file)}</div>
 
-    <div class="section"><h2>1) Einsatzübersicht</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(reportRows)}</tbody></table></div>
-    <div class="section"><h2>2) Lagezusammenfassung</h2><div class="block">${escapeHtml(getLageAutoReport(lage) || "-")}</div>${lage.freeText ? `<div class="block" style="margin-top:8px;"><strong>Freitext:</strong>\n${escapeHtml(lage.freeText)}</div>` : ""}</div>
-    <div class="section"><h2>3) Abschnitte</h2><table style="margin-top:6px;"><thead><tr><th>Abschnitt</th><th>Kräfte</th><th>Status</th></tr></thead><tbody>${sectionRows || `<tr><td colspan="3" style="padding:8px;">Keine Abschnitte erfasst.</td></tr>`}</tbody></table></div>
-    <div class="section"><h2>4) Nachforderungen</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Ressource</th><th>Status</th><th>Begründung</th></tr></thead><tbody>${nachRows || `<tr><td colspan="4" style="padding:8px;">Keine Nachforderungen erfasst.</td></tr>`}</tbody></table></div>
-    <div class="section"><h2>5) Lage-Ereignislog</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Ereignis</th></tr></thead><tbody>${lageLogRows || `<tr><td colspan="3" style="padding:8px;">Keine Ereignisse erfasst.</td></tr>`}</tbody></table></div>
-    <div class="section"><h2>6) Social-Media-Bericht</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(socialRows)}</tbody></table><div class="block" style="margin-top:8px;"><strong>Hinweis Lageabteilung / Durchführung:</strong> Dokumentation gemäß Social-Media-Modul (inkl. Durchführung, falls erfasst).</div></div>
-    ${showVerursacherSection ? `<div class="section"><h2>Verursacherangaben</h2>
+    ${selectedSections.has("overview") ? `<div class="section"><h2>Einsatzübersicht</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(reportRows)}</tbody></table></div>` : ""}
+    ${selectedSections.has("lage") ? `<div class="section"><h2>Lagezusammenfassung</h2><div class="block">${escapeHtml(getLageAutoReport(lage) || "-")}</div>${lage.freeText ? `<div class="block" style="margin-top:8px;"><strong>Freitext:</strong>\n${escapeHtml(lage.freeText)}</div>` : ""}</div>` : ""}
+    ${selectedSections.has("sections") ? `<div class="section"><h2>Abschnitte</h2><table style="margin-top:6px;"><thead><tr><th>Abschnitt</th><th>Kräfte</th><th>Status</th></tr></thead><tbody>${sectionRows || `<tr><td colspan="3" style="padding:8px;">Keine Abschnitte erfasst.</td></tr>`}</tbody></table></div>` : ""}
+    ${selectedSections.has("nachforderungen") ? `<div class="section"><h2>Nachforderungen</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Ressource</th><th>Status</th><th>Begründung</th></tr></thead><tbody>${nachRows || `<tr><td colspan="4" style="padding:8px;">Keine Nachforderungen erfasst.</td></tr>`}</tbody></table></div>` : ""}
+    ${selectedSections.has("lagelog") ? `<div class="section"><h2>Lage-Ereignislog</h2><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Ereignis</th></tr></thead><tbody>${lageLogRows || `<tr><td colspan="3" style="padding:8px;">Keine Ereignisse erfasst.</td></tr>`}</tbody></table></div>` : ""}
+    ${selectedSections.has("social") ? `<div class="section"><h2>Social-Media-Bericht</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(socialRows)}</tbody></table><div class="block" style="margin-top:8px;"><strong>Hinweis Lageabteilung / Durchführung:</strong> Dokumentation gemäß Social-Media-Modul (inkl. Durchführung, falls erfasst).</div></div>` : ""}
+    ${selectedSections.has("verursacher") && showVerursacherSection ? `<div class="section"><h2>Verursacherangaben</h2>
         ${hasVerursacherInfo(lageVerursacher) ? `<div class="block"><strong>Aus Einsatzlage</strong>\nBekannt: ${escapeHtml(getVerursacherBekanntLabel(lageVerursacher.bekannt))}\nName/Firma: ${escapeHtml(lageVerursacher.nameFirma || "-")}\nAdresse: ${escapeHtml(lageVerursacher.adresse || "-")}\nKontaktdaten: ${escapeHtml(lageVerursacher.kontakt || "-")}\nHinweise: ${escapeHtml(lageVerursacher.hinweise || "-")}</div>` : ""}
     </div>` : ""}
-    <div class="section"><h2>7) Funk</h2><div class="block"><strong>Aktive Vorlage:</strong> ${escapeHtml(snapshot.funk && snapshot.funk.activeTemplate ? snapshot.funk.activeTemplate : "-")}\n<strong>Funkrufname:</strong> ${escapeHtml(snapshot.funk ? getActiveCallsign(snapshot.funk) : "-")}\n<strong>Social Alarmstichwort:</strong> ${escapeHtml(social.alarmstichwort || "-")}</div><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Meldung</th></tr></thead><tbody>${funkRows || `<tr><td colspan="3" style="padding:8px;">Keine Funkhistorie erfasst.</td></tr>`}</tbody></table></div>
-    <div class="section"><h2>8) Atemschutzüberwachung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getAtemschutzReportRows(snapshot.atemschutz))}</tbody></table></div>
-    ${showFunkcheck ? `<div class="section"><h2>9) Funk-Check</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getFunkcheckSummaryRows(snapshot.funkcheck))}</tbody></table></div>` : ""}
-    ${showGefahrgut ? `<div class="section"><h2>10) Gefahrgut</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(gefahrgutRows)}</tbody></table></div>` : ""}
-    ${showEvak ? `<div class="section"><h2>11) Evakuierung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(evakRows)}</tbody></table></div>` : ""}
-    ${showPresse ? `<div class="section"><h2>12) Presse</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(presseRows)}</tbody></table></div>` : ""}
-    ${showPsu ? `<div class="section"><h2>13) PSU</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(psuRows)}</tbody></table></div>` : ""}
+    ${selectedSections.has("funk") ? `<div class="section"><h2>Funk</h2><div class="block"><strong>Aktive Vorlage:</strong> ${escapeHtml(snapshot.funk && snapshot.funk.activeTemplate ? snapshot.funk.activeTemplate : "-")}\n<strong>Funkrufname:</strong> ${escapeHtml(snapshot.funk ? getActiveCallsign(snapshot.funk) : "-")}\n<strong>Social Alarmstichwort:</strong> ${escapeHtml(social.alarmstichwort || "-")}</div><table style="margin-top:6px;"><thead><tr><th>Zeit</th><th>Typ</th><th>Meldung</th></tr></thead><tbody>${funkRows || `<tr><td colspan="3" style="padding:8px;">Keine Funkhistorie erfasst.</td></tr>`}</tbody></table></div>` : ""}
+    ${selectedSections.has("atemschutz") ? `<div class="section"><h2>Atemschutzüberwachung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getAtemschutzReportRows(snapshot.atemschutz))}</tbody></table></div>` : ""}
+    ${selectedSections.has("triage") && showHvoTriage ? `<div class="section"><h2>Mini-Triage</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(hvoTriageRows)}</tbody></table><table style="margin-top:6px;"><thead><tr><th>Patient</th><th>Status</th><th>Notiz</th></tr></thead><tbody>${hvoTriagePatientRows}</tbody></table></div>` : ""}
+    ${selectedSections.has("funkcheck") && showFunkcheck ? `<div class="section"><h2>Funk-Check</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(getFunkcheckSummaryRows(snapshot.funkcheck))}</tbody></table></div>` : ""}
+    ${selectedSections.has("gefahrgut") && showGefahrgut ? `<div class="section"><h2>Gefahrgut</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(gefahrgutRows)}</tbody></table></div>` : ""}
+    ${selectedSections.has("evak") && showEvak ? `<div class="section"><h2>Evakuierung</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(evakRows)}</tbody></table></div>` : ""}
+    ${selectedSections.has("presse") && showPresse ? `<div class="section"><h2>Presse</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(presseRows)}</tbody></table></div>` : ""}
+    ${selectedSections.has("psu") && showPsu ? `<div class="section"><h2>PSU</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(psuRows)}</tbody></table></div>` : ""}
+    ${selectedSections.has("weather") ? `<div class="section"><h2>Wetter</h2><table style="margin-top:6px;"><tbody>${renderReportRowsTable(weatherRows)}</tbody></table></div>` : ""}
 
     <div style="margin-top:10px;font-size:11px;color:#555;">${escapeHtml(getExportCreatorText())} | Erstellt mit FF 360°</div>
     <script>window.onload=function(){setTimeout(function(){window.print();},120);};<\/script></body></html>`;
@@ -14016,6 +14647,8 @@ function normalizeIncidentArchiveSnapshot(entry){
         evak: safe.evak && typeof safe.evak === "object" ? safe.evak : null,
         presse: safe.presse && typeof safe.presse === "object" ? safe.presse : null,
         psu: safe.psu && typeof safe.psu === "object" ? safe.psu : null,
+        hvo: safe.hvo && typeof safe.hvo === "object" ? safe.hvo : null,
+        weather: safe.weather && typeof safe.weather === "object" ? safe.weather : null,
         drohneFlugbuch: safe.drohneFlugbuch && typeof safe.drohneFlugbuch === "object"
             ? safe.drohneFlugbuch
             : null,
@@ -14061,6 +14694,8 @@ function applyIncidentArchiveSnapshotAsActive(snapshot, entry){
         appStorageSetItem(EVAK_STORAGE_KEY, JSON.stringify(safeSnapshot.evak && typeof safeSnapshot.evak === "object" ? safeSnapshot.evak : evakDefault));
         appStorageSetItem(PRESSE_STATE_KEY, JSON.stringify(safeSnapshot.presse && typeof safeSnapshot.presse === "object" ? safeSnapshot.presse : getDefaultPresseState()));
         savePsuState(safeSnapshot.psu && typeof safeSnapshot.psu === "object" ? safeSnapshot.psu : getDefaultPsuState());
+        saveHvoState(safeSnapshot.hvo && typeof safeSnapshot.hvo === "object" ? safeSnapshot.hvo : getDefaultHvoState());
+        saveWeatherState(safeSnapshot.weather && typeof safeSnapshot.weather === "object" ? safeSnapshot.weather : getDefaultWeatherState());
         saveDrohneFlugbuchState(safeSnapshot.drohneFlugbuch && typeof safeSnapshot.drohneFlugbuch === "object"
             ? safeSnapshot.drohneFlugbuch
             : getDefaultDrohneFlugbuchState());
