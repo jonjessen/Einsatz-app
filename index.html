@@ -5156,13 +5156,15 @@ iframe {
                 </div>
             </div>
             <div class="atem-panel">
-                <strong>Einsatzarchiv</strong>
-                <div class="psu-meta" style="margin-top:8px;">Archivierte Einsätze laden, um sie wieder als aktiven Einsatz in allen Modulen weiterzuführen.</div>
-                <div id="settingsIncidentArchiveList" class="settings-incident-archive-list"></div>
-                <div class="atem-row-actions" style="margin-top:8px;">
-                    <button onclick="archiveCurrentIncident()">Aktiven Einsatz als Snapshot archivieren</button>
-                    <button onclick="clearEinsatzArchive()">Einsatzarchiv leeren</button>
-                </div>
+                <details>
+                    <summary><strong>Einsatzarchiv</strong></summary>
+                    <div class="psu-meta" style="margin-top:8px;">Archivierte Einsätze laden, um sie wieder als aktiven Einsatz in allen Modulen weiterzuführen.</div>
+                    <div id="settingsIncidentArchiveList" class="settings-incident-archive-list"></div>
+                    <div class="atem-row-actions" style="margin-top:8px;">
+                        <button onclick="archiveCurrentIncident()">Aktiven Einsatz als Snapshot archivieren</button>
+                        <button onclick="clearEinsatzArchive()">Einsatzarchiv leeren</button>
+                    </div>
+                </details>
             </div>
             <div class="atem-panel">
                 <strong>Hilfe</strong>
@@ -5369,6 +5371,7 @@ iframe {
             <button class="einsatz-close" onclick="closeEinsatzOverlay()" aria-label="Einsatzhistorie schließen">✕</button>
         </div>
         <div class="einsatz-body">
+            <div id="einsatzQuickEntry" class="einsatz-summary"></div>
             <div id="einsatzSummary" class="einsatz-summary"></div>
             <div id="einsatzList" class="einsatz-list"></div>
             <div class="einsatz-actions">
@@ -6403,6 +6406,7 @@ function isTrainingMode(){
 
 const APP_VERSION = "1.7";
 const SERVICE_WORKER_SCRIPT_VERSION = "26";
+const ALARM_STICHWORT_PLACEHOLDER = "BITTE WÄHLEN";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 const TRAINING_ARCHIVE_STORAGE_KEY = "ff360_training_archive_v1";
 let appStatusMetaCache = null;
@@ -11876,7 +11880,7 @@ function getDefaultLageState(){
         einsatznummer: "",
         leitstelleEinsatznummer: "",
         priority: "yellow",
-        alarmstichwort: "FEU BMA",
+        alarmstichwort: ALARM_STICHWORT_PLACEHOLDER,
         counters: {
             rescued: 0,
             pa: 0,
@@ -12023,6 +12027,9 @@ function patchLageState(mutator){
     const state = getLageState();
     mutator(state);
     saveLageState(state);
+    if (typeof syncLageStateToEinsatzLog === "function"){
+        syncLageStateToEinsatzLog(state);
+    }
     return state;
 }
 
@@ -12413,7 +12420,7 @@ function renderLageDashboard(){
     if (state.startedAt && !state.endedAt){
         saveLageState(state);
     }
-    renderAlarmstichwortSelect("lageAlarmstichwort", state.alarmstichwort || "FEU BMA");
+    renderAlarmstichwortSelect("lageAlarmstichwort", state.alarmstichwort || ALARM_STICHWORT_PLACEHOLDER);
     renderLageChecklistSelect("lageChecklistSelect", checklistRuntime.selectionId || "none");
     const sectionsAuto = getActiveSectionsCountForLage();
     const sectionsValue = sectionsAuto !== null ? sectionsAuto : (Number(state.counters.sectionsManual) || 0);
@@ -13340,7 +13347,7 @@ function setLageFreeText(value){
 
 function updateLageAlarmstichwort(value){
     patchLageState((state)=>{
-        state.alarmstichwort = (value || "").trim() || "FEU BMA";
+        state.alarmstichwort = (value || "").trim() || ALARM_STICHWORT_PLACEHOLDER;
     });
     renderLageDashboard();
 }
@@ -14767,24 +14774,158 @@ function clearEinsatzArchive(){
     renderEinsatzArchiveSettingsList();
 }
 
+function normalizeIncidentDateKey(value){
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    const de = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (de){
+        return `${de[3]}-${String(Number(de[2])).padStart(2, "0")}-${String(Number(de[1])).padStart(2, "0")}`;
+    }
+    const iso = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (iso){
+        return `${iso[1]}-${String(Number(iso[2])).padStart(2, "0")}-${String(Number(iso[3])).padStart(2, "0")}`;
+    }
+    return raw;
+}
+
+function normalizeIncidentTimeKey(value){
+    const raw = String(value || "").trim();
+    const m = raw.match(/^([01]?\d|2[0-3]):([0-5]\d)$/);
+    if (!m) return raw;
+    return `${String(Number(m[1])).padStart(2, "0")}:${m[2]}`;
+}
+
+function buildIncidentArchiveDedupKey(einsatznummer, datum, uhrzeit){
+    const nummer = String(einsatznummer || "").trim();
+    const dateKey = normalizeIncidentDateKey(datum);
+    const timeKey = normalizeIncidentTimeKey(uhrzeit);
+    return `${nummer}|${dateKey}|${timeKey}`;
+}
+
+function convertDeDateToIsoString(value){
+    const raw = String(value || "").trim();
+    const de = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (!de) return "";
+    return `${de[3]}-${String(Number(de[2])).padStart(2, "0")}-${String(Number(de[1])).padStart(2, "0")}`;
+}
+
+function archiveEinsatzLogEntryToIncidentArchive(logId){
+    const historyList = getEinsatzLog();
+    const item = historyList.find((entry)=>String(entry && entry.id || "") === String(logId || ""));
+    if (!item){
+        alert("Historien-Eintrag nicht gefunden.");
+        return;
+    }
+    const dateIso = convertDeDateToIsoString(item.datum);
+    const uhrzeit = normalizeIncidentTimeKey(item.uhrzeit);
+    const socialState = {
+        ...getSocialDefaultState(),
+        einsatznummer: String(item.einsatznummer || "").trim(),
+        date: dateIso || getTodayBerlinDateISO(),
+        time: uhrzeit || "",
+        alarmstichwort: String(item.alarmstichwort || "").trim() || ALARM_STICHWORT_PLACEHOLDER
+    };
+    const startedAt = Date.parse(`${socialState.date}T${uhrzeit || "00:00"}:00`);
+    const lageState = {
+        ...getDefaultLageState(),
+        einsatznummer: String(item.einsatznummer || "").trim(),
+        alarmstichwort: socialState.alarmstichwort,
+        startedAt: Number.isFinite(startedAt) ? startedAt : Date.now(),
+        endedAt: null,
+        lastTickAt: Date.now()
+    };
+    const snapshot = {
+        generatedAt: new Date().toISOString(),
+        mode: isTrainingMode() ? "UEBUNG" : "REAL",
+        incidentMeta: { einsatznummer: String(item.einsatznummer || "").trim() || getIncidentNumberKeyFromSocialState() },
+        lage: lageState,
+        social: socialState,
+        einsatzLog: historyList
+    };
+    const archive = getEinsatzArchive();
+    archive.unshift({
+        id: `hist_arch_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        archivedAt: new Date().toISOString(),
+        mode: isTrainingMode() ? "UEBUNG" : "REAL",
+        einsatznummer: String(item.einsatznummer || "").trim() || getIncidentNumberKeyFromSocialState(),
+        ...snapshot
+    });
+    saveEinsatzArchive(archive.slice(0, 200));
+    renderEinsatzArchiveSettingsList();
+    alert("Historien-Einsatz wurde ins Einsatzarchiv übernommen.");
+}
+
+function buildCombinedIncidentArchiveEntries(){
+    const archiveEntries = getEinsatzArchive().map((entry)=>{
+        const snapshot = normalizeIncidentArchiveSnapshot(entry);
+        const social = snapshot.social && typeof snapshot.social === "object" ? snapshot.social : {};
+        const lage = snapshot.lage && typeof snapshot.lage === "object" ? snapshot.lage : {};
+        const incidentMeta = snapshot.incidentMeta && typeof snapshot.incidentMeta === "object" ? snapshot.incidentMeta : {};
+        const nummer = String((entry && entry.einsatznummer) || incidentMeta.einsatznummer || social.einsatznummer || lage.einsatznummer || "").trim();
+        const datum = String(social.date || "").trim();
+        const uhrzeit = String(social.time || "").trim();
+        return {
+            source: "archive",
+            entry,
+            snapshot,
+            nummer,
+            stichwort: String((social.alarmstichwort || lage.alarmstichwort || "").trim() || "-"),
+            mode: String((entry && entry.mode) || snapshot.mode || "-"),
+            archivedAt: entry && entry.archivedAt ? entry.archivedAt : "",
+            dedupKey: buildIncidentArchiveDedupKey(nummer, datum, uhrzeit),
+            sortTs: Date.parse(entry && entry.archivedAt ? entry.archivedAt : "") || 0
+        };
+    });
+
+    const dedupKeys = new Set(archiveEntries.map((item)=>item.dedupKey).filter(Boolean));
+    const historyEntries = getSortedEinsatzLog().map((item)=>{
+        const nummer = String(item && item.einsatznummer || "").trim();
+        const datum = String(item && item.datum || "").trim();
+        const uhrzeit = String(item && item.uhrzeit || "").trim();
+        const dedupKey = buildIncidentArchiveDedupKey(nummer, datum, uhrzeit);
+        if (dedupKey && dedupKeys.has(dedupKey)){
+            return null;
+        }
+        return {
+            source: "history",
+            historyId: String(item && item.id || ""),
+            nummer: nummer || "-",
+            stichwort: String(item && item.alarmstichwort || "").trim() || "-",
+            mode: "SOCIAL/HISTORIE",
+            archivedAt: item && item.createdAt ? item.createdAt : "",
+            sortTs: parseEinsatzSortTime(item)
+        };
+    }).filter(Boolean);
+
+    return [...archiveEntries, ...historyEntries]
+        .sort((a, b)=>(Number(b.sortTs) || 0) - (Number(a.sortTs) || 0))
+        .slice(0, 80);
+}
+
 function renderEinsatzArchiveSettingsList(){
     const listEl = document.getElementById("settingsIncidentArchiveList");
     if (!listEl) return;
-    const archive = getEinsatzArchive();
-    if (!archive.length){
+    const combined = buildCombinedIncidentArchiveEntries();
+    if (!combined.length){
         listEl.innerHTML = `<div class="lage-empty">Noch keine Einsätze archiviert.</div>`;
         return;
     }
-    listEl.innerHTML = archive.slice(0, 40).map((entry)=>{
-        const snapshot = normalizeIncidentArchiveSnapshot(entry);
-        const archivedAt = entry && entry.archivedAt ? new Date(entry.archivedAt).toLocaleString("de-DE") : "-";
-        const nummer = String((entry && entry.einsatznummer) || (snapshot.incidentMeta && snapshot.incidentMeta.einsatznummer) || "").trim() || "-";
-        const stichwort = String((snapshot.social && snapshot.social.alarmstichwort) || (snapshot.lage && snapshot.lage.alarmstichwort) || "").trim() || "-";
-        const mode = String((entry && entry.mode) || snapshot.mode || "-");
-        const safeId = String((entry && entry.id) || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    listEl.innerHTML = combined.map((item)=>{
+        const archivedAt = item.archivedAt ? new Date(item.archivedAt).toLocaleString("de-DE") : "-";
+        if (item.source === "history"){
+            const safeHistoryId = String(item.historyId || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+            return `<div class="settings-incident-archive-item">
+                <strong>Einsatz ${escapeHtml(item.nummer || "-")}</strong>
+                <div>${escapeHtml(archivedAt)} · ${escapeHtml(item.mode || "-")} · ${escapeHtml(item.stichwort || "-")}</div>
+                <div class="atem-row-actions" style="margin-top:6px;">
+                    <button onclick="archiveEinsatzLogEntryToIncidentArchive('${safeHistoryId}')">Ins Einsatzarchiv übernehmen</button>
+                </div>
+            </div>`;
+        }
+        const safeId = String((item.entry && item.entry.id) || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
         return `<div class="settings-incident-archive-item">
-            <strong>Einsatz ${escapeHtml(nummer)}</strong>
-            <div>${escapeHtml(archivedAt)} · ${escapeHtml(mode)} · ${escapeHtml(stichwort)}</div>
+            <strong>Einsatz ${escapeHtml(item.nummer || "-")}</strong>
+            <div>${escapeHtml(archivedAt)} · ${escapeHtml(item.mode || "-")} · ${escapeHtml(item.stichwort || "-")}</div>
             <div class="atem-row-actions" style="margin-top:6px;">
                 <button onclick="loadEinsatzArchiveAsActive('${safeId}')">Als aktiven Einsatz laden</button>
                 <button onclick="deleteEinsatzArchiveEntry('${safeId}')">Löschen</button>
@@ -16374,7 +16515,6 @@ const ALARM_STICHWORT_OPTIONS = [
     "Brandwache",
     "Durchfahrtskontrolle"
 ];
-
 const SOCIAL_EMOJI_DIGITS = {
     "0": "0️⃣",
     "1": "1️⃣",
@@ -16393,18 +16533,19 @@ function renderAlarmstichwortSelect(selectId, selectedValue){
     if (!select) return;
     const selected = (selectedValue || "").trim();
     const values = ALARM_STICHWORT_OPTIONS.slice();
-    if (selected && values.indexOf(selected) < 0){
+    if (selected && selected !== ALARM_STICHWORT_PLACEHOLDER && values.indexOf(selected) < 0){
         values.unshift(selected);
     }
-    const html = values.map((value)=>`<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+    const options = [ALARM_STICHWORT_PLACEHOLDER, ...values];
+    const html = options.map((value)=>`<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
     if (select.innerHTML !== html){
         select.innerHTML = html;
     }
     if (document.activeElement !== select){
         if (selected){
             select.value = selected;
-        } else if (values.length){
-            select.value = values[0];
+        } else {
+            select.value = ALARM_STICHWORT_PLACEHOLDER;
         }
     }
 }
@@ -16424,7 +16565,7 @@ function getSocialDefaultState(){
         date: getTodayBerlinDateISO(),
         time: "",
         alarmschleife: "Vollalarm",
-        alarmstichwort: "FEU BMA",
+        alarmstichwort: ALARM_STICHWORT_PLACEHOLDER,
         forces: [],
         taetigkeit: "",
         includeWeather: false,
@@ -16547,8 +16688,8 @@ function syncSocialForm(state){
     if (date) date.value = state.date || "";
     if (time) time.value = state.time || "";
     if (alarmschleife) alarmschleife.value = state.alarmschleife || "Vollalarm";
-    renderAlarmstichwortSelect("socialAlarmstichwort", state.alarmstichwort || "FEU BMA");
-    if (alarmstichwort) alarmstichwort.value = state.alarmstichwort || "FEU BMA";
+    renderAlarmstichwortSelect("socialAlarmstichwort", state.alarmstichwort || ALARM_STICHWORT_PLACEHOLDER);
+    if (alarmstichwort) alarmstichwort.value = state.alarmstichwort || ALARM_STICHWORT_PLACEHOLDER;
     if (taetigkeit) taetigkeit.value = state.taetigkeit || "";
     if (includeWeather && document.activeElement !== includeWeather) includeWeather.checked = !!state.includeWeather;
 }
@@ -16837,6 +16978,137 @@ function createStableEinsatzId(entry){
     return `einsatz_${hash.toString(36)}_${Date.now().toString(36)}`;
 }
 
+function normalizeEinsatznummerCompareTokens(value){
+    const raw = String(value || "").trim();
+    if (!raw) return [];
+    const emojiToAscii = raw
+        .replace(/0️⃣/g, "0")
+        .replace(/1️⃣/g, "1")
+        .replace(/2️⃣/g, "2")
+        .replace(/3️⃣/g, "3")
+        .replace(/4️⃣/g, "4")
+        .replace(/5️⃣/g, "5")
+        .replace(/6️⃣/g, "6")
+        .replace(/7️⃣/g, "7")
+        .replace(/8️⃣/g, "8")
+        .replace(/9️⃣/g, "9");
+    const compact = emojiToAscii.toUpperCase().replace(/\s+/g, "");
+    const tokens = new Set([compact]);
+    if (compact.includes("/")){
+        const shortPart = compact.split("/")[0];
+        if (shortPart) tokens.add(shortPart);
+    }
+    const digits = compact.replace(/\D/g, "");
+    if (digits) tokens.add(digits);
+    return Array.from(tokens).filter(Boolean);
+}
+
+function isSameEinsatznummer(a, b){
+    const aTokens = normalizeEinsatznummerCompareTokens(a);
+    const bTokens = normalizeEinsatznummerCompareTokens(b);
+    if (!aTokens.length || !bTokens.length) return false;
+    return aTokens.some((token)=>bTokens.includes(token));
+}
+
+function findEinsatzLogEntryIndex(list, payload){
+    const source = Array.isArray(list) ? list : [];
+    const p = payload && typeof payload === "object" ? payload : {};
+    const nr = String(p.einsatznummer || "").trim();
+    const datum = String(p.datum || "").trim();
+    const uhrzeit = String(p.uhrzeit || "").trim();
+    const exactIdx = source.findIndex((item)=>
+        item &&
+        String(item.einsatznummer || "").trim() === nr &&
+        String(item.datum || "").trim() === datum &&
+        String(item.uhrzeit || "").trim() === uhrzeit
+    );
+    if (exactIdx >= 0) return exactIdx;
+    if (!nr) return -1;
+    return source.findIndex((item)=>item && isSameEinsatznummer(item.einsatznummer, nr));
+}
+
+function formatTimestampToEinsatzDatum(ts){
+    const num = Number(ts);
+    if (!Number.isFinite(num)) return "";
+    const d = new Date(num);
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yyyy = String(d.getFullYear());
+    return `${dd}.${mm}.${yyyy}`;
+}
+
+function formatTimestampToEinsatzUhrzeit(ts){
+    const num = Number(ts);
+    if (!Number.isFinite(num)) return "";
+    const d = new Date(num);
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${hh}:${mm}`;
+}
+
+function buildLageSyncPayloadFromState(lageState){
+    const s = lageState && typeof lageState === "object" ? lageState : {};
+    const einsatznummer = String(s.einsatznummer || "").trim();
+    const startedAt = Number(s.startedAt);
+    return {
+        einsatznummer,
+        datum: formatTimestampToEinsatzDatum(startedAt),
+        uhrzeit: formatTimestampToEinsatzUhrzeit(startedAt),
+        alarmstichwort: String(s.alarmstichwort || "").trim(),
+        lage: {
+            startedAt: Number.isFinite(startedAt) ? startedAt : null,
+            endedAt: Number.isFinite(Number(s.endedAt)) ? Number(s.endedAt) : null,
+            durationRunning: Number(s.durationRunning) || 0,
+            priority: String(s.priority || "yellow"),
+            gpsText: String(s.gpsText || ""),
+            leitstelleEinsatznummer: String(s.leitstelleEinsatznummer || ""),
+            counters: { ...(s.counters || {}) },
+            toggles: { ...(s.toggles || {}) },
+            freeText: String(s.freeText || ""),
+            autoReport: getLageAutoReport(s),
+            updatedAt: new Date().toISOString()
+        }
+    };
+}
+
+function mergeEinsatzEntryWithPayload(baseEntry, payload){
+    const base = baseEntry && typeof baseEntry === "object" ? baseEntry : {};
+    const p = payload && typeof payload === "object" ? payload : {};
+    const nextAlarm = [String(base.alarmstichwort || "").trim(), String(p.alarmstichwort || "").trim()]
+        .find((value)=>value && value !== ALARM_STICHWORT_PLACEHOLDER) || String(base.alarmstichwort || p.alarmstichwort || "").trim();
+    return {
+        ...base,
+        einsatznummer: String(base.einsatznummer || p.einsatznummer || "").trim(),
+        datum: String(base.datum || p.datum || "").trim(),
+        uhrzeit: String(base.uhrzeit || p.uhrzeit || "").trim(),
+        alarmstichwort: nextAlarm,
+        verursacher: normalizeVerursacherInfo(p.verursacher || base.verursacher),
+        lage: p.lage ? { ...(base.lage || {}), ...p.lage } : base.lage,
+        updatedAt: new Date().toISOString()
+    };
+}
+
+function syncLageStateToEinsatzLog(lageState){
+    const payload = buildLageSyncPayloadFromState(lageState);
+    if (!payload.einsatznummer) return false;
+    const list = getEinsatzLog();
+    const idx = findEinsatzLogEntryIndex(list, payload);
+    if (idx >= 0){
+        list[idx] = mergeEinsatzEntryWithPayload(list[idx], payload);
+    } else {
+        const entry = mergeEinsatzEntryWithPayload({
+            id: "",
+            beteiligt: null,
+            createdAt: new Date().toISOString()
+        }, payload);
+        entry.id = createStableEinsatzId(entry);
+        list.unshift(entry);
+    }
+    saveEinsatzLog(list);
+    if (isEinsatzOverlayOpen()) renderEinsatzOverview();
+    return true;
+}
+
 function getEinsatzLog(){
     try {
         const raw = appStorageGetItem(EINSATZ_LOG_STORAGE_KEY);
@@ -16871,7 +17143,7 @@ function buildSocialEinsatzEntry(){
     if (!uhrzeit){
         return { error: "Uhrzeit fehlt oder ist ungültig." };
     }
-    if (!alarmstichwort){
+    if (!alarmstichwort || alarmstichwort === ALARM_STICHWORT_PLACEHOLDER){
         return { error: "Alarmstichwort fehlt." };
     }
 
@@ -16892,33 +17164,16 @@ function saveSocialToEinsatzLog(){
     }
 
     const list = getEinsatzLog();
-    const idx = list.findIndex((item)=>
-        item &&
-        item.einsatznummer === payload.einsatznummer &&
-        item.datum === payload.datum &&
-        item.uhrzeit === payload.uhrzeit
-    );
+    const idx = findEinsatzLogEntryIndex(list, payload);
 
     if (idx >= 0){
-        list[idx] = {
-            ...list[idx],
-            einsatznummer: payload.einsatznummer,
-            datum: payload.datum,
-            uhrzeit: payload.uhrzeit,
-            alarmstichwort: payload.alarmstichwort,
-            verursacher: normalizeVerursacherInfo(payload.verursacher)
-        };
+        list[idx] = mergeEinsatzEntryWithPayload(list[idx], payload);
     } else {
-        const entry = {
+        const entry = mergeEinsatzEntryWithPayload({
             id: "",
-            einsatznummer: payload.einsatznummer,
-            datum: payload.datum,
-            uhrzeit: payload.uhrzeit,
-            alarmstichwort: payload.alarmstichwort,
-            verursacher: normalizeVerursacherInfo(payload.verursacher),
             beteiligt: null,
             createdAt: new Date().toISOString()
-        };
+        }, payload);
         entry.id = createStableEinsatzId(entry);
         list.unshift(entry);
     }
@@ -16992,6 +17247,7 @@ document.addEventListener("keydown", (event)=>{
 let einsatzStichwortFilter = "";
 let einsatzVerursacherFilter = "all";
 let einsatzVerursacherSearch = "";
+let einsatzManualDraft = null;
 
 function parseEinsatzSortTime(item){
     if (!item) return 0;
@@ -17054,6 +17310,153 @@ function updateEinsatzVerursacherFilterUi(){
     if (searchInput && document.activeElement !== searchInput){
         searchInput.value = einsatzVerursacherSearch;
     }
+}
+
+function getDefaultEinsatzManualDraft(){
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, "0");
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    const yyyy = String(now.getFullYear());
+    const hh = String(now.getHours()).padStart(2, "0");
+    const min = String(now.getMinutes()).padStart(2, "0");
+    return {
+        einsatznummer: "",
+        datum: `${dd}.${mm}.${yyyy}`,
+        uhrzeit: `${hh}:${min}`,
+        alarmstichwort: "",
+        beteiligt: null
+    };
+}
+
+function getEinsatzManualDraft(){
+    if (!einsatzManualDraft){
+        einsatzManualDraft = getDefaultEinsatzManualDraft();
+    }
+    return einsatzManualDraft;
+}
+
+function setEinsatzManualField(field, value){
+    const draft = getEinsatzManualDraft();
+    if (!(field in draft)) return;
+    draft[field] = value;
+    renderEinsatzManualForm();
+}
+
+function setEinsatzManualBeteiligung(value){
+    const draft = getEinsatzManualDraft();
+    draft.beteiligt = draft.beteiligt === value ? null : value;
+    renderEinsatzManualForm();
+}
+
+function renderEinsatzManualForm(){
+    const wrap = document.getElementById("einsatzQuickEntry");
+    if (!wrap) return;
+    const draft = getEinsatzManualDraft();
+    const beteiligtJa = draft.beteiligt === true ? "active-yes" : "";
+    const beteiligtNein = draft.beteiligt === false ? "active-no" : "";
+    wrap.innerHTML = `
+        <strong>Einsatz manuell protokollieren</strong>
+        <div class="psu-meta" style="margin-top:4px;">Unabhängig vom aktiven Einsatz direkt in die Historie eintragen.</div>
+        <div class="social-grid" style="margin-top:10px;">
+            <div>
+                <label for="einsatzManualNummer">Einsatznummer</label>
+                <input id="einsatzManualNummer" type="text" value="${escapeHtml(draft.einsatznummer)}" oninput="setEinsatzManualField('einsatznummer', this.value)">
+            </div>
+            <div>
+                <label for="einsatzManualDatum">Datum (TT.MM.JJJJ)</label>
+                <input id="einsatzManualDatum" type="text" value="${escapeHtml(draft.datum)}" oninput="setEinsatzManualField('datum', this.value)">
+            </div>
+            <div>
+                <label for="einsatzManualUhrzeit">Uhrzeit (HH:MM)</label>
+                <input id="einsatzManualUhrzeit" type="text" value="${escapeHtml(draft.uhrzeit)}" oninput="setEinsatzManualField('uhrzeit', this.value)">
+            </div>
+            <div class="social-col-full">
+                <label for="einsatzManualStichwort">Alarmstichwort</label>
+                <input id="einsatzManualStichwort" type="text" value="${escapeHtml(draft.alarmstichwort)}" oninput="setEinsatzManualField('alarmstichwort', this.value)">
+            </div>
+        </div>
+        <div class="einsatz-toggle-row" style="margin-top:10px;">
+            <button class="${beteiligtJa}" onclick="setEinsatzManualBeteiligung(true)">Beteiligung: Ja</button>
+            <button class="${beteiligtNein}" onclick="setEinsatzManualBeteiligung(false)">Beteiligung: Nein</button>
+            <button onclick="saveManualEinsatzEntry()">In Historie speichern</button>
+        </div>`;
+}
+
+function normalizeEinsatzDatum(value){
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    const de = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (de){
+        const d = String(Number(de[1])).padStart(2, "0");
+        const m = String(Number(de[2])).padStart(2, "0");
+        const y = de[3];
+        return `${d}.${m}.${y}`;
+    }
+    const iso = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    if (iso){
+        const y = iso[1];
+        const m = String(Number(iso[2])).padStart(2, "0");
+        const d = String(Number(iso[3])).padStart(2, "0");
+        return `${d}.${m}.${y}`;
+    }
+    return "";
+}
+
+function normalizeEinsatzUhrzeit(value){
+    const raw = String(value || "").trim();
+    const m = raw.match(/^([01]?\d|2[0-3]):([0-5]\d)$/);
+    if (!m) return "";
+    return `${String(Number(m[1])).padStart(2, "0")}:${m[2]}`;
+}
+
+function saveManualEinsatzEntry(){
+    const draft = getEinsatzManualDraft();
+    const einsatznummer = formatSocialEinsatznummer(draft.einsatznummer || "");
+    const datum = normalizeEinsatzDatum(draft.datum);
+    const uhrzeit = normalizeEinsatzUhrzeit(draft.uhrzeit);
+    const alarmstichwort = String(draft.alarmstichwort || "").trim();
+
+    if (einsatznummer === "—"){
+        alert("Bitte Einsatznummer eingeben.");
+        return;
+    }
+    if (!datum){
+        alert("Datum ist ungültig. Bitte TT.MM.JJJJ verwenden.");
+        return;
+    }
+    if (!uhrzeit){
+        alert("Uhrzeit ist ungültig. Bitte HH:MM verwenden.");
+        return;
+    }
+    if (!alarmstichwort){
+        alert("Bitte Alarmstichwort eingeben.");
+        return;
+    }
+
+    const list = getEinsatzLog();
+    const payload = { einsatznummer, datum, uhrzeit, alarmstichwort };
+    const idx = findEinsatzLogEntryIndex(list, payload);
+
+    if (idx >= 0){
+        list[idx] = {
+            ...mergeEinsatzEntryWithPayload(list[idx], payload),
+            beteiligt: draft.beteiligt
+        };
+    } else {
+        const entry = {
+            ...mergeEinsatzEntryWithPayload({}, payload),
+            id: "",
+            verursacher: normalizeVerursacherInfo(null),
+            beteiligt: draft.beteiligt,
+            createdAt: new Date().toISOString()
+        };
+        entry.id = createStableEinsatzId(entry);
+        list.unshift(entry);
+    }
+
+    saveEinsatzLog(list);
+    einsatzManualDraft = getDefaultEinsatzManualDraft();
+    renderEinsatzOverview();
 }
 
 function renderEinsatzSummary(list){
@@ -17166,6 +17569,7 @@ function removeEinsatzEntry(id){
 }
 
 function renderEinsatzOverview(){
+    renderEinsatzManualForm();
     const fullList = getSortedEinsatzLog();
     renderEinsatzSummary(fullList);
     const filteredList = einsatzStichwortFilter
@@ -17177,7 +17581,7 @@ function renderEinsatzOverview(){
     if (!filteredList.length){
         const hint = einsatzStichwortFilter
             ? `Keine Einträge zum Stichwort „${einsatzStichwortFilter}“.`
-            : "Noch keine Einträge gespeichert.<br>Im Social-Media Beitrag auf „Für Einsatzhistorie speichern“ klicken.";
+            : "Noch keine Einträge gespeichert.<br>Oben manuell erfassen oder im Social-Media Beitrag auf „Für Einsatzhistorie speichern“ klicken.";
         listEl.innerHTML = `<div class="card">${hint}</div>`;
         return;
     }
@@ -17185,6 +17589,11 @@ function renderEinsatzOverview(){
     let html = "";
     filteredList.forEach((item)=>{
         const status = getEinsatzStatusMeta(item.beteiligt);
+        const lageData = item && item.lage && typeof item.lage === "object" ? item.lage : null;
+        const hasLageData = !!lageData;
+        const lageSummary = hasLageData
+            ? `Lage: ${Number(lageData.counters && lageData.counters.vehicles || 0)} Fzg · ${Number(lageData.counters && lageData.counters.personnel || 0)} Kräfte · Priorität ${String(lageData.priority || "-")}`
+            : "";
         html += `
         <div class="einsatz-item">
             <div class="einsatz-item-top">
@@ -17194,6 +17603,8 @@ function renderEinsatzOverview(){
             <div>Datum: ${item.datum || "—"}</div>
             <div>Uhrzeit: ${item.uhrzeit || "—"}</div>
             <div>Alarmstichwort: ${item.alarmstichwort || "—"}</div>
+            <div>${hasLageData ? "Einsatzlage: verknüpft" : "Einsatzlage: nicht verknüpft"}</div>
+            ${hasLageData ? `<div>${escapeHtml(lageSummary)}</div>` : ""}
             <div class="einsatz-toggle-row">
                 <button class="${item.beteiligt === true ? "active-yes" : ""}" onclick="setEinsatzBeteiligung('${item.id}', true)">Ja</button>
                 <button class="${item.beteiligt === false ? "active-no" : ""}" onclick="setEinsatzBeteiligung('${item.id}', false)">Nein</button>
@@ -17210,6 +17621,10 @@ function openEinsatzOverlay(){
     lastEinsatzFocus = document.activeElement;
     overlay.classList.add("show");
     document.body.style.overflow = "hidden";
+    const lageState = typeof getLageState === "function" ? getLageState() : null;
+    if (lageState && typeof syncLageStateToEinsatzLog === "function"){
+        syncLageStateToEinsatzLog(lageState);
+    }
     renderEinsatzOverview();
 }
 
