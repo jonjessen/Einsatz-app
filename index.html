@@ -5943,6 +5943,10 @@ iframe {
                             </div>
                         </div>
                     </div>
+                    <div class="atem-panel" style="margin-top:8px;">
+                        <strong>Fahrzeuge vor Ort (aus Kräfte/Funkrufnamen)</strong>
+                        <div id="lageVehiclesOnSceneList" class="einsatz-list" style="margin-top:8px;"></div>
+                    </div>
                 </details>
             </div>
 
@@ -6406,7 +6410,7 @@ function isTrainingMode(){
 }
 
 const APP_VERSION = "1.7";
-const SERVICE_WORKER_SCRIPT_VERSION = "27";
+const SERVICE_WORKER_SCRIPT_VERSION = "28";
 const ALARM_STICHWORT_PLACEHOLDER = "BITTE WÄHLEN";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 const TRAINING_ARCHIVE_STORAGE_KEY = "ff360_training_archive_v1";
@@ -12437,6 +12441,22 @@ function renderLageDashboard(){
     setText("lagePersonnelValue", Number(state.counters.personnel) || 0);
     setText("lageInjuredCrewValue", Number(state.counters.injuredCrew) || 0);
     setText("lageCylindersValue", Number(state.counters.cylindersUsed) || 0);
+    const lageVehiclesOnSceneEl = document.getElementById("lageVehiclesOnSceneList");
+    if (lageVehiclesOnSceneEl){
+        const vehicles = (typeof getEinsatzKraefteVehiclesForReport === "function")
+            ? getEinsatzKraefteVehiclesForReport()
+            : [];
+        if (!vehicles.length){
+            lageVehiclesOnSceneEl.innerHTML = `<div class="lage-empty">Noch keine Fahrzeuge als teilnehmend markiert.</div>`;
+        } else {
+            lageVehiclesOnSceneEl.innerHTML = vehicles.map((item)=>`
+                <div class="einsatz-item">
+                    <strong>${escapeHtml(item.fahrzeugBezeichnung || "-")}</strong><br>
+                    Funkrufname: ${escapeHtml(item.funkrufname || "-")} · Status: ${escapeHtml(item.status || "Alarmiert")}
+                </div>
+            `).join("");
+        }
+    }
     const einsatznummerInput = document.getElementById("lageEinsatznummer");
     if (einsatznummerInput && document.activeElement !== einsatznummerInput){
         einsatznummerInput.value = state.einsatznummer || "";
@@ -14014,6 +14034,25 @@ function resetAllIncidentModulesForNextStart(){
         savePresseState();
         saveHvoState(getDefaultHvoState());
         saveDrohneFlugbuchState(getDefaultDrohneFlugbuchState());
+        if (typeof patchEinsatzKraefteState === "function"){
+            patchEinsatzKraefteState((s)=>{
+                s.einsatz = {
+                    ...s.einsatz,
+                    name: "",
+                    nummer: "",
+                    datum: getEinsatzKraefteTodayIso(),
+                    uhrzeit: getEinsatzKraefteNowTime()
+                };
+                s.selected = {};
+                s.members = Array.isArray(s.members)
+                    ? s.members.map((member)=>({
+                        ...member,
+                        teilnahme: false,
+                        assignedVehicleId: ""
+                    }))
+                    : [];
+            });
+        }
 
         savePsuState(getDefaultPsuState());
         savePsuContacts([]);
@@ -14032,6 +14071,8 @@ function resetAllIncidentModulesForNextStart(){
     if (typeof renderPresseTool === "function" && isPresseOverlayOpen()) renderPresseTool();
     if (typeof renderPsuOverlay === "function" && isPsuOverlayOpen()) renderPsuOverlay();
     if (typeof renderHvoOverlay === "function" && isHvoOverlayOpen()) renderHvoOverlay();
+    if (typeof renderEinsatzKraefteTool === "function") renderEinsatzKraefteTool();
+    if (typeof renderEinsatzMitgliederTool === "function") renderEinsatzMitgliederTool();
 }
 
 function finalizeActiveEinsatzPaket(options = {}){
@@ -14090,6 +14131,8 @@ function getIncidentReportSnapshot(){
         nachforderungen: typeof getNachforderungen === "function" ? getNachforderungen() : [],
         social: typeof getSocialState === "function" ? getSocialState() : null,
         einsatzLog: typeof getEinsatzLog === "function" ? getEinsatzLog() : [],
+        einsatzKraefte: typeof getEinsatzKraefteState === "function" ? getEinsatzKraefteState() : null,
+        einsatzFahrzeugeVorOrt: typeof getEinsatzKraefteVehiclesForReport === "function" ? getEinsatzKraefteVehiclesForReport() : [],
         funk: typeof getFunkState === "function" ? getFunkState() : null,
         atemschutz: typeof getAtemschutzState === "function" ? getAtemschutzState() : null,
         funkcheck: typeof getFunkcheckState === "function" ? getFunkcheckState() : null,
@@ -14418,7 +14461,7 @@ function getSocialReportRows(social){
     const berichtStatus = normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe);
     rows.push({
         label: "Berichtsstatus",
-        value: `${getSocialBerichtStageLabel(berichtStatus.stage)}${berichtStatus.websitePublished ? " · Website veröffentlicht" : ""}`
+        value: getSocialBerichtStageLabel(berichtStatus.stage)
     });
     if (state.includeWeather){
         rows.push({ label: "Wetteranhang", value: "Aktiviert" });
@@ -14473,6 +14516,14 @@ function exportIncidentFinalReportPdf(){
         <td style="padding:6px 8px;border:1px solid #bbb;width:180px;">${escapeHtml(item.type || "-")}</td>
         <td style="padding:6px 8px;border:1px solid #bbb;">${escapeHtml(item.text || "-")}</td>
     </tr>`).join("");
+    const fahrzeugeVorOrt = Array.isArray(snapshot.einsatzFahrzeugeVorOrt)
+        ? snapshot.einsatzFahrzeugeVorOrt
+        : (snapshot.einsatzKraefte && typeof getEinsatzKraefteVehiclesForReport === "function"
+            ? getEinsatzKraefteVehiclesForReport(snapshot.einsatzKraefte)
+            : []);
+    const fahrzeugeVorOrtText = fahrzeugeVorOrt.length
+        ? fahrzeugeVorOrt.map((item)=>`${item.fahrzeugBezeichnung || "-"} (${item.funkrufname || "-"}) [${item.status || "Alarmiert"}]`).join("; ")
+        : "Keine Fahrzeuge als teilnehmend markiert";
 
     const reportRows = [
         { label: "Einsatznummer", value: (snapshot.incidentMeta && snapshot.incidentMeta.einsatznummer) || getIncidentNumberKeyFromSocialState() },
@@ -14487,6 +14538,7 @@ function exportIncidentFinalReportPdf(){
         { label: "Lagekarte Zeichnungen", value: String(Array.isArray(lage.lageMap && lage.lageMap.drawings) ? lage.lageMap.drawings.length : 0) },
         { label: "Kräfte", value: String(Number(lage.counters.personnel) || 0) },
         { label: "Fahrzeuge", value: String(Number(lage.counters.vehicles) || 0) },
+        { label: "Fahrzeuge vor Ort (Auswahl)", value: fahrzeugeVorOrtText },
         { label: "PA im Einsatz", value: String(Number(lage.counters.pa) || 0) },
         { label: "Gerettete", value: String(Number(lage.counters.rescued) || 0) },
         { label: "Abschnitte aktiv", value: String(sectionsValue) }
@@ -16575,12 +16627,11 @@ function getTodayBerlinDateISO(){
     }).format(new Date());
 }
 
-const SOCIAL_BERICHT_STAGES = ["erstellt", "freigabe_wehrfuehrung", "gepostet"];
+const SOCIAL_BERICHT_STAGES = ["erstellt", "freigabe_wehrfuehrung", "gepostet", "auf_website"];
 
 function getDefaultSocialBerichtStatus(){
     return {
         stage: "erstellt",
-        websitePublished: false,
         updatedAt: ""
     };
 }
@@ -16589,9 +16640,13 @@ function normalizeSocialBerichtStatus(input, legacyFreigabe){
     const base = getDefaultSocialBerichtStatus();
     const src = (input && typeof input === "object") ? input : {};
     const legacy = (legacyFreigabe && typeof legacyFreigabe === "object") ? legacyFreigabe : {};
-    let stage = SOCIAL_BERICHT_STAGES.includes(String(src.stage || "").trim())
-        ? String(src.stage || "").trim()
+    const sourceStage = String(src.stage || "").trim();
+    let stage = SOCIAL_BERICHT_STAGES.includes(sourceStage)
+        ? sourceStage
         : base.stage;
+    if (stage === base.stage && src.websitePublished === true){
+        stage = "auf_website";
+    }
     if (stage === base.stage){
         const legacyChecks = legacy.checks && typeof legacy.checks === "object" ? legacy.checks : {};
         if (legacy.confirmedAt || legacyChecks.fuehrungFreigegeben){
@@ -16600,16 +16655,24 @@ function normalizeSocialBerichtStatus(input, legacyFreigabe){
     }
     return {
         stage,
-        websitePublished: !!src.websitePublished,
         updatedAt: typeof src.updatedAt === "string" ? src.updatedAt : ""
     };
 }
 
 function getSocialBerichtStageLabel(stage){
     const key = String(stage || "").trim();
+    if (key === "auf_website") return "Auf Website";
     if (key === "freigabe_wehrfuehrung") return "Freigabe durch Wehrführung";
     if (key === "gepostet") return "Gepostet";
-    return "Erstellt";
+    return "Einsatz erstellt";
+}
+
+function getSocialBerichtStageOrder(stage){
+    const key = String(stage || "").trim();
+    if (key === "auf_website") return 3;
+    if (key === "freigabe_wehrfuehrung") return 1;
+    if (key === "gepostet") return 2;
+    return 0;
 }
 
 function getSocialDefaultState(){
@@ -16755,18 +16818,36 @@ function renderSocialReleaseBlock(state){
     if (!block) return;
     const status = normalizeSocialBerichtStatus(state && state.berichtStatus, state && state.freigabe);
     const stage = status.stage || "erstellt";
-    const website = !!status.websitePublished;
     const stageLabel = getSocialBerichtStageLabel(stage);
+    const stageOrder = getSocialBerichtStageOrder(stage);
     const ts = status.updatedAt ? new Date(status.updatedAt).toLocaleString("de-DE") : "—";
+    const stages = [
+        { key: "erstellt", label: "Einsatz erstellt" },
+        { key: "freigabe_wehrfuehrung", label: "Freigabe durch Wehrführung" },
+        { key: "gepostet", label: "Gepostet" },
+        { key: "auf_website", label: "Auf Website" }
+    ];
+    const stageVisual = stages.map((item, idx)=>{
+        const isCurrent = item.key === stage;
+        const isDone = idx < stageOrder;
+        const bg = isCurrent ? "rgba(19,124,66,0.15)" : (isDone ? "rgba(19,124,66,0.08)" : "rgba(4,12,22,0.04)");
+        const border = isCurrent ? "rgba(19,124,66,0.55)" : (isDone ? "rgba(19,124,66,0.25)" : "rgba(10,21,37,0.12)");
+        const badge = isCurrent ? "AKTUELL" : (isDone ? "ERLEDIGT" : "OFFEN");
+        return `<div style="border:1px solid ${border};background:${bg};border-radius:10px;padding:8px;min-width:140px;">
+            <div style="font-size:11px;opacity:0.75;">${badge}</div>
+            <div style="font-weight:700;">${escapeHtml(item.label)}</div>
+        </div>`;
+    }).join("");
     block.innerHTML = `
         <div class="social-release-title">Berichtsstatus</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">${stageVisual}</div>
         <div class="social-actions" style="margin-top:8px;">
-            <button class="${stage === "erstellt" ? "active-yes" : ""}" onclick="setSocialBerichtStage('erstellt')">Erstellt</button>
+            <button class="${stage === "erstellt" ? "active-yes" : ""}" onclick="setSocialBerichtStage('erstellt')">Einsatz erstellt</button>
             <button class="${stage === "freigabe_wehrfuehrung" ? "active-yes" : ""}" onclick="setSocialBerichtStage('freigabe_wehrfuehrung')">Freigabe durch Wehrführung</button>
             <button class="${stage === "gepostet" ? "active-yes" : ""}" onclick="setSocialBerichtStage('gepostet')">Gepostet</button>
+            <button class="${stage === "auf_website" ? "active-yes" : ""}" onclick="setSocialBerichtStage('auf_website')">Auf Website</button>
         </div>
-        <label class="social-force-item" style="margin-top:8px;"><input type="checkbox" ${website ? "checked" : ""} onchange="toggleSocialWebsitePublished(this.checked)"><span>Website veröffentlicht</span></label>
-        <div class="social-release-status">Aktueller Status: ${escapeHtml(stageLabel)} · Website: ${website ? "Ja" : "Nein"} · Aktualisiert: ${escapeHtml(ts)}</div>
+        <div class="social-release-status">Aktueller Status: ${escapeHtml(stageLabel)} · Aktualisiert: ${escapeHtml(ts)}</div>
     `;
 }
 
@@ -16839,17 +16920,6 @@ function setSocialBerichtStage(stage){
     showSocialHint(`Status gesetzt: ${getSocialBerichtStageLabel(safeStage)}.`, false);
 }
 
-function toggleSocialWebsitePublished(checked){
-    patchSocialState((state)=>{
-        const current = normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe);
-        current.websitePublished = !!checked;
-        current.updatedAt = nowIso();
-        state.berichtStatus = current;
-    });
-    renderSocialGenerator();
-    showSocialHint(checked ? "Website-Veröffentlichung markiert." : "Website-Veröffentlichung entfernt.", false);
-}
-
 function startIncidentFromSocial(){
     if (isIncidentEditingUnlocked()){
         showSocialHint("Einsatz läuft bereits.", false);
@@ -16891,7 +16961,7 @@ function showSocialHint(message, isError){
 
 function copySocialPost(){
     const state = getSocialState();
-    const text = buildSocialPost(state);
+    const text = buildSocialPost(state, { includeInstagramHandles: true });
     copyTextToClipboard(text).then((ok)=>{
         if (ok) showSocialHint("Beitrag in die Zwischenablage kopiert.", false);
     });
@@ -16899,7 +16969,7 @@ function copySocialPost(){
 
 function copySocialWebsiteText(){
     const state = getSocialState();
-    const text = buildSocialPost(state, { includeInstagramHandles: true, includeHashtags: false });
+    const text = buildSocialPost(state, { includeInstagramHandles: false, includeHashtags: false });
     copyTextToClipboard(text).then((ok)=>{
         if (ok) showSocialHint("Website Text in die Zwischenablage kopiert.", false);
     });
@@ -17309,7 +17379,7 @@ function getSortedEinsatzLog(){
     return getEinsatzLog().slice().sort((a, b)=>{
         const keyA = getEinsatznummerSortValue(a);
         const keyB = getEinsatznummerSortValue(b);
-        const byNumber = keyA.localeCompare(keyB, "de-DE", { numeric: true, sensitivity: "base" });
+        const byNumber = keyB.localeCompare(keyA, "de-DE", { numeric: true, sensitivity: "base" });
         if (byNumber !== 0) return byNumber;
         return parseEinsatzSortTime(b) - parseEinsatzSortTime(a);
     });
@@ -17546,6 +17616,24 @@ function renderEinsatzSummary(list){
         return (yb || 0) - (ya || 0) || (mb || 0) - (ma || 0);
     });
 
+    const statusCounters = {
+        erstellt: 0,
+        freigabe_wehrfuehrung: 0,
+        gepostet: 0,
+        auf_website: 0
+    };
+    const pendingItems = [];
+    list.forEach((item)=>{
+        const bericht = normalizeSocialBerichtStatus(item && item.berichtStatus);
+        const stage = SOCIAL_BERICHT_STAGES.includes(String(bericht.stage || "").trim())
+            ? String(bericht.stage || "").trim()
+            : "erstellt";
+        statusCounters[stage] = (statusCounters[stage] || 0) + 1;
+        if (stage !== "auf_website"){
+            pendingItems.push(item);
+        }
+    });
+
     let html = `
         <strong>Übersicht</strong>
         <div class="einsatz-summary-grid">
@@ -17555,6 +17643,34 @@ function renderEinsatzSummary(list){
             <div>Offen: ${open}</div>
             <div>Beteiligungsquote: ${quote}</div>
         </div>
+        <div style="margin-top:10px;"><strong>Berichtsstatus-Übersicht</strong></div>
+        <div class="einsatz-summary-grid" style="margin-top:6px;">
+            <div>Einsatz erstellt: ${statusCounters.erstellt}</div>
+            <div>Freigabe Wehrführung: ${statusCounters.freigabe_wehrfuehrung}</div>
+            <div>Gepostet: ${statusCounters.gepostet}</div>
+            <div>Auf Website: ${statusCounters.auf_website}</div>
+            <div>Noch zu bearbeiten: ${pendingItems.length}</div>
+        </div>
+        <div style="margin-top:10px;"><strong>Noch zu bearbeiten</strong></div>
+        <div class="einsatz-list" style="margin-top:6px;">`;
+
+    if (!pendingItems.length){
+        html += `<div class="lage-empty">Alle Einträge sind bereits auf „Auf Website“ gesetzt.</div>`;
+    } else {
+        pendingItems.slice(0, 12).forEach((item)=>{
+            const bericht = normalizeSocialBerichtStatus(item && item.berichtStatus);
+            const stageLabel = getSocialBerichtStageLabel(bericht.stage);
+            html += `<div class="einsatz-item">
+                <strong>${escapeHtml(item.einsatznummer || "—")}</strong> · ${escapeHtml(item.datum || "—")} ${escapeHtml(item.uhrzeit || "—")}<br>
+                Aktueller Status: ${escapeHtml(stageLabel)}
+            </div>`;
+        });
+        if (pendingItems.length > 12){
+            html += `<div class="lage-empty">+ ${pendingItems.length - 12} weitere offene Einträge in der Liste.</div>`;
+        }
+    }
+
+    html += `</div>
         <div style="margin-top:10px;"><strong>Stichwort-Statistik</strong></div>
         <div class="einsatz-toggle-row" style="margin-top:6px;">`;
 
@@ -17621,18 +17737,6 @@ function setEinsatzBerichtStage(id, stage){
     renderEinsatzOverview();
 }
 
-function setEinsatzWebsitePublished(id, checked){
-    const list = getEinsatzLog();
-    const idx = list.findIndex((item)=>item.id === id);
-    if (idx < 0) return;
-    const current = normalizeSocialBerichtStatus(list[idx].berichtStatus);
-    current.websitePublished = !!checked;
-    current.updatedAt = nowIso();
-    list[idx].berichtStatus = current;
-    saveEinsatzLog(list);
-    renderEinsatzOverview();
-}
-
 function removeEinsatzEntry(id){
     if (!confirm("Einsatz wirklich löschen?")) return;
     const next = getEinsatzLog().filter((item)=>item.id !== id);
@@ -17680,12 +17784,12 @@ function renderEinsatzOverview(){
             <div>Alarmstichwort: ${item.alarmstichwort || "—"}</div>
             <div>${hasLageData ? "Einsatzlage: verknüpft" : "Einsatzlage: nicht verknüpft"}</div>
             ${hasLageData ? `<div>${escapeHtml(lageSummary)}</div>` : ""}
-            <div>Berichtsstatus: ${escapeHtml(berichtLabel)}${berichtStatus.websitePublished ? " · Website veröffentlicht" : ""}</div>
+            <div>Berichtsstatus: ${escapeHtml(berichtLabel)}</div>
             <div class="einsatz-toggle-row">
-                <button class="${berichtStage === "erstellt" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'erstellt')">Erstellt</button>
+                <button class="${berichtStage === "erstellt" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'erstellt')">Einsatz erstellt</button>
                 <button class="${berichtStage === "freigabe_wehrfuehrung" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'freigabe_wehrfuehrung')">Freigabe Wehrführung</button>
                 <button class="${berichtStage === "gepostet" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'gepostet')">Gepostet</button>
-                <button class="${berichtStatus.websitePublished ? "active-yes" : ""}" onclick="setEinsatzWebsitePublished('${item.id}', ${berichtStatus.websitePublished ? "false" : "true"})">Website ${berichtStatus.websitePublished ? "✓" : "✕"}</button>
+                <button class="${berichtStage === "auf_website" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'auf_website')">Auf Website</button>
             </div>
             <div class="einsatz-toggle-row">
                 <button class="${item.beteiligt === true ? "active-yes" : ""}" onclick="setEinsatzBeteiligung('${item.id}', true)">Ja</button>
@@ -24639,6 +24743,21 @@ function getEinsatzKraefteSelectedVehicles(state){
         return !!(row && row.selected);
     });
     return getSortedFunkrufData(state).filter((item)=>selectedIds.includes(item.id));
+}
+
+function getEinsatzKraefteVehiclesForReport(inputState){
+    const state = inputState && typeof inputState === "object" ? normalizeEinsatzKraefteState(inputState) : getEinsatzKraefteState();
+    const selected = getEinsatzKraefteSelectedVehicles(state);
+    return selected.map((item)=>{
+        const row = (state.selected && state.selected[item.id]) || {};
+        return {
+            id: item.id,
+            organisation: item.organisation || item.gemeinde || "",
+            fahrzeugBezeichnung: item.fahrzeugBezeichnung || "",
+            funkrufname: item.funkrufname || "",
+            status: row.status || "Alarmiert"
+        };
+    });
 }
 
 function setEinsatzKraefteMemberSearch(value){

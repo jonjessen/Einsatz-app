@@ -1,4 +1,4 @@
-const CACHE_NAME = "ff360-app-v27";
+const CACHE_NAME = "ff360-app-v28";
 
 const urlsToCache = [
   "index.html",
