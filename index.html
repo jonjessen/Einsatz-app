@@ -5349,6 +5349,7 @@ iframe {
 
             <div class="social-actions">
                 <button onclick="copySocialPost()">📋 Kopieren</button>
+                <button onclick="copySocialWebsiteText()">Website Text</button>
                 <button id="socialIncidentEndBtn" onclick="endIncidentFromSocial()">⏹ Einsatz beenden</button>
                 <button onclick="saveSocialToEinsatzLog()">Für Einsatzhistorie speichern</button>
                 <button onclick="resetSocialPost()">Zurücksetzen</button>
@@ -6405,7 +6406,7 @@ function isTrainingMode(){
 }
 
 const APP_VERSION = "1.7";
-const SERVICE_WORKER_SCRIPT_VERSION = "26";
+const SERVICE_WORKER_SCRIPT_VERSION = "27";
 const ALARM_STICHWORT_PLACEHOLDER = "BITTE WÄHLEN";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 const TRAINING_ARCHIVE_STORAGE_KEY = "ff360_training_archive_v1";
@@ -14414,12 +14415,11 @@ function getSocialReportRows(social){
         rows.push({ label: "Weitere Kräfte", value: state.forces.join(", ") });
     }
     if (isNonEmptyText(state.taetigkeit)) rows.push({ label: "Tätigkeit / Durchführung", value: state.taetigkeit.trim() });
-    const freigabe = state.freigabe || {};
-    const checks = freigabe.checks || {};
-    const checksComplete = ["datenschutz", "keinePersonendaten", "keineSpekulation", "fuehrungFreigegeben"].every((key)=>!!checks[key]);
-    if (checksComplete || isNonEmptyText(freigabe.confirmedAt)){
-        rows.push({ label: "Freigabe", value: isNonEmptyText(freigabe.confirmedAt) ? `Bestätigt (${formatReportTs(freigabe.confirmedAt)})` : "Checks vollständig" });
-    }
+    const berichtStatus = normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe);
+    rows.push({
+        label: "Berichtsstatus",
+        value: `${getSocialBerichtStageLabel(berichtStatus.stage)}${berichtStatus.websitePublished ? " · Website veröffentlicht" : ""}`
+    });
     if (state.includeWeather){
         rows.push({ label: "Wetteranhang", value: "Aktiviert" });
     }
@@ -16492,6 +16492,22 @@ const SOCIAL_FORCE_OPTIONS = [
     "TEL Kreis OH",
     "THW"
 ];
+const SOCIAL_FORCE_INSTAGRAM_MAP = {
+    "FF Niendorf Ostsee": "@feuerwehr.niendorf.ostsee",
+    "FF Hemmelsdorf": "@ffwhemmelsdorf",
+    "FF Groß Timmendorf": "@ffgrosstimmendorf",
+    "FF Scharbeutz": "@ffscharbeutz",
+    "FF Haffkrug": "ff_haffkrug",
+    "FF Pönitz": "ff_poenitz",
+    "DLRG Scharbeutz Haffkrug": "@dlrgsbz",
+    "Malteser Lübeck Drohnengruppe": "@malteserluebeck",
+    "DRK Süsel": "@drksuesel",
+    "Malteser Timmendorfer Strand": "@maltesertimmendorferstrand",
+    "Seenotretter": "@seenotretter",
+    "BRH Rettungshundestaffel SH OST": "@hunde_retten_menschen",
+    "DRK Rettungshundestaffel Göhl": "@drk_goehl_rettungshundestaffel",
+    "TEL Kreis OH": "@tel_ostholstein"
+};
 
 const ALARM_STICHWORT_OPTIONS = [
     "FEU K BMA",
@@ -16559,6 +16575,43 @@ function getTodayBerlinDateISO(){
     }).format(new Date());
 }
 
+const SOCIAL_BERICHT_STAGES = ["erstellt", "freigabe_wehrfuehrung", "gepostet"];
+
+function getDefaultSocialBerichtStatus(){
+    return {
+        stage: "erstellt",
+        websitePublished: false,
+        updatedAt: ""
+    };
+}
+
+function normalizeSocialBerichtStatus(input, legacyFreigabe){
+    const base = getDefaultSocialBerichtStatus();
+    const src = (input && typeof input === "object") ? input : {};
+    const legacy = (legacyFreigabe && typeof legacyFreigabe === "object") ? legacyFreigabe : {};
+    let stage = SOCIAL_BERICHT_STAGES.includes(String(src.stage || "").trim())
+        ? String(src.stage || "").trim()
+        : base.stage;
+    if (stage === base.stage){
+        const legacyChecks = legacy.checks && typeof legacy.checks === "object" ? legacy.checks : {};
+        if (legacy.confirmedAt || legacyChecks.fuehrungFreigegeben){
+            stage = "freigabe_wehrfuehrung";
+        }
+    }
+    return {
+        stage,
+        websitePublished: !!src.websitePublished,
+        updatedAt: typeof src.updatedAt === "string" ? src.updatedAt : ""
+    };
+}
+
+function getSocialBerichtStageLabel(stage){
+    const key = String(stage || "").trim();
+    if (key === "freigabe_wehrfuehrung") return "Freigabe durch Wehrführung";
+    if (key === "gepostet") return "Gepostet";
+    return "Erstellt";
+}
+
 function getSocialDefaultState(){
     return {
         einsatznummer: "",
@@ -16569,15 +16622,7 @@ function getSocialDefaultState(){
         forces: [],
         taetigkeit: "",
         includeWeather: false,
-        freigabe: {
-            checks: {
-                datenschutz: false,
-                keinePersonendaten: false,
-                keineSpekulation: false,
-                fuehrungFreigegeben: false
-            },
-            confirmedAt: ""
-        }
+        berichtStatus: getDefaultSocialBerichtStatus()
     };
 }
 
@@ -16588,18 +16633,7 @@ function getSocialState(){
         const state = { ...getSocialDefaultState(), ...(parsed || {}) };
         if (!Array.isArray(state.forces)) state.forces = [];
         state.includeWeather = !!state.includeWeather;
-        const defaults = getSocialDefaultState();
-        state.freigabe = {
-            ...defaults.freigabe,
-            ...((state && state.freigabe) || {}),
-            checks: {
-                ...defaults.freigabe.checks,
-                ...((state && state.freigabe && state.freigabe.checks) || {})
-            }
-        };
-        if (typeof state.freigabe.confirmedAt !== "string"){
-            state.freigabe.confirmedAt = "";
-        }
+        state.berichtStatus = normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe);
         return state;
     } catch {
         return getSocialDefaultState();
@@ -16641,15 +16675,31 @@ function formatSocialEinsatznummer(value){
     return `${emojiNumber}/2026`;
 }
 
-function buildSocialPost(state){
+function formatSocialForceList(forces, includeInstagramHandles){
+    const list = Array.isArray(forces) ? forces : [];
+    if (!list.length) return "—";
+    if (!includeInstagramHandles){
+        return list.join("; ");
+    }
+    return list.map((force)=>{
+        const handle = SOCIAL_FORCE_INSTAGRAM_MAP[force];
+        return handle ? `${force} (${handle})` : force;
+    }).join("; ");
+}
+
+function buildSocialPost(state, options = {}){
+    const opts = options && typeof options === "object" ? options : {};
+    const includeInstagramHandles = !!opts.includeInstagramHandles;
+    const includeHashtags = opts.includeHashtags !== false;
     const einsatznummer = formatSocialEinsatznummer(state.einsatznummer);
     const datum = formatSocialDate(state.date);
     const uhrzeit = formatSocialTime(state.time);
     const alarmschleife = (state.alarmschleife || "").trim() || "—";
     const alarmstichwort = (state.alarmstichwort || "").trim() || "—";
-    const kraefte = (state.forces || []).length ? state.forces.join("; ") : "—";
+    const kraefte = formatSocialForceList(state.forces, includeInstagramHandles);
     const taetigkeit = (state.taetigkeit || "").trim() || "XXXXX";
-    return `🚨Einsatznummer: ${einsatznummer}
+    const hashtags = "#feuerwehr #timmendorferstrand #einsatz #gemeinsamstark #alarm";
+    const postText = `🚨Einsatznummer: ${einsatznummer}
 📅Datum: ${datum}
 ⏱Uhrzeit: ${uhrzeit}
 📟Alarmschleife: ${alarmschleife}
@@ -16657,8 +16707,8 @@ function buildSocialPost(state){
 🚒Weitere Kräfte: ${kraefte}
 📝Tätigkeit der Feuerwehr:
 ${taetigkeit}
-
-#einsatz #feuerwehr #feuer  #alarm #einsatzfürdiefreiwillige  #ehrenamt #freiwilligefeuerwehr #timmendorferstrand #fürdich #gemeinsamstark`;
+`;
+    return includeHashtags ? `${postText}\n${hashtags}` : postText;
 }
 
 function renderSocialForces(){
@@ -16700,34 +16750,23 @@ function renderSocialPreview(){
     preview.textContent = buildSocialPost(getSocialState());
 }
 
-function isSocialFreigabeMoeglich(state){
-    const source = state || getSocialState();
-    const checks = source && source.freigabe && source.freigabe.checks ? source.freigabe.checks : {};
-    const requiredChecks = ["datenschutz", "keinePersonendaten", "keineSpekulation", "fuehrungFreigegeben"];
-    const allChecks = requiredChecks.every((key)=>!!checks[key]);
-    return allChecks && !!(source.freigabe && source.freigabe.confirmedAt);
-}
-
 function renderSocialReleaseBlock(state){
     const block = document.getElementById("socialReleaseBlock");
     if (!block) return;
-    const checks = (state && state.freigabe && state.freigabe.checks) ? state.freigabe.checks : {};
-    const ready = isSocialFreigabeMoeglich(state);
-    if (ready){
-        block.innerHTML = `<div class="social-release-approved">Freigabe erteilt</div>`;
-        return;
-    }
+    const status = normalizeSocialBerichtStatus(state && state.berichtStatus, state && state.freigabe);
+    const stage = status.stage || "erstellt";
+    const website = !!status.websitePublished;
+    const stageLabel = getSocialBerichtStageLabel(stage);
+    const ts = status.updatedAt ? new Date(status.updatedAt).toLocaleString("de-DE") : "—";
     block.innerHTML = `
-        <div class="social-release-title">Freigabe-Workflow (Datenschutz)</div>
-        <label class="social-force-item"><input type="checkbox" ${checks.datenschutz ? "checked" : ""} onchange="updateSocialFreigabeCheck('datenschutz', this.checked)"><span>Datenschutz geprüft</span></label>
-        <label class="social-force-item"><input type="checkbox" ${checks.keinePersonendaten ? "checked" : ""} onchange="updateSocialFreigabeCheck('keinePersonendaten', this.checked)"><span>Keine personenbezogenen Daten/Bilder</span></label>
-        <label class="social-force-item"><input type="checkbox" ${checks.keineSpekulation ? "checked" : ""} onchange="updateSocialFreigabeCheck('keineSpekulation', this.checked)"><span>Keine Spekulation zur Ursache</span></label>
-        <label class="social-force-item"><input type="checkbox" ${checks.fuehrungFreigegeben ? "checked" : ""} onchange="updateSocialFreigabeCheck('fuehrungFreigegeben', this.checked)"><span>Freigabe durch Führung erfolgt</span></label>
+        <div class="social-release-title">Berichtsstatus</div>
         <div class="social-actions" style="margin-top:8px;">
-            <button onclick="confirmSocialFreigabe()">Freigabe bestätigen</button>
-            <button onclick="resetSocialFreigabe()">Freigabe zurücksetzen</button>
+            <button class="${stage === "erstellt" ? "active-yes" : ""}" onclick="setSocialBerichtStage('erstellt')">Erstellt</button>
+            <button class="${stage === "freigabe_wehrfuehrung" ? "active-yes" : ""}" onclick="setSocialBerichtStage('freigabe_wehrfuehrung')">Freigabe durch Wehrführung</button>
+            <button class="${stage === "gepostet" ? "active-yes" : ""}" onclick="setSocialBerichtStage('gepostet')">Gepostet</button>
         </div>
-        <div class="social-release-status">Status: Nicht freigegeben</div>
+        <label class="social-force-item" style="margin-top:8px;"><input type="checkbox" ${website ? "checked" : ""} onchange="toggleSocialWebsitePublished(this.checked)"><span>Website veröffentlicht</span></label>
+        <div class="social-release-status">Aktueller Status: ${escapeHtml(stageLabel)} · Website: ${website ? "Ja" : "Nein"} · Aktualisiert: ${escapeHtml(ts)}</div>
     `;
 }
 
@@ -16754,11 +16793,8 @@ function syncSocialIncidentButtons(){
     }
 }
 
-function invalidateSocialFreigabeOnContentChange(state){
-    if (!state || !state.freigabe) return;
-    if (state.freigabe.confirmedAt){
-        state.freigabe.confirmedAt = "";
-    }
+function invalidateSocialFreigabeOnContentChange(){
+    // Legacy no-op: Freigabe-Workflow wurde durch Berichtsstatus ersetzt.
 }
 
 function updateSocialField(key, value){
@@ -16789,44 +16825,29 @@ function updateSocialIncludeWeather(checked){
     renderSocialGenerator();
 }
 
-function updateSocialFreigabeCheck(key, checked){
+function setSocialBerichtStage(stage){
+    const safeStage = SOCIAL_BERICHT_STAGES.includes(String(stage || "").trim())
+        ? String(stage || "").trim()
+        : "erstellt";
     patchSocialState((state)=>{
-        if (!state.freigabe || typeof state.freigabe !== "object"){
-            state.freigabe = getSocialDefaultState().freigabe;
-        }
-        if (!state.freigabe.checks || typeof state.freigabe.checks !== "object"){
-            state.freigabe.checks = getSocialDefaultState().freigabe.checks;
-        }
-        state.freigabe.checks[key] = !!checked;
-        if (!checked){
-            state.freigabe.confirmedAt = "";
-        }
+        const current = normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe);
+        current.stage = safeStage;
+        current.updatedAt = nowIso();
+        state.berichtStatus = current;
     });
     renderSocialGenerator();
+    showSocialHint(`Status gesetzt: ${getSocialBerichtStageLabel(safeStage)}.`, false);
 }
 
-function confirmSocialFreigabe(){
-    const current = getSocialState();
-    const checks = current.freigabe && current.freigabe.checks ? current.freigabe.checks : {};
-    const allChecks = ["datenschutz", "keinePersonendaten", "keineSpekulation", "fuehrungFreigegeben"]
-        .every((key)=>!!checks[key]);
-    if (!allChecks){
-        showSocialHint("Freigabe nicht möglich: Bitte alle Datenschutz-Checks aktivieren.", true);
-        return;
-    }
+function toggleSocialWebsitePublished(checked){
     patchSocialState((state)=>{
-        state.freigabe.confirmedAt = nowIso();
+        const current = normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe);
+        current.websitePublished = !!checked;
+        current.updatedAt = nowIso();
+        state.berichtStatus = current;
     });
     renderSocialGenerator();
-    showSocialHint("Freigabe bestätigt.", false);
-}
-
-function resetSocialFreigabe(){
-    patchSocialState((state)=>{
-        state.freigabe = getSocialDefaultState().freigabe;
-    });
-    renderSocialGenerator();
-    showSocialHint("Freigabe zurückgesetzt.", false);
+    showSocialHint(checked ? "Website-Veröffentlichung markiert." : "Website-Veröffentlichung entfernt.", false);
 }
 
 function startIncidentFromSocial(){
@@ -16870,13 +16891,17 @@ function showSocialHint(message, isError){
 
 function copySocialPost(){
     const state = getSocialState();
-    if (!isSocialFreigabeMoeglich(state)){
-        showSocialHint("Veröffentlichung gesperrt: Bitte zuerst den Freigabe-Workflow abschließen.", true);
-        return;
-    }
     const text = buildSocialPost(state);
     copyTextToClipboard(text).then((ok)=>{
         if (ok) showSocialHint("Beitrag in die Zwischenablage kopiert.", false);
+    });
+}
+
+function copySocialWebsiteText(){
+    const state = getSocialState();
+    const text = buildSocialPost(state, { includeInstagramHandles: true, includeHashtags: false });
+    copyTextToClipboard(text).then((ok)=>{
+        if (ok) showSocialHint("Website Text in die Zwischenablage kopiert.", false);
     });
 }
 
@@ -17076,6 +17101,9 @@ function mergeEinsatzEntryWithPayload(baseEntry, payload){
     const p = payload && typeof payload === "object" ? payload : {};
     const nextAlarm = [String(base.alarmstichwort || "").trim(), String(p.alarmstichwort || "").trim()]
         .find((value)=>value && value !== ALARM_STICHWORT_PLACEHOLDER) || String(base.alarmstichwort || p.alarmstichwort || "").trim();
+    const mergedStatus = p.berichtStatus
+        ? normalizeSocialBerichtStatus({ ...(base.berichtStatus || {}), ...p.berichtStatus })
+        : normalizeSocialBerichtStatus(base.berichtStatus);
     return {
         ...base,
         einsatznummer: String(base.einsatznummer || p.einsatznummer || "").trim(),
@@ -17083,6 +17111,7 @@ function mergeEinsatzEntryWithPayload(baseEntry, payload){
         uhrzeit: String(base.uhrzeit || p.uhrzeit || "").trim(),
         alarmstichwort: nextAlarm,
         verursacher: normalizeVerursacherInfo(p.verursacher || base.verursacher),
+        berichtStatus: mergedStatus,
         lage: p.lage ? { ...(base.lage || {}), ...p.lage } : base.lage,
         updatedAt: new Date().toISOString()
     };
@@ -17152,7 +17181,8 @@ function buildSocialEinsatzEntry(){
         datum,
         uhrzeit,
         alarmstichwort,
-        verursacher
+        verursacher,
+        berichtStatus: normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe)
     };
 }
 
@@ -17266,8 +17296,23 @@ function parseEinsatzSortTime(item){
     return Number.isNaN(iso) ? 0 : iso;
 }
 
+function getEinsatznummerSortValue(item){
+    const raw = String(item && item.einsatznummer || "").trim();
+    if (!raw) return "ZZZZZZ";
+    const tokens = normalizeEinsatznummerCompareTokens(raw);
+    const withYear = tokens.find((token)=>token.includes("/"));
+    if (withYear) return withYear;
+    return tokens[0] || raw.toUpperCase();
+}
+
 function getSortedEinsatzLog(){
-    return getEinsatzLog().slice().sort((a, b)=>parseEinsatzSortTime(b) - parseEinsatzSortTime(a));
+    return getEinsatzLog().slice().sort((a, b)=>{
+        const keyA = getEinsatznummerSortValue(a);
+        const keyB = getEinsatznummerSortValue(b);
+        const byNumber = keyA.localeCompare(keyB, "de-DE", { numeric: true, sensitivity: "base" });
+        if (byNumber !== 0) return byNumber;
+        return parseEinsatzSortTime(b) - parseEinsatzSortTime(a);
+    });
 }
 
 function getEinsatzStatusMeta(value){
@@ -17561,6 +17606,33 @@ function setEinsatzBeteiligung(id, value){
     renderEinsatzOverview();
 }
 
+function setEinsatzBerichtStage(id, stage){
+    const safeStage = SOCIAL_BERICHT_STAGES.includes(String(stage || "").trim())
+        ? String(stage || "").trim()
+        : "erstellt";
+    const list = getEinsatzLog();
+    const idx = list.findIndex((item)=>item.id === id);
+    if (idx < 0) return;
+    const current = normalizeSocialBerichtStatus(list[idx].berichtStatus);
+    current.stage = safeStage;
+    current.updatedAt = nowIso();
+    list[idx].berichtStatus = current;
+    saveEinsatzLog(list);
+    renderEinsatzOverview();
+}
+
+function setEinsatzWebsitePublished(id, checked){
+    const list = getEinsatzLog();
+    const idx = list.findIndex((item)=>item.id === id);
+    if (idx < 0) return;
+    const current = normalizeSocialBerichtStatus(list[idx].berichtStatus);
+    current.websitePublished = !!checked;
+    current.updatedAt = nowIso();
+    list[idx].berichtStatus = current;
+    saveEinsatzLog(list);
+    renderEinsatzOverview();
+}
+
 function removeEinsatzEntry(id){
     if (!confirm("Einsatz wirklich löschen?")) return;
     const next = getEinsatzLog().filter((item)=>item.id !== id);
@@ -17589,6 +17661,9 @@ function renderEinsatzOverview(){
     let html = "";
     filteredList.forEach((item)=>{
         const status = getEinsatzStatusMeta(item.beteiligt);
+        const berichtStatus = normalizeSocialBerichtStatus(item.berichtStatus);
+        const berichtStage = berichtStatus.stage || "erstellt";
+        const berichtLabel = getSocialBerichtStageLabel(berichtStage);
         const lageData = item && item.lage && typeof item.lage === "object" ? item.lage : null;
         const hasLageData = !!lageData;
         const lageSummary = hasLageData
@@ -17605,6 +17680,13 @@ function renderEinsatzOverview(){
             <div>Alarmstichwort: ${item.alarmstichwort || "—"}</div>
             <div>${hasLageData ? "Einsatzlage: verknüpft" : "Einsatzlage: nicht verknüpft"}</div>
             ${hasLageData ? `<div>${escapeHtml(lageSummary)}</div>` : ""}
+            <div>Berichtsstatus: ${escapeHtml(berichtLabel)}${berichtStatus.websitePublished ? " · Website veröffentlicht" : ""}</div>
+            <div class="einsatz-toggle-row">
+                <button class="${berichtStage === "erstellt" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'erstellt')">Erstellt</button>
+                <button class="${berichtStage === "freigabe_wehrfuehrung" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'freigabe_wehrfuehrung')">Freigabe Wehrführung</button>
+                <button class="${berichtStage === "gepostet" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'gepostet')">Gepostet</button>
+                <button class="${berichtStatus.websitePublished ? "active-yes" : ""}" onclick="setEinsatzWebsitePublished('${item.id}', ${berichtStatus.websitePublished ? "false" : "true"})">Website ${berichtStatus.websitePublished ? "✓" : "✕"}</button>
+            </div>
             <div class="einsatz-toggle-row">
                 <button class="${item.beteiligt === true ? "active-yes" : ""}" onclick="setEinsatzBeteiligung('${item.id}', true)">Ja</button>
                 <button class="${item.beteiligt === false ? "active-no" : ""}" onclick="setEinsatzBeteiligung('${item.id}', false)">Nein</button>
