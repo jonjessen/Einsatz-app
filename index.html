@@ -7703,6 +7703,28 @@ function isLikelyFirestoreOfflineError(error){
     return text.includes("offline") || text.includes("unavailable");
 }
 
+function withTimeout(promise, timeoutMs, timeoutMessage){
+    return new Promise((resolve, reject)=>{
+        let settled = false;
+        const timer = setTimeout(()=>{
+            if (settled) return;
+            settled = true;
+            reject(new Error(timeoutMessage || "Zeitüberschreitung."));
+        }, Math.max(1, Number(timeoutMs) || 1));
+        Promise.resolve(promise).then((value)=>{
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            resolve(value);
+        }).catch((error)=>{
+            if (settled) return;
+            settled = true;
+            clearTimeout(timer);
+            reject(error);
+        });
+    });
+}
+
 function updateCloudAuthStatusUi(){
     const runtime = getCloudAuthRuntime();
     const emailInput = document.getElementById("settingsCloudEmail");
@@ -7798,17 +7820,21 @@ async function testCloudSyncConnection(){
     }
     setCloudAuthStatus("Cloud-Verbindung wird geprüft...");
     try {
-        await window.FF360CloudSync.saveSettings({
+        await withTimeout(window.FF360CloudSync.saveSettings({
             ...buildCloudSettingsPayload(),
             lastConnectionTestAt: new Date().toISOString()
-        });
-        await loadCloudSettingsIntoApp();
+        }), 12000, "Firestore-Schreibtest hat zu lange gedauert.");
         const mail = String(runtime.currentUser.email || "").trim();
-        setCloudAuthStatus(mail ? `Cloud-Test erfolgreich fuer ${mail}.` : "Cloud-Test erfolgreich.");
+        setCloudAuthStatus(mail ? `Cloud-Schreibtest erfolgreich fuer ${mail}.` : "Cloud-Schreibtest erfolgreich.");
     } catch (error){
         setCloudAuthStatus(`Cloud-Test fehlgeschlagen: ${String(error && error.message ? error.message : error)}`, true);
     }
 }
+
+window.signInToCloudSync = signInToCloudSync;
+window.registerCloudSyncUser = registerCloudSyncUser;
+window.signOutFromCloudSync = signOutFromCloudSync;
+window.testCloudSyncConnection = testCloudSyncConnection;
 
 function toggleDarkModeFromSettings(){
     toggleDarkMode();
