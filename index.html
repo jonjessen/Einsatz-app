@@ -5149,6 +5149,25 @@ iframe {
                 </div>
             </div>
             <div class="atem-panel">
+                <strong>Cloud-Sync Login</strong>
+                <div class="psu-meta" id="settingsCloudAuthStatus" style="margin-top:8px;">Firebase-Anmeldung wird geladen.</div>
+                <div class="atem-grid" style="margin-top:8px;">
+                    <div>
+                        <label for="settingsCloudEmail">E-Mail</label>
+                        <input id="settingsCloudEmail" type="email" inputmode="email" autocomplete="username email" placeholder="name@feuerwehr.de">
+                    </div>
+                    <div>
+                        <label for="settingsCloudPassword">Passwort</label>
+                        <input id="settingsCloudPassword" type="password" autocomplete="current-password" placeholder="Passwort">
+                    </div>
+                </div>
+                <div class="atem-row-actions" style="margin-top:8px;">
+                    <button onclick="signInToCloudSync()">Anmelden</button>
+                    <button onclick="registerCloudSyncUser()">Konto erstellen</button>
+                    <button onclick="signOutFromCloudSync()">Abmelden</button>
+                </div>
+            </div>
+            <div class="atem-panel">
                 <strong>Übungen Archiv</strong>
                 <div id="settingsTrainingArchiveList" class="settings-training-archive-list"></div>
                 <div class="atem-row-actions" style="margin-top:8px;">
@@ -6410,7 +6429,7 @@ function isTrainingMode(){
 }
 
 const APP_VERSION = "1.7";
-const SERVICE_WORKER_SCRIPT_VERSION = "28";
+const SERVICE_WORKER_SCRIPT_VERSION = "29";
 const ALARM_STICHWORT_PLACEHOLDER = "BITTE WÄHLEN";
 const APP_STATUS_META_KEY = "ff360_app_status_meta";
 const TRAINING_ARCHIVE_STORAGE_KEY = "ff360_training_archive_v1";
@@ -6481,6 +6500,8 @@ function shouldUseScopedStorage(baseKey){
 }
 
 function appStorageGetItem(baseKey){
+    // Lokale Speicherung bleibt vorerst die Primärquelle.
+    // Firebase/Firestore wird parallel vorbereitet und soll später gezielt einzelne Bereiche ergänzen oder ersetzen.
     if (!shouldUseScopedStorage(baseKey)){
         return localStorage.getItem(baseKey);
     }
@@ -6556,6 +6577,18 @@ function appStorageSetItem(baseKey, value){
     ){
         return;
     }
+    // Hybrid-Phase: Jede lokale Änderung kann optional an die vorbereitete Cloud-Sync-Schicht gemeldet werden.
+    // Fehler dort dürfen die lokale App nicht blockieren.
+    try {
+        if (window.FF360CloudSync && typeof window.FF360CloudSync.queueLocalStateWrite === "function"){
+            window.FF360CloudSync.queueLocalStateWrite(baseKey, value, {
+                scoped: shouldUseScopedStorage(baseKey),
+                mode: isTrainingMode() ? "uebung" : "real"
+            });
+        }
+    } catch {
+        // Cloud-Sync ist optional und darf lokale Speicherung nicht stören.
+    }
     if (!shouldUseScopedStorage(baseKey)){
         localStorage.setItem(baseKey, value);
         if (baseKey !== APP_STATUS_META_KEY){
@@ -6568,6 +6601,16 @@ function appStorageSetItem(baseKey, value){
 }
 
 function appStorageRemoveItem(baseKey){
+    try {
+        if (window.FF360CloudSync && typeof window.FF360CloudSync.queueLocalStateDelete === "function"){
+            window.FF360CloudSync.queueLocalStateDelete(baseKey, {
+                scoped: shouldUseScopedStorage(baseKey),
+                mode: isTrainingMode() ? "uebung" : "real"
+            });
+        }
+    } catch {
+        // Cloud-Sync ist optional und darf lokale Speicherung nicht stören.
+    }
     if (!shouldUseScopedStorage(baseKey)){
         localStorage.removeItem(baseKey);
         return;
@@ -6953,6 +6996,7 @@ renderCreatorFooterLine();
 function toggleDarkMode(){
     document.body.classList.toggle("dark");
     appStorageSetItem("darkMode", document.body.classList.contains("dark"));
+    scheduleSettingsCloudSync();
 }
 
 function getDefaultCreatorProfile(){
@@ -6981,6 +7025,7 @@ function saveCreatorProfile(profile){
         ffLogoDataUrl: String((profile && profile.ffLogoDataUrl) || "").trim()
     };
     localStorage.setItem(CREATOR_PROFILE_STORAGE_KEY, JSON.stringify(next));
+    scheduleSettingsCloudSync();
 }
 
 function getCreatorFfLogoDataUrl(){
@@ -7502,6 +7547,7 @@ function renderSettingsOverlay(){
     const preview = document.getElementById("settingsCreatorPreview");
     const darkBtn = document.getElementById("settingsDarkModeBtn");
     const trainingBtn = document.getElementById("settingsTrainingModeBtn");
+    const cloudPassword = document.getElementById("settingsCloudPassword");
     if (nameInput) nameInput.value = profile.name || "";
     if (fwInput) fwInput.value = profile.feuerwehr || "";
     if (preview) preview.textContent = getExportCreatorText();
@@ -7516,6 +7562,212 @@ function renderSettingsOverlay(){
     renderEinsatzArchiveSettingsList();
     updateWeatherSettingsFields();
     renderSettingsHelpModule();
+    updateCloudAuthStatusUi();
+    if (cloudPassword) cloudPassword.value = "";
+}
+
+function getCloudAuthRuntime(){
+    return window.FF360Firebase || null;
+}
+
+let settingsCloudSyncTimer = null;
+let settingsCloudApplyDepth = 0;
+
+function isApplyingCloudSettings(){
+    return settingsCloudApplyDepth > 0;
+}
+
+function runWhileApplyingCloudSettings(mutator){
+    settingsCloudApplyDepth += 1;
+    try {
+        return mutator();
+    } finally {
+        settingsCloudApplyDepth = Math.max(0, settingsCloudApplyDepth - 1);
+    }
+}
+
+function buildCloudSettingsPayload(){
+    return {
+        darkMode: document.body.classList.contains("dark"),
+        creatorProfile: getCreatorProfile(),
+        weatherSettings: getWeatherState().settings,
+        updatedAtClient: new Date().toISOString()
+    };
+}
+
+function scheduleSettingsCloudSync(){
+    if (isApplyingCloudSettings()) return;
+    const runtime = getCloudAuthRuntime();
+    if (!runtime || !runtime.enabled || !runtime.currentUser || !window.FF360CloudSync || typeof window.FF360CloudSync.saveSettings !== "function"){
+        return;
+    }
+    if (settingsCloudSyncTimer){
+        clearTimeout(settingsCloudSyncTimer);
+    }
+    settingsCloudSyncTimer = setTimeout(async ()=>{
+        settingsCloudSyncTimer = null;
+        try {
+            await window.FF360CloudSync.saveSettings(buildCloudSettingsPayload());
+            if (isSettingsOverlayOpen()){
+                updateCloudAuthStatusUi();
+            }
+        } catch (error){
+            if (isSettingsOverlayOpen()){
+                setCloudAuthStatus(`Cloud-Sync fehlgeschlagen: ${String(error && error.message ? error.message : error)}`, true);
+            }
+        }
+    }, 450);
+}
+
+function applyCloudSettingsPayload(payload){
+    const data = payload && typeof payload === "object" ? payload : {};
+    runWhileApplyingCloudSettings(()=>{
+        if (typeof data.darkMode === "boolean"){
+            document.body.classList.toggle("dark", data.darkMode);
+            appStorageSetItem("darkMode", data.darkMode);
+        }
+        if (data.creatorProfile && typeof data.creatorProfile === "object"){
+            saveCreatorProfile({
+                ...getDefaultCreatorProfile(),
+                ...data.creatorProfile
+            });
+            renderCreatorFooterLine();
+        }
+        if (data.weatherSettings && typeof data.weatherSettings === "object"){
+            patchWeatherState((s)=>{
+                const defaults = getDefaultWeatherState();
+                s.settings = {
+                    ...defaults.settings,
+                    ...(s.settings || {}),
+                    ...data.weatherSettings,
+                    thresholds: {
+                        ...defaults.settings.thresholds,
+                        ...((s.settings && s.settings.thresholds) || {}),
+                        ...((data.weatherSettings && data.weatherSettings.thresholds) || {})
+                    },
+                    drone: {
+                        ...defaults.settings.drone,
+                        ...((s.settings && s.settings.drone) || {}),
+                        ...((data.weatherSettings && data.weatherSettings.drone) || {})
+                    }
+                };
+                s.settings.defaultLocation = normalizeWeatherLocation(
+                    s.settings.defaultLocation,
+                    defaults.settings.defaultLocation
+                );
+            });
+        }
+    });
+    renderCreatorFooterLine();
+    if (isSettingsOverlayOpen()){
+        renderSettingsOverlay();
+    } else {
+        updateWeatherSettingsFields();
+    }
+}
+
+async function loadCloudSettingsIntoApp(){
+    if (!window.FF360CloudSync || typeof window.FF360CloudSync.loadAppDataDocument !== "function"){
+        return null;
+    }
+    try {
+        const doc = await window.FF360CloudSync.loadAppDataDocument(window.FF360CloudSync.APP_DATA_DOCS.settings);
+        const payload = doc && doc.data && typeof doc.data === "object" ? doc.data : null;
+        if (!payload) return null;
+        applyCloudSettingsPayload(payload);
+        return payload;
+    } catch (error){
+        if (isSettingsOverlayOpen()){
+            setCloudAuthStatus(`Cloud-Settings konnten nicht geladen werden: ${String(error && error.message ? error.message : error)}`, true);
+        }
+        return null;
+    }
+}
+
+function setCloudAuthStatus(message, isError){
+    const statusEl = document.getElementById("settingsCloudAuthStatus");
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.style.color = isError ? "var(--primary-strong)" : "var(--text-muted)";
+}
+
+function updateCloudAuthStatusUi(){
+    const runtime = getCloudAuthRuntime();
+    const emailInput = document.getElementById("settingsCloudEmail");
+    if (!runtime){
+        setCloudAuthStatus("Firebase ist noch nicht geladen.", true);
+        return;
+    }
+    if (!runtime.enabled){
+        setCloudAuthStatus(runtime.configError || "Firebase ist deaktiviert.", true);
+        return;
+    }
+    const user = runtime.currentUser || null;
+    if (user && user.uid){
+        const mail = String(user.email || "").trim();
+        if (emailInput && mail) emailInput.value = mail;
+        setCloudAuthStatus(mail ? `Angemeldet als ${mail}. Cloud-Sync für Einstellungen aktiv.` : "Angemeldet. Cloud-Sync für Einstellungen aktiv.");
+        return;
+    }
+    setCloudAuthStatus("Nicht angemeldet. Lokale Speicherung bleibt aktiv.");
+}
+
+async function signInToCloudSync(){
+    const runtime = getCloudAuthRuntime();
+    if (!runtime || !runtime.enabled || typeof runtime.signInWithEmail !== "function"){
+        setCloudAuthStatus("Firebase Auth ist nicht verfügbar.", true);
+        return;
+    }
+    const email = document.getElementById("settingsCloudEmail")?.value || "";
+    const password = document.getElementById("settingsCloudPassword")?.value || "";
+    setCloudAuthStatus("Anmeldung läuft...");
+    try {
+        const user = await runtime.signInWithEmail(email, password);
+        const mail = String(user && user.email ? user.email : email).trim();
+        setCloudAuthStatus(mail ? `Angemeldet als ${mail}.` : "Anmeldung erfolgreich.");
+        const passwordInput = document.getElementById("settingsCloudPassword");
+        if (passwordInput) passwordInput.value = "";
+        await loadCloudSettingsIntoApp();
+    } catch (error){
+        setCloudAuthStatus(`Anmeldung fehlgeschlagen: ${String(error && error.message ? error.message : error)}`, true);
+    }
+}
+
+async function registerCloudSyncUser(){
+    const runtime = getCloudAuthRuntime();
+    if (!runtime || !runtime.enabled || typeof runtime.registerWithEmail !== "function"){
+        setCloudAuthStatus("Firebase Auth ist nicht verfügbar.", true);
+        return;
+    }
+    const email = document.getElementById("settingsCloudEmail")?.value || "";
+    const password = document.getElementById("settingsCloudPassword")?.value || "";
+    setCloudAuthStatus("Konto wird erstellt...");
+    try {
+        const user = await runtime.registerWithEmail(email, password);
+        const mail = String(user && user.email ? user.email : email).trim();
+        setCloudAuthStatus(mail ? `Konto erstellt und angemeldet: ${mail}.` : "Konto erstellt.");
+        const passwordInput = document.getElementById("settingsCloudPassword");
+        if (passwordInput) passwordInput.value = "";
+        scheduleSettingsCloudSync();
+    } catch (error){
+        setCloudAuthStatus(`Konto konnte nicht erstellt werden: ${String(error && error.message ? error.message : error)}`, true);
+    }
+}
+
+async function signOutFromCloudSync(){
+    const runtime = getCloudAuthRuntime();
+    if (!runtime || !runtime.enabled || typeof runtime.signOut !== "function"){
+        setCloudAuthStatus("Firebase Auth ist nicht verfügbar.", true);
+        return;
+    }
+    try {
+        await runtime.signOut();
+        const passwordInput = document.getElementById("settingsCloudPassword");
+        if (passwordInput) passwordInput.value = "";
+        setCloudAuthStatus("Abgemeldet. Lokale Speicherung bleibt aktiv.");
+    } catch (error){
+        setCloudAuthStatus(`Abmeldung fehlgeschlagen: ${String(error && error.message ? error.message : error)}`, true);
+    }
 }
 
 function toggleDarkModeFromSettings(){
@@ -7659,6 +7911,7 @@ function getWeatherState(){
 
 function saveWeatherState(state){
     appStorageSetItem(WEATHER_STORAGE_KEY, JSON.stringify(state));
+    scheduleSettingsCloudSync();
 }
 
 function patchWeatherState(mutator){
@@ -14094,6 +14347,9 @@ function finalizeActiveEinsatzPaket(options = {}){
     state.archive = state.archive.slice(0, 200);
     state.active = null;
     saveEinsatzPaketeState(state);
+    if (typeof syncIncidentSnapshotToEinsatzLog === "function"){
+        syncIncidentSnapshotToEinsatzLog(archived.snapshot, archived.einsatznummer);
+    }
 
     const compatibilityEntry = {
         id: archived.id,
@@ -14950,7 +15206,12 @@ function buildCombinedIncidentArchiveEntries(){
     }).filter(Boolean);
 
     return [...archiveEntries, ...historyEntries]
-        .sort((a, b)=>(Number(b.sortTs) || 0) - (Number(a.sortTs) || 0))
+        .sort((a, b)=>{
+            const byNumber = getEinsatznummerSortValue({ einsatznummer: b.nummer })
+                .localeCompare(getEinsatznummerSortValue({ einsatznummer: a.nummer }), "de-DE", { numeric: true, sensitivity: "base" });
+            if (byNumber !== 0) return byNumber;
+            return (Number(b.sortTs) || 0) - (Number(a.sortTs) || 0);
+        })
         .slice(0, 80);
 }
 
@@ -17174,6 +17435,17 @@ function mergeEinsatzEntryWithPayload(baseEntry, payload){
     const mergedStatus = p.berichtStatus
         ? normalizeSocialBerichtStatus({ ...(base.berichtStatus || {}), ...p.berichtStatus })
         : normalizeSocialBerichtStatus(base.berichtStatus);
+    const mergedSocialSnapshot = (()=>{
+        const baseSnap = (base.socialSnapshot && typeof base.socialSnapshot === "object") ? base.socialSnapshot : null;
+        const payloadSnap = (p.socialSnapshot && typeof p.socialSnapshot === "object") ? p.socialSnapshot : null;
+        if (!baseSnap && !payloadSnap) return null;
+        const merged = { ...(baseSnap || {}), ...(payloadSnap || {}) };
+        try {
+            return JSON.parse(JSON.stringify(merged));
+        } catch {
+            return merged;
+        }
+    })();
     return {
         ...base,
         einsatznummer: String(base.einsatznummer || p.einsatznummer || "").trim(),
@@ -17182,6 +17454,7 @@ function mergeEinsatzEntryWithPayload(baseEntry, payload){
         alarmstichwort: nextAlarm,
         verursacher: normalizeVerursacherInfo(p.verursacher || base.verursacher),
         berichtStatus: mergedStatus,
+        socialSnapshot: mergedSocialSnapshot,
         lage: p.lage ? { ...(base.lage || {}), ...p.lage } : base.lage,
         updatedAt: new Date().toISOString()
     };
@@ -17219,7 +17492,59 @@ function getEinsatzLog(){
 }
 
 function saveEinsatzLog(entries){
-    appStorageSetItem(EINSATZ_LOG_STORAGE_KEY, JSON.stringify(entries));
+    runWithIncidentWriteBypass(()=>{
+        appStorageSetItem(EINSATZ_LOG_STORAGE_KEY, JSON.stringify(entries));
+    });
+}
+
+function buildEinsatzLogPayloadFromIncidentSnapshot(snapshot, incidentNumber){
+    const safe = snapshot && typeof snapshot === "object" ? snapshot : {};
+    const social = safe.social && typeof safe.social === "object" ? safe.social : {};
+    const lage = safe.lage && typeof safe.lage === "object" ? safe.lage : {};
+    const rawNumber = String(
+        incidentNumber
+        || social.einsatznummer
+        || lage.einsatznummer
+        || ""
+    ).trim();
+    const einsatznummer = formatSocialEinsatznummer(rawNumber);
+    const dateFromSocial = String(social.date || "").trim();
+    const timeFromSocial = normalizeEinsatzUhrzeit(social.time);
+    const startedAt = Number(lage.startedAt);
+    const datum = dateFromSocial ? formatSocialDate(dateFromSocial) : formatTimestampToEinsatzDatum(startedAt);
+    const uhrzeit = timeFromSocial || formatTimestampToEinsatzUhrzeit(startedAt);
+    const alarmstichwort = String(social.alarmstichwort || lage.alarmstichwort || "").trim();
+    if (einsatznummer === "—" || !datum || !uhrzeit || !alarmstichwort){
+        return null;
+    }
+    return {
+        einsatznummer,
+        datum,
+        uhrzeit,
+        alarmstichwort,
+        berichtStatus: normalizeSocialBerichtStatus(social.berichtStatus),
+        socialSnapshot: social
+    };
+}
+
+function syncIncidentSnapshotToEinsatzLog(snapshot, incidentNumber){
+    const payload = buildEinsatzLogPayloadFromIncidentSnapshot(snapshot, incidentNumber);
+    if (!payload) return false;
+    const list = getEinsatzLog();
+    const idx = findEinsatzLogEntryIndex(list, payload);
+    if (idx >= 0){
+        list[idx] = mergeEinsatzEntryWithPayload(list[idx], payload);
+    } else {
+        const entry = mergeEinsatzEntryWithPayload({
+            id: "",
+            beteiligt: null,
+            createdAt: new Date().toISOString()
+        }, payload);
+        entry.id = createStableEinsatzId(entry);
+        list.unshift(entry);
+    }
+    saveEinsatzLog(list);
+    return true;
 }
 
 function buildSocialEinsatzEntry(){
@@ -17252,7 +17577,8 @@ function buildSocialEinsatzEntry(){
         uhrzeit,
         alarmstichwort,
         verursacher,
-        berichtStatus: normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe)
+        berichtStatus: normalizeSocialBerichtStatus(state.berichtStatus, state.freigabe),
+        socialSnapshot: JSON.parse(JSON.stringify(state || {}))
     };
 }
 
@@ -17660,9 +17986,20 @@ function renderEinsatzSummary(list){
         pendingItems.slice(0, 12).forEach((item)=>{
             const bericht = normalizeSocialBerichtStatus(item && item.berichtStatus);
             const stageLabel = getSocialBerichtStageLabel(bericht.stage);
+            const stageKey = String(bericht.stage || "erstellt");
+            const safeId = String(item && item.id || "").replace(/'/g, "\\'");
             html += `<div class="einsatz-item">
                 <strong>${escapeHtml(item.einsatznummer || "—")}</strong> · ${escapeHtml(item.datum || "—")} ${escapeHtml(item.uhrzeit || "—")}<br>
                 Aktueller Status: ${escapeHtml(stageLabel)}
+                <div class="atem-row-actions" style="margin-top:6px;">
+                    <button onclick="loadEinsatzEntryIntoSocial('${safeId}')">In Social öffnen</button>
+                </div>
+                <div class="einsatz-toggle-row" style="margin-top:6px;">
+                    <button class="${stageKey === "erstellt" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${safeId}', 'erstellt')">Einsatz erstellt</button>
+                    <button class="${stageKey === "freigabe_wehrfuehrung" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${safeId}', 'freigabe_wehrfuehrung')">Freigabe Wehrführung</button>
+                    <button class="${stageKey === "gepostet" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${safeId}', 'gepostet')">Gepostet</button>
+                    <button class="${stageKey === "auf_website" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${safeId}', 'auf_website')">Auf Website</button>
+                </div>
             </div>`;
         });
         if (pendingItems.length > 12){
@@ -17727,7 +18064,12 @@ function setEinsatzBerichtStage(id, stage){
         ? String(stage || "").trim()
         : "erstellt";
     const list = getEinsatzLog();
-    const idx = list.findIndex((item)=>item.id === id);
+    const rawId = String(id || "");
+    let idx = list.findIndex((item)=>item.id === rawId);
+    if (idx < 0){
+        const decodedId = rawId.replace(/\\\\/g, "\\").replace(/\\'/g, "'");
+        idx = list.findIndex((item)=>item.id === decodedId);
+    }
     if (idx < 0) return;
     const current = normalizeSocialBerichtStatus(list[idx].berichtStatus);
     current.stage = safeStage;
@@ -17742,6 +18084,46 @@ function removeEinsatzEntry(id){
     const next = getEinsatzLog().filter((item)=>item.id !== id);
     saveEinsatzLog(next);
     renderEinsatzOverview();
+}
+
+function getSocialEinsatznummerInputFromHistory(value){
+    const tokens = normalizeEinsatznummerCompareTokens(value);
+    if (!tokens.length) return "";
+    const withYear = tokens.find((token)=>token.includes("/"));
+    const source = withYear ? withYear.split("/")[0] : tokens[0];
+    const digits = String(source || "").replace(/\D/g, "");
+    if (!digits) return "";
+    return digits.replace(/^0+(?=\d)/, "");
+}
+
+function loadEinsatzEntryIntoSocial(entryId){
+    const list = getEinsatzLog();
+    const item = list.find((x)=>String(x && x.id || "") === String(entryId || ""));
+    if (!item){
+        alert("Einsatz nicht gefunden.");
+        return;
+    }
+    const fallbackState = {
+        ...getSocialDefaultState(),
+        einsatznummer: getSocialEinsatznummerInputFromHistory(item.einsatznummer),
+        date: convertDeDateToIsoString(item.datum) || getTodayBerlinDateISO(),
+        time: normalizeEinsatzUhrzeit(item.uhrzeit) || "",
+        alarmschleife: "Vollalarm",
+        alarmstichwort: String(item.alarmstichwort || "").trim() || ALARM_STICHWORT_PLACEHOLDER,
+        taetigkeit: String((item.lage && item.lage.freeText) || "").trim(),
+        berichtStatus: normalizeSocialBerichtStatus(item.berichtStatus)
+    };
+    const snapshotState = (item.socialSnapshot && typeof item.socialSnapshot === "object")
+        ? { ...getSocialDefaultState(), ...item.socialSnapshot }
+        : null;
+    const socialState = snapshotState || fallbackState;
+    socialState.berichtStatus = normalizeSocialBerichtStatus(socialState.berichtStatus);
+    runWithIncidentWriteBypass(()=>{
+        saveSocialState(socialState);
+    });
+    if (isEinsatzOverlayOpen()) closeEinsatzOverlay();
+    openSocialOverlay();
+    showSocialHint("Einsatz wurde in den Social-Media-Beitrag übernommen.", false);
 }
 
 function renderEinsatzOverview(){
@@ -17792,6 +18174,7 @@ function renderEinsatzOverview(){
                 <button class="${berichtStage === "auf_website" ? "active-yes" : ""}" onclick="setEinsatzBerichtStage('${item.id}', 'auf_website')">Auf Website</button>
             </div>
             <div class="einsatz-toggle-row">
+                <button onclick="loadEinsatzEntryIntoSocial('${item.id}')">In Social öffnen</button>
                 <button class="${item.beteiligt === true ? "active-yes" : ""}" onclick="setEinsatzBeteiligung('${item.id}', true)">Ja</button>
                 <button class="${item.beteiligt === false ? "active-no" : ""}" onclick="setEinsatzBeteiligung('${item.id}', false)">Nein</button>
                 <button onclick="removeEinsatzEntry('${item.id}')">🗑 Löschen</button>
@@ -28977,6 +29360,18 @@ window.addEventListener("load", ()=>{
     setTimeout(hideAppSplash, APP_SPLASH_HIDE_DELAY_MS);
     scheduleStartupLocationRequest();
 });
+window.addEventListener("ff360:firebase-ready", ()=>{
+    if (isSettingsOverlayOpen()) updateCloudAuthStatusUi();
+});
+window.addEventListener("ff360:firebase-auth-changed", (event)=>{
+    if (isSettingsOverlayOpen()) updateCloudAuthStatusUi();
+    const user = event && event.detail ? event.detail.user : null;
+    if (user && user.uid){
+        loadCloudSettingsIntoApp().then((payload)=>{
+            if (!payload) scheduleSettingsCloudSync();
+        });
+    }
+});
 setTimeout(hideAppSplash, 1500);
 setTimeout(scheduleStartupLocationRequest, 2400);
 updateScrollTopButton();
@@ -29772,5 +30167,7 @@ function getLocation(){
 registerAppServiceWorker();
 
 </script>
+<script type="module" src="firebase-init.js"></script>
+<script type="module" src="cloud-sync.js"></script>
 </body>
 </html>
