@@ -5165,6 +5165,7 @@ iframe {
                     <button onclick="signInToCloudSync()">Anmelden</button>
                     <button onclick="registerCloudSyncUser()">Konto erstellen</button>
                     <button onclick="signOutFromCloudSync()">Abmelden</button>
+                    <button onclick="testCloudSyncConnection()">Cloud testen</button>
                 </div>
             </div>
             <div class="atem-panel">
@@ -7678,7 +7679,13 @@ async function loadCloudSettingsIntoApp(){
         return payload;
     } catch (error){
         if (isSettingsOverlayOpen()){
-            setCloudAuthStatus(`Cloud-Settings konnten nicht geladen werden: ${String(error && error.message ? error.message : error)}`, true);
+            if (isLikelyFirestoreOfflineError(error)){
+                const runtime = getCloudAuthRuntime();
+                const mail = runtime && runtime.currentUser ? String(runtime.currentUser.email || "").trim() : "";
+                setCloudAuthStatus(mail ? `Angemeldet als ${mail}. Firestore ist gerade offline oder noch nicht erreichbar.` : "Angemeldet, aber Firestore ist gerade offline oder noch nicht erreichbar.", false);
+            } else {
+                setCloudAuthStatus(`Cloud-Settings konnten nicht geladen werden: ${String(error && error.message ? error.message : error)}`, true);
+            }
         }
         return null;
     }
@@ -7689,6 +7696,11 @@ function setCloudAuthStatus(message, isError){
     if (!statusEl) return;
     statusEl.textContent = message;
     statusEl.style.color = isError ? "var(--primary-strong)" : "var(--text-muted)";
+}
+
+function isLikelyFirestoreOfflineError(error){
+    const text = String(error && (error.message || error.code) ? (error.message || error.code) : error || "").toLowerCase();
+    return text.includes("offline") || text.includes("unavailable");
 }
 
 function updateCloudAuthStatusUi(){
@@ -7767,6 +7779,34 @@ async function signOutFromCloudSync(){
         setCloudAuthStatus("Abgemeldet. Lokale Speicherung bleibt aktiv.");
     } catch (error){
         setCloudAuthStatus(`Abmeldung fehlgeschlagen: ${String(error && error.message ? error.message : error)}`, true);
+    }
+}
+
+async function testCloudSyncConnection(){
+    const runtime = getCloudAuthRuntime();
+    if (!runtime || !runtime.enabled){
+        setCloudAuthStatus("Firebase ist nicht verfügbar.", true);
+        return;
+    }
+    if (!runtime.currentUser || !runtime.currentUser.uid){
+        setCloudAuthStatus("Kein Benutzer angemeldet.", true);
+        return;
+    }
+    if (!window.FF360CloudSync){
+        setCloudAuthStatus("Cloud-Sync ist nicht geladen.", true);
+        return;
+    }
+    setCloudAuthStatus("Cloud-Verbindung wird geprüft...");
+    try {
+        await window.FF360CloudSync.saveSettings({
+            ...buildCloudSettingsPayload(),
+            lastConnectionTestAt: new Date().toISOString()
+        });
+        await loadCloudSettingsIntoApp();
+        const mail = String(runtime.currentUser.email || "").trim();
+        setCloudAuthStatus(mail ? `Cloud-Test erfolgreich fuer ${mail}.` : "Cloud-Test erfolgreich.");
+    } catch (error){
+        setCloudAuthStatus(`Cloud-Test fehlgeschlagen: ${String(error && error.message ? error.message : error)}`, true);
     }
 }
 

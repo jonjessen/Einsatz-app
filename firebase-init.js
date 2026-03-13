@@ -1,14 +1,16 @@
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import {
   getAuth,
+  setPersistence,
+  browserLocalPersistence,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import {
-  getFirestore,
-  enableIndexedDbPersistence
+  initializeFirestore,
+  persistentLocalCache
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const FIREBASE_CONFIG = {
@@ -85,7 +87,10 @@ async function initFirebase() {
   try {
     const app = getApps().length ? getApp() : initializeApp(FIREBASE_CONFIG);
     const auth = getAuth(app);
-    const db = getFirestore(app);
+    const db = initializeFirestore(app, {
+      localCache: persistentLocalCache({}),
+      experimentalAutoDetectLongPolling: true
+    });
 
     firebaseState = {
       enabled: true,
@@ -97,6 +102,12 @@ async function initFirebase() {
     };
     publishFirebaseState();
 
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+    } catch (error) {
+      console.info("FF360 Firebase: Auth-Persistenz konnte nicht auf LOCAL gesetzt werden.", error);
+    }
+
     onAuthStateChanged(auth, (user) => {
       firebaseState.currentUser = user || null;
       publishFirebaseState();
@@ -104,12 +115,6 @@ async function initFirebase() {
         detail: { user: user || null }
       }));
     });
-
-    try {
-      await enableIndexedDbPersistence(db);
-    } catch (error) {
-      console.info("FF360 Firebase: Firestore Offline-Persistenz nicht aktiviert.", error);
-    }
 
     window.dispatchEvent(new CustomEvent("ff360:firebase-ready", {
       detail: { app, auth, db }
